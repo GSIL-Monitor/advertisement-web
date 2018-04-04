@@ -1,0 +1,66 @@
+#poster-css{
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: #000;
+	filter: alpha(opacity=50);
+	opacity: 0.5;
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+	display: none;
+}
+.tip {
+    background-color: white;
+    border-radius: 10px;
+    color: #686868;
+    display: none;
+    font-size: 15px;
+    font-weight: bold;
+    height: 320px;
+    position: absolute;
+    width: 420px;
+    z-index: 999;
+}
+element.style {
+    display: block;
+    left: 670px;
+    top: 272px;
+}
+#selects {
+    margin-left: 80px;
+    margin-top: 120px;
+}
+
+#bod {
+	 text-align:center;
+	 margin-top:30px;
+	 position:absolute;
+	 height:200px;
+	 width: 110px;
+	 margin-top: 50px;
+}
+.tip textarea {
+	text-align:center;
+    background-color: #f4f4f4;
+    border: 0 none;
+    height: 100px;
+    margin-top: 80px;
+    margin-left: 20px;
+    width: 370px;
+}
+.tip #close-mem {
+    background-color: #c34948;
+    margin-left: 140px;
+    margin-top: 70px;
+}
+#close-mem {
+    border: 0 none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;    
+    height: 30px;
+    width: 100px;
+}

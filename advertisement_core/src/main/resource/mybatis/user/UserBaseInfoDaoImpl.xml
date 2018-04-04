@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="User">
+	
+	<resultMap id="baseInfoMap" type="BaseInfo">
+		<id property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="avatar" column="avatar" jdbcType="VARCHAR" />
+		<result property="identityCard" column="identity_card" jdbcType="VARCHAR" />
+		<result property="gender" column="gender" jdbcType="NUMERIC" />
+		<result property="birthday" column="birthday" jdbcType="TIMESTAMP" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="province" column="province" jdbcType="VARCHAR" />
+		<result property="city" column="city" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<select id="selectBaseInfoByIds" parameterType="List" resultMap="baseInfoMap">
+		select
+		* from
+		tb_user_base_info t
+		<where>
+			user_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	
+	<select id="selectBaseInfo" parameterType="BaseInfo" resultMap="baseInfoMap">
+		select
+		* from
+		tb_user_base_info t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="userId != null">
+					user_id=#{userId} and
+				</if>
+				<if test="status != null">
+					status=#{status} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+		order by create_time desc
+	</select>	
+	
+	<insert id="insertBaseInfo" parameterType="BaseInfo">
+		insert into
+		tb_user_base_info(user_id, mobile, avatar, name, identity_card,
+		gender,birthday,email,province,city,
+		status, create_time, update_time)
+		values
+		(#{userId}, #{mobile}, #{avatar},
+		#{name}, #{identityCard}, #{gender},#{birthday}, #{email}, #{province}, #{city},
+		#{status}, sysdate(), sysdate())
+	</insert>
+
+	<update id="updateBaseInfo" parameterType="BaseInfo">
+		update tb_user_base_info
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id=#{userId},
+				</if>
+				<if test="mobile != null">
+					mobile=#{mobile},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="gender != null">
+					gender=#{gender},
+				</if>
+				<if test="avatar != null">
+					avatar=#{avatar},
+				</if>
+				<if test="identityCard != null">
+					identity_card=#{identityCard},
+				</if>
+				<if test="birthday != null">
+					birthday=#{birthday},
+				</if>
+				<if test="email != null">
+					email=#{email},
+				</if>
+				<if test="province != null">
+					province=#{province},
+				</if>
+				<if test="city != null">
+					city=#{city},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
+
+	<delete id="deleteBaseInfo" parameterType="long">
+		delete from tb_user_base_info
+		where
+		user_id=#{userId}
+	</delete>
+</mapper>

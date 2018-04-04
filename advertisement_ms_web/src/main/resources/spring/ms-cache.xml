@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	<!--  
+	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="${redis.ip}" />
+		<property name="port" value="${redis.port}" />
+		<property name="poolConfig" ref="jedisPoolConfig" />
+	</bean>
+	
+	<bean class="org.springframework.data.redis.core.RedisTemplate" p:connection-factory-ref="jedisConnectionFactory" />
+	-->
+		
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.pool.maxIdle}" />
+	</bean>
+	
+	<bean id="sessionShardedJedisPoolProxy" class="com.yuanshanbao.ms.cache.pool.ShardedJedisPoolProxy">
+		<property name="cacheName" value="session cache"/>
+		<property name="serverListStr" value="${redis.session.servers}"/>
+		<property name="jedisPoolConfig" ref="jedisPoolConfig"/>
+		<property name="password" value="${redis.password}"/>
+	</bean>
+	
+	<bean id="iconShardedJedisPoolProxy" class="com.yuanshanbao.ms.cache.pool.ShardedJedisPoolProxy">
+		<property name="cacheName" value="icon cache"/>
+		<property name="serverListStr" value="${redis.icon.servers}"/>
+		<property name="jedisPoolConfig" ref="jedisPoolConfig"/>
+		<property name="password" value="${redis.password}"/>
+	</bean>
+	
+	<bean id="rightsShardedJedisPoolProxy" class="com.yuanshanbao.ms.cache.pool.ShardedJedisPoolProxy">
+		<property name="cacheName" value="rights cache"/>
+		<property name="serverListStr" value="${redis.rights.servers}"/>
+		<property name="jedisPoolConfig" ref="jedisPoolConfig"/>
+		<property name="password" value="${redis.password}"/>
+	</bean>
+	
+	<bean id="userFailedLoginShardedJedisPoolProxy" class="com.yuanshanbao.ms.cache.pool.ShardedJedisPoolProxy">
+		<property name="cacheName" value="user failed login cache"/>
+		<property name="serverListStr" value="${redis.login.servers}"/>
+		<property name="jedisPoolConfig" ref="jedisPoolConfig"/>
+		<property name="password" value="${redis.password}"/>
+	</bean>
+	
+	<context:property-placeholder
+		location="classpath:config/${spring.profiles.active:dev}/push.properties"
+		order="1" ignore-unresolvable="true" ignore-resource-not-found="true" />
+
+	<!-- Redis Config -->
+	<bean id="baseRedis" class="com.yuanshanbao.ad.common.redis.base.BaseRedis"
+		init-method="initPool">
+		<property name="config" ref="jedisPoolConfig" />
+		<property name="host" value="${redis.host}" />
+		<property name="port" value="${redis.port}" />
+		<property name="password" value="${redis.password}" />
+		<property name="timeout" value="4000" />
+	</bean>
+</beans>

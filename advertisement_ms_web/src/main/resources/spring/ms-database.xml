@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd">
+	<!-- 配置数据源 -->
+	<beans:bean id="propertyConfigurer1" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="order" value="1"/>
+		<beans:property name="ignoreUnresolvablePlaceholders" value="true" />
+		<beans:property name="locations">
+			<beans:list>
+				<beans:value>classpath:config/${spring.profiles.active:unknown}/msdb.properties</beans:value>
+				<beans:value>classpath:config/${spring.profiles.active:unknown}/redis.properties</beans:value>
+				<beans:value>classpath:config/${spring.profiles.active:unknown}/security.properties</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="sysDataSource" class="org.logicalcobwebs.proxool.ExtendsProxoolDataSource">
+        <beans:property name="alias" value="oracledb"></beans:property>
+        <beans:property name="delegateProperties">
+            <beans:value>user=${jdbc_ms.username},password=${jdbc_ms.password}</beans:value>
+        </beans:property>
+        <beans:property name="user" value="${jdbc_ms.username}"/>
+        <beans:property name="password" value="${jdbc_ms.password}"/>
+        <beans:property name="driver" value="${jdbc_ms.driverClassName}"/>
+        <beans:property name="driverUrl" value="${jdbc_ms.url}"/>           
+        <beans:property name="maximumConnectionCount" value="${jdbc_ms.maximumConnectionCount}"></beans:property>
+		<beans:property name="maximumActiveTime" value="${jdbc_ms.maximumActiveTime}"></beans:property>
+		<beans:property name="maximumConnectionLifetime" value="${jdbc_ms.maximumConnectionLifetime}"></beans:property>
+		<beans:property name="prototypeCount" value="${jdbc_ms.prototypeCount}"></beans:property>
+		<beans:property name="houseKeepingSleepTime" value="${jdbc_ms.houseKeepingSleepTime}"></beans:property>
+		<beans:property name="simultaneousBuildThrottle" value="${jdbc_ms.simultaneousBuildThrottle}"></beans:property>
+		<beans:property name="houseKeepingTestSql" value="${jdbc_ms.houseKeepingTestSql}"></beans:property>
+		<beans:property name="verbose" value="${jdbc_ms.verbose}"></beans:property>
+		<beans:property name="statistics" value="${jdbc_ms.statistics}"></beans:property>
+		<beans:property name="statisticsLogLevel" value="${jdbc_ms.statisticsLogLevel}"></beans:property>
+    </beans:bean>
+
+	<!-- define the SqlSessionFactory -->
+	<beans:bean id="sysSqlSessionFactory" name="sysSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="dataSource" ref="sysDataSource" />
+		<beans:property name="mapperLocations" value="classpath:com/yuanshanbao/ms/mapper/admin/*.xml" />
+		<beans:property name="typeAliasesPackage" value="com.yuanshanbao.ms.model.system,com.yuanshanbao.ms.model.report,com.yuanshanbao.ms.model.urs.offline" />
+		<beans:property name="transactionFactory">
+			<beans:bean class="org.mybatis.spring.transaction.SpringManagedTransactionFactory" />
+		</beans:property>  
+		<beans:property name="plugins">
+			<beans:array>
+				<beans:ref bean="msPaginationInterceptor" />
+			</beans:array>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<beans:property name="configLocation" value="classpath:SqlMapConfig.xml" />
+		<beans:property name="dataSource" ref="sysDataSource" />
+		<beans:property name="plugins">
+			<beans:array>
+				<beans:ref bean="paginationInterceptor" />
+			</beans:array>
+		</beans:property>
+	</beans:bean>
+	
+	<!-- scan for mappers and let them be autowired -->
+	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<beans:property name="sqlSessionFactoryBeanName" value="sysSqlSessionFactory"/>
+		<beans:property name="basePackage" value="com.yuanshanbao.ms.mapper.admin" />
+	</beans:bean>
+	
+	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<beans:property name="sqlSessionFactoryBeanName" value="sysSqlSessionFactory"/>
+		<beans:property name="basePackage" value="com.yuanshanbao.ms.mapper.mocf" />
+	</beans:bean>
+	
+	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<beans:property name="sqlSessionFactoryBeanName" value="sysSqlSessionFactory"/>
+		<beans:property name="basePackage" value="com.yuanshanbao.ms.grabber.mapper" />
+	</beans:bean>
+	
+	<beans:bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<beans:property name="sqlSessionFactoryBeanName" value="sysSqlSessionFactory"/>
+		<beans:property name="basePackage" value="com.yuanshanbao.ms.mapper.urs.offline" />
+	</beans:bean>
+	
+	<beans:bean id="msPaginationInterceptor" class="com.yuanshanbao.paginator.interceptor.PaginationInterceptor" >
+		<beans:property name="dialect" ref="mysqlDialect" />
+	</beans:bean>
+	
+	<beans:bean id="mysqlDialect" class="com.yuanshanbao.paginator.dialect.MySQLDialect" />
+
+	<beans:bean id="oraclePaginationInterceptor" class="com.yuanshanbao.paginator.interceptor.PaginationInterceptor" >
+		<beans:property name="dialect" ref="oracleDialect" />
+	</beans:bean>
+	
+	<beans:bean id="oracleDialect" class="com.yuanshanbao.paginator.dialect.OracleDialect" />
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.yuanshanbao.*" />
+	
+	<beans:bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+  		<beans:property name="dataSource" ref="sysDataSource" />
+	</beans:bean>
+</beans:beans>

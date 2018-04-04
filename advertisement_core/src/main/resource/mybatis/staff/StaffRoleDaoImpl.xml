@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="staffRole">
+
+	<resultMap id="staffRoleMap" type="StaffRole">
+		<id property="staffRoleId" column="staff_role_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="parentId" column="parent_id" jdbcType="NUMERIC" />
+		<result property="level" column="level" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 组员sql -->
+	<select id="selectStaffRoles" parameterType="StaffRole" resultMap="staffRoleMap">
+		select
+		* from
+		tb_staff_role r
+		<where>
+			<trim suffixOverrides="and">
+				<if test="staffRoleId != null">
+					staff_role_id=#{staffRoleId} and
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
+				<if test="name != null">
+					name=#{name} and
+				</if>
+				<if test="description != null">
+					description=#{description} and
+				</if>
+				<if test="parentId != null">
+					parent_id=#{parentId} and
+				</if>
+				<if test="level != null">
+					level=#{level} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by level asc, create_time desc
+	</select>
+
+	<select id="selectStaffRoleByProjectIds" parameterType="List" resultMap="staffRoleMap">
+		select
+		* from
+		tb_staff_role r
+		<where>
+			project_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectStaffRoleByIds" parameterType="List" resultMap="staffRoleMap">
+		select
+		* from
+		tb_staff_role r
+		<where>
+			staff_role_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertStaffRole" parameterType="StaffRole">
+		insert into
+		tb_staff_role(project_id, name, 
+		         description, parent_id, level, type, status, 
+		         create_time, update_time)
+		values
+		(#{projectId}, #{name}, #{description},
+		 #{parentId}, #{level}, #{type}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="staffRoleId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateStaffRole" parameterType="StaffRole">
+		update tb_staff_role
+		<set>
+			<trim suffixOverrides=",">
+				<if test="projectId != null">
+					project_id=#{projectId},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="parentId != null">
+					parent_id=#{parentId},
+				</if>
+				<if test="level != null">
+					level=#{level},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			staff_role_id=#{staffRoleId}
+		</where>
+	</update>
+
+	<delete id="deleteStaffRole" parameterType="long">
+		delete from tb_staff_role
+		where
+		staff_role_id=#{staffRoleId}
+	</delete>
+
+</mapper>

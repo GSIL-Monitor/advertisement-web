@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuanshanbao.ms.mapper.admin.UserMonitorLogMapper">
+	<resultMap type="com.yuanshanbao.ms.model.admin.UserMonitorLog" id="userMonitorLogMap">
+		<id property="userName" column="user_name"></id>
+		<id property="operateTime" column="operate_time"></id>
+		<id property="operateType" column="operate_type"></id>
+		<id property="operateIp" column="operate_ip"></id>
+	</resultMap>
+
+	<select id="queryUserMonitorLogs" parameterType="com.yuanshanbao.ms.model.admin.UserMonitorLog" resultMap="userMonitorLogMap">
+		select * from tb_admin_user_monitor_log 
+		<where>
+			<if test="userName != null">
+				user_name like CONCAT(CONCAT('%', #{userName}),'%')
+			</if>
+			<if test="operateType != null">
+				operate_type=#{operateType}
+			</if>
+		</where>
+	</select>
+
+	<insert id="insertUserMonitorLog" parameterType="com.yuanshanbao.ms.model.admin.UserMonitorLog">
+		insert into
+		tb_admin_user_monitor_log
+		(user_name,
+		operate_time, operate_type, operate_ip)
+		values
+		(#{userName}, #{operateTime}, #{operateType}, #{operateIp})
+	</insert>
+</mapper>

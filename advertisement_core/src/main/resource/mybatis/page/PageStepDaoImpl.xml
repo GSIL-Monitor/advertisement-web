@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pageStep">
+
+	<resultMap id="pageStepMap" type="PageStep">
+		<id property="pageStepId" column="page_step_id" jdbcType="NUMERIC" />
+		<result property="pageId" column="page_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="fields" column="fields" jdbcType="VARCHAR" />
+		<result property="extendAmount" column="extend_amount" jdbcType="NUMERIC" />
+		<result property="handler" column="handler" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+    	page_step_id, page_id, name, description, fields, extend_amount, handler, status, create_time, update_time
+  	</sql>
+
+	<!-- 查询sql -->
+	<select id="selectPageSteps" parameterType="PageStep" resultMap="pageStepMap">
+		select
+		<include refid="Base_Column_List" /> from
+		tb_page_step
+		<where>
+			<trim suffixOverrides="and">
+				<if test="pageStepId != null">
+					page_step_id= #{pageStepId} and
+				</if>
+				<if test="pageId != null">
+					page_id= #{pageId} and
+				</if>
+				<if test="name != null">
+					name= #{name} and
+				</if>
+				<if test="description != null">
+					description= #{description} and
+				</if>
+				<if test="fields != null">
+					fields= #{fields} and
+				</if>
+				<if test="extendAmount != null">
+					extend_amount= #{extendAmount} and
+				</if>
+				<if test="handler != null">
+					handler= #{handler} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectPageStepByIds" parameterType="List" resultMap="pageStepMap">
+		select
+		<include refid="Base_Column_List" /> from
+		tb_page_step
+		<where>
+			page_step_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertPageStep" parameterType="PageStep">
+		insert into
+		tb_page_step( page_id, name, description, fields, extend_amount, handler, status, create_time, update_time )
+		values
+		( #{pageId}, #{name}, #{description}, #{fields}, #{extendAmount}, #{handler}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="pageStepId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updatePageStep" parameterType="PageStep">
+		update tb_page_step
+		<set>
+			<trim suffixOverrides=",">
+				<if test="pageId != null">
+					page_id= #{pageId},
+				</if>
+				<if test="name != null">
+					name= #{name},
+				</if>
+				<if test="description != null">
+					description= #{description},
+				</if>
+				<if test="fields != null">
+					fields= #{fields},
+				</if>
+				<if test="extendAmount != null">
+					extend_amount= #{extendAmount},
+				</if>
+				<if test="handler != null">
+					handler= #{handler},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			page_step_id=#{pageStepId}
+		</where>
+	</update>
+
+	<delete id="deletePageStep" parameterType="long">
+		delete from tb_page_step
+		where
+		page_step_id=#{pageStepId}
+	</delete>
+
+</mapper>

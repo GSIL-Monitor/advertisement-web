@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="advertisement">
+
+	<resultMap id="advertisementMap" type="Advertisement">
+		<id property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="advertiserId" column="advertiser_id"
+			jdbcType="NUMERIC" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="VARCHAR" />
+		<result property="subTitle" column="sub_title" jdbcType="VARCHAR" />
+		<result property="url" column="url" jdbcType="VARCHAR" />
+		<result property="appUrl" column="app_url" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
+		<result property="bigImageUrl" column="big_image_url" jdbcType="VARCHAR" />
+		<result property="tagsId" column="tags_id" jdbcType="NUMERIC" />
+		<result property="buttonName" column="button_name" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="category" column="category" jdbcType="NUMERIC" />
+		<result property="showType" column="show_type" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectAdvertisement" parameterType="Advertisement"
+		resultMap="advertisementMap">
+		select
+		* from
+		tb_advertisement
+		<where>
+			<trim suffixOverrides="and">
+				<if test="advertisementId != null">
+					advertisement_id = #{advertisementId} and
+				</if>
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
+				</if>
+				<if test="title != null">
+					title like CONCAT(CONCAT('%', #{title}),'%') and
+				</if>
+				<if test="appUrl != null">
+					app_url = #{appUrl} and
+				</if>
+				<if test="url != null">
+					url = #{url} and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="description != null">
+					description = #{description} and
+				</if>
+				<if test="imageUrl != null">
+					image_url = #{imageUrl} and
+				</if>
+				<if test="bigImageUrl != null">
+					big_image_url = #{bigImageUrl} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+				<if test="category != null">
+					category = #{category} and
+				</if>
+				<if test="showType != null">
+					show_type = #{showType} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectAdvertisementByIds" parameterType="List"
+		resultMap="advertisementMap">
+		select
+		* from
+		tb_advertisement
+		<where>
+			advertisement_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
+
+	<insert id="insertAdvertisement" parameterType="Advertisement">
+		insert into
+		tb_advertisement(advertiser_id, type, title, sub_title,
+		url,app_url,
+		description,
+		image_url, big_image_url, tags_id, button_name,
+		status,category,show_type, create_time,
+		update_time)
+		values
+		(#{advertiserId},#{type}, #{title}, #{subTitle},
+		#{url},
+		#{appUrl},
+		#{description},
+		#{imageUrl}, #{bigImageUrl}, #{tagsId}, #{buttonName},
+		#{status},#{category}, #{showType},sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="advertisementId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateAdvertisement" parameterType="Advertisement">
+		update tb_advertisement
+		<set>
+			<trim suffixOverrides=",">
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="title != null">
+					title=#{title},
+				</if>
+				<if test="subTitle != null">
+					sub_title=#{subTitle},
+				</if>
+				<if test="url != null">
+					url=#{url},
+				</if>
+				<if test="appUrl != null">
+					app_url=#{appUrl},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="imageUrl != null">
+					image_url=#{imageUrl},
+				</if>
+				<if test="bigImageUrl != null">
+					big_image_url=#{bigImageUrl},
+				</if>
+				<if test="buttonName != null">
+					button_name=#{buttonName},
+				</if>
+				tags_id=#{tagsId},
+				<if test="status != null">
+					status=#{status},
+				</if>
+				<if test="category != null">
+					category=#{category},
+				</if>
+				<if test="showType != null">
+					show_type = #{showType},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			advertisement_id=#{advertisementId}
+		</where>
+	</update>
+
+	<delete id="deleteAdvertisement" parameterType="long">
+		delete from
+		tb_advertisement
+		where
+		advertisement_id=#{advertisementId}
+	</delete>
+
+</mapper>

@@ -1,0 +1,298 @@
+@white: #FFF;
+@black: #000;
+@primary-color: #e02826;
+@input-background-color: #f9f0e7;
+@input-border-color: #a8a7a3;
+@button-border-color: #9e4342;
+@text-color: #681515;
+@hint-color: #9b999a;
+@shadow-color: #ac1717;
+@tip-color: #999;
+@table-title: #dd2d36;
+@table-border: #636363;
+@table-content: #f1f1f0;
+@error-color: #F67072;
+@background-color: #f1f1f0;
+@calculator-color: #ef786e;
+
+body {
+	width: 1000px;
+	height: 150px;
+}
+
+.container {
+	width: 960px;
+	height: 135px;
+	min-width: 960px;
+	min-height: 135px;
+	background-color: #fff;
+	padding: 10px 20px 5px 20px;
+}
+
+.logo {
+	float: left;
+}
+
+.insurance-description {
+	img {
+		width: 500px;
+		margin-top: 10px;
+	}
+}
+
+.form-wrap {
+	margin-left: 10px;
+	position: relative;
+}
+
+.field-name {
+	color: @text-color;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 40px;
+}
+
+.field-input {
+	background-color: @input-background-color;
+	width: 45px;
+	padding-left: 5px;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 5px;
+	border: 1px solid @input-border-color;
+	margin-bottom: 10px;
+	margin-right: 5px;
+	text-align: center;
+	input {
+		border: none;
+		background-color: @input-background-color;
+		line-height: 38px;
+    	outline: 0;
+	}
+
+	.field-input-control {
+		width: 35px;
+		font-size: 14px;
+	}
+}
+
+.calculate-input {
+	width: 200px;
+	.field-input-control {
+		width: 190px;
+	}
+}
+
+.field-input-error {
+	border: 1px solid @error-color;
+}
+.error-tip {
+	font-size: 10px;
+	color: @error-color;
+	margin-top: -12px;
+	margin-bottom: -16px;
+}
+
+.submit-button {
+	width: 350px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	background-color: @primary-color;
+	border-radius: 5px;
+	border: 1px solid @input-border-color;
+	color: @white;
+	font-size: 18px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.warm-tip {
+	margin: 2px 0;
+	font-size: 10px;
+	color: @text-color;
+	text-align: center;
+	img {
+		width: 12px;
+		margin-right: 2px;
+	}
+}
+
+.result-area {
+	margin: 20px 0;
+	margin-right: 20px;
+	padding-right: 20px;
+	text-align: center;
+	color: @text-color;
+	border-right: 1px solid @text-color;
+}
+
+.calculate-description {
+	margin-top: 10px;
+	margin-right: 20px;
+}
+
+.calculate-form {
+	margin-top: 10px;
+}
+
+.cauculate-button {
+	width: 438px;
+}
+
+.radio-btn {
+    width: 60px;
+    height: 38px;
+    line-height: 38px;
+    margin-left: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: @primary-color;
+    border-radius: 4px;
+    border: 2px solid @primary-color;
+    background: #fff;
+    margin-bottom: 10px;
+}
+
+.radio-btn-select {
+    background-color: @primary-color;
+    color: @white;
+}
+
+.input-triangle {
+	position: absolute;
+    margin-top: 18px;
+    margin-left: -10px;
+    border-width: 6px;
+    border-color: @text-color transparent transparent transparent;
+    border-style: solid dashed none dashed;
+}
+
+.field-center-align {
+	text-align: center;
+}
+
+.select-list {
+	display: none;
+	z-index: 9999;
+	position: absolute;
+	top: 42px;
+    left: 80px;
+    width: 50px;
+	padding: 5px;
+	border: 1px solid @background-color;
+	font-size: 15px;
+	background-color: @white;
+	max-height: 80px;
+	overflow: auto;
+}
+
+.select-list-month {
+	left: 137px;
+}
+
+.select-list-day {
+	left: 195px;
+}
+.select-list li {
+	height: 30px;
+	line-height: 30px;
+	border-bottom: 1px solid @background-color;
+	&:hover {
+		border-radius: 5px;
+		background-color: #fbf3ec;
+		cursor: pointer;
+	}
+}
+
+.calculate-list {
+	width: 200px;
+	li {
+		padding-left: 80px;
+	}
+}
+
+
+.gender-radio {
+	height: 40px;
+	line-height: 40px;
+	width: 80px;
+	border: 1px solid @input-border-color;
+	border-radius: 4px;
+	background-color: @input-background-color;
+	list-style: none;
+	li {
+		float: left;
+		width: 50%;
+		height: 40px;
+		text-align: center;
+	}
+
+	li:first-child {
+		border-right: 1px solid @input-border-color;
+		margin-right: -1px;
+	}
+}
+
+.gender-select {
+	background-color: @primary-color;
+	color: @white;
+}
+
+.calcalate-result {
+	text-align: center;
+	color: @text-color;
+	margin-left: 80px;
+}
+
+.result-content {
+	margin-top: 5px;
+	font-size: 16px;
+}
+
+.result-tip {
+	color: @tip-color;
+	width: 350px;
+    margin: 20px auto;
+	img {
+		float: left;
+		width: 20px;
+	}
+}
+
+.money {
+	color: #f09928;
+	font-weight: bold;
+}
+
+.tip-content {
+	padding: 0;
+}
+
+.tip-single-button-text {
+	background-color: @primary-color;
+	border-radius: 5px;
+	padding: 5px 0;
+	color: @white;
+}
+
+.tip-title {
+	font-size: 16px;
+	margin: 15px;
+	line-height: 24px;
+}
+
+.warm-tip {
+	a {
+		color: @primary-color;
+	}
+}
+
+.tip-text {
+	font-size: 10px;
+	max-height: 40px;
+	overflow: auto;
+	text-align: left;
+	padding: 0 10px;
+}

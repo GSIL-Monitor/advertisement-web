@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+<appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+        <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+        <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+    </Console>
+    
+	<filter class="org.apache.log4j.varia.LevelRangeFilter">
+		<param name="LevelMin" value="INFO" />    
+		<param name="LevelMax" value="ERROR"/>
+	</filter>
+
+    <!-- MallRollingFile -->
+    <RollingFile name="info" fileName="log/info.log" 
+                 filePattern="log/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+          <!--  <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>  -->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+    <RollingFile name="warn" fileName="log/warn.log"
+                     filePattern="log/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %l %C{36} %L %M - %m%xEx%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="1024 MB"/>
+            </Policies>
+        </RollingFile>
+    <RollingFile name="error" fileName="log/error.log"
+                 filePattern="log/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+            <ThresholdFilter level="fatal" onMatch="DENY" onMismatch="NEUTRAL"/>
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %l %C{36} %L %M - %m%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+	 <RollingFile name="alarm" fileName="log/alarm.log"
+                 filePattern="log/$${date:yyyy-MM}/alarm-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+            <ThresholdFilter level="fatal" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %l %C{36} %L %M - %m%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+    
+    <!-- MallCacheRollingFile -->
+    <RollingFile name="access" fileName="log/access.log" 
+                 filePattern="log/$${date:yyyy-MM}/access-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+		<!-- <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>  -->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+    <RollingFile name="order" fileName="log/order.log"
+                 filePattern="log/$${date:yyyy-MM}/order-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %l %C{36} %L %M - %m%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+    <RollingFile name="message" fileName="log/message.log"
+                 filePattern="log/$${date:yyyy-MM}/message-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %l %C{36} %L %M - %m%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+    <RollingFile name="login" fileName="log/login.log"
+                 filePattern="log/$${date:yyyy-MM}/login-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %l %C{36} %L %M - %m%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+    <RollingFile name="resend" fileName="log/resend.log"
+                 filePattern="log/$${date:yyyy-MM}/resend-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %l %C{36} %L %M - %m%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+	 <RollingFile name="debug" fileName="log/debug.log"
+                 filePattern="log/$${date:yyyy-MM}/debug-%d{yyyy-MM-dd}-%i.log.gz">
+        <Filters>
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Filters>
+        <PatternLayout pattern="%d{yyyy.MM.dd HH:mm:ss,SSS} %-5level %l %C{36} %L %M - %m%xEx%n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            <SizeBasedTriggeringPolicy size="500 MB"/>
+        </Policies>
+    </RollingFile>
+</appenders>
+<loggers>
+	<logger name="info" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="info"/>
+   	</logger>
+	<logger name="warn" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="warn"/>
+   	</logger>
+   	<logger name="error" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="error"/>
+   	</logger>
+	<logger name="access" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="access"/>
+   	</logger>
+	<logger name="order" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="order"/>
+   	</logger>
+	<logger name="debug" level="info" additivity="false">  
+     	<appender-ref ref="debug"/>
+   	</logger>
+	<logger name="message" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="message"/>
+   	</logger>
+	<logger name="login" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="login"/>
+   	</logger>
+	<logger name="resend" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="login"/>
+   	</logger>
+	<logger name="alarm" level="info" additivity="false">  
+     	<appender-ref ref="Console"/>
+     	<appender-ref ref="alarm"/>
+   	</logger>
+    <root level="info">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="info"/>
+        <appender-ref ref="error"/>
+		<appender-ref ref="alarm"/>
+    </root>
+</loggers>
+</configuration>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fieldConstrains">
+
+	<resultMap id="fieldConstrainsMap" type="FieldConstrains">
+		<id property="constrainsId" column="constrains_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="value" column="value" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectFieldConstrains" parameterType="FieldConstrains"
+		resultMap="fieldConstrainsMap">
+		select
+		* from
+		tb_field_constrains t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="constrainsId != null">
+					constrains_id=#{constrainsId} and
+				</if>
+				<if test="name != null">
+					name=#{name} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectFieldConstrainsByIds" parameterType="List"
+		resultMap="fieldConstrainsMap">
+		select
+		* from
+		tb_field_constrains t
+		<where>
+			constrains_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertFieldConstrains" parameterType="FieldConstrains">
+		insert into
+		tb_field_constrains(constrains_id, name, description, type, value,
+		status, create_time, update_time)
+		values
+		(#{constrainsId},
+		#{name},
+		#{description}, #{type}, #{value},
+		#{status},
+		sysdate(),
+		sysdate())
+	</insert>
+
+	<update id="updateFieldConstrains" parameterType="FieldConstrains">
+		update tb_field_constrains
+		<set>
+			<trim suffixOverrides=",">
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="value != null">
+					value=#{value},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			constrains_id=#{constrainsId}
+		</where>
+	</update>
+
+</mapper>

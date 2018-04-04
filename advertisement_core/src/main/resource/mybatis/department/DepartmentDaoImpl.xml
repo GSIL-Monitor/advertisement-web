@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="department">
+
+	<resultMap id="departmentMap" type="Department">
+		<id property="departmentId" column="department_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 部门sql -->
+	<select id="selectDepartments" parameterType="Department" resultMap="departmentMap">
+		select
+		* from
+		tb_department d
+		<where>
+			<trim suffixOverrides="and">
+				<if test="departmentId != null">
+					department_id=#{departmentId} and
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="description != null">
+					description=#{description} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectDepartmentByProjectIds" parameterType="List" resultMap="departmentMap">
+		select
+		* from
+		tb_department d
+		<where>
+			product_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectDepartmentByIds" parameterType="List" resultMap="departmentMap">
+		select
+		* from
+		tb_department d
+		<where>
+			department_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertDepartment" parameterType="Department">
+		insert into
+		tb_department(project_id, name, description, type,
+		           status, create_time, update_time)
+		values
+		(#{projectId}, #{name}, #{description}, #{type}, #{status},
+		 sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="departmentId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateDepartment" parameterType="Department">
+		update tb_department
+		<set>
+			<trim suffixOverrides=",">
+				<if test="projectId != null">
+					project_id=#{projectId},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			department_id=#{departmentId}
+		</where>
+	</update>
+
+	<delete id="deleteDepartment" parameterType="long">
+		delete from tb_department
+		where
+		department_id=#{departmentId}
+	</delete>
+
+</mapper>

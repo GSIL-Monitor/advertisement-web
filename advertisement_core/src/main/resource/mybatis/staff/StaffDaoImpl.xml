@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="staff">
+
+	<resultMap id="staffMap" type="Staff">
+		<id property="staffId" column="staff_id" jdbcType="NUMERIC" />
+		<result property="departmentId" column="department_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="subprojectId" column="subproject_id" jdbcType="NUMERIC" />
+		<result property="accountName" column="account_name" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="gender" column="gender" jdbcType="NUMERIC" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="lastQuota" column="last_quota" jdbcType="NUMERIC" />
+		<result property="quota" column="quota" jdbcType="NUMERIC" />
+		<result property="level" column="level" jdbcType="NUMERIC" />
+		<result property="staffRoleId" column="staff_role_id" jdbcType="NUMERIC" />
+		<result property="parentStaffId" column="parent_staff_id" jdbcType="NUMERIC" />
+		<result property="callAgentId" column="call_agent_id" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="onlineStatus" column="online_status" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 组员sql -->
+	<select id="selectStaffs" parameterType="Staff" resultMap="staffMap">
+		select
+		* from
+		tb_staff s
+		<where>
+			<trim suffixOverrides="and">
+				<if test="staffId != null">
+					staff_id=#{staffId} and
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
+				<if test="subprojectId != null">
+					subproject_id=#{subprojectId} and
+				</if>
+				<if test="departmentId != null">
+					department_id=#{departmentId} and
+				</if>
+				<if test="accountName != null">
+					account_name=#{accountName} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="mobile != null">
+					mobile=#{mobile} and
+				</if>
+				<if test="gender != null">
+					gender=#{gender} and
+				</if>
+				<if test="email != null">
+					email=#{email} and
+				</if>
+				<if test="description != null">
+					description=#{description} and
+				</if>
+				<if test="lastQuota != null">
+					last_quota=#{lastQuota} and
+				</if>
+				<if test="quota != null">
+					quota=#{quota} and
+				</if>
+				<if test="level != null">
+					level=#{level} and
+				</if>
+				<if test="parentStaffId != null">
+					parent_staff_id=#{parentStaffId} and
+				</if>
+				<if test="staffRoleId != null">
+					staff_role_id=#{staffRoleId} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+				<if test="onlineStatus != null">
+					online_status = #{onlineStatus} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectStaffByDepartmentIds" parameterType="List" resultMap="staffMap">
+		select
+		* from
+		tb_staff s
+		<where>
+			department_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectStaffByIds" parameterType="List" resultMap="staffMap">
+		select
+		* from
+		tb_staff s
+		<where>
+			staff_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectStaffByParentIds" parameterType="List" resultMap="staffMap">
+		select
+		* from
+		tb_staff s
+		<where>
+			parent_staff_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertStaff" parameterType="Staff">
+		insert into
+		tb_staff(department_id, project_id, subproject_id, account_name, name, mobile, gender, email, 
+		         description, last_quota, quota, level, staff_role_id, parent_staff_id, call_agent_id, 
+		         type, online_status, status, create_time, update_time)
+		values
+		(#{departmentId}, #{projectId}, #{subprojectId}, #{accountName}, #{name}, #{mobile},
+		 #{gender}, #{email}, #{description}, #{lastQuota}, #{quota}, #{level},
+		 #{staffRoleId}, #{parentStaffId}, #{callAgentId}, #{type}, #{onlineStatus}, #{status},sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="staffId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateStaff" parameterType="Staff">
+		update tb_staff
+		<set>
+			<trim suffixOverrides=",">
+				<if test="departmentId != null">
+					department_id=#{departmentId},
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId},
+				</if>
+				<if test="subprojectId != null">
+					subproject_id=#{subprojectId},
+				</if>
+				<if test="accountName != null">
+					account_name=#{accountName},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="mobile != null">
+					mobile=#{mobile},
+				</if>
+				<if test="gender != null">
+					gender=#{gender},
+				</if>
+				<if test="email != null">
+					email=#{email},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="lastQuota != null">
+					last_quota=#{lastQuota},
+				</if>
+				<if test="quota != null">
+					quota=#{quota},
+				</if>
+				<if test="level != null">
+					level=#{level},
+				</if>
+				<if test="staffRoleId != null">
+					staff_role_id=#{staffRoleId},
+				</if>
+				<if test="parentStaffId != null">
+					parent_staff_id=#{parentStaffId},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="callAgentId != null">
+					call_agent_id=#{callAgentId},
+				</if>
+				<if test="onlineStatus != null">
+					online_status=#{onlineStatus},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			staff_id=#{staffId}
+		</where>
+	</update>
+
+	<delete id="deleteStaff" parameterType="long">
+		delete from tb_staff
+		where
+		staff_id=#{staffId}
+	</delete>
+
+</mapper>

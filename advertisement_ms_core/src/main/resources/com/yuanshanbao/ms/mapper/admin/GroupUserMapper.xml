@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuanshanbao.ms.mapper.admin.GroupUserMapper">
+	<insert id="insertUserAndGroup">
+		insert into tb_admin_user_group
+		(username, group_id) 
+		values 
+		(#{arg0}, #{arg1})
+	</insert>
+	
+	<delete id="deleteUserAndGroup">
+		delete from tb_admin_user_group
+		where
+		username=#{arg0} and group_id=#{arg1}
+	</delete>
+	
+	<delete id="deleteRecordsByUsername">
+		delete from tb_admin_user_group
+		where
+		username=#{userName}
+	</delete>
+	
+	<delete id="deleteRecordsByGroupId">
+		delete from tb_admin_user_group 
+		where
+		group_id=#{groupId}
+	</delete>
+</mapper>

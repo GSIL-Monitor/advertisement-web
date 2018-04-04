@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="page">
+
+	<resultMap id="pageMap" type="Page">
+		<id property="pageId" column="page_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="key" column="key" jdbcType="VARCHAR" />
+		<result property="steps" column="steps" jdbcType="VARCHAR" />
+		<result property="bonus" column="bonus" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+    	page_id, project_id, name, `key`, steps, bonus, type, `status`, create_time, update_time
+  	</sql>
+
+	<!-- 查询sql -->
+	<select id="selectPages" parameterType="Page" resultMap="pageMap">
+		select
+		<include refid="Base_Column_List" /> from
+		tb_page
+		<where>
+			<trim suffixOverrides="and">
+				<if test="pageId != null">
+					page_id= #{pageId} and
+				</if>
+				<if test="projectId != null">
+					(project_id= #{projectId} or project_id is null) and
+				</if>
+				<if test="name != null">
+					name= #{name} and
+				</if>
+				<if test="key != null">
+					`key`= #{key} and
+				</if>
+				<if test="steps != null">
+					steps= #{steps} and
+				</if>
+				<if test="bonus != null">
+					bonus= #{bonus} and
+				</if>
+				<if test="type != null">
+					type= #{type} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectPageByIds" parameterType="List" resultMap="pageMap">
+		select
+		<include refid="Base_Column_List" /> from
+		tb_page
+		<where>
+			page_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertPage" parameterType="Page">
+		insert into
+		tb_page( project_id, name, key, steps, bonus, type, status, create_time, update_time )
+		values
+		( #{projectId}, #{name}, #{key}, #{steps}, #{bonus}, #{type}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="pageId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updatePage" parameterType="Page">
+		update tb_page
+		<set>
+			<trim suffixOverrides=",">
+				<if test="projectId != null">
+					project_id = #{projectId},
+				</if>
+				<if test="name != null">
+					name= #{name},
+				</if>
+				<if test="key != null">
+					key= #{key},
+				</if>
+				<if test="steps != null">
+					steps= #{steps},
+				</if>
+				<if test="bonus != null">
+					bonus= #{bonus},
+				</if>
+				<if test="type != null">
+					type= #{type},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			page_id=#{pageId}
+		</where>
+	</update>
+
+	<delete id="deletePage" parameterType="long">
+		delete from tb_page
+		where
+		page_id=#{pageId}
+	</delete>
+
+</mapper>

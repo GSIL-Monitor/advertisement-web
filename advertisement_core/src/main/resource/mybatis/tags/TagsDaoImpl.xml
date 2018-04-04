@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tags">
+	<resultMap id="tagsMap" type="Tags">
+		<id property="tagsId" column="tags_id" jdbcType="NUMERIC" />
+		<result property="parentId" column="parent_id" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="value" column="value" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="bigImage" column="big_image" jdbcType="VARCHAR" />
+		<result property="image" column="image" jdbcType="VARCHAR" />
+		<result property="showOrder" column="show_order" jdbcType="NUMERIC" />
+		<result property="searchType" column="search_type" jdbcType="NUMERIC" />
+		<result property="score" column="score" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectTags" parameterType="Tags" resultMap="tagsMap">
+		select
+		* from
+		tb_tags t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="tagsId != null">
+					tags_id=#{tagsId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="searchType != null">
+					search_type=#{searchType} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+		order by show_order, tags_id;
+	</select>
+
+	<select id="selectTagsByIds" parameterType="List" resultMap="tagsMap">
+		select
+		* from
+		tb_tags t
+		<where>
+			tags_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertTags" parameterType="Tags">
+		insert into
+		tb_tags(parent_id, type, name, value, description, big_image, image,
+		show_order, search_type, score, status, create_time,update_time)
+		values
+		(#{parentId}, #{type}, #{name}, #{value}, #{description}, #{bigImage},
+		#{image}, #{showOrder}, #{searchType}, #{score}, #{status}, sysdate(),
+		sysdate())
+	</insert>
+
+	<update id="updateTags" parameterType="Tags">
+		update tb_tags
+		<set>
+			<trim suffixOverrides=",">
+				<if test="parentId != null">
+					parent_id=#{parentId},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="value != null">
+					value=#{value},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="bigImage != null">
+					big_image=#{bigImage},
+				</if>
+				<if test="image != null">
+					image=#{image},
+				</if>
+				<if test="searchType != null">
+					search_type=#{searchType},
+				</if>
+				<if test="showType != null">
+					show_order=#{showType},
+				</if>
+				<if test="score != null">
+					score=#{score},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			tags_id=#{tagsId}
+		</where>
+	</update>
+
+	<delete id="deleteTags" parameterType="Tags">
+		delete from tb_tags
+		<where>
+			<trim suffixOverrides="and">
+				<if test="tagsId != null">
+					tags_id=#{tagsId} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+	</delete>
+
+</mapper>

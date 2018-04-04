@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderRemark">
+
+	<resultMap id="orderRemarkMap" type="OrderRemark">
+		<id property="orderRemarkId" column="order_remark_id" jdbcType="NUMERIC" />
+		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="content" column="content" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectOrderRemarks" parameterType="OrderRemark"
+		resultMap="orderRemarkMap">
+		select
+		* from
+		tb_order_remark
+		<where>
+			<trim suffixOverrides="and">
+				<if test="orderRemarkId != null">
+					order_remark_id= #{orderRemarkId} and
+				</if>
+				<if test="orderId != null">
+					order_id= #{orderId} and
+				</if>
+				<if test="userId != null">
+					user_id= #{userId} and
+				</if>
+				<if test="content != null">
+					content= #{content} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectOrderRemarkByIds" parameterType="List"
+		resultMap="orderRemarkMap">
+		select
+		* from
+		tb_order_remark
+		<where>
+			order_remark_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertOrderRemark" parameterType="OrderRemark">
+		insert into
+		tb_order_remark( order_id, user_id, content, status,
+		create_time, update_time )
+		values
+		( #{orderId}, #{userId}, #{content},
+		#{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="orderRemarkId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateOrderRemark" parameterType="OrderRemark">
+		update tb_order_remark
+		<set>
+			<trim suffixOverrides=",">
+				<if test="orderId != null">
+					order_id= #{orderId},
+				</if>
+				<if test="userId != null">
+					user_id= #{userId},
+				</if>
+				<if test="content != null">
+					content= #{content},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			order_remark_id=#{orderRemarkId}
+		</where>
+	</update>
+
+	<delete id="deleteOrderRemark" parameterType="long">
+		delete from
+		tb_order_remark
+		where
+		order_remark_id=#{orderRemarkId}
+	</delete>
+
+</mapper>

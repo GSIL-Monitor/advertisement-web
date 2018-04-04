@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuanshanbao.ms.mapper.admin.UserMapper">
+	
+	<select id="queryUsers" parameterType="com.yuanshanbao.ms.model.admin.User" resultType="com.yuanshanbao.ms.model.admin.User">
+		select 
+		username,
+		project_id as projectId, password, description,
+		last_time, first_login_force, login_count,
+		last_chgpwd_time, email, pwd_keep_time, name, department_id as departmentId,
+		department_name as departmentName, user_level, is_locked, bind_user_ids,
+		create_time, bind_company_id as bindCompanyId, 
+		bind_channel as bindChannel, company_name as companyName
+		 from tb_admin_users u
+		<where>
+			<trim suffixOverrides="and">
+				<if test="username != null and username != ''">
+				username like CONCAT(CONCAT('%', #{username}),'%') and
+				</if>
+				<if test="name != null and name != ''">
+				name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="companyName != null and companyName != ''">
+				company_name like CONCAT(CONCAT('%', #{companyName}),'%') and
+				</if>
+				<if test="projectId != null">
+				project_id=#{projectId} and
+				</if>
+				<if test="departmentId != null">
+				department_id=#{departmentId} and
+				</if>
+				<if test="user_level != null and user_level == '3'.toString()">
+				username is null and
+				</if>
+				<if test="user_level != null and user_level == '2'.toString()">
+				user_level = '3' and
+				</if>
+				<if test="user_level != null and user_level == '2'.toString()">
+				(username in (select distinct username from tb_admin_user_group where group_id in
+					<foreach collection="groups" index="index" item="group" open="(" separator="," close=")">
+		    			#{group.id}
+					</foreach>)
+				or username not in (select distinct user from tb_admin_user_group)) and
+				</if>
+			</trim>
+		</where>
+	</select>
+	
+	<select id="queryUserByName" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.User">
+		select
+		* from tb_admin_users 
+		where username = #{username} and project_id = #{projectId}
+	</select>
+
+	<insert id="insertUser" parameterType="com.yuanshanbao.ms.model.admin.User">
+		insert into
+		tb_admin_users
+		(username, project_id, password, email, pwd_keep_time, name, department_id, department_name,
+		 user_level, last_chgpwd_time, create_time, bind_user_ids,
+		 bind_company_id, bind_channel, company_name)
+		values
+		(#{username}, #{projectId}, #{password}, #{email}, #{pwd_keep_time}, #{name},
+		#{departmentId}, #{departmentName}, #{user_level}, sysdate(), sysdate(), 
+		#{bind_user_ids}, #{bindCompanyId}, #{bindChannel}, #{companyName})
+	</insert>
+
+	<update id="updateUserLoginInfo" parameterType="com.yuanshanbao.ms.model.admin.User">
+		update tb_admin_users set
+		last_time=#{last_time},login_count=#{login_count}
+		where
+		username=#{username} and project_id=#{projectId}
+	</update>
+
+	<delete id="deleteUser" parameterType="String">
+		delete from tb_admin_users
+		where
+		username=#{userName} and project_id=#{projectId}
+	</delete>
+	
+	<update id="updateUser" parameterType="com.yuanshanbao.ms.model.admin.User">
+		update
+		tb_admin_users set 
+		username=#{username} 
+		<if test="name != null and name != ''">
+		, name=#{name}
+		</if>
+		<if test="note != null and note != ''">
+		, note=#{note}
+		</if>
+		<if test="login_count != 0">
+		, login_count=#{login_count}
+		</if>
+		<if test="email != null and email != ''">
+		, email=#{email}
+		</if>
+		<if test="departmentName != null and departmentName != ''">
+		, department_name=#{departmentName}
+		</if>
+		<if test="pwd_keep_time != null and pwd_keep_time != ''">
+		, pwd_keep_time=#{pwd_keep_time}
+		</if>
+		<if test="bind_user_ids != null and bind_user_ids != ''">
+		, bind_user_ids=#{bind_user_ids}
+		</if>
+		<if test="bindCompanyId != null and bindCompanyId != ''">
+		, bind_company_id=#{bindCompanyId}
+		</if>
+		<if test="bindChannel != null and bindChannel != ''">
+		, bind_channel=#{bindChannel}
+		</if>
+		<if test="companyName != null and companyName != ''">
+		, company_name=#{companyName}
+		</if>
+		<if test="projectId != null">
+		, project_id=#{projectId}
+		</if>
+		<if test="departmentId != null">
+		, department_id=#{departmentId}
+		</if>
+		where username=#{username} and project_id=#{projectId}
+	</update>
+	
+	<update id="updateUserPwd" parameterType="com.yuanshanbao.ms.model.admin.User">
+		update
+		tb_admin_users set
+		password=#{password}, last_chgpwd_time=sysdate() where username=#{username} and project_id=#{projectId}
+	</update>
+</mapper> 

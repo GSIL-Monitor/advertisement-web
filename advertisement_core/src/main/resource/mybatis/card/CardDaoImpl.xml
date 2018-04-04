@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="card">
+
+	<resultMap id="cardMap" type="Card">
+		<id property="cardId" column="card_id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="wechat" column="wechat" jdbcType="VARCHAR" />
+		<result property="avatar" column="avatar" jdbcType="VARCHAR" />
+		<result property="position" column="position" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+    	card_id, user_id, merchant_id, name, mobile, wechat, avatar, position, description, status, create_time, update_time
+  	</sql>
+
+	<!-- 查询sql -->
+	<select id="selectCards" parameterType="Card" resultMap="cardMap">
+		select
+		<include refid="Base_Column_List" /> from
+		tb_card
+		<where>
+			<trim suffixOverrides="and">
+				<if test="cardId != null">
+					card_id= #{cardId} and
+				</if>
+				<if test="userId != null">
+					user_id= #{userId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id= #{merchantId} and
+				</if>
+				<if test="name != null">
+					name= #{name} and
+				</if>
+				<if test="mobile != null">
+					mobile= #{mobile} and
+				</if>
+				<if test="wechat != null">
+					wechat= #{wechat} and
+				</if>
+				<if test="avatar != null">
+					avatar= #{avatar} and
+				</if>
+				<if test="position != null">
+					position= #{position} and
+				</if>
+				<if test="description != null">
+					description= #{description} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectCardByIds" parameterType="List" resultMap="cardMap">
+		select
+		<include refid="Base_Column_List" /> from
+		tb_card
+		<where>
+			card_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertCard" parameterType="Card">
+		insert into
+		tb_card( user_id, merchant_id, name, mobile, wechat, avatar, position, description, `status`, create_time, update_time )
+		values
+		( #{userId}, #{merchantId}, #{name}, #{mobile}, #{wechat}, #{avatar}, #{position}, #{description}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="cardId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateCard" parameterType="Card">
+		update tb_card
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id= #{userId},
+				</if>
+				<if test="merchantId != null">
+					merchant_id= #{merchantId},
+				</if>
+				<if test="name != null">
+					name= #{name},
+				</if>
+				<if test="mobile != null">
+					mobile= #{mobile},
+				</if>
+				<if test="wechat != null">
+					wechat= #{wechat},
+				</if>
+				<if test="avatar != null">
+					avatar= #{avatar},
+				</if>
+				<if test="position != null">
+					position= #{position},
+				</if>
+				<if test="description != null">
+					description= #{description},
+				</if>
+				<if test="status != null">
+					`status`= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			card_id=#{cardId}
+		</where>
+	</update>
+
+	<delete id="deleteCard" parameterType="long">
+		delete from tb_card
+		where
+		card_id=#{cardId}
+	</delete>
+
+</mapper>

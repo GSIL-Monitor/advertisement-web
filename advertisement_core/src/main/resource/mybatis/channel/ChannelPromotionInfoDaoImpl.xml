@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="promotionInfo">
+
+	<resultMap id="promotionInfoMap" type="ChannelPromotionInfo">
+		<id property="promotionInfoId" column="promotion_info_id" jdbcType="NUMERIC" />
+		<result property="partnerId" column="partner_id" jdbcType="VARCHAR" />
+		<result property="ip" column="ip" jdbcType="VARCHAR" />
+		<result property="deviceType" column="device_type" jdbcType="VARCHAR" />
+		<result property="systemName" column="system_name" jdbcType="VARCHAR" />
+		<result property="systemVersion" column="system_version"
+			jdbcType="VARCHAR" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="idfa" column="idfa" jdbcType="NUMERIC" />
+		<result property="androidId" column="android_id" jdbcType="VARCHAR" />
+		<result property="mac" column="mac" jdbcType="VARCHAR" />
+		<result property="imei" column="imei" jdbcType="VARCHAR" />
+		<result property="userAgent" column="user_agent" jdbcType="VARCHAR" />
+		<result property="callback" column="callback_url" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectPromotionInfo" parameterType="ChannelPromotionInfo"
+		resultMap="promotionInfoMap">
+		select
+		* from
+		tb_channel_promotion_info t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="partnerId != null">
+					partner_id=#{partnerId} and
+				</if>
+				<if test="channel != null">
+					channel=#{channel} and
+				</if>
+				<if test="ip != null">
+					ip=#{ip} and
+				</if>
+				<if test="systemName != null">
+					system_name=#{systemName} and
+				</if>
+				<if test="systemVersion != null">
+					system_version=#{systemVersion} and
+				</if>
+				<if test="idfa != null">
+					idfa=#{idfa} and
+				</if>
+				<if test="androidId != null">
+					android_id=#{androidId} and
+				</if>
+				<if test="mac != null">
+					mac=#{mac} and
+				</if>
+				<if test="imei != null">
+					imei=#{imei} and
+				</if>
+				<if test="userAgent != null">
+					user_agent=#{userAgent} and
+				</if>
+				<if test="callback != null">
+					callback_url=#{callback} and
+				</if>
+				<if test="status != null">
+					status=#{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectPromotionInfoByIds" parameterType="List"
+		resultMap="promotionInfoMap">
+		select
+		* from
+		tb_channel_promotion_info t
+		<where>
+			promotion_info_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertPromotionInfo" parameterType="ChannelPromotionInfo">
+		insert into
+		tb_channel_promotion_info(partner_id, channel, ip,
+		device_type,
+		system_name, system_version, idfa,
+		android_id, mac, imei,
+		user_agent,callback_url,
+		status, create_time, update_time)
+		values
+		(#{partnerId}, #{channel},
+		#{ip},
+		#{deviceType},
+		#{systemName},
+		#{systemVersion},
+		#{idfa},
+		#{androidId}, #{mac}, #{imei},
+		#{userAgent},#{callback}, #{status},
+		sysdate(),
+		sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="promotionInfoId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updatePromotionInfo" parameterType="ChannelPromotionInfo">
+		update tb_channel_promotion_info
+		<set>
+			<trim suffixOverrides=",">
+				<if test="partnerId != null">
+					partner_id=#{partnerId},
+				</if>
+				<if test="channel != null">
+					channel=#{channel},
+				</if>
+				<if test="ip != null">
+					ip=#{ip},
+				</if>
+				<if test="systemName != null">
+					system_name=#{systemName},
+				</if>
+				<if test="systemVersion != null">
+					system_version=#{systemVersion},
+				</if>
+				<if test="idfa != null">
+					idfa=#{idfa},
+				</if>
+				<if test="androidId != null">
+					android_id=#{androidId},
+				</if>
+				<if test="mac != null">
+					mac=#{mac},
+				</if>
+				<if test="imei != null">
+					imei=#{imei},
+				</if>
+				<if test="userAgent != null">
+					user_agent=#{userAgent},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				<if test="callback != null">
+					callback_url=#{callback},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			promotion_info_id=#{promotionInfoId}
+		</where>
+	</update>
+
+	<delete id="deletePromotionInfo" parameterType="long">
+		delete from
+		tb_channel_promotion_info
+		where
+		promotion_info_id=#{promotionInfoId}
+	</delete>
+
+</mapper>

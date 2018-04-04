@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config">
+
+	<resultMap id="configMap" type="Config">
+		<id property="configId" column="config_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="VARCHAR" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="appKey" column="app_key" jdbcType="VARCHAR" />
+		<result property="functionId" column="function_id" jdbcType="NUMERIC" />
+		<result property="action" column="action" jdbcType="VARCHAR" />
+		<result property="sort" column="sort" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<select id="selectConfigByActivityIdAndFunctionIds" parameterType="List" resultMap="configMap">
+		select
+		* from
+		tb_config c
+		<where>
+			<if test="activityId != null">
+				activity_id=#{activityId} and
+			</if>
+			function_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			and status !=-1
+		</where>
+	</select>
+	
+	<select id="selectConfigByMap" parameterType="List" resultMap="configMap">
+		select
+		* from
+		tb_config c
+		<where>
+			<if test="activityId != null">
+				activity_id=#{activityId} and
+			</if>
+			<if test="channel == null">
+				(channel is null OR channel = '') and
+			</if>
+			<if test="channel != null">
+				channel=#{channel} and
+			</if>
+			function_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			and status !=-1
+		</where>
+	</select>
+
+	<select id="selectConfigs" parameterType="Config" resultMap="configMap">
+		select
+		* from
+		tb_config c
+		<where>
+			<trim suffixOverrides="and">
+				<if test="configId != null">
+					config_id=#{configId} and
+				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId} and
+				</if>
+				<if test="productId != null">
+					product_id=#{productId} and
+				</if>
+				<if test="channel != null">
+					channel=#{channel} and
+				</if>
+				<if test="appKey != null">
+					app_key=#{appKey} and
+				</if>
+				<if test="functionId != null">
+					function_id=#{functionId} and
+				</if>
+				<if test="action != null">
+					action=#{action} and
+				</if>
+				<if test="sort != null">
+					sort=#{sort} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by sort asc, create_time desc
+	</select>
+
+	<select id="selectConfigByIds" parameterType="List" resultMap="configMap">
+		select
+		* from
+		tb_config c
+		<where>
+			config_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			and status !=-1
+		</where>
+	</select>
+	
+	<insert id="insertConfig" parameterType="Config">
+		insert into
+		tb_config(activity_id, merchant_id, product_id, channel,app_key,
+		 function_id, action, sort,status, create_time, update_time)
+		values
+		(#{activityId}, #{merchantId}, #{productId}, #{channel}, #{appKey},
+		 #{functionId}, #{action}, #{sort}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="configId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateConfig" parameterType="Config">
+		update tb_config
+		<set>
+			<trim suffixOverrides=",">
+				<if test="activityId != null">
+					activity_id=#{activityId},
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId},
+				</if>
+				<if test="productId != null">
+					product_id=#{productId},
+				</if>
+				<if test="channel != null">
+					channel=#{channel},
+				</if>
+				<if test="appKey != null">
+					app_key=#{appKey},
+				</if>
+				<if test="functionId != null">
+					function_id=#{functionId},
+				</if>
+				<if test="action != null">
+					action=#{action},
+				</if>
+				<if test="sort != null">
+					sort=#{sort},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			config_id=#{configId}
+		</where>
+	</update>
+
+	<delete id="deleteConfig" parameterType="long">
+		delete from tb_config
+		where
+		config_id=#{configId}
+	</delete>
+
+</mapper>

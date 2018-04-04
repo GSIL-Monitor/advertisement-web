@@ -1,0 +1,18 @@
+/.project
+/advertisement_util/.project
+/advertisement_util/.classpath
+/advertisement_core/.project
+/advertisement_core/.classpath
+/advertisement_web/.project
+/advertisement_web/.classpath
+/advertisement_ms_core/.project
+/advertisement_ms_core/.classpath
+/advertisement_ms_web/.project
+/advertisement_ms_web/.classpath
+
+#ignore idea project files
+*.iml
+.idea/
+target/
+log/
+/bin

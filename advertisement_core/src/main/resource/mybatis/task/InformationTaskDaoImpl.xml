@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="informationTask">
+	<resultMap id="informationTaskMap" type="InformationTask">
+		<result property="informationTaskId" column="information_task_id" jdbcType="NUMERIC" />
+		<result property="departmentId" column="department_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="supplierKey" column="supplier_key" jdbcType="VARCHAR" />
+		<result property="fileUrl" column="file_url" jdbcType="VARCHAR" />
+		<result property="importPageId" column="import_page_id" jdbcType="NUMERIC" />
+		<result property="exportPageId" column="export_page_id" jdbcType="NUMERIC" />
+		<result property="count" column="count" jdbcType="NUMERIC" />
+		<result property="importProgress" column="import_progress" jdbcType="NUMERIC" />
+		<result property="allocateProgress" column="allocate_progress" jdbcType="NUMERIC" />
+		<result property="callProgress" column="call_progress" jdbcType="NUMERIC" />
+		<result property="allocatingType" column="allocationg_type" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectInformationTasks" parameterType="InformationTask"
+		resultMap="informationTaskMap">
+		select
+		* from
+		tb_information_task
+		<where>
+			<trim suffixOverrides="and">
+				<if test="informationTaskId != null">
+					information_task_id=#{informationTaskId} and
+				</if>
+				<if test="departmentId != null">
+					department_id=#{departmentId} and
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="supplierKey != null">
+					supplier_key=#{supplierKey} and
+				</if>
+				<if test="importPageId != null">
+					import_page_id=#{importPageId} and
+				</if>
+				<if test="exportPageId != null">
+					export_page_id=#{exportPageId} and
+				</if>
+				<if test="count != null">
+					count=#{count} and
+				</if>
+				<if test="allocatingType != null">
+					allocating_type=#{allocatingType} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+				<if test="startCreateTime != null">
+					create_time &gt; #{startCreateTime} and
+				</if>
+				<if test="endCreateTime != null">
+					create_time &lt; #{endCreateTime} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectInformationTaskByIds" parameterType="List" resultMap="informationTaskMap">
+		select * from
+		tb_information_task
+		<where>
+			information_task_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertInformationTask" parameterType="InformationTask">
+		insert into
+		tb_information_task(department_id, project_id, name, supplier_key, file_url, import_page_id, export_page_id, count,
+		import_progress, allocate_progress, call_progress, allocating_type, type, status, create_time,
+		update_time)
+		values
+		(#{departmentId}, #{projectId}, #{name}, #{supplierKey}, #{fileUrl}, #{importPageId}, #{exportPageId}, #{count},
+		#{importProgress}, #{allocateProgress}, #{callProgress}, 
+		#{allocatingType}, #{type},
+		#{status},
+		sysdate(),
+		sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="informationTaskId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateInformationTask" parameterType="InformationTask">
+		update tb_information_task
+		<set>
+			<if test="departmentId != null">
+				department_id=#{departmentId},
+			</if>
+			<if test="projectId != null">
+				project_id=#{projectId},
+			</if>
+			<if test="name != null">
+				name=#{name},
+			</if>
+			<if test="supplierKey != null">
+				supplier_key=#{supplierKey},
+			</if>
+			<if test="fileUrl != null">
+				file_url=#{fileUrl},
+			</if>
+			<if test="importPageId != null">
+				import_page_id=#{importPageId},
+			</if>
+			<if test="exportPageId != null">
+				export_page_id=#{exportPageId},
+			</if>
+			<if test="count != null">
+				count=#{count},
+			</if>
+			<if test="importProgress != null">
+				import_progress=#{importProgress},
+			</if>
+			<if test="allocateProgress != null">
+				allocate_progress=#{allocateProgress},
+			</if>
+			<if test="callProgress != null">
+				call_progress=#{callProgress},
+			</if>
+			<if test="allocatingType != null">
+				allocating_type=#{allocatingType},
+			</if>
+			<if test="type != null">
+				type=#{type},
+			</if>
+			<if test="status != null">
+				status=#{status},
+			</if>
+		</set>
+		<where>
+			information_task_id=#{informationTaskId}
+		</where>
+	</update>
+
+</mapper>

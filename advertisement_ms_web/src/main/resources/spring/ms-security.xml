@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<global-method-security pre-post-annotations="enabled"></global-method-security>
+	
+	<http pattern="${ignoreSecurityPath}" security="none" />
+
+	<http pattern="/resources/css/**" security="none" />
+
+	<http pattern="/resources/images/**" security="none" />
+
+	<http pattern="/resources/js/**" security="none" />
+
+	<http pattern="/html/**" security="none" />
+	
+	<http pattern="**.htm" security="none" />
+
+	<http pattern="/ueditor/**" security="none" />
+
+	<http pattern="/captcha.do" security="none" />
+	
+	<http pattern="/**/index.do" security="none" />
+	
+	<http pattern="/redirect.do" security="none" />
+	
+	<http access-denied-page="/common/403.jsp" entry-point-ref="authenticationProcessingFilterEntryPoint" servlet-api-provision="false" use-expressions="true">
+		<session-management invalid-session-url="/redirect.do">
+			<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+		</session-management>
+		<!-- 增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了， 这个filter位于FILTER_SECURITY_INTERCEPTOR之前 -->
+		<custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER" />
+		<custom-filter ref="sysFilter" before="FILTER_SECURITY_INTERCEPTOR" />
+		<request-cache ref="saveRequest"/>
+		<!-- 退出后到登陆页面 -->
+		<logout logout-success-url="/index.do" logout-url="/logout.do" />
+	</http>
+	
+	<beans:bean class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler"/>
+
+	<!-- 登录验证器 -->
+	<beans:bean id="loginFilter"
+		class="com.yuanshanbao.ms.filter.security.SysUsernamePasswordAuthenticationFilter">
+		<!-- 处理登录的action -->
+		<beans:property name="filterProcessesUrl" value="/login.do"></beans:property>
+		<!-- 验证成功后的处理 -->
+		<beans:property name="authenticationSuccessHandler" ref="loginLogAuthenticationSuccessHandler"></beans:property>
+		<!-- 验证失败后的处理 -->
+		<beans:property name="authenticationFailureHandler" ref="simpleUrlAuthenticationFailureHandler"></beans:property>
+		<beans:property name="authenticationManager" ref="sysAuthenticationManager"></beans:property>
+	</beans:bean>
+
+	<beans:bean id="loginLogAuthenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/admin/main.do"></beans:property>
+	</beans:bean>
+	<beans:bean id="simpleUrlAuthenticationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<!-- 可以配置相应的跳转方式。属性forwardToDestination为true采用forward false为sendRedirect -->
+		<beans:property name="defaultFailureUrl" value="/index.do?error=true"></beans:property>
+	</beans:bean>
+
+	<!-- 未登录的切入点 -->
+	<beans:bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/redirect.do"></beans:property>
+	</beans:bean>
+
+	<!-- 一个自定义的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性， 
+		我们的所有控制将在这三个类中实现，解释详见具体配置 -->
+	<beans:bean id="sysFilter" class="com.yuanshanbao.ms.filter.security.SysSecurityInterceptor">
+		<beans:property name="authenticationManager" ref="sysAuthenticationManager" />
+		<!-- 访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+		<beans:property name="accessDecisionManager" ref="sysAccessDecisionManager" />
+		<beans:property name="securityMetadataSource" ref="sysSecurityMetadataSource" />
+	</beans:bean>
+
+	<!-- 验证配置 ， 认证管理器，实现用户认证的入口，主要实现UserDetailsService接口即可 -->
+	<authentication-manager alias="sysAuthenticationManager">
+		<authentication-provider user-service-ref="userDetailService">
+		</authentication-provider>
+	</authentication-manager>
+
+	<!-- 验证用户请求资源 是否拥有权限 -->
+	<beans:bean id="sysAccessDecisionManager" class="com.yuanshanbao.ms.filter.security.SysAccessDecisionManager" />
+
+	<beans:bean id="saveRequest" class="com.yuanshanbao.ms.web.security.request.HttpRequestCache"/>
+
+	<!-- 资源源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些角色访问 -->
+	<beans:bean id="sysSecurityMetadataSource" init-method="loadRightsMap" class="com.yuanshanbao.ms.filter.security.SysSecurityMetadataSource">
+	</beans:bean>
+	
+	<beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<beans:property name="basename" value="classpath:/org/springframework/security/messages_zh_CN" />
+	</beans:bean>
+</beans:beans>

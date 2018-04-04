@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Banner">
+    <resultMap id="bannerMap" type="banner">
+        <result column="BANNER_ID" property="bannerId" jdbcType="INTEGER"/>
+        <result column="TITLE" property="title" jdbcType="VARCHAR"/>
+        <result column="IMG_URL" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="DETAIL_URL" property="detailUrl" jdbcType="VARCHAR"/>
+        <result column="START_TIME" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="END_TIME" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="WEIGHT" property="weight" jdbcType="INTEGER"/>
+        <result column="ACTION_TYPE" property="actionType" jdbcType="INTEGER"/>
+        <result column="TYPE" property="type" jdbcType="INTEGER"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <select id="selectBanners" resultMap="bannerMap" parameterType="Banner">
+        select
+		* from
+		tb_banner
+		<where>
+			<trim suffixOverrides="and">
+				<if test="bannerId != null">
+					banner_id=#{bannerId} and
+				</if>
+				<if test="imgUrl != null">
+					img_url=#{imgUrl} and
+				</if>
+				<if test="title != null">
+					title=#{title} and
+				</if>
+				<if test="actionType != null">
+					action_type=#{actionType} and
+				</if>
+				<if test="detailUrl != null">
+					detail_url=#{detailUrl} and
+				</if>
+				<if test="startTime != null">
+					start_time=#{startTime} and
+				</if>
+				<if test="endTime != null">
+					end_time=#{endTime} and
+				</if>
+				<if test="weight != null">
+					weight=#{weight} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by weight desc, create_time desc
+    </select>
+
+    <sql id="Base_Column_List">
+        BANNER_ID, TITLE, IMG_URL, DETAIL_URL, START_TIME, END_TIME, WEIGHT, ACTION_TYPE, TYPE, STATUS, CREATE_TIME, UPDATE_TIME
+    </sql>
+
+    <select id="getAllUsableBanners" resultMap="bannerMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM TB_BANNER
+        WHERE status != -1
+        ORDER BY WEIGHT DESC
+    </select>
+
+    <insert id="insert" parameterType="banner">
+        INSERT INTO tb_banner(TITLE, IMG_URL, DETAIL_URL, START_TIME, END_TIME, WEIGHT, ACTION_TYPE, TYPE, STATUS, CREATE_TIME, UPDATE_TIME) VALUES (
+        #{title,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR},#{detailUrl,jdbcType=VARCHAR},
+        #{startTime,jdbcType=TIMESTAMP},#{endTime,jdbcType=TIMESTAMP},
+        #{actionType,jdbcType=INTEGER},#{weight,jdbcType=INTEGER},#{type,jdbcType=INTEGER},#{status,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <!--<insert id="insert" parameterType="banner">
+        INSERT INTO TB_BANNER(BANNER_ID, TITLE, IMG_URL, DETAIL_URL, START_TIME, END_TIME, IS_DEL, WEIGHT, ACTION_TYPE)
+        VALUES (#{bannerId, jdbcType=INTEGER},#{title,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR},
+        #{detailUrl,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER},#{weight, jdbcType=INTEGER},
+        #{actionType,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP})
+    </insert>-->
+
+    <update id="update" parameterType="banner">
+        UPDATE TB_BANNER
+        SET TITLE = #{title,jdbcType=VARCHAR}, IMG_URL = #{imgUrl,jdbcType=VARCHAR}, DETAIL_URL =
+        #{detailUrl,jdbcType=VARCHAR}, START_TIME = #{startTime,jdbcType=TIMESTAMP}, END_TIME = #{endTime,jdbcType=TIMESTAMP},
+        WEIGHT = #{weight,jdbcType=INTEGER}, ACTION_TYPE =#{actionType,jdbcType=INTEGER}, TYPE = #{type,jdbcType=INTEGER}, 
+        STATUS = #{status, jdbcType=INTEGER}, UPDATE_TIME=sysdate()
+        WHERE BANNER_ID = #{bannerId,jdbcType=INTEGER}
+    </update>
+</mapper>

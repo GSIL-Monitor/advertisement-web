@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="danmaku">
+
+	<resultMap id="danmakuMap" type="Danmaku">
+		<id property="danmakuId" column="danmaku_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="createStaffId" column="create_staff_id" jdbcType="NUMERIC" />
+		<result property="showStaffId" column="show_staff_id" jdbcType="NUMERIC" />
+		<result property="content" column="content" jdbcType="VARCHAR" />
+		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
+		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
+		<result property="sort" column="sort" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 组员sql -->
+	<select id="selectDanmakus" parameterType="Danmaku" resultMap="danmakuMap">
+		select
+		* from
+		tb_danmaku s
+		<where>
+			<trim suffixOverrides="and">
+				<if test="danmakuId != null">
+					danmaku_id=#{danmakuId} and
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
+				<if test="createStaffId != null">
+					create_staff_id=#{createStaffId} and
+				</if>
+				<if test="showStaffId != null">
+					show_staff_id=#{showStaffId} and
+				</if>
+				<if test="showStaffIdList != null">
+					show_staff_id in
+					<foreach item="id" collection="showStaffIdList" open="(" separator=","
+						close=")">
+						#{id}
+					</foreach>
+					and 
+				</if>
+				<if test="startTime != null">
+					start_time &lt; #{startTime} and
+				</if>
+				<if test="endTime != null">
+					end_time &gt; #{endTime} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectDanmakuByIds" parameterType="List" resultMap="danmakuMap">
+		select
+		* from
+		tb_danmaku s
+		<where>
+			danmaku_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectDanmakuByShowStaffIds" parameterType="List" resultMap="danmakuMap">
+		select
+		* from
+		tb_danmaku s
+		<where>
+			show_staff_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertDanmaku" parameterType="Danmaku">
+		insert into
+		tb_danmaku(project_id, create_staff_id, show_staff_id, content, start_time, end_time, sort, status, 
+		         create_time, update_time)
+		values
+		(#{projectId}, #{createStaffId}, #{showStaffId},  #{content}, #{startTime}, #{endTime},
+		#{sort}, #{status},sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="danmakuId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateDanmaku" parameterType="Danmaku">
+		update tb_danmaku
+		<set>
+			<trim suffixOverrides=",">
+				<if test="showStaffId != null">
+					show_staff_id=#{showStaffId},
+				</if>
+				<if test="startTime != null">
+					start_time=#{startTime},
+				</if>
+				<if test="endTime != null">
+					end_time=#{endTime},
+				</if>
+				<if test="content != null">
+					content=#{content},
+				</if>
+				<if test="sort != null">
+					sort=#{sort},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			danmaku_id=#{danmakuId}
+			<if test="projectId != null">
+				and project_id=#{projectId}
+			</if>
+			<if test="createStaffId != null">
+				and create_staff_id=#{createStaffId}
+			</if>
+		</where>
+	</update>
+
+	<delete id="deleteDanmaku" parameterType="long">
+		delete from tb_danmaku
+		where
+		danmaku_id=#{danmakuId}
+	</delete>
+
+</mapper>

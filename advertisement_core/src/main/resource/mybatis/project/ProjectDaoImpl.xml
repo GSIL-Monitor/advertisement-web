@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="project">
+
+	<resultMap id="projectMap" type="Project">
+		<id property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="projectKey" column="project_key" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="companyName" column="company_name" jdbcType="VARCHAR" />
+		<result property="tempGateway" column="temp_gateway" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="hasCallCenter" column="has_call_center" jdbcType="NUMERIC" />
+		<result property="hasBroker" column="has_broker" jdbcType="NUMERIC" />
+		<result property="hasRealtimeAllocate" column="has_realtime_allocate" jdbcType="NUMERIC" />
+		<result property="callCenterId" column="call_center_id" jdbcType="VARCHAR" />
+		<result property="nextCallAgentId" column="next_call_agent_id" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 项目sql -->
+	<select id="selectProjects" parameterType="Project" resultMap="projectMap">
+		select
+		* from
+		tb_project p
+		<where>
+			<trim suffixOverrides="and">
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
+				<if test="projectKey != null">
+					project_key=#{projectKey} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="description != null">
+					description=#{description} and
+				</if>
+				<if test="companyName != null">
+					company_name=#{companyName} and
+				</if>
+				<if test="tempGateway != null">
+					temp_gateway=#{tempGateway} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="hasCallCenter != null">
+					has_call_center=#{hasCallCenter} and
+				</if>
+				<if test="hasBroker != null">
+					has_broker=#{hasBroker} and
+				</if>
+				<if test="hasRealtimeAllocate != null">
+					has_realtime_allocate=#{hasRealtimeAllocate} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectProjectByIds" parameterType="List" resultMap="projectMap">
+		select
+		* from
+		tb_project p
+		<where>
+			project_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertProject" parameterType="Project">
+		insert into
+		tb_project(project_key, name, description, company_name, temp_gateway, has_call_center, 
+		has_broker, has_realtime_allocate, call_center_id, next_call_agent_id, 
+		type, status, create_time, update_time)
+		values
+		(#{projectKey}, #{name}, #{description}, #{companyName}, #{tempGateway}, #{hasCallCenter}, 
+		#{hasBroker}, #{hasRealtimeAllocate}, #{callCenterId}, #{nextCallAgentId}, 
+		#{type}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="projectId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateProject" parameterType="Project">
+		update tb_project
+		<set>
+			<trim suffixOverrides=",">
+				<if test="projectKey != null">
+					project_key=#{projectKey},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="companyName != null">
+					company_name=#{companyName},
+				</if>
+				<if test="callCenterId != null">
+					call_center_id=#{callCenterId},
+				</if>
+				<if test="nextCallAgentId != null">
+					next_call_agent_id=#{nextCallAgentId},
+				</if>
+				<if test="tempGateway != null">
+					temp_gateway=#{tempGateway},
+				</if>
+				<if test="hasCallCenter != null">
+					has_call_center=#{hasCallCenter},
+				</if>
+				<if test="hasBroker != null">
+					has_broker=#{hasBroker},
+				</if>
+				<if test="hasRealTimeAllocate != null">
+					has_realtime_allocate=#{hasRealTimeAllocate},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			project_id=#{projectId}
+		</where>
+	</update>
+
+	<delete id="deleteProject" parameterType="long">
+		delete from tb_project
+		where
+		project_id=#{projectId}
+	</delete>
+
+</mapper>

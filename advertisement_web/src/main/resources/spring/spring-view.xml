@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+
+	<!-- ========================= resource folders ========================= -->
+	<!-- <mvc:resources location="/s/css/" mapping="/s/css/**"/> <mvc:resources 
+		location="/s/js/" mapping="/s/js/**"/> -->
+
+	<!-- ========================= spring context ========================= -->
+
+	<!--<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
+	<!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/> -->
+	<!--<property name="cache" value="true"/> -->
+	<!--<property name="keyName" value=".jsp"/> -->
+	<!--<property name="prefix" value="/page/"/> -->
+	<!--</bean> -->
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.yuanshanbao.*">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+	<mvc:default-servlet-handler />
+
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/ueditor/**" location="/ueditor/" />
+	<mvc:resources mapping="/extjs/**" location="/extjs/" />
+	<mvc:resources mapping="/app/**" location="/app/" />
+
+	<!-- ========================= <mvc:annotation-driven /> ========================= -->
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<bean
+				class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<property name="supportedMediaTypes" value="text/html;charset=UTF-8" />
+				<property name="features">
+					<array>
+						<value>WriteMapNullValue</value>
+						<value>WriteNullStringAsEmpty</value>
+						<value>DisableCircularReferenceDetect</value>
+					</array>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+	<bean name="requestMappingHandlerMapping"
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+	</bean>
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="cache" value="true" />
+		<property name="suffix" value=".ftl" />
+		<property name="contentType" value="text/html;charset=utf-8" />
+		<property name="exposeRequestAttributes" value="true" />
+		<property name="exposeSessionAttributes" value="true" />
+		<property name="exposeSpringMacroHelpers" value="true" />
+		<property name="allowSessionOverride" value="true" />
+		<property name="allowRequestOverride" value="true" />
+		<property name="requestContextAttribute" value="rc"></property>
+	</bean>
+
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/ftl">
+		</property>
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="template_update_delay">10</prop>
+				<prop key="locale">zh_CN</prop>
+				<prop key="template_exception_handler">ignore</prop><!-- ignore,debug,html_debug,rethrow -->
+			</props>
+		</property>
+	</bean>
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- set the max upload size 1MB -->
+		<property name="maxUploadSize">
+			<value>10485760</value>
+		</property>
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean>
+</beans>

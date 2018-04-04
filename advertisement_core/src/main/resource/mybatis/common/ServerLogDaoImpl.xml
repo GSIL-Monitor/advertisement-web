@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="serverLog">
+	<resultMap id="serverLogMap" type="ServerLog">
+		<id property="logId" column="log_id" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="content" column="content" jdbcType="VARCHAR" />
+		<result property="count" column="count" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectServerLog" parameterType="ServerLog" resultMap="serverLogMap">
+		select
+		* from
+		tb_server_log t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="logId != null">
+					log_id=#{logId} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+	</select>
+
+	<insert id="insertServerLog" parameterType="ServerLog">
+		insert into
+		tb_server_log(log_id, type, title, content, count, status,
+		create_time,update_time)
+		values
+		(#{logId}, #{type},
+		#{title}, #{content}, #{count},
+		#{status}, #{createTime}, sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="logId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateServerLog" parameterType="ServerLog">
+		update tb_server_log
+		<set>
+			<trim suffixOverrides=",">
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="title != null">
+					title=#{title},
+				</if>
+				<if test="content != null">
+					content=#{content},
+				</if>
+				<if test="count != null">
+					count=#{count},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			log_id=#{logId}
+		</where>
+	</update>
+
+	<delete id="deleteServerLog" parameterType="ServerLog">
+		delete from tb_server_log
+		<where>
+			<trim suffixOverrides="and">
+				<if test="logId != null">
+					log_id=#{logId} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+	</delete>
+
+</mapper>

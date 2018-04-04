@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="brokerDepartment">
+
+	<resultMap id="brokerDepartmentMap" type="BrokerDepartment">
+		<id property="departmentId" column="department_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="price" column="price" jdbcType="NUMERIC" />
+		<result property="departmentType" column="department_type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<sql id="Base_Column_List" >
+    	department_id, name, merchant_id, price, department_type, status, create_time, update_time
+  	</sql>
+
+	<!-- 查询sql -->
+	<select id="selectBrokerDepartments" parameterType="BrokerDepartment" resultMap="brokerDepartmentMap">
+		select
+		<include refid="Base_Column_List" /> from
+		tb_broker_department
+		<where>
+			<trim suffixOverrides="and">
+				<if test="departmentId != null">
+					department_id= #{departmentId} and
+				</if>
+				<if test="name != null">
+					name= #{name} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id= #{merchantId} and
+				</if>
+				<if test="price != null">
+					price= #{price} and
+				</if>
+				<if test="departmentType != null">
+					department_type= #{departmentType} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectBrokerDepartmentByIds" parameterType="List" resultMap="brokerDepartmentMap">
+		select
+		<include refid="Base_Column_List" /> from
+		tb_broker_department
+		<where>
+			department_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertBrokerDepartment" parameterType="BrokerDepartment">
+		insert into
+		tb_broker_department( name, merchant_id, price, department_type, status, create_time, update_time )
+		values
+		( #{name}, #{merchantId}, #{price}, #{departmentType}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="departmentId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateBrokerDepartment" parameterType="BrokerDepartment">
+		update tb_broker_department
+		<set>
+			<trim suffixOverrides=",">
+				<if test="name != null">
+					name= #{name},
+				</if>
+				<if test="merchantId != null">
+					merchant_id= #{merchantId},
+				</if>
+				<if test="price != null">
+					price= #{price},
+				</if>
+				<if test="departmentType != null">
+					department_type= #{departmentType},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			department_id=#{departmentId}
+		</where>
+	</update>
+
+	<delete id="deleteBrokerDepartment" parameterType="long">
+		delete from tb_broker_department
+		where
+		department_id=#{departmentId}
+	</delete>
+
+</mapper>

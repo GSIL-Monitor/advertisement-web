@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="extendInfo">
+
+	<resultMap id="extendInfoMap" type="extendInfo">
+		<id property="extendInfoId" column="extend_info_id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="NUMERIC" />
+		<result property="informationId" column="information_id" jdbcType="NUMERIC" />
+		<result property="fieldId" column="field_id" jdbcType="NUMERIC" />
+		<result property="key" column="key" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="value" column="value" jdbcType="VARCHAR" />
+		<result property="tagsId" column="tags_id" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectExtendInfo" parameterType="ExtendInfo"
+		resultMap="extendInfoMap">
+		select
+		* from
+		tb_extend_info
+		<where>
+			<trim suffixOverrides="and">
+				<if test="extendInfoId != null">
+					extend_info_id=#{extendInfoId} and
+				</if>
+				<if test="userId != null">
+					user_id=#{userId} and
+				</if>
+				<if test="informationId != null">
+					information_id=#{informationId} and
+				</if>
+				<if test="fieldId != null">
+					field_id=#{fieldId} and
+				</if>
+				<if test="key != null">
+					`key`=#{key} and
+				</if>
+				<if test="name != null">
+					`name`=#{name} and
+				</if>
+				<if test="value != null">
+					`value`=#{value} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectExtendInfoByInformationIds" parameterType="List"
+		resultMap="extendInfoMap">
+		select
+		* from
+		tb_extend_info
+		<where>
+			information_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertExtendInfo" parameterType="ExtendInfo">
+		insert into
+		tb_extend_info(extend_info_id, user_id,information_id, field_id, `key`,
+		name, `value`, tags_id,
+		status, create_time, update_time)
+		values
+		(#{extendInfoId}, #{userId},
+		#{informationId}, #{fieldId}, 
+		#{key}, #{name}, #{value}, #{tagsId}, #{status},
+		sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="extendInfoId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateExtendInfo" parameterType="extendInfo">
+		update tb_extend_info
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id=#{userId},
+				</if>
+				<if test="informationId != null">
+					information_id=#{informationId},
+				</if>
+				<if test="fieldId != null">
+					field_id=#{fieldId},
+				</if>
+				<if test="key != null">
+					`key`=#{key},
+				</if>
+				<if test="name != null">
+					`name`=#{name},
+				</if>
+				<if test="value != null">
+					value=#{value},
+				</if>
+				<if test="tagsId != null">
+					tags_id=#{tagsId},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			extend_info_id=#{extendInfoId}
+		</where>
+	</update>
+
+	<delete id="deleteExtendInfo" parameterType="long">
+		delete from
+		tb_extend_info
+		where
+		extend_info_id=#{extendInfoId}
+	</delete>
+
+</mapper>

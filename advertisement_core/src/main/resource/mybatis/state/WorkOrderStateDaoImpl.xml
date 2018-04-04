@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="workOrderState">
+
+	<resultMap id="workOrderStateMap" type="WorkOrderState">
+		<id property="workOrderStateId" column="work_order_state_id" jdbcType="NUMERIC" />
+		<result property="workOrderId" column="work_order_id" jdbcType="NUMERIC" />
+		<result property="staffId" column="staff_id" jdbcType="NUMERIC" />
+		<result property="originState" column="origin_state" jdbcType="NUMERIC" />
+		<result property="updateState" column="update_state" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectWorkOrderState" parameterType="WorkOrderState"
+		resultMap="workOrderStateMap">
+		select
+		* from
+		tb_work_order_state
+		<where>
+			<trim suffixOverrides="and">
+				<if test="workOrderStateId != null">
+					work_order_state_id=#{workOrderStateId} and
+				</if>
+				<if test="workOrderId != null">
+					work_order_id=#{workOrderId} and
+				</if>
+				<if test="staffId != null">
+					staff_id=#{staffId} and
+				</if>
+				<if test="originState != null">
+					origin_state=#{originState} and
+				</if>
+				<if test="updateState != null">
+					update_state=#{updateState} and
+				</if>
+				<if test="status != null">
+					status=#{status} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectWorkOrderStateByWorkOrderIds" parameterType="List"
+		resultMap="workOrderStateMap">
+		select
+		* from
+		tb_work_order_state
+		<where>
+			work_order_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			order by create_time desc
+		</where>
+	</select>
+
+
+	<insert id="insertWorkOrderState" parameterType="WorkOrderState">
+		insert into
+		tb_work_order_state(work_order_id, staff_id, origin_state, update_state, status,
+		create_time, update_time)
+		values
+		(#{workOrderId},
+		#{staffId},
+		#{originState}, #{updateState}, 
+		#{status},
+		sysdate(), sysdate())
+	</insert>
+
+	<update id="updateWorkOrderState" parameterType="WorkOrderState">
+		update tb_work_order_state
+		<set>
+			<trim suffixOverrides=",">
+				<if test="workOrderId != null">
+					work_order_id=#{workOrderId},
+				</if>
+				<if test="staffId != null">
+					staff_id=#{staffId},
+				</if>
+				<if test="originState != null">
+					origin_state=#{originState},
+				</if>
+				<if test="updateState != null">
+					update_state=#{updateState},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			work_order_remark_id=#{workOrderRemarkId}
+		</where>
+	</update>
+
+	<delete id="deleteWorkOrderRemark" parameterType="WorkOrderRemark">
+		delete from tb_work_order_remark
+		<where>
+			work_order_remark_id=#{workOrderRemarkId}
+		</where>
+	</delete>
+
+</mapper>

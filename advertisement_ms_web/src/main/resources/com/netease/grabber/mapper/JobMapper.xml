@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.grabber.mapper.JobMapper">
+	<resultMap type="com.netease.grabber.model.Job" id="jobMap">
+		<id property="id" column="id" />
+		<result property="scheduleId" column="schedule_id" />
+		<result property="name" column="name" />
+		<result property="dcity" column="dcity" />
+		<result property="acity" column="acity" />
+		<result property="dcityCode" column="dcity_code" />
+		<result property="acityCode" column="acity_code" />
+		<result property="airline" column="airline" />
+		<result property="airno" column="airno" />
+		<result property="fltDate" column="flt_date" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="filterId" column="filter_id" />
+		<result property="casperjsId" column="casperjs_id" />
+		<result property="status" column="status" />
+	</resultMap>
+
+
+
+	<select id="queryJobCount" parameterType="com.netease.grabber.model.Job" resultType="Integer">
+		select
+		count(*) from tb_job_job t1
+		<where>
+			<if test="dcityCode != null and dcityCode != ''">
+				t1.dcity_code = #{dcityCode}
+			</if>
+			<if test="acityCode != null and acityCode != ''">
+				and t1.acity_code = #{acityCode}
+			</if>
+			<if test="airline != null and airline != ''">
+				and t1.airline = #{airline}
+			</if>
+			<if test="airno > 0">
+				and t1.airno = #{airno}
+			</if>
+			<if test="fltDate != null">
+				and t1.flt_date = #{fltDate}
+			</if>
+		</where>
+	</select>
+
+	<select id="queryJobById" parameterType="String" resultMap="jobMap">
+		select * from tb_job_job t1
+		<where>
+			t1.id=#{id}
+		</where>
+	</select>
+
+
+	<select id="queryOneJob" resultMap="jobMap">
+		select * from tb_job_job t1
+		<where>
+			rownum=1 and t1.status!=0
+		</where>
+		order by t1.create_time
+	</select>
+
+	<select id="queryOneJobWithOrigin" parameterType="Map"  resultMap="jobMap">
+		select * from tb_job_job t1
+		<where>
+			MOD(t1.status,#{int2val}) &gt;= #{intval} and rownum=1
+		</where>
+		order by t1.create_time
+	</select>
+
+	<insert id="insertJob" parameterType="com.netease.grabber.model.Job">
+		insert into
+		tb_job_job
+		(
+		id,
+		schedule_id,
+		name,
+		dcity,
+		acity,
+		dcity_code,
+		acity_code,
+		airline,
+		airno,
+		flt_date,
+		create_time,
+		update_time,
+		start_time,
+		end_time,
+		filter_id,
+		casperjs_id,
+		status
+		)
+		values
+		(
+		#{id, jdbcType = VARCHAR},
+		#{scheduleId,
+		jdbcType = VARCHAR},
+		#{name, jdbcType = VARCHAR},
+		#{dcity, jdbcType =
+		VARCHAR},
+		#{acity, jdbcType = VARCHAR},
+		#{dcityCode, jdbcType =
+		VARCHAR},
+		#{acityCode, jdbcType = VARCHAR},
+		#{airline, jdbcType =
+		VARCHAR},
+		#{airno, jdbcType = VARCHAR},
+		#{fltDate, jdbcType = VARCHAR},
+		#{createTime, jdbcType = TIMESTAMP},
+		#{updateTime, jdbcType =
+		TIMESTAMP},
+		#{startTime, jdbcType = TIMESTAMP},
+		#{endTime, jdbcType =
+		TIMESTAMP},
+		#{filterId, jdbcType = VARCHAR},
+		#{casperjsId, jdbcType =
+		VARCHAR},
+		#{status, jdbcType = INTEGER}
+		)
+	</insert>
+	
+	<update id="updateJob" parameterType="com.netease.grabber.model.Job">
+		update 
+		tb_job_job
+		<set>
+			<if test="status > 0">
+			status = #{status, jdbcType = INTEGER},
+			</if>
+			<if test="updateTime != null">
+			update_time = #{updateTime, jdbcType = INTEGER},
+			</if>
+		</set>
+		<where>
+			<if test="id != null and id != ''">
+			id = #{id, jdbcType = VARCHAR}
+			</if>
+		</where>
+	</update>
+
+</mapper>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="broker">
+
+	<resultMap id="brokerMap" type="Broker">
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="departmentId" column="department_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="realName" column="real_name" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="identityCard" column="identity_card" jdbcType="VARCHAR" />
+		<result property="institution" column="institution" jdbcType="VARCHAR" />
+		<result property="position" column="position" jdbcType="VARCHAR" />
+		<result property="identityCardFrontUrl" column="identity_card_front_url" jdbcType="VARCHAR" />
+		<result property="identityCardBackUrl" column="identity_card_back_url" jdbcType="VARCHAR" />
+		<result property="documentImageUrl" column="document_image_url" jdbcType="VARCHAR" />
+		<result property="cooperationContractUrl" column="cooperation_contract_url" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="credits" column="credits" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectBrokers" parameterType="Broker" resultMap="brokerMap">
+		select
+		* from
+		tb_broker
+		<where>
+			<trim suffixOverrides="and">
+				<if test="userId != null">
+					user_id= #{userId} and
+				</if>
+				<if test="departmentId != null">
+					department_id= #{departmentId} and
+				</if>
+				<if test="projectId != null">
+					project_id= #{projectId} and
+				</if>
+				<if test="realName != null">
+					real_name= #{realName} and
+				</if>
+				<if test="mobile != null">
+					mobile= #{mobile} and
+				</if>
+				<if test="identityCard != null">
+					identity_card= #{identityCard} and
+				</if>
+				<if test="institution != null">
+					institution= #{institution} and
+				</if>
+				<if test="position != null">
+					position= #{position} and
+				</if>
+				<if test="identityCardFrontUrl != null">
+					identity_card_front_url= #{identityCardFrontUrl} and
+				</if>
+				<if test="identityCardBackUrl != null">
+					identity_card_back_url= #{identityCardBackUrl} and
+				</if>
+				<if test="documentImageUrl != null">
+					document_image_url= #{documentImageUrl} and
+				</if>
+				<if test="cooperationContractUrl != null">
+					cooperation_contract_url= #{cooperationContractUrl} and
+				</if>
+				<if test="type != null">
+					type= #{type} and
+				</if>
+				<if test="credits != null">
+					credits= #{credits} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+	
+	<!-- 查询sql -->
+	<select id="selectBrokerCount" parameterType="Broker" resultType="int">
+		select
+		count(1) from
+		tb_broker
+		<where>
+			<trim suffixOverrides="and">
+				<if test="userId != null">
+					user_id= #{userId} and
+				</if>
+				<if test="departmentId != null">
+					department_id= #{departmentId} and
+				</if>
+				<if test="projectId != null">
+					project_id= #{projectId} and
+				</if>
+				<if test="realName != null">
+					real_name= #{realName} and
+				</if>
+				<if test="mobile != null">
+					mobile= #{mobile} and
+				</if>
+				<if test="identityCard != null">
+					identity_card= #{identityCard} and
+				</if>
+				<if test="institution != null">
+					institution= #{institution} and
+				</if>
+				<if test="position != null">
+					position= #{position} and
+				</if>
+				<if test="identityCardFrontUrl != null">
+					identity_card_front_url= #{identityCardFrontUrl} and
+				</if>
+				<if test="identityCardBackUrl != null">
+					identity_card_back_url= #{identityCardBackUrl} and
+				</if>
+				<if test="documentImageUrl != null">
+					document_image_url= #{documentImageUrl} and
+				</if>
+				<if test="cooperationContractUrl != null">
+					cooperation_contract_url= #{cooperationContractUrl} and
+				</if>
+				<if test="type != null">
+					type= #{type} and
+				</if>
+				<if test="credits != null">
+					credits= #{credits} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+	</select>
+
+	<select id="selectBrokerByIds" parameterType="List" resultMap="brokerMap">
+		select
+		* from
+		tb_broker
+		<where>
+			user_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertBroker" parameterType="Broker">
+		insert into
+		tb_broker(
+		user_id, department_id, project_id, real_name, mobile, identity_card,
+		institution, position, identity_card_front_url,
+		identity_card_back_url, document_image_url, cooperation_contract_url,
+		type, credits, status, create_time, update_time )
+		values
+		( #{userId},
+		#{departmentId}, #{projectId}, #{realName}, #{mobile}, #{identityCard},
+		#{institution}, #{position}, #{identityCardFrontUrl},
+		#{identityCardBackUrl}, #{documentImageUrl},
+		#{cooperationContractUrl}, #{type}, #{credits}, #{status}, sysdate(),
+		sysdate() )
+	</insert>
+
+	<update id="updateBroker" parameterType="Broker">
+		update tb_broker
+		<set>
+			<trim suffixOverrides=",">
+				<if test="departmentId != null">
+					department_id= #{departmentId},
+				</if>
+				<if test="realName != null">
+					real_name= #{realName},
+				</if>
+				<if test="mobile != null">
+					mobile= #{mobile},
+				</if>
+				<if test="identityCard != null">
+					identity_card= #{identityCard},
+				</if>
+				<if test="institution != null">
+					institution= #{institution},
+				</if>
+				<if test="position != null">
+					position= #{position},
+				</if>
+				<if test="identityCardFrontUrl != null">
+					identity_card_front_url= #{identityCardFrontUrl},
+				</if>
+				<if test="identityCardBackUrl != null">
+					identity_card_back_url= #{identityCardBackUrl},
+				</if>
+				<if test="documentImageUrl != null">
+					document_image_url= #{documentImageUrl},
+				</if>
+				<if test="cooperationContractUrl != null">
+					cooperation_contract_url= #{cooperationContractUrl},
+				</if>
+				<if test="type != null">
+					type= #{type},
+				</if>
+				<if test="credits != null">
+					credits= #{credits},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
+
+	<delete id="deleteBroker" parameterType="String">
+		delete from tb_broker
+		where
+		user_id=#{userId}
+	</delete>
+
+</mapper>

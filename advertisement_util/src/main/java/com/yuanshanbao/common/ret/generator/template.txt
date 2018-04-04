@@ -1,0 +1,62 @@
+package com.yuanshanbao.common.ret;
+
+import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.yuanshanbao.common.util.LoggerUtil;
+
+public class ComRetCode {
+	/* 新接口返回属性 */
+	public static final String RET_CODE = "retCode";
+	public static final String RET_DESC = "retDesc";
+	public static final String RET_FIELD = "retField";
+	public static final String RET = "ret";
+	
+	public static final String PAGINTOR = "paginator";
+	public static final String PAGINTOR_ITEM_LIST = "pageItemList";
+
+	/**
+	 * 200 成功
+	 */
+	public static final int SUCCESS = 200;
+	public static final String SUCCESS_DESC = "操作成功";
+
+	${errorMessage}
+	
+	public static Map<Integer, String> retCodeMap = new LinkedHashMap<Integer, String>();
+
+	static {
+		try {
+			Field[] fields = ComRetCode.class.getFields();
+			String descriptionEnd = "_DESC";
+			for (Field field : fields) {
+				String name = field.getName();
+				if (name.endsWith(descriptionEnd)) {
+					Field keyField = ComRetCode.class.getField(name.substring(0,
+							name.length() - descriptionEnd.length()));
+					Object key = keyField.get(null);
+					String value = field.get(null).toString();
+					if (key instanceof Integer) {
+						String existValue = retCodeMap.get(key);
+						if (existValue != null) {
+							LoggerUtil.error("Duplicated ComRetCode", new IllegalArgumentException());
+						} else {
+							retCodeMap.put((Integer) key, value);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static String message(int value) {
+		String msg = retCodeMap.get(value);
+		if (msg == null) {
+			msg = FAIL_DESC;
+		}
+		return msg;
+	}
+}

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderProspectusProduct">
+
+	<resultMap id="orderProspectusProductMap" type="OrderProspectusProduct">
+		<id property="orderPropectusId" column="order_propectus_id" jdbcType="NUMERIC" />
+		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="riskFeatures" column="risk_features" jdbcType="VARCHAR" />
+		<result property="insuredSuggest" column="insured_suggest" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectOrderProspectusProducts" parameterType="OrderProspectusProduct" resultMap="orderProspectusProductMap">
+		select
+		* from
+		tb_order_prospectus_product
+		<where>
+			<trim suffixOverrides="and">
+				<if test="orderPropectusId != null">
+					order_propectus_id= #{orderPropectusId} and
+				</if>
+				<if test="orderId != null">
+					order_id= #{orderId} and
+				</if>
+				<if test="productId != null">
+					product_id= #{productId} and
+				</if>
+				<if test="riskFeatures != null">
+					risk_features= #{riskFeatures} and
+				</if>
+				<if test="insuredSuggest != null">
+					insured_suggest= #{insuredSuggest} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectOrderProspectusProductByIds" parameterType="List" resultMap="orderProspectusProductMap">
+		select
+		* from
+		tb_order_prospectus_product
+		<where>
+			order_propectus_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertOrderProspectusProduct" parameterType="OrderProspectusProduct">
+		insert into
+		tb_order_prospectus_product( order_id, product_id, risk_features, insured_suggest, status, create_time, update_time )
+		values
+		( #{orderId}, #{productId}, #{riskFeatures}, #{insuredSuggest}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="orderPropectusId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateOrderProspectusProduct" parameterType="OrderProspectusProduct">
+		update tb_order_prospectus_product
+		<set>
+			<trim suffixOverrides=",">
+				<if test="orderId != null">
+					order_id= #{orderId},
+				</if>
+				<if test="productId != null">
+					product_id= #{productId},
+				</if>
+				<if test="riskFeatures != null">
+					risk_features= #{riskFeatures},
+				</if>
+				<if test="insuredSuggest != null">
+					insured_suggest= #{insuredSuggest},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			order_propectus_id=#{orderPropectusId}
+		</where>
+	</update>
+
+	<delete id="deleteOrderProspectusProduct" parameterType="long">
+		delete from tb_order_prospectus_product
+		where
+		order_propectus_id=#{orderPropectusId}
+	</delete>
+
+</mapper>

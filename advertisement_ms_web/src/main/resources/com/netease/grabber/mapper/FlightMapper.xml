@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.grabber.mapper.FlightMapper">
+	<resultMap type="com.netease.grabber.model.Flight" id="flightMap">
+		<id property="flightNumber" column="flight_number" />
+		<result property="fromDate" column="from_date" />
+		<result property="fromSite" column="from_site" />
+		<result property="airline" column="airline" />
+		<result property="aircraftName" column="aircraft_name" />
+		<result property="aircraftType" column="aircraft_type" />
+		<result property="departureTime" column="departure_time" />
+		<result property="arrivalTime" column="arrival_time" />
+		<result property="departureAirport" column="departure_airport" />
+		<result property="departureTerminal" column="departure_terminal" />
+		<result property="arrivalAirport" column="arrival_airport" />
+		<result property="arrivalTerminal" column="arrival_terminal" />
+		<result property="ontime" column="ontime" />
+		<result property="delayTime" column="delay_time" />
+		<result property="price0" column="price0" />
+		<result property="price1" column="price1" />
+		<result property="price2" column="price2" />
+		<result property="price3" column="price3" />
+		<result property="discount1" column="discount1" />
+		<result property="discount2" column="discount2" />
+		<result property="discount3" column="discount3" />
+		<result property="base64raw" column="base64raw" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="status" column="status" />
+		<result property="departureCity" column="departure_city" />
+		<result property="arrivalCity" column="arrival_city" />
+		<result property="tName1" column="t_name1" />
+		<result property="tName2" column="t_name2" />
+		<result property="tName3" column="t_name3" />
+		<result property="meals" column="meals" />
+		<result property="taxAirport" column="tax_airport" />
+		<result property="taxOil" column="tax_oil" />
+		<result property="addPrice1" column="add_price1" />
+		<result property="addPrice2" column="add_price2" />
+		<result property="addPrice3" column="add_price3" />
+		<result property="tgqTip1" column="TGQTIP1" />
+		<result property="tgqTip2" column="TGQTIP2" />
+		<result property="tgqTip3" column="TGQTIP3" />
+	</resultMap>
+	<select id="queryFlights" parameterType="com.netease.grabber.model.Flight"
+		resultMap="flightMap">
+		select
+		* from tb_grabber_flight
+		<where>
+			<if test="flightNumber != null and flightNumber != ''">
+				flight_number = #{flightNumber}
+			</if>
+			<if test="fromDate != null and fromDate != ''">
+				and from_date = #{fromDate}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryTodoListOne" parameterType="com.netease.grabber.model.Flight"
+		resultMap="flightMap">
+		select 
+		t.departure_city,t.arrival_city,to_char(t.from_date,'yyyy-MM-dd') from_date,t.flight_number,create_time
+		 from tb_grabber_flight t 
+		<where>
+			<if test="createTime != null ">
+				create_time > #{createTime}
+			</if>
+			<if test="fromSite == 'qunar'">
+				and price1 = 0
+			</if>
+			<if test="fromSite == 'ctrip'">
+				and price2 = 0
+			</if>
+			<if test="fromSite == 'qua'">
+				and price3 = 0
+			</if>
+			and rownum = 1
+		</where>
+		order by create_time 
+	</select>
+
+	<insert id="insertFlight" parameterType="com.netease.grabber.model.Flight">
+		insert into
+		tb_grabber_flight
+		(
+			flight_number,
+			from_date,
+			airline,
+			aircraft_name,
+			aircraft_type,
+			departure_time,
+			arrival_time,
+			departure_airport,
+			departure_terminal,
+			arrival_airport,
+			arrival_terminal,
+			ontime,
+			delay_time,
+			price0,
+			price1,
+			price2,
+			price3,
+			discount1,
+			discount2,
+			discount3,
+			base64raw,
+			create_time,
+			update_time,
+			status,
+			departure_city,
+			arrival_city,
+			t_name1,
+			t_name2,
+			t_name3,
+			meals,
+			tax_airport,
+			tax_oil,
+			add_price1,
+			add_price2,
+			add_price3,
+			tgqtip1,
+			tgqtip2,
+			tgqtip3
+		)
+		values
+		(
+			#{flightNumber, jdbcType = VARCHAR},
+			#{fromDate, jdbcType = DATE},
+			#{airline, jdbcType = VARCHAR},
+			#{aircraftName, jdbcType = VARCHAR},
+			#{aircraftType, jdbcType = VARCHAR},
+			#{departureTime, jdbcType = VARCHAR},
+			#{arrivalTime, jdbcType = VARCHAR},
+			#{departureAirport, jdbcType = VARCHAR},
+			#{departureTerminal, jdbcType = VARCHAR},
+			#{arrivalAirport, jdbcType = VARCHAR},
+			#{arrivalTerminal, jdbcType = VARCHAR},
+			#{ontime, jdbcType = VARCHAR},
+			#{delayTime, jdbcType = VARCHAR},
+			#{price0, jdbcType = INTEGER},
+			#{price1, jdbcType = INTEGER},
+			#{price2, jdbcType = INTEGER},
+			#{price3, jdbcType = INTEGER},
+			#{discount1, jdbcType = VARCHAR},
+			#{discount2, jdbcType = VARCHAR},
+			#{discount3, jdbcType = VARCHAR},
+			#{base64raw, jdbcType = VARCHAR},
+			#{createTime, jdbcType = TIMESTAMP},
+			#{updateTime, jdbcType = TIMESTAMP},
+			#{status, jdbcType = INTEGER},
+			#{departureCity, jdbcType = VARCHAR},
+			#{arrivalCity, jdbcType = VARCHAR},
+			#{tName1, jdbcType = VARCHAR},
+			#{tName2, jdbcType = VARCHAR},
+			#{tName3, jdbcType = VARCHAR},
+			#{meals, jdbcType = VARCHAR},
+			#{taxAirport, jdbcType = INTEGER},
+			#{taxOil, jdbcType = INTEGER},
+			#{addPrice1, jdbcType = VARCHAR},
+			#{addPrice2, jdbcType = VARCHAR},
+			#{addPrice3, jdbcType = VARCHAR},
+			#{tgqTip1, jdbcType = VARCHAR},
+			#{tgqTip2, jdbcType = VARCHAR},
+			#{tgqTip3, jdbcType = VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateFlight" parameterType="com.netease.grabber.model.Flight">
+		update 
+		tb_grabber_flight
+		<set>
+			<if test="price0 > 0">
+			price0 = #{price0, jdbcType = INTEGER},
+			</if>
+			
+			<if test="price1 > 0">
+			price1 = #{price1, jdbcType = INTEGER},
+			</if>
+			<if test="tName1 != null and tName1 != ''">
+			t_name1 = #{tName1, jdbcType = VARCHAR},
+			</if>
+			<if test="addPrice1 != null and addPrice1 != ''">
+			add_price1 = #{addPrice1, jdbcType = VARCHAR},
+			</if>
+			<if test="tgqTip1 != null and tgqTip1 != ''">
+			tgqtip1 = #{tgqTip1, jdbcType = VARCHAR},
+			</if>
+			<if test="discount1 != null and discount1 != ''">
+			discount1 = #{discount1, jdbcType = VARCHAR},
+			</if>
+			
+			<if test="price2 > 0">
+			price2 = #{price2, jdbcType = INTEGER},
+			</if>
+			<if test="tName2 != null and tName2 != ''">
+			t_name2 = #{tName2, jdbcType = VARCHAR},
+			</if>
+			<if test="addPrice2 != null and addPrice2 != ''">
+			add_price2 = #{addPrice2, jdbcType = VARCHAR},
+			</if>
+			<if test="tgqTip2 != null and tgqTip2 != ''">
+			tgqtip2 = #{tgqTip2, jdbcType = VARCHAR},
+			</if>
+			<if test="discount2 != null and discount2 != ''">
+			discount2 = #{discount2, jdbcType = VARCHAR},
+			</if>
+			
+			<if test="price3 > 0">
+			price3 = #{price3, jdbcType = INTEGER},
+			</if>
+			<if test="tName3 != null and tName3 != ''">
+			t_name3 = #{tName3, jdbcType = VARCHAR},
+			</if>
+			<if test="addPrice3 != null and addPrice3 != ''">
+			add_price3 = #{addPrice3, jdbcType = VARCHAR},
+			</if>
+			<if test="tgqTip3 != null and tgqTip3 != ''">
+			tgqtip3 = #{tgqTip3, jdbcType = VARCHAR},
+			</if>
+			<if test="discount3 != null and discount3 != ''">
+			discount3 = #{discount3, jdbcType = VARCHAR},
+			</if>
+			
+			<if test="meals != null and meals != ''">
+			meals = #{meals, jdbcType = VARCHAR},
+			</if>
+			<if test="taxAirport != null and taxAirport != ''">
+			tax_airport = #{taxAirport, jdbcType = INTEGER},
+			</if>
+			<if test="taxOil != null and taxOil != ''">
+			tax_oil = #{taxOil, jdbcType = INTEGER},
+			</if>
+			<if test="departureTerminal != null and departureTerminal != ''">
+			departure_terminal = #{departureTerminal, jdbcType = VARCHAR},
+			</if>
+			<if test="arrivalTerminal != null and arrivalTerminal != ''">
+			arrival_terminal = #{arrivalTerminal, jdbcType = VARCHAR},
+			</if>
+			<if test="base64raw">
+			base64raw = #{base64raw, jdbcType = VARCHAR},
+			</if>
+			<if test="ontime != null and ontime != ''">
+			ontime = #{ontime, jdbcType = VARCHAR},
+			</if>
+		</set>
+		<where>
+			<if test="flightNumber != null and flightNumber != ''">
+			flight_number = #{flightNumber, jdbcType = VARCHAR}
+			</if>
+			<if test="fromDate != null and fromDate != ''">
+			and from_date = #{fromDate, jdbcType = DATE}
+			</if>
+		</where>
+	</update>
+
+</mapper>

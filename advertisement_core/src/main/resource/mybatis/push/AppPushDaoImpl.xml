@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="appPush">
+
+	<resultMap id="appPushMap" type="AppPush">
+		<id property="pushId" column="push_id" jdbcType="NUMERIC" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="content" column="content" jdbcType="VARCHAR" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="url" column="url" jdbcType="VARCHAR" />
+		<result property="client" column="client" jdbcType="NUMERIC" />
+		<result property="isSimple" column="is_simple" jdbcType="NUMERIC" />
+		<result property="isOffline" column="is_offline" jdbcType="NUMERIC" />
+		<result property="expireTime" column="expire_time" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+
+	</resultMap>
+
+	<select id="selectAppPush" parameterType="AppPush" resultMap="appPushMap">
+		select
+		* from
+		tb_app_push
+		<where>
+			<trim suffixOverrides="and">
+				<if test="pushId != null">
+					push_id = #{pushId} and
+				</if>
+				<if test="title != null">
+					title like CONCAT(CONCAT('%', #{title}),'%')
+					and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectAppPushByIds" parameterType="List" resultMap="appPushMap">
+		select
+		* from
+		tb_app_push
+		<where>
+			push_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
+
+	<insert id="insertAppPush" parameterType="AppPush">
+		insert into
+		tb_app_push(title, content, user_id, url, client,
+		is_simple,
+		is_offline,expire_time,type,
+		status, create_time,
+		update_time)
+		values
+		(#{title}, #{content},
+		#{userId}, #{url},
+		#{client},#{isSimple}, #{isOffline},
+		#{expireTime},#{type},
+		#{status},
+		sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="pushId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateAppPush" parameterType="AppPush">
+		update tb_app_push
+		<set>
+			<trim suffixOverrides=",">
+				<if test="title != null">
+					title=#{title},
+				</if>
+				<if test="userId != null">
+					user_id=#{userId},
+				</if>
+				<if test="url != null">
+					url=#{url},
+				</if>
+				<if test="client != null">
+					client=#{client},
+				</if>
+				<if test="isSimple != null">
+					is_simple=#{isSimple},
+				</if>
+				<if test="isOffline != null">
+					is_offline=#{isOffline},
+				</if>
+				<if test="expireTime != null">
+					expire_time=#{expireTime},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			push_id=#{pushId}
+		</where>
+	</update>
+
+	<delete id="deleteAppPush" parameterType="long">
+		delete from
+		tb_app_push
+		where
+		push_id=#{pushId}
+	</delete>
+
+</mapper>

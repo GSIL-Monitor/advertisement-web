@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<title>${date}统计报表</title>
+		<style>
+		.edit-table {
+			border: 1px solid; 
+			border-color: #E5DAC8
+		}
+		
+		.edit-table .first-line-left {
+			border-right: 1px solid; 
+			border-bottom: 1px solid; 
+			border-color: rgba(0, 0, 0, 0) #E5DAC8 #E5DAC8 rgba(0, 0, 0, 0); 
+			background-color: #F7FCFF; 
+			height: 40px; 
+			width: 100px;
+			text-align: center;
+		}
+		
+		.edit-table .first-line-right {
+			border-bottom: 1px solid; 
+			border-color: rgba(0, 0, 0, 0) #E5DAC8 #E5DAC8 rgba(0, 0, 0, 0); 
+			width: 300px;
+			text-align: center;
+		}
+		
+		.edit-table .middle-line-left {
+			border-right: 1px solid; 
+			border-bottom: 1px solid; 
+			border-color: rgba(0, 0, 0, 0) #E5DAC8 #E5DAC8 rgba(0, 0, 0, 0); 
+			background-color: #F7FCFF; 
+			height: 40px; 
+			width: 100px;
+			text-align: center;
+		}
+		
+		.edit-table .middle-line-right {
+			border-bottom: 1px solid; 
+			border-color: rgba(0, 0, 0, 0) #E5DAC8 #E5DAC8 rgba(0, 0, 0, 0); 
+			width: 300px;
+			text-align: center;
+		}
+		
+		.edit-table .bottom-line-left {
+			border-right: 1px solid; 
+			border-color: rgba(0, 0, 0, 0) #E5DAC8 #E5DAC8 rgba(0, 0, 0, 0); 
+			background-color: #F7FCFF; 
+			height: 40px; 
+			width: 100px;
+			text-align: center;
+		}
+		
+		.edit-table .bottom-line-right {
+			width: 300px;
+			text-align: center;
+		}
+		</style>
+	</head>
+	<body>
+		<table class="edit-table" cellpadding=0 cellspacing=0>
+			<tr>
+				<td class="first-line-left">报表名称：</td>
+				<td class="first-line-right">${reportname}</td>
+			</tr>
+			<tr>
+				<td class="bottom-line-left">报表执行人：</td>
+				<td class="bottom-line-right">${username}</td>
+			</tr>
+		</table>
+		<br/>
+		系统邮件，请勿回复，谢谢！
+	</body>
+</html>

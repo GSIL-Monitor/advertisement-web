@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuanshanbao.ms.mapper.admin.SysModuleMapper">
+	<select id="querySysModules" parameterType="com.yuanshanbao.ms.model.admin.SysModule" resultType="com.yuanshanbao.ms.model.admin.SysModule">
+		select * from tb_admin_modules 
+		<where>
+			<if test="id != null and id != ''">
+			id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+			and name like CONCAT(CONCAT('%', #{name}),'%')
+			</if>
+			<if test="description != null and description != ''">
+			and description like CONCAT(CONCAT('%', #{description}),'%')
+			</if>
+		</where>
+		order by create_time desc
+	</select>
+	
+	<select id="querySysModuleByName" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.SysModule">
+		select * from tb_admin_modules 
+		where name=#{name}
+	</select>
+	
+	<insert id="insertSysModule" parameterType="com.yuanshanbao.ms.model.admin.SysModule">
+		insert into
+		tb_admin_modules 
+		(id, name, description, create_time)
+		values
+		(#{id}, #{name}, #{description}, sysdate())
+	</insert>
+	
+	<update id="updateSysModule" parameterType="com.yuanshanbao.ms.model.admin.SysModule">
+		update tb_admin_modules
+		set id=#{id}
+		<if test="name != null and name != ''">
+		, name=#{name}
+		</if>
+		<if test="description != null and description != ''">
+		, description=#{description}
+		</if>
+		where
+		id=#{id}
+	</update>
+	
+	<delete id="deleteSysModule" parameterType="com.yuanshanbao.ms.model.admin.SysModule">
+		delete from tb_admin_modules
+		where id = #{id} 
+	</delete>
+	
+	<select id="queryModulesByGroupId" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.SysModule">
+		select * from tb_admin_modules 
+		WHERE id 
+		<if test="flag == 'in'">
+		in
+		</if>
+		<if test="flag == 'notin'">
+		not in 
+		</if>
+		(select module_id from tb_admin_group_module where group_id=#{groupId})
+		order by create_time desc
+	</select>
+</mapper>

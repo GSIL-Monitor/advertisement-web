@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ActivityStep">
+
+	<resultMap id="activityStepMap" type="ActivityStep">
+		<id property="activityStepId" column="activity_step_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="fields" column="fields" jdbcType="VARCHAR" />
+		<result property="handler" column="handler" jdbcType="VARCHAR" />
+		<result property="extendAmount" column="extend_amount"
+			jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectActivityStep" parameterType="ActivityStep"
+		resultMap="activityStepMap">
+		select
+		* from
+		tb_activity_step t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="activityStepId != null">
+					activity_step_id=#{activityStepId} and
+				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="description != null">
+					description = #{description} and
+				</if>
+				<if test="fields != null">
+					fields = #{fields} and
+				</if>
+				<if test="handler != null">
+					handler = #{handler} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectActivityStepByIds" parameterType="List"
+		resultMap="activityStepMap">
+		select
+		* from
+		tb_activity_step t
+		<where>
+			activity_step_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertActivityStep" parameterType="ActivityStep">
+		insert into
+		tb_activity_step(activity_id, name,
+		description,
+		fields,
+		extend_amount
+		handler, status, create_time, update_time)
+		values
+		(#{activityId},
+		#{name}, #{description}, #{fields}, #{extendAmount}, #{handler},
+		#{status},
+		sysdate(),
+		sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="activityStepId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateActivityStep" parameterType="ActivityStep">
+		update tb_activity_step
+		<set>
+			<trim suffixOverrides=",">
+				<if test="activityId != null">
+					activity_id=#{activityId},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="fields != null">
+					fields=#{fields},
+				</if>
+				<if test="handler != null">
+					handler=#{handler},
+				</if>
+				<if test="extendAmount != null">
+					extend_amount=#{extendAmount},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			activity_step_id=#{activityStepId}
+		</where>
+	</update>
+
+	<delete id="deleteActivityStep" parameterType="long">
+		delete from
+		tb_activity_step
+		where
+		activity_step_id=#{activityStepId}
+	</delete>
+
+</mapper>

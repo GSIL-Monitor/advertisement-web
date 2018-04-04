@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="information">
+
+	<resultMap id="informationMap" type="Information">
+		<id property="informationId" column="information_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="gender" column="gender" jdbcType="NUMERIC" />
+		<result property="identityCard" column="identity_card" jdbcType="VARCHAR" />
+		<result property="birthday" column="birthday" jdbcType="TIMESTAMP" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="education" column="education" jdbcType="NUMERIC" />
+		<result property="location" column="location" jdbcType="VARCHAR" />
+		<result property="address" column="address" jdbcType="VARCHAR" />
+		<result property="province" column="province" jdbcType="VARCHAR" />
+		<result property="city" column="city" jdbcType="VARCHAR" />
+		<result property="position" column="position" jdbcType="NUMERIC" />
+		<result property="salary" column="salary" jdbcType="NUMERIC" />
+		<result property="marriage" column="marriage" jdbcType="NUMERIC" />
+		<result property="hasChild" column="has_child" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="address" column="address" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		information_id, project_id, activity_id, user_id, mobile, name, gender,
+		identity_card, birthday,
+		email, education, location, address, province, city, position,
+		salary, marriage,
+		has_child, channel, status,
+		create_time,
+		update_time
+	</sql>
+
+	<!-- 查询sql -->
+	<select id="selectInformations" parameterType="Information"
+		resultMap="informationMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		tb_information
+		<where>
+			<trim suffixOverrides="and">
+				<if test="informationId != null">
+					information_id= #{informationId} and
+				</if>
+				<if test="projectId != null">
+					project_id= #{projectId} and
+				</if>
+				<if test="activityId != null">
+					activity_id= #{activityId} and
+				</if>
+				<if test="userId != null">
+					user_id= #{userId} and
+				</if>
+				<if test="mobile != null">
+					mobile= #{mobile} and
+				</if>
+				<if test="name != null">
+					name= #{name} and
+				</if>
+				<if test="gender != null">
+					gender= #{gender} and
+				</if>
+				<if test="identityCard != null">
+					identity_card= #{identityCard} and
+				</if>
+				<if test="birthday != null">
+					birthday= #{birthday} and
+				</if>
+				<if test="email != null">
+					email= #{email} and
+				</if>
+				<if test="education != null">
+					education= #{education} and
+				</if>
+				<if test="location != null">
+					location= #{location} and
+				</if>
+				<if test="address != null">
+					address= #{address} and
+				</if>
+				<if test="position != null">
+					position= #{position} and
+				</if>
+				<if test="province != null">
+					province= #{province} and
+				</if>
+				<if test="city != null">
+					city= #{city} and
+				</if>
+				<if test="salary != null">
+					salary= #{salary} and
+				</if>
+				<if test="marriage != null">
+					marriage= #{marriage} and
+				</if>
+				<if test="hasChild != null">
+					has_child= #{hasChild} and
+				</if>
+				<if test="channel != null">
+					channel= #{channel} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectInformationByIds" parameterType="List"
+		resultMap="informationMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		tb_information
+		<where>
+			information_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertInformation" parameterType="Information">
+		insert into
+		tb_information( project_id, activity_id, user_id, mobile, name, gender,
+		identity_card, birthday, email, education, location, address, province, city,
+		position, salary, marriage, has_child, channel,
+		status, create_time,
+		update_time )
+		values
+		( #{projectId}, #{activityId}, #{userId},
+		#{mobile}, #{name},
+		#{gender}, #{identityCard}, #{birthday}, #{email},
+		#{education},
+		#{location}, #{address}, #{province}, #{city},#{position}, #{salary},
+		#{marriage},
+		#{hasChild}, #{channel},#{status},
+		sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="informationId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateInformation" parameterType="Information">
+		update tb_information
+		<set>
+			<trim suffixOverrides=",">
+				<if test="projectId != null">
+					project_id= #{projectId},
+				</if>
+				<if test="activityId != null">
+					activity_id= #{activityId},
+				</if>
+				<if test="userId != null">
+					user_id= #{userId},
+				</if>
+				<if test="mobile != null">
+					mobile= #{mobile},
+				</if>
+				<if test="name != null">
+					name= #{name},
+				</if>
+				<if test="gender != null">
+					gender= #{gender},
+				</if>
+				<if test="identityCard != null">
+					identity_card= #{identityCard},
+				</if>
+				<if test="birthday != null">
+					birthday= #{birthday},
+				</if>
+				<if test="email != null">
+					email= #{email},
+				</if>
+				<if test="education != null">
+					education= #{education},
+				</if>
+				<if test="location != null">
+					location= #{location},
+				</if>
+				<if test="address != null">
+					address= #{address},
+				</if>
+				<if test="position != null">
+					position= #{position},
+				</if>
+				<if test="province != null">
+					province= #{province},
+				</if>
+				<if test="city != null">
+					city= #{city},
+				</if>
+				<if test="salary != null">
+					salary= #{salary},
+				</if>
+				<if test="marriage != null">
+					marriage= #{marriage},
+				</if>
+				<if test="hasChild != null">
+					has_child= #{hasChild},
+				</if>
+				<if test="channel != null">
+					channel= #{channel},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			information_id=#{informationId}
+		</where>
+	</update>
+
+	<delete id="deleteInformation" parameterType="long">
+		delete from
+		tb_information
+		where
+		information_id=#{informationId}
+	</delete>
+
+</mapper>

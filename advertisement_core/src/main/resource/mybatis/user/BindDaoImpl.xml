@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bind">
+
+	<resultMap id="bindMap" type="Bind">
+		<id property="bindId" column="bind_id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectBinds" parameterType="Bind" resultMap="bindMap">
+		select
+		* from
+		tb_bind
+		<where>
+			<trim suffixOverrides="and">
+				<if test="bindId != null">
+					bind_id= #{bindId} and
+				</if>
+				<if test="userId != null">
+					user_id= #{userId} and
+				</if>
+				<if test="productId != null">
+					product_id= #{productId} and
+				</if>
+				<if test="description != null">
+					description= #{description} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectBindByIds" parameterType="List" resultMap="bindMap">
+		select
+		* from
+		tb_bind
+		<where>
+			bind_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertBind" parameterType="Bind">
+		insert into
+		tb_bind( user_id, product_id, description, status, create_time, update_time )
+		values
+		( #{userId}, #{productId}, #{description}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="bindId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateBind" parameterType="Bind">
+		update tb_bind
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id= #{userId},
+				</if>
+				<if test="productId != null">
+					product_id= #{productId},
+				</if>
+				<if test="description != null">
+					description= #{description},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			bind_id=#{bindId}
+		</where>
+	</update>
+
+	<delete id="deleteBind" parameterType="long">
+		delete from tb_bind
+		where
+		bind_id=#{bindId}
+	</delete>
+
+</mapper>

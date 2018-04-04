@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="advertisementStatistics">
+
+	<resultMap id="advertisementStatisticsMap" type="AdvertisementStatistics">
+		<id property="advertisementStatisticsId" column="advertisement_statistics_id" jdbcType="NUMERIC" />
+		<result property="date" column="date" jdbcType="VARCHAR" />
+		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="welfareCount" column="welfare_count" jdbcType="NUMERIC" />
+		<result property="bannerCount" column="banner_count" jdbcType="NUMERIC" />
+		<result property="tagsCount" column="tags_count" jdbcType="NUMERIC" />
+		<result property="downloadCount" column="download_count" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectAdvertisementStatistics" parameterType="AdvertisementStatistics"
+		resultMap="advertisementStatisticsMap">
+		select
+		* from
+		tb_advertisement_statistics s
+		<where>
+			<trim suffixOverrides="and">
+				<if test="advertisementStatisticsId != null">
+					advertisement_statistics_id=#{advertisementStatisticsId} and
+				</if>
+				<if test="advertisementId != null">
+					advertisement_id = #{advertisementId} and
+				</if>
+				<if test="channel != null">
+					channel = #{channel} and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="date != null">
+					date = #{date} and
+				</if>
+				<if test="status != null">
+					status = #{status}
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by date desc, create_time desc
+	</select>
+
+	<select id="selectAdvertisementStatisticsByIds" parameterType="List"
+		resultMap="advertisementStatisticsMap">
+		select
+		* from
+		tb_advertisement_statistics
+		<where>
+			advertisement_statistics_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectAdvertisementStatisticsByAdvertisementIds" parameterType="Map"
+		resultMap="advertisementStatisticsMap">
+		select
+			advertisement_id,
+			SUM(welfare_count) AS welfareCount,
+			SUM(banner_count) AS bannerCount,
+			SUM(tags_count) AS tagsCount,
+			SUM(download_count) AS downloadCount,
+			channel,
+			type
+		from
+		tb_advertisement_statistics
+		<where>
+			<trim suffixOverrides="and">
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="date != null">
+					date = #{date} and
+				</if>
+				<if test="channel != null">
+					channel = #{channel} and
+				</if>
+				<if test="advertisementIds != null">
+					advertisement_id in
+					<foreach item="advertisementId" index="index" collection="advertisementIds" open="(" separator="," close=")">
+						#{advertisementId}
+					</foreach>
+					and 
+				</if>
+				<if test="channels != null">
+					channel in
+					<foreach item="channel" index="index" collection="channels" open="(" separator="," close=")">
+						#{channel}
+					</foreach> and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		GROUP BY advertisement_id, channel
+	</select>
+	
+	<select id="selectAdvertisementStatisticsByChannels" parameterType="Map"
+		resultMap="advertisementStatisticsMap">
+		select
+			advertisement_id,
+			SUM(welfare_count) AS welfareCount,
+			SUM(banner_count) AS bannerCount,
+			SUM(tags_count) AS tagsCount,
+			SUM(download_count) AS downloadCount,
+			channel,
+			type
+		from
+		tb_advertisement_statistics
+		<where>
+			<trim suffixOverrides="and">
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="date != null">
+					date = #{date} and
+				</if>
+				<if test="channels != null">
+					channel in
+					<foreach item="channel" index="index" collection="channels" open="(" separator="," close=")">
+						#{channel}
+					</foreach>
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		GROUP BY channel
+	</select>
+	
+	<insert id="insertAdvertisementStatistics" parameterType="advertisementStatistics">
+		insert into
+		tb_advertisement_statistics(advertisement_id, date,
+		channel, welfare_count, banner_count,
+		tags_count, download_count,
+		type, status, create_time,
+		update_time)
+		values
+		(#{advertisementId}, #{date}, #{channel}, #{welfareCount},
+		#{bannerCount},
+		#{tagsCount}, #{downloadCount},
+		#{type},
+		#{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="advertisementStatisticsId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateAdvertisementStatistics" parameterType="advertisementStatistics">
+		update tb_advertisement_statistics
+		<set>
+			<trim suffixOverrides=",">
+				<if test="advertisementId != null">
+					advertisement_id = #{advertisementId},
+				</if>
+				<if test="channel != null">
+					channel = #{channel},
+				</if>
+				<if test="type != null">
+					type = #{type},
+				</if>
+				<if test="date != null">
+					date = #{date},
+				</if>
+				<if test="welfareCount != null">
+					welfare_count = #{welfareCount},
+				</if>
+				<if test="bannerCount != null">
+					banner_count = #{bannerCount},
+				</if>
+				<if test="tagsCount != null">
+					tags_count = #{tagsCount},
+				</if>
+				<if test="downloadCount != null">
+					download_count = #{downloadCount},
+				</if>
+				<if test="type != null">
+					type = #{type},
+				</if>
+				<if test="date != null">
+					date = #{date},
+				</if>
+				<if test="status != null">
+					status = #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			advertisement_statistics_id=#{advertisementStatisticsId}
+		</where>
+	</update>
+
+	<delete id="deleteAdvertisementStatistics" parameterType="long">
+		delete
+		from tb_advertisement_statistics
+		where
+		advertisement_statistics_id=#{advertisementStatisticsId}
+	</delete>
+
+</mapper>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="informationInsurance">
+
+	<resultMap id="informationInsuranceMap" type="InformationInsurance">
+		<result property="informationId" column="information_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="gender" column="gender" jdbcType="NUMERIC" />
+		<result property="identityCard" column="identity_card" jdbcType="VARCHAR" />
+		<result property="birthday" column="birthday" jdbcType="TIMESTAMP" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="education" column="education" jdbcType="NUMERIC" />
+		<result property="location" column="location" jdbcType="VARCHAR" />
+		<result property="address" column="address" jdbcType="VARCHAR" />
+		<result property="province" column="province" jdbcType="VARCHAR" />
+		<result property="city" column="city" jdbcType="VARCHAR" />
+		<result property="position" column="position" jdbcType="NUMERIC" />
+		<result property="salary" column="salary" jdbcType="NUMERIC" />
+		<result property="marriage" column="marriage" jdbcType="NUMERIC" />
+		<result property="hasChild" column="has_child" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="address" column="address" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="infos" column="infos" jdbcType="VARCHAR" />
+		<result property="favors" column="favors" jdbcType="VARCHAR" />
+		<result property="recommends" column="recommends" jdbcType="VARCHAR" />
+		<result property="acceptablePremium" column="acceptable_premium" jdbcType="VARCHAR" />
+		<result property="hasInsurance" column="has_insurance" jdbcType="VARCHAR" />
+		<result property="relativeIds" column="relative_ids" jdbcType="VARCHAR" />
+		<result property="familyIncome" column="family_income" jdbcType="VARCHAR" />
+		<result property="familyStatus" column="family_status" jdbcType="VARCHAR" />
+		<result property="childName" column="child_name" jdbcType="VARCHAR" />
+		<result property="childGender" column="child_gender" jdbcType="NUMERIC" />
+		<result property="childBirthday" column="child_birthday" jdbcType="TIMESTAMP" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Union_Column_List">
+		t.information_id, i.project_id, i.activity_id, i.user_id, i.mobile, i.name, i.gender,
+		i.identity_card, i.birthday, i.update_time,
+		i.email, i.education, i.location, i.address, i.province, i.city, i.position,
+		i.salary, i.marriage,
+		i.has_child, i.channel, t.mobile, t.infos, t.favors, t.recommends,
+		t.acceptable_premium, t.has_insurance,
+		t.relative_ids, t.family_income,
+		t.family_status, t.child_name, t.child_gender,
+		t.child_birthday, t.status,
+		t.create_time, t.update_time
+	</sql>
+	
+	<sql id="Base_Column_List">
+		information_id, mobile, infos, favors, recommends, acceptable_premium, has_insurance,
+		relative_ids, family_income, family_status, child_name, child_gender,
+		child_birthday, status, create_time, update_time
+	</sql>
+
+	<!-- 查询sql -->
+	<select id="selectInformationInsurances" parameterType="InformationInsurance"
+		resultMap="informationInsuranceMap">
+		select
+		<include refid="Union_Column_List" />
+		from
+		tb_information_insurance t JOIN tb_information i ON t.information_id = i.information_id
+		<where>
+			<trim suffixOverrides="and">
+				<if test="informationId != null">
+					t.information_id= #{informationId} and
+				</if>
+				<if test="mobile != null">
+					t.mobile= #{mobile} and
+				</if>
+				<if test="infos != null">
+					t.infos= #{infos} and
+				</if>
+				<if test="favors != null">
+					t.favors= #{favors} and
+				</if>
+				<if test="recommends != null">
+					t.recommends= #{recommends} and
+				</if>
+				<if test="acceptablePremium != null">
+					t.acceptable_premium= #{acceptablePremium} and
+				</if>
+				<if test="hasInsurance != null">
+					t.has_insurance= #{hasInsurance} and
+				</if>
+				<if test="relativeIds != null">
+					t.relative_ids= #{relativeIds} and
+				</if>
+				<if test="familyIncome != null">
+					t.family_income= #{familyIncome} and
+				</if>
+				<if test="familyStatus != null">
+					t.family_status= #{familyStatus} and
+				</if>
+				<if test="childName != null">
+					t.child_name= #{childName} and
+				</if>
+				<if test="childGender != null">
+					t.child_gender= #{childGender} and
+				</if>
+				<if test="childBirthday != null">
+					t.child_birthday= #{childBirthday} and
+				</if>
+				<if test="status != null">
+					t.status= #{status} and
+				</if>
+			</trim>
+			and t.status != -1
+		</where>
+		order by t.create_time desc
+	</select>
+
+	<select id="selectInformationInsuranceByIds" parameterType="List"
+		resultMap="informationInsuranceMap">
+		select
+		<include refid="Union_Column_List" />
+		from
+		tb_information_insurance t JOIN tb_information i ON t.information_id = i.information_id
+		<where>
+			t.information_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertInformationInsurance" parameterType="InformationInsurance">
+		insert
+		into
+		tb_information_insurance(information_id, mobile, infos, favors,
+		recommends, acceptable_premium, has_insurance, relative_ids,
+		family_income, family_status, child_name, child_gender,
+		child_birthday, status, create_time, update_time )
+		values
+		(#{informationId}, #{mobile}, #{infos}, #{favors}, #{recommends},
+		#{acceptablePremium}, #{hasInsurance}, #{relativeIds},
+		#{familyIncome}, #{familyStatus}, #{childName}, #{childGender},
+		#{childBirthday}, #{status}, sysdate(), sysdate() )
+	</insert>
+
+	<update id="updateInformationInsurance" parameterType="InformationInsurance">
+		update tb_information_insurance
+		<set>
+			<trim suffixOverrides=",">
+				<if test="mobile != null">
+					mobile= #{mobile},
+				</if>
+				<if test="infos != null">
+					infos= #{infos},
+				</if>
+				<if test="favors != null">
+					favors= #{favors},
+				</if>
+				<if test="recommends != null">
+					recommends= #{recommends},
+				</if>
+				<if test="acceptablePremium != null">
+					acceptable_premium= #{acceptablePremium},
+				</if>
+				<if test="hasInsurance != null">
+					has_insurance= #{hasInsurance},
+				</if>
+				<if test="relativeIds != null">
+					relative_ids= #{relativeIds},
+				</if>
+				<if test="familyIncome != null">
+					family_income= #{familyIncome},
+				</if>
+				<if test="familyStatus != null">
+					family_status= #{familyStatus},
+				</if>
+				<if test="childName != null">
+					child_name= #{childName},
+				</if>
+				<if test="childGender != null">
+					child_gender= #{childGender},
+				</if>
+				<if test="childBirthday != null">
+					child_birthday= #{childBirthday},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			information_id= #{informationId}
+		</where>
+	</update>
+
+	<delete id="deleteInformationInsurance" parameterType="long">
+		delete
+		from tb_information_insurance
+		where
+
+	</delete>
+
+</mapper>

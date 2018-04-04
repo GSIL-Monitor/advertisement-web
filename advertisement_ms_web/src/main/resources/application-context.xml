@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <description>导入admin中的applicationContext文件列表</description>
+    
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:config/${spring.profiles.active:dev}/msdb.properties</value>
+                <value>classpath:config/${spring.profiles.active:dev}/db.properties</value>
+                <value>classpath:config/${spring.profiles.active:dev}/config.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- <import resource="spring/ms-redismodule.xml"/> -->
+
+    <import resource="spring/ms-security.xml"/>
+    <import resource="spring/ms-cache.xml"/>
+    <import resource="spring/ms-database.xml"/>
+    <import resource="spring/ms-service.xml"/>
+    
+    <import resource="spring/config-service.xml"/>
+    <import resource="spring/config-db.xml"/>
+    
+</beans>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="productBind">
+
+	<resultMap id="productBindMap" type="ProductBind">
+		<id property="bindId" column="bind_id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectProductBinds" parameterType="ProductBind" resultMap="productBindMap">
+		select
+		* from
+		tb_product_bind
+		<where>
+			<trim suffixOverrides="and">
+				<if test="bindId != null">
+					bind_id= #{bindId} and
+				</if>
+				<if test="userId != null">
+					user_id= #{userId} and
+				</if>
+				<if test="productId != null">
+					product_id= #{productId} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectProductBindByIds" parameterType="List" resultMap="productBindMap">
+		select
+		* from
+		tb_product_bind
+		<where>
+			bind_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertProductBind" parameterType="ProductBind">
+		insert into
+		tb_product_bind( user_id, product_id, status, create_time, update_time )
+		values
+		( #{userId}, #{productId}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="bindId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateProductBind" parameterType="ProductBind">
+		update tb_product_bind
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id= #{userId},
+				</if>
+				<if test="productId != null">
+					product_id= #{productId},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			bind_id=#{bindId}
+		</where>
+	</update>
+
+	<delete id="deleteProductBind" parameterType="long">
+		delete from tb_product_bind
+		where
+		bind_id=#{bindId}
+	</delete>
+
+</mapper>

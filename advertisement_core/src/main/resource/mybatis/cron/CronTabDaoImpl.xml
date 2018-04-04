@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CronTab">
+    <resultMap id="cronTabMap" type="cronTab">
+        <result column="BEAN_NAME" property="beanName" jdbcType="VARCHAR"/>
+        <result column="BEAN_METHOD" property="beanMethod" jdbcType="VARCHAR"/>
+        <result column="EXECUTE_MODE" property="executeMode" jdbcType="INTEGER"/>
+        <result column="CRON" property="cron" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="getAllCronTab" resultMap="cronTabMap" parameterType="map">
+        select * from TB_CRON_TAB
+    </select>
+    
+    <insert id="insertCronTab" parameterType="cronTab">
+		insert into
+		tb_cron_tab(bean_name, bean_method, execute_mode, cron, status)
+		values
+		(#{beanName}, #{beanMethod}, #{executeMode},
+		#{cron}, #{status})
+	</insert>
+	
+	<update id="updateCronTab" parameterType="cronTab">
+		update tb_bean_name
+		<set>
+			<if test="beanMothod != null">
+				bean_method=#{beanMothod},
+			</if>
+			<if test="executeMode != null">
+				execute_mode=#{executeMode},
+			</if>
+			<if test="cron != null">
+				cron=#{cron},
+			</if>
+			<if test="status != null">
+				status=#{status},
+			</if>			
+		</set>
+		<where>
+			bean_name=#{beanName}
+		</where>
+	</update>
+	
+    
+</mapper>

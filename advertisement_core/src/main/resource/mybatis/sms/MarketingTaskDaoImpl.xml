@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="marketingTask">
+	<resultMap id="marketingTaskMap" type="MarketingTask">
+		<result property="marketingTaskId" column="marketing_task_id" jdbcType="VARCHAR" />
+		<result property="productName" column="product_name" jdbcType="VARCHAR" />
+		<result property="smsPlatform" column="sms_platform" jdbcType="VARCHAR" />
+		<result property="smsContent" column="sms_content" jdbcType="VARCHAR" />
+		<result property="sendTime" column="send_time" jdbcType="TIMESTAMP" />
+		<result property="uploadUrl" column="upload_url" jdbcType="VARCHAR" />
+		<result property="downloadUrl" column="download_url" jdbcType="VARCHAR" />	
+		<result property="rejectProvince" column="reject_province" jdbcType="VARCHAR" />
+		<result property="rejectCity" column="reject_city" jdbcType="VARCHAR" />
+		<result property="downloadMobileType" column="download_mobile_type" jdbcType="VARCHAR" />
+		<result property="exportCount" column="export_count" jdbcType="NUMERIC" />
+		<result property="progress" column="progress" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectMarketingTask" parameterType="MarketingTask" resultMap="marketingTaskMap">
+		select
+		* from
+		tb_marketing_task
+		<where>
+			<trim suffixOverrides="and">
+				<if test="marketingTaskId != null">
+					marketing_task_id=#{marketingTaskId} and
+				</if>
+				<if test="productName != null">
+					product_name=#{productName} and
+				</if>
+				<if test="smsPlatform != null">
+					sms_platform=#{smsPlatform} and
+				</if>
+				<if test="exportCount != null">
+					export_count=#{exportCount} and
+				</if>		
+				<if test="status != null">
+					status=#{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+	
+	<select id="selectMarketingTaskByIds" parameterType="List" resultMap="marketingTaskMap">
+		select
+		* from
+		tb_marketing_task
+		<where>
+			marketing_task_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+
+	<insert id="insertMarketingTask" parameterType="MarketingTask">
+		insert into
+		tb_marketing_task(product_name, sms_platform, sms_content, send_time,
+		upload_url, download_url, reject_province, reject_city, download_mobile_type,
+		export_count, progress,
+		status, create_time, update_time)
+		values
+		(#{productName}, #{smsPlatform}, #{smsContent}, #{sendTime}, #{uploadUrl}, 
+		 #{downloadUrl}, #{rejectProvince}, #{rejectCity}, #{downloadMobileType},
+		 #{exportCount}, #{progress}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="marketingTaskId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateMarketingTask" parameterType="MarketingTask">
+		update tb_marketing_task
+		<set>
+			<trim suffixOverrides=",">
+				<if test="productName != null">
+					product_name=#{productName},
+				</if>
+				<if test="smsPlatform != null">
+					sms_platform=#{smsPlatform},
+				</if>
+				<if test="smsContent != null">
+					sms_content=#{smsContent},
+				</if>
+				<if test="sendTime != null">
+					send_time=#{sendTime},
+				</if>
+				<if test="uploadUrl != null">
+					upload_url=#{uploadUrl},
+				</if>
+				<if test="downloadUrl != null">
+					download_url=#{downloadUrl},
+				</if>
+				<if test="rejectProvince != null">
+					reject_province=#{rejectProvince},
+				</if>
+				<if test="rejectCity != null">
+					reject_city=#{rejectCity},
+				</if>
+				<if test="downloadMobileType != null">
+					download_mobile_type=#{downloadMobileType},
+				</if>
+				<if test="exportCount != null">
+					export_count=#{exportCount},
+				</if>
+				<if test="progress != null">
+					progress=#{progress},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			marketing_task_id=#{marketingTaskId}
+		</where>
+	</update>
+
+	<delete id="deleteMarketingTask" parameterType="long">
+		delete from tb_marketing_task
+		where
+		marketing_task_id=#{marketingTaskId}
+	</delete>
+
+</mapper>

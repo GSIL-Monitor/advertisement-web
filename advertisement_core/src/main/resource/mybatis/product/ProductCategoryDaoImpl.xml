@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="productCategory">
+
+	<resultMap id="productCategoryMap" type="ProductCategory">
+		<id property="productCategoryId" column="product_category_id" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="value" column="value" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="image" column="image" jdbcType="VARCHAR" />
+		<result property="showOrder" column="show_order" jdbcType="NUMERIC" />
+		<result property="color" column="color" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectProductCategorys" parameterType="ProductCategory" resultMap="productCategoryMap">
+		select
+		* from
+		tb_product_category
+		<where>
+			<trim suffixOverrides="and">
+				<if test="productCategoryId != null">
+					product_category_id= #{productCategoryId} and
+				</if>
+				<if test="type != null">
+					type= #{type} and
+				</if>
+				<if test="name != null">
+					name= #{name} and
+				</if>
+				<if test="value != null">
+					value= #{value} and
+				</if>
+				<if test="description != null">
+					description= #{description} and
+				</if>
+				<if test="image != null">
+					image= #{image} and
+				</if>
+				<if test="showOrder != null">
+					show_order= #{showOrder} and
+				</if>
+				<if test="color != null">
+					color= #{color} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectProductCategoryByIds" parameterType="List" resultMap="productCategoryMap">
+		select
+		* from
+		tb_product_category
+		<where>
+			product_category_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertProductCategory" parameterType="ProductCategory">
+		insert into
+		tb_product_category( type, name, value, description, image, show_order, color, status, create_time, update_time )
+		values
+		( #{type}, #{name}, #{value}, #{description}, #{image}, #{showOrder}, #{color}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="productCategoryId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateProductCategory" parameterType="ProductCategory">
+		update tb_product_category
+		<set>
+			<trim suffixOverrides=",">
+				<if test="type != null">
+					type= #{type},
+				</if>
+				<if test="name != null">
+					name= #{name},
+				</if>
+				<if test="value != null">
+					value= #{value},
+				</if>
+				<if test="description != null">
+					description= #{description},
+				</if>
+				<if test="image != null">
+					image= #{image},
+				</if>
+				<if test="showOrder != null">
+					show_order= #{showOrder},
+				</if>
+				<if test="color != null">
+					color= #{color},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			product_category_id=#{productCategoryId}
+		</where>
+	</update>
+
+	<delete id="deleteProductCategory" parameterType="long">
+		delete from tb_product_category
+		where
+		product_category_id=#{productCategoryId}
+	</delete>
+
+</mapper>

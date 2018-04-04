@@ -1,0 +1,62 @@
+/*
+ *重置样式、栅格、css3动画模块
+ *
+ */
+
+@import "variables.less";
+
+//-----------------重置样式
+html, body {
+	// height: 100%;
+	font-family: "微软雅黑";
+	color: @font-text-color;
+	background-color: #f1f1f1;
+}
+
+body, ul, ol, p, h1, h2, h3, h4, h5, h6, dl, dt, dd, form, textarea, input {
+	margin: 0;
+}
+
+ul {
+	list-style: none;
+}
+
+ul, input {
+	padding: 0;
+}
+
+img {
+	border: 0;
+}
+
+a {
+	text-decoration: none;
+}
+
+//----------------清除浮动
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+//----------------基本浮动
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.mid {
+	margin: 0 auto;
+}

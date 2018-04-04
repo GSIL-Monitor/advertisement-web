@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="function">
+
+	<resultMap id="functionMap" type="Function">
+		<id property="functionId" column="function_id" jdbcType="NUMERIC" />
+		<result property="key" column="key" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="defaultAction" column="default_action" jdbcType="VARCHAR" />
+		<result property="category" column="category" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectFunctionByKeys" parameterType="List" resultMap="functionMap">
+		select
+		* from
+		tb_function f
+		<where>
+			`key` in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			and status !=-1
+		</where>
+		order by create_time desc
+	</select>
+
+	<!-- 简历sql -->
+	<select id="selectFunctions" parameterType="Function" resultMap="functionMap">
+		select
+		* from
+		tb_function f
+		<where>
+			<trim suffixOverrides="and">
+				<if test="functionId != null">
+					function_id=#{functionId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="key != null">
+					`key`=#{key} and
+				</if>
+				<if test="defaultAction != null">
+					default_action=#{defaultAction} and
+				</if>
+				<if test="category != null">
+					category=#{category} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectFunctionByIds" parameterType="List" resultMap="functionMap">
+		select
+		* from
+		tb_function f
+		<where>
+			function_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			and status !=-1
+		</where>
+	</select>
+	
+	<insert id="insertFunction" parameterType="Function">
+		insert into
+		tb_function(`key`, name, default_action, category, type,
+		status, create_time, update_time)
+		values
+		(#{key}, #{name}, #{defaultAction}, #{category}, #{type},
+		#{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="functionId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateFunction" parameterType="Function">
+		update tb_function
+		<set>
+			<trim suffixOverrides=",">
+				<if test="key != null">
+					`key`=#{key},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>				
+				<if test="defaultAction != null">
+					default_action=#{defaultAction},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="category != null">
+					category=#{category},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			function_id=#{functionId}
+		</where>
+	</update>
+
+	<delete id="deleteFunction" parameterType="long">
+		delete from tb_function
+		where
+		function_id=#{functionId}
+	</delete>
+
+</mapper>

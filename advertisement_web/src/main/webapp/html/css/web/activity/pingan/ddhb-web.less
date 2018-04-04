@@ -1,0 +1,307 @@
+@import "../../../common/activity/pingan/zhx.less";
+@white: #FFF;
+@black: #000;
+@primary-color: #dd2d36;
+@input-background-color: #ededed;
+@input-border-color: #bfbfbf;
+@text-color: #681515;
+@hint-color: #9b999a;
+@shadow-color: #ac1717;
+@tip-color: #999;
+@table-title: #dd2d36;
+@table-border: #636363;
+@table-content: #f1f1f0;
+@error-color: #F67072;
+@background-color: #f1f1f0;
+@calculator-color: #ef786e;
+
+.banner-wrap {
+	height: 325px;
+	width: 100%;
+	background: url(../../../../img/web/activity/pingan/ddhb/banner_bg.png) repeat-x;
+}
+.banner {
+	width: 1000px;
+	margin: 0 auto;
+}
+
+.header {
+	height: 60px;
+	img {
+		height: 30px;
+		margin-top: 15px;
+	}
+
+	.title {
+		position: absolute;
+		right: 24px;
+		top: 20px;
+		display: inline-block;
+		font-size: 22px;
+		color: #c7c5c5;
+	}
+}
+
+.header-wrap {
+	position: relative;
+}
+
+.header-wrap {
+	width: 1000px;
+	margin: 0 auto;
+}
+
+.container {
+	background-color: #fff;
+	padding-bottom: 0;
+}
+
+.result-container {
+	background-color: #fafafa;
+}
+
+.wrapper {
+	width: 1000px;
+}
+
+.counter {
+	margin-top: 30px;
+	text-align: center;
+	font-size: 42px;
+	font-weight: bold;
+	color: #681515;
+	span {
+		color: #dd2d36;
+	}
+}
+
+.form-wrap {
+	height: 370px;
+	padding: 40px 0 30px;
+	margin-bottom: 20px;
+	.coupon {
+		position: absolute;
+		right: 50px;
+		top: 140px;
+		width: 400px;
+		height: 220px;
+	}
+
+	.coupon-title {
+		position: absolute;
+		top: 370px;
+		right: 50px;
+		width: 368px;
+		text-align: center;
+		font-size: 18px;
+		color: #6c1c1c;
+	}
+
+	.ddhb-form {
+		width: 440px;
+		margin-left: 45px;
+		font-size: 20px;
+	}
+
+	.field-name {
+		line-height: 50px;
+		color: #6c1c1c;
+		font-weight: bold;
+		font-size: 18px;
+	}
+
+	.input-area {
+		width: 75%;
+		padding-bottom: 25px;
+	}
+
+	.field-input {
+		background-color: #ededed;
+		height: 50px;
+		line-height: 50px;
+		input {
+			background-color: #ededed;
+		}
+
+		.field-input-control {
+			font-size: 18px;
+		}
+	}
+
+	.submit-button {
+		width: 440px;
+		border-radius: 4px;
+		padding: 5px 0;
+		background-color: #dd2d36;
+		font-size: 26px;
+		font-weight: lighter;
+		margin-top: 10px;
+		cursor: pointer;
+		span {
+			font-size: 28px;
+			font-weight: 900;
+		}
+	}
+
+	.error-tip {
+	   margin-bottom: -20px;
+	}
+}
+
+.line {
+	width: 1000px;
+	height: 5px;
+	background: url(../../../../img/web/activity/pingan/ddhb/line_unit.png) repeat-x;
+}
+
+.cont-box {
+	.box {
+		margin-top: 55px;
+	}
+	.detail,
+	.rule {
+		height: 340px;
+		width: 423px;
+		border-radius: 15px;
+		border: 1px solid #ead6b3;
+
+		.title {
+			height: 58px;
+			line-height: 58px;
+			text-align: center;
+			font-size: 22px;
+			background-color: #fdf2df;
+			border-top-left-radius: 15px;
+			border-top-right-radius: 15px;
+		}
+	}
+
+	.detail {
+		.tr {
+			padding: 0 20px;
+			margin: 25px 0;
+			overflow: hidden;
+			font-size: 18px;
+			.name {
+				float: left;
+				width: 170px;
+				color: #d25c23;
+			}
+
+			.desc {
+				width: 213px;
+				float: right;
+				color: @text-color;
+			}
+
+			.desc2 {
+				color: #dd2d36;
+			}
+
+			.special {
+				font-size: 16px;
+				line-height: 20px;
+				span {
+					color: #dd2d36;
+				}
+			}
+		}
+	}
+
+	.rule {
+		p {
+			padding: 0 20px;
+			line-height: 22px;
+		}
+
+		.title {
+			margin-bottom: 25px;
+		}
+	}
+}
+
+.insurance-provider {
+	color: #651515;
+	span {
+		color: #dd2d36;
+	}
+}
+
+.foot-line {
+	margin: 25px 0 20px;
+	}
+
+
+.footer {
+	background-color: #fff;
+	color: #65686e;
+	font-size: 14px;
+}
+
+.coupon-tip {
+	font-size: 14px;
+	color: #6c1c1c;
+}
+
+.survey-tip-form {
+	text-align: left;
+    margin-top: 20px;
+    padding: 0 60px;
+}
+
+.result-container {
+	background-color: @background-color;
+}
+
+.result-wrap {
+	width: 1000px;
+	font-size: 16px;
+	margin: 0 auto;
+}
+.policy-description {
+	position: relative;
+	width: 700px;
+	margin: 60px auto;
+}
+.success-notify {
+	margin-top: 0;
+	h1 {
+		font-size: 24px;
+		line-height: 36px;
+	}
+	h2 {
+		font-size: 20px;
+		line-height: 30px;
+	}
+	h4 {
+		font-size: 16px;
+		line-height: 24px;
+	}
+}
+.policy-table {
+	padding: 40px;
+	padding-bottom: 70px;
+	font-size: 14px;
+	line-height: 30px;
+	th {
+		font-size: 16px;
+	}
+	.submit-button {
+		font-size: 16px;
+		width: 300px;
+		cursor: pointer;
+	}
+}
+.policy-stamp {
+	position: absolute;
+	right: 80px;
+    top: 100px;
+    img {
+    	width: 120px;
+    }
+}
+.policy-tip {
+	font-size: 16px;
+	margin-top: -100px;
+	color: #000;
+}

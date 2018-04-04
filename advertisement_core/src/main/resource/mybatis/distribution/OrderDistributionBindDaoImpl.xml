@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderDistributionBind">
+
+	<resultMap id="orderDistributionBindMap" type="OrderDistributionBind">
+		<id property="orderDistributionId" column="order_distribution_id"
+			jdbcType="NUMERIC" />
+		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		order_distribution_id, order_id, status, create_time,
+		update_time
+	</sql>
+
+	<!-- 查询sql -->
+	<select id="selectOrderDistributionBinds" parameterType="OrderDistributionBind"
+		resultMap="orderDistributionBindMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		tb_order_distribution_bind
+		<where>
+			<trim suffixOverrides="and">
+				<if test="orderDistributionId != null">
+					order_distribution_id= #{orderDistributionId} and
+				</if>
+				<if test="orderId != null">
+					order_id= #{orderId} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectOrderDistributionBindByIds" parameterType="List"
+		resultMap="orderDistributionBindMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		tb_order_distribution_bind
+		<where>
+			order_distribution_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertOrderDistributionBind" parameterType="OrderDistributionBind">
+		insert into
+		tb_order_distribution_bind( order_distribution_id,order_id,
+		status, create_time, update_time )
+		values
+		(#{orderDistributionId},
+		#{orderId}, #{status},
+		sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="orderDistributionId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateOrderDistributionBind" parameterType="OrderDistributionBind">
+		update tb_order_distribution_bind
+		<set>
+			<trim suffixOverrides=",">
+				<if test="orderDistributionId != null">
+					order_distribution_id= #{orderDistributionId},
+				</if>
+				<if test="orderId != null">
+					order_id= #{orderId},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			order_distribution_id=#{orderDistributionId}
+		</where>
+	</update>
+
+	<delete id="deleteOrderDistributionBind" parameterType="long">
+		delete
+		from tb_order_distribution_bind
+		where
+		order_distribution_id=#{orderDistributionId}
+	</delete>
+
+</mapper>

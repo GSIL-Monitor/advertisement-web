@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="User">
+
+	<resultMap id="userMap" type="User">
+		<id property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="weixinId" column="weixin_id" jdbcType="VARCHAR" />
+		<result property="password" column="password" jdbcType="VARCHAR" />
+		<result property="inviteType" column="invite_type" jdbcType="NUMERIC" />
+		<result property="registerFrom" column="register_from" jdbcType="NUMERIC" />
+		<result property="userType" column="user_type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<resultMap id="loginTokenMap" type="LoginToken">
+		<result property="appId" column="app_id" jdbcType="VARCHAR" />
+		<result property="token" column="token" jdbcType="VARCHAR" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="loginIp" column="login_ip" jdbcType="VARCHAR" />
+		<result property="loginTime" column="login_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectUser" parameterType="User" resultMap="userMap">
+		select
+		* from
+		tb_user_info t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="userId != null">
+					user_id=#{userId} and
+				</if>
+				<if test="mobile != null">
+					mobile=#{mobile} and
+				</if>
+				<if test="weixinId != null">
+					weixin_id=#{weixinId} and
+				</if>
+				<if test="status != null">
+					status=#{status} and
+				</if>
+				<if test="inviteType != null">
+					invite_type=#{inviteType} and
+				</if>
+				<if test="registerFrom != null">
+					register_from=#{registerFrom} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectUserById" parameterType="long" resultMap="userMap">
+		select
+		* from
+		tb_user_info t
+		<where>
+			user_id=#{userId}
+		</where>
+	</select>
+
+	<select id="selectUserByIds" parameterType="List" resultMap="userMap">
+		select
+		* from
+		tb_user_info t
+		<where>
+			user_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<select id="login" parameterType="String" resultMap="userMap">
+		select
+		* from
+		tb_user_info t
+		<where>
+			mobile=#{mobile}
+		</where>
+	</select>
+
+	<insert id="insertUser" parameterType="User">
+		insert into
+		tb_user_info(user_id, mobile, weixin_id, password,
+		invite_type, register_from, status, create_time,update_time)
+		values
+		(#{userId}, #{mobile}, #{weixinId}, #{password}, #{inviteType},
+		#{registerFrom}, #{status}, sysdate(), sysdate())
+	</insert>
+
+	<insert id="insertUserWithCreateTime" parameterType="User">
+		insert into
+		tb_user_info(user_id, mobile, weixin_id, password,
+		invite_type, register_from, status, create_time,update_time)
+		values
+		(#{userId}, #{mobile}, #{weixinId}, #{password}, #{inviteType},
+		#{registerFrom}, #{status}, #{createTime}, #{updateTime})
+	</insert>
+
+	<update id="updateUser" parameterType="User">
+		update tb_user_info
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id=#{userId},
+				</if>
+				<if test="weixinId != null">
+					weixin_id=#{weixinId},
+				</if>
+				<if test="mobile != null">
+					mobile=#{mobile},
+				</if>
+				<if test="password != null">
+					password=#{password},
+				</if>
+				<if test="inviteType != null">
+					invite_type=#{inviteType},
+				</if>
+				<if test="registerFrom != null">
+					register_from=#{registerFrom},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
+
+	<delete id="deleteUser" parameterType="long">
+		delete from tb_user_info
+		where
+		user_id=#{userId}
+	</delete>
+
+	<insert id="saveLoginToken" parameterType="LoginToken">
+		insert into
+		tb_login_token(app_id, token, user_id, login_time,
+		login_ip)
+		values
+		(#{appId}, #{token}, #{userId}, #{loginTime}, #{loginIp})
+	</insert>
+	
+	<select id="selectLoginToken" parameterType="LoginToken" resultMap="loginTokenMap">
+		select
+		* from
+		tb_login_token t
+		<where>
+			token=#{token}
+		</where>
+		order by create_time desc
+	</select>
+
+</mapper>

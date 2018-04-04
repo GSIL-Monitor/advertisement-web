@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Statistics">
+
+	<resultMap id="commonStatisticsMap" type="Statistics">
+		<id property="statisticsId" column="statistics_id" jdbcType="NUMERIC" />
+		<result property="date" column="date" jdbcType="VARCHAR" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="pvCount" column="pv_count" jdbcType="NUMERIC" />
+		<result property="uvCount" column="uv_count" jdbcType="NUMERIC" />
+		<result property="registerCount" column="register_count" jdbcType="NUMERIC" />
+		<result property="applyCount" column="apply_count" jdbcType="NUMERIC" />
+		<result property="applyUserCount" column="apply_user_count" jdbcType="NUMERIC" />
+		<result property="downloadCount" column="download_count" jdbcType="NUMERIC" />
+		<result property="firstLoginCount" column="first_login_count" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<!-- 申请人次 -->
+	<select id="selectApplyCount" parameterType="Map"
+		resultMap="commonStatisticsMap">
+		select count(a.user_id) as applyCount, a.merchant_id as merchantId, a.product_id as productId,
+		u.register_from as channel
+		from view_apply a, view_user_info u
+		<where>
+			a.user_id=u.user_id and a.status != -1 and u.status != -1
+			<trim suffixOverrides="and">
+				<if test="createTimeStart != null">
+				    and a.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and a.create_time &lt; #{createTimeEnd}
+				</if>
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), a.create_time)=#{dateDiff}
+				</if>
+				<if test="channelList != null">
+					and u.register_from in 
+					<foreach item="channel" index="index" collection="channelList" open="(" separator="," close=")">
+						#{channel}
+					</foreach>
+				</if>
+			</trim>
+			and a.status != -1
+		</where>
+		group by a.product_id, u.register_from
+	</select>
+	
+	<!-- 申请人数 -->
+	<select id="selectApplyUserCount" parameterType="Map"
+		resultMap="commonStatisticsMap">
+		select count(distinct(a.user_id)) as applyUserCount, a.product_id as productId,
+		u.register_from as channel
+		from view_apply a, view_user_info u
+		<where>
+			a.user_id=u.user_id and a.status != -1 and u.status != -1
+			<trim suffixOverrides="and">
+				<if test="createTimeStart != null">
+				    and a.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and a.create_time &lt; #{createTimeEnd}
+				</if>
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), a.create_time)=#{dateDiff}
+				</if>
+				<if test="channelList != null">
+					and u.register_from in 
+					<foreach item="channel" index="index" collection="channelList" open="(" separator="," close=")">
+						#{channel}
+					</foreach>
+				</if>
+			</trim>
+			and a.status != -1
+		</where>
+		group by u.register_from
+	</select>
+	
+	<!-- 申请成功数 -->
+	<select id="selectApplySuccessCount" parameterType="Map"
+		resultMap="commonStatisticsMap">
+		select count(distinct(a.user_id)) as applySuccessCount, a.product_id as productId,
+		u.register_from as channel
+		from view_apply a, view_user_info u
+		<where>
+			a.user_id=u.user_id and a.status != -1 and u.status != -1
+			and a.status=2
+			<trim suffixOverrides="and">
+				<if test="createTimeStart != null">
+				    and a.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and a.create_time &lt; #{createTimeEnd}
+				</if>
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), a.create_time)=#{dateDiff}
+				</if>
+				<if test="channelList != null">
+					and u.register_from in 
+					<foreach item="channel" index="index" collection="channelList" open="(" separator="," close=")">
+						#{channel}
+					</foreach>
+				</if>
+			</trim>
+			and a.status != -1
+		</where>
+		group by u.register_from, a.product_id
+	</select>
+	
+	<select id="selectRegisterCount" parameterType="Map"
+		resultMap="commonStatisticsMap">
+		select count(distinct(u.user_id)) as registerCount,
+		u.register_from as channel
+		from view_user_info u
+		<where>
+			<trim suffixOverrides="and">
+				<if test="createTimeStart != null">
+				   u.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and u.create_time &lt; #{createTimeEnd}
+				</if>
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), u.create_time)=#{dateDiff}
+				</if>
+				<if test="channelList != null">
+					and u.register_from in 
+					<foreach item="channel" index="index" collection="channelList" open="(" separator="," close=")">
+						#{channel}
+					</foreach>
+				</if>
+			</trim>
+			and u.status != -1
+		</where>
+		group by u.register_from
+	</select>
+	
+	<select id="selectDownloadCount" parameterType="Map"
+		resultMap="commonStatisticsMap">
+		select count(distinct(i.unique_id)) as downloadCount,
+		i.source_channel as channel
+		from tb_app_info i
+		<where>
+			<trim suffixOverrides="and">
+				<if test="createTimeStart != null">
+				   i.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and i.create_time &lt; #{createTimeEnd}
+				</if>
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), i.create_time)=#{dateDiff}
+				</if>
+				<if test="channelList != null">
+					and i.source_channel in 
+					<foreach item="channel" index="index" collection="channelList" open="(" separator="," close=")">
+						#{channel}
+					</foreach>
+				</if>
+			</trim>
+		</where>
+		group by i.source_channel
+	</select>
+	
+	<select id="selectFirstLoginCount" parameterType="Map"
+		resultMap="commonStatisticsMap">
+		select count(distinct(t1.user_id)) as firstLoginCount,
+		u.register_from as channel
+		from tb_login_token t1, view_user_info u
+		<where>
+			u.user_id=t1.user_id
+			<trim suffixOverrides="and">
+				<if test="createTimeStart != null">
+					and t1.login_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and t1.login_time &lt; #{createTimeEnd}
+				</if>
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), t1.login_time)=#{dateDiff}
+				</if>
+				<if test="channelList != null">
+					and u.register_from in 
+					<foreach item="channel" index="index" collection="channelList" open="(" separator="," close=")">
+						#{channel}
+					</foreach>
+				</if>
+				and not exists (select * from tb_login_token t2  where
+				t1.app_id=t2.app_id and t2.login_time &lt; #{createTimeStart})
+			</trim>
+		</where>
+		group by u.register_from
+	</select>
+
+</mapper>

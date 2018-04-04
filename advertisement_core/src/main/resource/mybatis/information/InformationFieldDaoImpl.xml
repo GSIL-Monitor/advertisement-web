@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="informationField">
+
+	<resultMap id="informationFieldMap" type="InformationField">
+		<id property="fieldId" column="field_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="fieldName" column="field_name" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="tagsType" column="tags_type" jdbcType="NUMERIC" />
+		<result property="values" column="values" jdbcType="VARCHAR" />
+		<result property="required" column="required" jdbcType="NUMERIC" />
+		<result property="defaultValue" column="default_value" jdbcType="VARCHAR" />
+		<result property="unit" column="unit" jdbcType="VARCHAR" />
+		<result property="placeholder" column="placeholder" jdbcType="VARCHAR" />
+		<result property="relativeField" column="relative_field" jdbcType="NUMERIC" />
+		<result property="relativeValue" column="relative_value" jdbcType="VARCHAR" />
+		<result property="level" column="level" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectInformationField" parameterType="InformationField"
+		resultMap="informationFieldMap">
+		select
+		* from
+		tb_information_field t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="fieldId != null">
+					field_id=#{fieldId} and
+				</if>
+				<if test="name != null">
+					name=#{name} and
+				</if>
+				<if test="relativeField != null">
+					relative_field=#{relativeField} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="level != null">
+					level=#{level} and
+				</if>
+				<if test="tagsType != null">
+					tags_type=#{tagsType} and
+				</if>
+				<if test="values != null">
+					values=#{values} and
+				</if>
+				<if test="required != null">
+					required=#{required} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectInformationFieldByIds" parameterType="List"
+		resultMap="informationFieldMap">
+		select
+		* from
+		tb_information_field t
+		<where>
+			field_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertInformationField" parameterType="InformationField">
+		insert into
+		tb_information_field(name, field_name, type, tags_type, `values`,
+		required, default_value, unit, placeholder, relative_field, relative_value, level, status,
+		create_time, update_time)
+		values
+		(#{name}, #{fieldName}, #{type},
+		#{tagsType}, #{values}, #{required}, #{defaultValue}, #{unit}, #{placeholder},
+		#{relativeField}, #{relativeValue}, #{level}, #{status}, sysdate(),
+		sysdate())
+	</insert>
+
+	<update id="updateInformationField" parameterType="InformationField">
+		update tb_information_field
+		<set>
+			<trim suffixOverrides=",">
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="fieldName != null">
+					field_name=#{fieldName},
+				</if>
+				<if test="relativeField != null">
+					relative_field=#{relativeField},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="tagsType != null">
+					tags_type=#{tagsType},
+				</if>
+				<if test="values != null">
+					values=#{values},
+				</if>
+				<if test="required != null">
+					required=#{required},
+				</if>
+				<if test="defaultValue != null">
+					default_value=#{defaultValue},
+				</if>
+				<if test="unit != null">
+					unit=#{unit},
+				</if>
+				<if test="level != null">
+					level=#{level},
+				</if>
+				<if test="placeholder != null">
+					placeholder=#{placeholder},
+				</if>
+				<if test="relativeValue != null">
+					relative_value=#{relativeValue},
+				</if>
+				<if test="status != null">
+					status = #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			field_id=#{fieldId}
+		</where>
+	</update>
+
+</mapper>

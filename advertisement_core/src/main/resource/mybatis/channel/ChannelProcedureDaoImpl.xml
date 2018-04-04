@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="channelProcedure">
+
+	<resultMap id="channelProcedureMap" type="ChannelProcedure">
+		<id property="procedureId" column="procedure_id" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
+		<result property="sort" column="sort" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectChannelProcedure" parameterType="ChannelProcedure"
+		resultMap="channelProcedureMap">
+		select
+		* from
+		tb_channel_procedure t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="procedureId != null">
+					procedure_id=#{procedureId} and
+				</if>
+				<if test="channel != null">
+					channel=#{channel} and
+				</if>
+				<if test="sort != null">
+					sort=#{sort} and
+				</if>
+				<if test="status != null">
+					status=#{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by sort asc, create_time desc
+	</select>
+
+	<select id="selectChannelProcedureByIds" parameterType="List"
+		resultMap="channelProcedureMap">
+		select
+		* from
+		tb_channel_procedure t
+		<where>
+			procedure_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<select id="selectChannelProcedureByChannels" parameterType="List"
+		resultMap="channelProcedureMap">
+		select
+		* from
+		tb_channel_procedure t
+		<where>
+			channel in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+			order by sort asc, create_time desc
+		</where>
+	</select>
+
+	<insert id="insertChannelProcedure" parameterType="ChannelProcedure">
+		insert into
+		tb_channel_procedure(channel, description, image_url, sort, status,
+		create_time, update_time)
+		values
+		(#{channel}, #{description}, #{imageUrl}, #{sort}, #{status}, sysdate(),
+		sysdate())
+	</insert>
+
+	<update id="updateChannelProcedure" parameterType="ChannelProcedure">
+		update tb_channel_procedure
+		<set>
+			<trim suffixOverrides=",">
+				<if test="channel != null">
+					channel=#{channel},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="imageUrl != null">
+					image_url=#{imageUrl},
+				</if>
+				<if test="sort != null">
+					sort = #{sort},
+				</if>
+				<if test="status != null">
+					status = #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			procedure_id=#{procedureId}
+		</where>
+	</update>
+
+</mapper>

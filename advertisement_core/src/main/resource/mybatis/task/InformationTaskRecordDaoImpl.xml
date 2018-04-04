@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="informationTaskRecord">
+	<resultMap id="informationTaskRecordMap" type="InformationTaskRecord">
+		<result property="informationTaskRecordId" column="information_task_record_id"
+			jdbcType="NUMERIC" />
+		<result property="staffId" column="staff_id" jdbcType="NUMERIC" />
+		<result property="informationTaskId" column="information_task_id"
+			jdbcType="NUMERIC" />
+		<result property="workOrderId" column="work_order_id" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="allocateTime" column="allocate_time"
+			jdbcType="TIMESTAMP" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectInformationTaskRecords" parameterType="InformationTaskRecord"
+		resultMap="informationTaskRecordMap">
+		select
+		* from
+		tb_information_task_record
+		<where>
+			<trim suffixOverrides="and">
+				<if test="informationTaskId != null">
+					information_task_id=#{informationTaskId} and
+				</if>
+				<if test="staffId != null">
+					staff_id=#{staffId} and
+				</if>
+				<if test="workOrderId != null">
+					work_order_id=#{workOrderId} and
+				</if>
+				<if test="informationTaskRecordId != null">
+					information_task_record_id=#{informationTaskRecordId}
+					and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+				<if test="startStatus != null">
+					status &gt;= #{startStatus} and
+				</if>
+				<if test="endStatus != null">
+					status &lt;= #{endStatus} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<sql id="Information_Task_Record_Query">
+		tb_information_task_record t, tb_work_order w, tb_information i
+		<where>
+			<trim suffixOverrides="and">
+				t.work_order_id = w.work_order_id and w.information_id =
+				i.information_id and
+				<if test="informationTaskId != null">
+					t.information_task_id=#{informationTaskId} and
+				</if>
+				<if test="recordStaffId != null">
+					t.staff_id=#{recordStaffId} and
+				</if>
+				<if test="workOrderId != null">
+					t.work_order_id=#{workOrderId} and
+				</if>
+				<if test="workOrderIdList != null">
+					t.work_order_id in
+					<foreach item="wid" collection="workOrderIdList" open="("
+						separator="," close=")">
+						#{wid}
+					</foreach> and
+				</if>
+				<if test="informationTaskRecordId != null">
+					t.information_task_record_id=#{informationTaskRecordId}
+					and
+				</if>
+				<if test="type != null">
+					t.type=#{type} and
+				</if>
+				<if test="allocateStatus != null">
+					t.status = #{allocateStatus} and
+				</if>
+				<if test="startStatus != null">
+					t.status &gt;= #{startStatus} and
+				</if>
+				<if test="endStatus != null">
+					t.status &lt;= #{endStatus} and
+				</if>
+				<if test="allocateStatusList != null">
+					t.status in
+					<foreach item="st" collection="allocateStatusList" open="("
+						separator="," close=")">
+						#{st}
+					</foreach> and
+				</if>
+				<if test="recordIdList != null">
+					t.information_task_record_id in
+					<foreach item="recordId" collection="recordIdList" open="("
+						separator="," close=")">
+						#{recordId}
+					</foreach> and
+				</if>
+				<if test="projectId != null">
+					w.project_id=#{projectId} and
+				</if>
+				<if test="informationId != null">
+					w.information_id=#{informationId} and
+				</if>
+				<if test="staffId != null">
+					w.staff_id=#{staffId} and
+				</if>
+				<if test="stage != null">
+					w.stage=#{stage} and
+				</if>
+				<if test="status != null">
+					w.status=#{status} and
+				</if>
+				<if test="startCreateTime != null">
+					w.create_time &gt; #{startCreateTime} and
+				</if>
+				<if test="endCreateTime != null">
+					w.create_time &lt; #{endCreateTime} and
+				</if>
+				<if test="startAllocateTime != null">
+					t.allocate_time &gt; #{startAllocateTime} and
+				</if>
+				<if test="endAllocateTime != null">
+					t.allocate_time &lt; #{endAllocateTime} and
+				</if>
+				<if test="name != null">
+					i.name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="gender != null">
+					i.gender=#{gender} and
+				</if>
+				<if test="startBirthday != null">
+					i.birthday &gt;= #{startBirthday} and
+				</if>
+				<if test="endBirthday != null">
+					i.birthday &lt;= #{endBirthday} and
+				</if>
+				<if test="startCallTimes != null">
+					w.call_times &gt;= #{startCallTimes} and
+				</if>
+				<if test="endCallTimes != null">
+					w.call_times &lt;= #{endCallTimes} and
+				</if>
+				<if test="startCallBackTime != null">
+					w.call_back_time &gt;= #{startCallBackTime} and
+				</if>
+				<if test="endCallBackTime != null">
+					w.call_back_time &lt;= #{endCallBackTime} and
+				</if>
+			</trim>
+		</where>
+	</sql>
+	<select id="selectInformationTaskRecordsWithSort" parameterType="InformationTaskRecordDto"
+		resultMap="informationTaskRecordMap">
+		select
+		* from
+		<include refid="Information_Task_Record_Query" />
+		<if test="sortCondition != null">
+			order by ${sortCondition}
+		</if>
+		<if test="sortCondition == null">
+			order by t.create_time desc
+		</if>
+	</select>
+
+	<select id="selectInformationTaskRecordCount" parameterType="InformationTaskRecord"
+		resultType="int">
+		select
+		count(information_task_record_id) from
+		<include refid="Information_Task_Record_Query" />
+	</select>
+
+	<insert id="insertInformationTaskRecord" parameterType="InformationTaskRecord">
+		insert
+		into
+		tb_information_task_record(information_task_id, staff_id,
+		work_order_id, type, status, allocate_time, create_time,
+		update_time)
+		values
+		(#{informationTaskId},
+		#{staffId},
+		#{workOrderId}, #{type},
+		#{status}, #{allocateTime},
+		sysdate(),
+		sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="informationTaskRecordId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateInformationTaskRecord" parameterType="InformationTaskRecord">
+		update tb_information_task_record
+		<set>
+			<if test="informationTaskId != null">
+				information_task_id=#{informationTaskId},
+			</if>
+			<if test="staffId != null">
+				staff_id=#{staffId},
+			</if>
+			<if test="workOrderId != null">
+				work_order_id=#{workOrderId},
+			</if>
+			<if test="type != null">
+				type=#{type},
+			</if>
+			<if test="allocateTime != null">
+				allocate_time=#{allocateTime},
+			</if>
+			<if test="status != null">
+				status=#{status},
+			</if>
+			update_time=sysdate(),
+		</set>
+		<where>
+			information_task_record_id=#{informationTaskRecordId}
+		</where>
+	</update>
+
+</mapper>

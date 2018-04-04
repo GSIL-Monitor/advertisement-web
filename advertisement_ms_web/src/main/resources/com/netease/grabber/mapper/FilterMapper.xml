@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.grabber.mapper.FilterMapper">
+	<resultMap type="com.netease.grabber.model.Filter" id="filterMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="beanName" column="bean_name" />
+		<result property="type" column="type" />
+		<result property="author" column="author" />
+		<result property="version" column="version" />
+		<result property="standby" column="standby" />
+	</resultMap>
+
+	<select id="queryFilterById" parameterType="String" resultMap="filterMap">
+		select * from tb_job_filter t1
+		<where>
+			t1.id=#{id}
+		</where>
+	</select>
+
+	<insert id="insertFilter" parameterType="com.netease.grabber.model.Filter">
+		insert into
+		tb_job_filter
+		(
+		id,
+		name,
+		bean_name,
+		type,
+		author,
+		version,
+		standby,
+		)
+		values
+		(
+		#{id, jdbcType = VARCHAR},
+		#{name, jdbcType = VARCHAR},
+		#{beanName,
+		jdbcType = VARCHAR},
+		#{type, jdbcType = VARCHAR},
+		#{author, jdbcType =
+		VARCHAR},
+		#{version, jdbcType = VARCHAR},
+		#{standby, jdbcType = VARCHAR}
+		)
+	</insert>
+
+</mapper>

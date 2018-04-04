@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <properties>
+        <property name="dialectClass" value="com.yuanshanbao.paginator.dialect.MySQLDialect"/>
+    </properties>
+
+    <typeAliases>
+        <typeAlias type="com.yuanshanbao.ad.common.model.Ini" alias="ini"/>
+        <typeAlias type="com.yuanshanbao.ad.common.model.Entrance" alias="entrance"/>
+        <typeAlias type="com.yuanshanbao.ad.common.model.Alarm" alias="Alarm"/>
+        <typeAlias type="com.yuanshanbao.ad.common.model.ServerLog" alias="ServerLog"/>
+        
+        <typeAlias alias="Calculator" type="com.yuanshanbao.ad.calculator.model.Calculator" />
+        
+        <typeAlias type="com.yuanshanbao.ad.cron.model.CronTab" alias="cronTab"/>
+		<typeAlias type="com.yuanshanbao.ad.activity.model.Activity" alias="Activity"/>
+		<typeAlias type="com.yuanshanbao.ad.activity.model.ActivityStep" alias="ActivityStep"/>
+		<typeAlias type="com.yuanshanbao.ad.page.model.Page" alias="Page"/>
+		<typeAlias type="com.yuanshanbao.ad.page.model.PageStep" alias="PageStep"/>
+        <typeAlias type="com.yuanshanbao.ad.banner.model.Banner" alias="banner"/>
+        <typeAlias type="com.yuanshanbao.ad.statistics.model.Statistics" alias="Statistics"/>
+        <typeAlias type="com.yuanshanbao.ad.statistics.model.StaffStatistics" alias="StaffStatistics"/>
+        <typeAlias type="com.yuanshanbao.ad.statistics.model.AdvertisementStatistics" alias="AdvertisementStatistics"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.app.model.AppInfo" alias="AppInfo"/>
+        <typeAlias type="com.yuanshanbao.ad.advertisement.model.Advertisement" alias="Advertisement"/>
+        <typeAlias type="com.yuanshanbao.ad.advertisement.model.AdvertisementStrategy" alias="AdvertisementStrategy"/>
+        <typeAlias type="com.yuanshanbao.ad.advertisement.model.Advertiser" alias="Advertiser"/>
+        <typeAlias type="com.yuanshanbao.ad.advertisement.model.AdvertisementCategory" alias="AdvertisementCategory"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.user.model.User" alias="User"/>
+        <typeAlias type="com.yuanshanbao.ad.user.model.UserSequence" alias="UserSequence"/>
+        <typeAlias type="com.yuanshanbao.ad.user.model.IndexUser" alias="IndexUser"/>
+        <typeAlias type="com.yuanshanbao.ad.user.model.BaseInfo" alias="BaseInfo"/>
+        <typeAlias type="com.yuanshanbao.ad.user.model.Broker" alias="Broker"/>
+        <typeAlias type="com.yuanshanbao.ad.broker.model.BrokerDepartment" alias="BrokerDepartment"/>
+        <typeAlias type="com.yuanshanbao.ad.user.model.Bind" alias="Bind"/>
+        <typeAlias type="com.yuanshanbao.ad.card.model.Card" alias="Card"/>
+        <typeAlias type="com.yuanshanbao.ad.user.model.LoginToken" alias="LoginToken"/>
+        <typeAlias type="com.yuanshanbao.ad.sms.model.SmsVerifyCode" alias="SmsVerifyCode"/>
+
+        <typeAlias type="com.yuanshanbao.ad.channel.model.Channel" alias="Channel"/>
+        <typeAlias type="com.yuanshanbao.ad.config.model.Config" alias="Config"/>
+        <typeAlias type="com.yuanshanbao.ad.config.model.Function" alias="Function"/>
+        <typeAlias type="com.yuanshanbao.ad.config.model.ConfigAction" alias="ConfigAction"/>
+        <typeAlias type="com.yuanshanbao.ad.tags.model.Tags" alias="Tags"/>
+        <typeAlias type="com.yuanshanbao.ad.tags.model.TagsType" alias="TagsType"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.merchant.model.Merchant" alias="Merchant"/>      
+        <typeAlias type="com.yuanshanbao.ad.information.model.Information" alias="Information"/>
+        <typeAlias type="com.yuanshanbao.ad.information.model.InformationField" alias="InformationField"/>
+        <typeAlias type="com.yuanshanbao.ad.information.model.InformationRelative" alias="InformationRelative"/>
+        <typeAlias type="com.yuanshanbao.ad.information.model.InformationInsurance" alias="InformationInsurance"/>
+        <typeAlias type="com.yuanshanbao.ad.channel.model.ChannelProcedure" alias="ChannelProcedure"/>
+        <typeAlias type="com.yuanshanbao.ad.information.model.ExtendInfo" alias="ExtendInfo"/>
+        <typeAlias type="com.yuanshanbao.ad.location.model.Location" alias="Location"/>
+        <typeAlias type="com.yuanshanbao.ad.location.model.MerchantLocation" alias="MerchantLocation"/>
+        <typeAlias type="com.yuanshanbao.ad.location.model.MobileLocation" alias="MobileLocation"/>
+        <typeAlias type="com.yuanshanbao.ad.distribution.model.OrderDistribution" alias="OrderDistribution"/>
+        <typeAlias type="com.yuanshanbao.ad.distribution.model.OrderDistributionBind" alias="OrderDistributionBind"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.channel.model.ChannelPromotionInfo" alias="ChannelPromotionInfo"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.common.model.Feedback" alias="Feedback"/>
+                
+        <typeAlias type="com.yuanshanbao.ad.article.model.Article" alias="Article"/>
+        <typeAlias type="com.yuanshanbao.ad.article.model.ArticleSection" alias="ArticleSection"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.sms.model.MarketingSms" alias="MarketingSms"/>
+        <typeAlias type="com.yuanshanbao.ad.sms.model.MarketingTask" alias="MarketingTask"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.project.model.Project" alias="Project"/>
+         <typeAlias type="com.yuanshanbao.ad.product.model.Product" alias="Product"/>
+         <typeAlias type="com.yuanshanbao.ad.product.model.ProductCategory" alias="ProductCategory"/>
+        <typeAlias type="com.yuanshanbao.ad.product.model.ProductBind" alias="ProductBind"/>
+        <typeAlias type="com.yuanshanbao.ad.product.model.InsuranceProduct" alias="InsuranceProduct"/>
+        <typeAlias type="com.yuanshanbao.ad.subproject.model.Subproject" alias="Subproject"/>
+        <typeAlias type="com.yuanshanbao.ad.staff.model.Staff" alias="Staff"/>
+        <typeAlias type="com.yuanshanbao.ad.staff.model.StaffRole" alias="StaffRole"/>
+        <typeAlias type="com.yuanshanbao.ad.department.model.Department" alias="Department"/>
+        <typeAlias type="com.yuanshanbao.ad.order.model.Order" alias="Order"/>
+        <typeAlias type="com.yuanshanbao.ad.order.model.OrderComment" alias="OrderComment"/>
+        <typeAlias type="com.yuanshanbao.ad.order.model.OrderRemark" alias="OrderRemark"/>
+        <typeAlias type="com.yuanshanbao.ad.order.model.OrderProspectus" alias="OrderProspectus"/>
+        <typeAlias type="com.yuanshanbao.ad.order.model.OrderProspectusProduct" alias="OrderProspectusProduct"/>
+        <typeAlias type="com.yuanshanbao.ad.message.model.Message" alias="Message"/>
+        <typeAlias type="com.yuanshanbao.ad.remark.model.WorkOrderRemark" alias="WorkOrderRemark"/>
+        <typeAlias type="com.yuanshanbao.ad.comment.model.WorkOrderComment" alias="WorkOrderComment"/>
+        <typeAlias type="com.yuanshanbao.ad.call.model.CallRecord" alias="CallRecord"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.task.model.InformationTask" alias="InformationTask"/>
+        <typeAlias type="com.yuanshanbao.ad.task.model.InformationAllocateTask" alias="InformationAllocateTask"/>
+        <typeAlias type="com.yuanshanbao.ad.task.model.InformationTaskRecord" alias="InformationTaskRecord"/>
+        <typeAlias type="com.yuanshanbao.ad.task.model.InformationTaskRecordDto" alias="InformationTaskRecordDto"/>
+        <typeAlias type="com.yuanshanbao.ad.task.model.InformationTaskStrategy" alias="InformationTaskStrategy"/>
+        
+        <typeAlias type="com.yuanshanbao.ad.state.model.WorkOrderState" alias="WorkOrderState"/>
+        <typeAlias type="com.yuanshanbao.ad.workorder.model.WorkOrder" alias="WorkOrder"/>
+        <typeAlias type="com.yuanshanbao.ad.workorder.model.WorkOrderDto" alias="WorkOrderDto"/>
+        <typeAlias type="com.yuanshanbao.ad.call.model.CallBack" alias="CallBack"/>
+        <typeAlias type="com.yuanshanbao.ad.supplier.model.Supplier" alias="Supplier"/>
+        <typeAlias type="com.yuanshanbao.ad.workorder.model.WorkOrderRecommend" alias="WorkOrderRecommend"/>
+         
+        <typeAlias type="com.yuanshanbao.ad.information.model.FieldConstrains" alias="FieldConstrains"/>
+        <typeAlias type="com.yuanshanbao.ad.danmaku.model.Danmaku" alias="Danmaku"/>
+    </typeAliases>
+
+    <mappers>
+        <mapper resource="mybatis/common/IniDaoImpl.xml"/>
+        <mapper resource="mybatis/common/EntranceDaoImpl.xml"/>
+        <mapper resource="mybatis/common/AlarmDaoImpl.xml"/>
+        <mapper resource="mybatis/common/ServerLogDaoImpl.xml"/>
+        <mapper resource="mybatis/common/FeedbackDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/banner/BannerDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/cron/CronTabDaoImpl.xml"/>
+        <mapper resource="mybatis/calculator/CalculatorDaoImpl.xml" />
+
+        <mapper resource="mybatis/app/AppDaoImpl.xml"/>
+        <mapper resource="mybatis/advertisement/AdvertisementDaoImpl.xml"/>
+        <mapper resource="mybatis/advertisement/AdvertiserDaoImpl.xml"/>
+        <mapper resource="mybatis/advertisement/AdvertisementStrategyDaoImpl.xml"/>
+        <mapper resource="mybatis/advertisement/AdvertisementCategoryDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/user/UserDaoImpl.xml"/>
+        <mapper resource="mybatis/user/BrokerDaoImpl.xml"/>
+        <mapper resource="mybatis/broker/BrokerDepartmentDaoImpl.xml"/>
+        <mapper resource="mybatis/user/BindDaoImpl.xml"/>
+        <mapper resource="mybatis/card/CardDaoImpl.xml"/>
+        <mapper resource="mybatis/user/UserBaseInfoDaoImpl.xml"/>
+        <mapper resource="mybatis/user/UserSequenceDaoImpl.xml"/>
+        <mapper resource="mybatis/user/IndexUserDaoImpl.xml"/>
+        <mapper resource="mybatis/sms/VerifyCodeDaoImpl.xml"/>
+
+        <mapper resource="mybatis/channel/ChannelDaoImpl.xml"/>
+        <mapper resource="mybatis/config/ConfigDaoImpl.xml"/>
+        <mapper resource="mybatis/config/ConfigActionDaoImpl.xml"/>
+        <mapper resource="mybatis/config/FunctionDaoImpl.xml"/>
+        <mapper resource="mybatis/tags/TagsDaoImpl.xml"/>
+        <mapper resource="mybatis/tags/TagsTypeDaoImpl.xml"/>
+
+        <mapper resource="mybatis/merchant/MerchantDaoImpl.xml"/>
+        <mapper resource="mybatis/information/InformationDaoImpl.xml"/>
+        <mapper resource="mybatis/information/InformationFieldDaoImpl.xml"/>
+        <mapper resource="mybatis/information/InformationRelativeDaoImpl.xml"/>
+        <mapper resource="mybatis/information/InformationInsuranceDaoImpl.xml"/>
+        <mapper resource="mybatis/channel/ChannelProcedureDaoImpl.xml"/>
+        <mapper resource="mybatis/information/ExtendInfoDaoImpl.xml"/>
+        <mapper resource="mybatis/information/FieldConstrainsDaoImpl.xml"/>
+        <mapper resource="mybatis/location/LocationDaoImpl.xml"/>
+        <mapper resource="mybatis/location/MerchantLocationDaoImpl.xml"/>
+        <mapper resource="mybatis/location/MobileLocationDaoImpl.xml"/>
+        <mapper resource="mybatis/distribution/OrderDistributionDaoImpl.xml"/>
+        <mapper resource="mybatis/distribution/OrderDistributionBindDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/channel/ChannelPromotionInfoDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/article/ArticleDaoImpl.xml"/>
+        <mapper resource="mybatis/article/ArticleSectionDaoImpl.xml"/>
+        <mapper resource="mybatis/activity/ActivityDaoImpl.xml"/>
+        <mapper resource="mybatis/activity/ActivityStepDaoImpl.xml"/>
+        <mapper resource="mybatis/page/PageDaoImpl.xml"/>
+        <mapper resource="mybatis/page/PageStepDaoImpl.xml"/>
+        <mapper resource="mybatis/statistics/StatisticsDaoImpl.xml"/>
+        <mapper resource="mybatis/statistics/AdvertisementStatisticsDaoImpl.xml"/>
+        <mapper resource="mybatis/statistics/CommonStatisticsDaoImpl.xml"/>
+        <mapper resource="mybatis/statistics/StaffStatisticsDaoImpl.xml"/>
+        <mapper resource="mybatis/statistics/StaffElementStatisticsDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/sms/MarketingSmsDaoImpl.xml"/>
+        <mapper resource="mybatis/sms/MarketingTaskDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/project/ProjectDaoImpl.xml"/>
+        <mapper resource="mybatis/product/ProductDaoImpl.xml"/>
+        <mapper resource="mybatis/product/ProductCategoryDaoImpl.xml"/>
+        <mapper resource="mybatis/product/ProductBindDaoImpl.xml"/>
+        <mapper resource="mybatis/product/InsuranceProductDaoImpl.xml"/>
+        <mapper resource="mybatis/subproject/SubprojectDaoImpl.xml"/>
+        <mapper resource="mybatis/department/DepartmentDaoImpl.xml"/>
+        <mapper resource="mybatis/staff/StaffDaoImpl.xml"/>
+        <mapper resource="mybatis/staff/StaffRoleDaoImpl.xml"/>
+        <mapper resource="mybatis/order/OrderDaoImpl.xml"/>
+        <mapper resource="mybatis/order/OrderCommentDaoImpl.xml"/>
+        <mapper resource="mybatis/order/OrderRemarkDaoImpl.xml"/>
+        <mapper resource="mybatis/order/OrderProspectusDaoImpl.xml"/>
+        <mapper resource="mybatis/order/OrderProspectusProductDaoImpl.xml"/>
+        <mapper resource="mybatis/message/MessageDaoImpl.xml"/>
+        <mapper resource="mybatis/remark/WorkOrderRemarkDaoImpl.xml"/>
+        <mapper resource="mybatis/comment/WorkOrderCommentDaoImpl.xml"/>
+        <mapper resource="mybatis/call/CallRecordDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/task/InformationTaskDaoImpl.xml"/>
+        <mapper resource="mybatis/task/InformationAllocateTaskDaoImpl.xml"/>
+        <mapper resource="mybatis/task/InformationTaskRecordDaoImpl.xml"/>
+        <mapper resource="mybatis/task/InformationTaskStrategyDaoImpl.xml"/>
+       
+        <mapper resource="mybatis/state/WorkOrderStateDaoImpl.xml"/>
+        <mapper resource="mybatis/workorder/WorkOrderDaoImpl.xml"/>
+        <mapper resource="mybatis/call/CallBackDaoImpl.xml"/>
+        <mapper resource="mybatis/supplier/SupplierDaoImpl.xml"/>
+        <mapper resource="mybatis/workorder/WorkOrderRecommendDaoImpl.xml"/>
+        
+        <mapper resource="mybatis/danmaku/DanmakuDaoImpl.xml"/>
+        
+    </mappers>
+</configuration>

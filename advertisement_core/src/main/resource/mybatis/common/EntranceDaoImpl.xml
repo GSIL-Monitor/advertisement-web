@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Entrance">
+    <resultMap id="entranceMap" type="entrance">
+        <result column="ENTRANCE_ID" property="entranceId" jdbcType="BIGINT"/>
+        <result column="TITLE" property="title" jdbcType="VARCHAR"/>
+        <result column="IMG_URL" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="CONTENT_URL" property="contentUrl" jdbcType="VARCHAR"/>
+        <result column="TIPS" property="tips" jdbcType="VARCHAR"/>
+        <result column="TIPS_TYPE" property="tipsType" jdbcType="INTEGER"/>
+        <result column="WEIGHT" property="weight" jdbcType="INTEGER"/>
+        <result column="POSITION_TYPE" property="positionType" jdbcType="INTEGER"/>
+        <result column="IS_DEL" property="isDel" jdbcType="INTEGER"/>
+        <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <select id="selectEntrances" resultMap="entranceMap" parameterType="Entrance">
+        select
+		* from
+		tb_entrance
+		<where>
+			<trim suffixOverrides="and">
+				<if test="entranceId != null">
+					entrance_id=#{entranceId} and
+				</if>
+				<if test="imgUrl != null">
+					img_url=#{imgUrl} and
+				</if>
+				<if test="title != null">
+					title=#{title} and
+				</if>
+				<if test="tips != null">
+					tips=#{tips} and
+				</if>
+				<if test="tipsType != null">
+					tips_type=#{tipsType} and
+				</if>
+				<if test="positionType != null">
+					position_type=#{positionType} and
+				</if>
+				<if test="contentUrl != null">
+					content_url=#{contentUrl} and
+				</if>
+				<if test="weight != null">
+					weight=#{weight} and
+				</if>
+				<if test="isDel != null">
+					is_del = #{isDel} and
+				</if>
+			</trim>
+			and is_del != -1
+		</where>
+		order by weight desc
+    </select>
+
+    <sql id="Base_Column_List">
+        TITLE, IMG_URL, CONTENT_URL, TIPS, TIPS_TYPE, WEIGHT, POSITION_TYPE, IS_DEL, REMARK
+    </sql>
+
+    <select id="getAllEntrances" resultMap="entranceMap">
+        SELECT * FROM TB_ENTRANCE
+        WHERE IS_DEL = 0
+        ORDER BY WEIGHT DESC
+    </select>
+
+    <insert id="insert" parameterType="entrance">
+        INSERT INTO TB_ENTRANCE (<include refid="Base_Column_List"/>)
+        VALUES (#{title,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, #{contentUrl,jdbcType=VARCHAR},
+        #{tips,jdbcType=VARCHAR}, #{tipsType,jdbcType=INTEGER}, #{weight,jdbcType=INTEGER}, #{positionType,jdbcType=INTEGER},
+        #{isDel,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="update" parameterType="entrance">
+        UPDATE TB_ENTRANCE
+        SET TITLE = #{title,jdbcType=VARCHAR}, IMG_URL = #{imgUrl,jdbcType=VARCHAR}, CONTENT_URL = #{contentUrl,jdbcType=VARCHAR},
+        TIPS = #{tips,jdbcType=VARCHAR}, TIPS_TYPE=#{tipsType,jdbcType=INTEGER}, WEIGHT = #{weight,jdbcType=INTEGER}, POSITION_TYPE = #{positionType,jdbcType=INTEGER},
+        IS_DEL = #{isDel,jdbcType=INTEGER}, REMARK = #{remark,jdbcType=VARCHAR}
+        WHERE ENTRANCE_ID = #{entranceId,jdbcType=BIGINT}
+    </update>
+</mapper>

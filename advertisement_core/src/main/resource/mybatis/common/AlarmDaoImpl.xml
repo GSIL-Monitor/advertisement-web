@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="alarm">
+	<resultMap id="alarmMap" type="Alarm">
+		<id property="alarmId" column="alarm_id" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="weixinId" column="weixin_id" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectAlarm" parameterType="Alarm" resultMap="alarmMap">
+		select
+		* from
+		tb_alarm t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="mobile != null">
+					mobile=#{mobile} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+	</select>
+
+	<insert id="insertAlarm" parameterType="Alarm">
+		insert into
+		tb_alarm(type, mobile, weixin_id, status,
+		create_time,update_time)
+		values
+		(#{type}, #{mobile}, #{weixinId}, #{status}, sysdate(), sysdate())
+	</insert>
+
+	<update id="updateAlarm" parameterType="Alarm">
+		update tb_alarm
+		<set>
+			<trim suffixOverrides=",">
+				<if test="mobile != null">
+					mobile=#{mobile},
+				</if>
+				<if test="weixinId != null">
+					weixin_id=#{weixinId},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			alarm_id=#{alarmId}
+		</where>
+	</update>
+
+	<delete id="deleteAlarm" parameterType="Alarm">
+		delete from tb_alarm
+		<where>
+			<trim suffixOverrides="and">
+				<if test="alarmId != null">
+					alarm_id=#{alarmId} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+	</delete>
+
+</mapper>

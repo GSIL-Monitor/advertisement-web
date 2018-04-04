@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="configAction">
+
+	<resultMap id="configActionMap" type="ConfigAction">
+		<id property="configActionId" column="config_action_id" jdbcType="NUMERIC" />
+		<result property="functionId" column="function_id" jdbcType="NUMERIC" />
+		<result property="actionValue" column="action_value" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectConfigActions" parameterType="ConfigAction" resultMap="configActionMap">
+		select
+		* from
+		tb_config_action a
+		<where>
+			<trim suffixOverrides="and">
+				<if test="configActionId != null">
+					config_action_id=#{configActionId} and
+				</if>
+				<if test="functionId != null">
+					function_id=#{functionId} and
+				</if>		
+				<if test="actionValue != null">
+					action_value=#{actionValue} and
+				</if>
+				<if test="description != null">
+					description like CONCAT(CONCAT('%', #{description}),'%') and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectConfigActionByFunctionIds" parameterType="List" resultMap="configActionMap">
+		select
+		* from
+		tb_config_action a
+		<where>
+			function_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			and status !=-1
+		</where>
+	</select>
+	
+	<insert id="insertConfigAction" parameterType="ConfigAction">
+		insert into
+		tb_config_action(function_id, action_value, description, status, create_time, update_time)
+		values
+		(#{functionId}, #{actionValue}, #{description}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="configActionId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateConfigAction" parameterType="Config">
+		update tb_config_action a
+		<set>
+			<trim suffixOverrides=",">
+				<if test="functionId != null">
+					function_id=#{functionId},
+				</if>				
+				<if test="actionValue != null">
+					action_value=#{actionValue},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			config_action_id=#{configActionId}
+		</where>
+	</update>
+
+	<delete id="deleteConfigAction" parameterType="long">
+		delete from tb_config_action
+		where
+		config_action_id=#{configActionId}
+	</delete>
+
+</mapper>

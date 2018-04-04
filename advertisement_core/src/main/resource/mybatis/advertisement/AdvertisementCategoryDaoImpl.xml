@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="category">
+	<resultMap id="categoryMap" type="AdvertisementCategory">
+		<id property="categoryId" column="category_id" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="value" column="value" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="image" column="image" jdbcType="VARCHAR" />
+		<result property="showOrder" column="show_order" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<!-- 简历sql -->
+	<select id="selectCategory" parameterType="AdvertisementCategory" resultMap="categoryMap">
+		select
+		* from
+		tb_advertisement_category t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="categoryId != null">
+					category_id=#{categoryId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+		order by show_order, category_id;
+	</select>
+	
+	<select id="selectCategoryByIds" parameterType="List" resultMap="categoryMap">
+		select
+		* from
+		tb_advertisement_category t
+		<where>
+			category_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertCategory" parameterType="AdvertisementCategory">
+		insert into
+		tb_advertisement_category(type, name, value, description, image, show_order, status, create_time,update_time)
+		values
+		(#{type}, #{name}, #{value}, #{description}, #{image}, #{showOrder}, #{status}, sysdate(), sysdate())
+	</insert>
+
+	<update id="updateCategory" parameterType="AdvertisementCategory">
+		update tb_advertisement_category
+		<set>
+			<trim suffixOverrides=",">
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="value != null">
+					value=#{value},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="image != null">
+					image=#{image},
+				</if>
+				<if test="showOrder != null">
+					show_order=#{showOrder},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			category_id=#{categoryId}
+		</where>
+	</update>
+
+	<delete id="deleteCategory" parameterType="AdvertisementCategory">
+		delete from tb_advertisement_category
+		<where>
+			<trim suffixOverrides="and">
+				<if test="categoryId != null">
+					category_id=#{categoryId} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+	</delete>
+	
+</mapper>

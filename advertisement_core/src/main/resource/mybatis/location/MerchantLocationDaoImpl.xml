@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="merchantLocation">
+
+	<resultMap id="merchantLocationMap" type="MerchantLocation">
+		<id property="merchantLocationId" column="merchant_location_id" jdbcType="NUMERIC" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="locationCode" column="location_code" jdbcType="VARCHAR" />
+		<result property="locationName" column="location_name" jdbcType="VARCHAR" />
+		<result property="callCenter" column="call_center" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectMerchantLocation" parameterType="MerchantLocation" resultMap="merchantLocationMap">
+		select
+		* from
+		tb_merchant_location t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="merchantLocationId != null">
+					merchant_location_id=#{merchantLocationId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id = #{merchantId} and
+				</if>
+				<if test="locationCode != null">
+					location_code = #{locationCode} and
+				</if>
+				<if test="callCenter != null">
+					call_center = #{callCenter} and
+				</if>
+				<if test="locationName != null">
+					location_name = #{locationName} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectMerchantLocationByIds" parameterType="List" resultMap="merchantLocationMap">
+		select
+		* from
+		tb_merchant_location t
+		<where>
+			merchant_location_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<insert id="insertMerchantLocation" parameterType="MerchantLocation">
+		insert into
+		tb_merchant_location(merchant_id, location_code, location_name,
+		call_center, status, create_time, update_time)
+		values
+		(#{merchantId}, #{locationCode}, #{locationName},  
+		 #{callCenter}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="merchantLocationId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateMerchantLocation" parameterType="MerchantLocation">
+		update tb_merchant_location
+		<set>
+			<trim suffixOverrides=",">
+				<if test="merchantId != null">
+					merchant_id=#{merchantId},
+				</if>
+				<if test="locationCode != null">
+					location_code=#{locationCode},
+				</if>
+				<if test="locationName != null">
+					location_name=#{locationName},
+				</if>
+				<if test="callCenter != null">
+					call_center=#{callCenter},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			merchant_location_id=#{merchantLocationId}
+		</where>
+	</update>
+
+	<delete id="deleteMerchantLocation" parameterType="long">
+		delete from tb_merchant_location
+		where
+		merchant_location_id=#{merchantLocationId}
+	</delete>
+
+</mapper>

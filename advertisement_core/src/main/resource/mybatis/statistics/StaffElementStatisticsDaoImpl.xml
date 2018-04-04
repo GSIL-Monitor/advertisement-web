@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="StaffStatistics">
+
+	<resultMap id="staffElementStatisticsMap" type="StaffStatistics">
+		<id property="staffStatisticsId" column="staff_statistics_id" jdbcType="NUMERIC" />
+		<result property="date" column="date" jdbcType="VARCHAR" />
+		<result property="staffId" column="staff_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="NUMERIC" />
+		<result property="workingDays" column="working_days" jdbcType="VARCHAR" />
+		<result property="newDataCount" column="new_data_count" jdbcType="NUMERIC" />
+		<result property="callCount" column="call_count" jdbcType="NUMERIC" />
+		<result property="totalCallTime" column="total_call_time" jdbcType="NUMERIC" />
+		<result property="insuredSum" column="insured_sum" jdbcType="NUMERIC" />
+		<result property="onlineStatus" column="online_status" jdbcType="NUMERIC" />
+		<result property="remark" column="remark" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<!-- 本月累计工作日 -->
+	<select id="selectWorkingDaysCount" parameterType="Map"
+		resultMap="staffElementStatisticsMap">
+		select staff_id, count(DISTINCT(DATE_FORMAT(create_time, "%d"))) as workingDays
+		from tb_call_record r
+		<where>
+			<trim suffixOverrides="and">
+				<if test="staffId != null">
+				    and r.staff_id=#{staffId}
+				</if>
+				<if test="createTimeStart != null">
+				    and r.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and r.create_time &lt; #{createTimeEnd}
+				</if>
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), r.create_time)=#{dateDiff}
+				</if>
+			</trim>
+			and r.status != -1
+		</where>
+		group by r.staff_id
+	</select>
+	
+	<!-- 本月新发数据量 -->
+	<select id="selectNewDataCount" parameterType="Map"
+		resultMap="staffElementStatisticsMap">
+		select r.staff_id, count(DISTINCT(DATE_FORMAT(r.create_time, "%d"))) as newDataCount
+		from tb_information_task_record r
+		<where>
+			<trim suffixOverrides="and">
+				<if test="staffId != null">
+				    and r.staff_id=#{staffId}
+				</if>
+				<if test="createTimeStart != null">
+				    and r.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and r.create_time &lt; #{createTimeEnd}
+				</if>
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), r.create_time)=#{dateDiff}
+				</if>
+			</trim>
+			and r.status != -1
+		</where>
+		group by r.staff_id
+	</select>
+	
+	
+	<!-- 本月拨打次数 -->
+	<select id="selectCallCount" parameterType="Map"
+		resultMap="staffElementStatisticsMap">
+		select staff_id, count(DISTINCT(DATE_FORMAT(create_time, "%d"))) as callCount
+		from tb_call_record r
+		<where>
+			status=3
+			<trim suffixOverrides="and">
+				<if test="staffId != null">
+				    and r.staff_id=#{staffId}
+				</if>
+				<if test="createTimeStart != null">
+				    and r.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and r.create_time &lt; #{createTimeEnd}
+				</if>
+				<if test="status != null">
+					and r.status=#{status}
+				</if>				
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), r.create_time)=#{dateDiff}
+				</if>
+			</trim>
+			and r.status != -1
+		</where>
+		group by r.staff_id
+	</select>
+	
+	<!-- 本月通话时长 -->
+	<select id="selectTotalCallTime" parameterType="Map"
+		resultMap="staffElementStatisticsMap">
+		select staff_id, sum(TIMESTAMPDIFF(SECOND, start_time, end_time)) as totalCallTime
+		from tb_call_record r
+		<where>
+			r.start_time is not null and r.end_time is not null
+			<trim suffixOverrides="and">
+				<if test="staffId != null">
+				    and r.staff_id=#{staffId}
+				</if>
+				<if test="createTimeStart != null">
+				    and r.create_time &gt; #{createTimeStart}
+				</if>
+				<if test="createTimeEnd != null">
+					and r.create_time &lt; #{createTimeEnd}
+				</if>			
+				<if test="dateDiff != null">
+					and DATEDIFF(NOW(), r.create_time)=#{dateDiff}
+				</if>
+			</trim>
+			and r.status != -1
+		</where>
+		group by r.staff_id
+	</select>
+
+</mapper>

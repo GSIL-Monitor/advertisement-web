@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="product">
+
+	<resultMap id="productMap" type="Product">
+		<id property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="productKey" column="product_key" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
+		<result property="smallImageUrl" column="small_image_url"
+			jdbcType="VARCHAR" />
+		<result property="workOrderImageUrl" column="work_order_image_url"
+			jdbcType="VARCHAR" />
+		<result property="featureTags" column="feature_tags" jdbcType="VARCHAR" />
+		<result property="recommendTags" column="recommend_tags"
+			jdbcType="VARCHAR" />
+		<result property="authorizeTags" column="authorize_tags"
+			jdbcType="VARCHAR" />
+		<result property="requirements" column="requirements" jdbcType="VARCHAR" />
+		<result property="applyFlow" column="apply_flow" jdbcType="VARCHAR" />
+		<result property="advantage" column="advantage" jdbcType="VARCHAR" />
+		<result property="guide" column="guide" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="sort" column="sort" jdbcType="NUMERIC" />
+		<result property="positiveRate" column="positive_rate"
+			jdbcType="NUMERIC" />
+		<result property="category" column="category" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectProducts" parameterType="Product" resultMap="productMap">
+		select
+		* from
+		tb_product
+		<where>
+			<trim suffixOverrides="and">
+				<if test="productId != null">
+					product_id= #{productId} and
+				</if>
+				<if test="productKey != null">
+					product_key= #{productKey} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id= #{merchantId} and
+				</if>
+				<if test="name != null">
+					name= #{name} and
+				</if>
+				<if test="title != null">
+					title= #{title} and
+				</if>
+				<if test="description != null">
+					description= #{description} and
+				</if>
+				<if test="imageUrl != null">
+					image_url= #{imageUrl} and
+				</if>
+				<if test="featureTags != null">
+					feature_tags= #{featureTags} and
+				</if>
+				<if test="recommendTags != null">
+					recommend_tags= #{recommendTags} and
+				</if>
+				<if test="authorizeTags != null">
+					authorize_tags= #{authorizeTags} and
+				</if>
+				<if test="requirements != null">
+					requirements= #{requirements} and
+				</if>
+				<if test="applyFlow != null">
+					apply_flow= #{applyFlow} and
+				</if>
+				<if test="advantage != null">
+					advantage= #{advantage} and
+				</if>
+				<if test="guide != null">
+					guide= #{guide} and
+				</if>
+				<if test="type != null">
+					type= #{type} and
+				</if>
+				<if test="sort != null">
+					sort= #{sort} and
+				</if>
+				<if test="positiveRate != null">
+					positive_rate= #{positiveRate} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectProductByIds" parameterType="List" resultMap="productMap">
+		select
+		* from
+		tb_product
+		<where>
+			product_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertProduct" parameterType="Product">
+		insert into
+		tb_product( merchant_id, product_key, name, title, description,
+		image_url, small_image_url, work_order_image_url, feature_tags,
+		recommend_tags, authorize_tags, requirements, apply_flow, advantage,
+		guide, type, sort, positive_rate, status, create_time, update_time )
+		values
+		( #{merchantId}, #{productKey}, #{name}, #{title}, #{description}, #{imageUrl},
+		#{smallImageUrl}, #{workOrderImageUrl}, #{featureTags},
+		#{recommendTags}, #{authorizeTags}, #{requirements}, #{applyFlow},
+		#{advantage}, #{guide}, #{type}, #{sort}, #{positiveRate}, #{status},
+		sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="productId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateProduct" parameterType="Product">
+		update tb_product
+		<set>
+			<trim suffixOverrides=",">
+				<if test="merchantId != null">
+					merchant_id= #{merchantId},
+				</if>
+				<if test="productKey != null">
+					product_key= #{productKey},
+				</if>
+				<if test="name != null">
+					name= #{name},
+				</if>
+				<if test="title != null">
+					title= #{title},
+				</if>
+				<if test="description != null">
+					description= #{description},
+				</if>
+				<if test="imageUrl != null">
+					image_url= #{imageUrl},
+				</if>
+				<if test="workOrderImageUrl != null">
+					work_order_image_url= #{workOrderImageUrl},
+				</if>
+				<if test="smallImageUrl != null">
+					small_image_url= #{smallImageUrl},
+				</if>
+				<if test="featureTags != null">
+					feature_tags= #{featureTags},
+				</if>
+				<if test="recommendTags != null">
+					recommend_tags= #{recommendTags},
+				</if>
+				<if test="authorizeTags != null">
+					authorize_tags= #{authorizeTags},
+				</if>
+				<if test="requirements != null">
+					requirements= #{requirements},
+				</if>
+				<if test="applyFlow != null">
+					apply_flow= #{applyFlow},
+				</if>
+				<if test="advantage != null">
+					advantage= #{advantage},
+				</if>
+				<if test="guide != null">
+					guide= #{guide},
+				</if>
+				<if test="type != null">
+					type= #{type},
+				</if>
+				<if test="sort != null">
+					sort= #{sort},
+				</if>
+				<if test="positiveRate != null">
+					positive_rate= #{positiveRate},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			product_id=#{productId}
+		</where>
+	</update>
+
+	<delete id="deleteProduct" parameterType="long">
+		delete from tb_product
+		where
+		product_id=#{productId}
+	</delete>
+
+</mapper>

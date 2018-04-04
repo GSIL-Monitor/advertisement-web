@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="merchant">
+
+	<resultMap id="merchantMap" type="Merchant">
+		<id property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="fullName" column="full_name" jdbcType="VARCHAR" />
+		<result property="shortName" column="short_name" jdbcType="VARCHAR" />
+		<result property="englishName" column="english_name" jdbcType="VARCHAR" />
+		<result property="merchantCode" column="merchant_code"
+			jdbcType="VARCHAR" />
+		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
+		<result property="telephone" column="telephone" jdbcType="VARCHAR" />
+		<result property="interfaceType" column="interface_type"
+			jdbcType="NUMERIC" />
+		<result property="deliverInterface" column="deliver_interface"
+			jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectMerchant" parameterType="Merchant" resultMap="merchantMap">
+		select
+		* from
+		tb_merchant t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="merchantId != null">
+					merchant_id=#{merchantId} and
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectMerchantByIds" parameterType="List" resultMap="merchantMap">
+		select
+		* from
+		tb_merchant t
+		<where>
+			merchant_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertMerchant" parameterType="Merchant">
+		insert into
+		tb_merchant(project_id, name, full_name, short_name,
+		english_name, merchant_code, image_url, telephone,
+		interface_type, deliver_interface, status, create_time, update_time)
+		values
+		(#{projectId}, #{name}, #{fullName}, #{shortName}, #{englishName},
+		#{merchantCode}, #{imageUrl}, #{telephone},
+		#{interfaceType}, #{deliverInterface}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="merchantId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateMerchant" parameterType="Merchant">
+		update tb_merchant
+		<set>
+			<trim suffixOverrides=",">
+				<if test="projectId != null">
+					project_id=#{projectId},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="fullName != null">
+					full_name=#{fullName},
+				</if>
+				<if test="shortName != null">
+					short_name=#{shortName},
+				</if>
+				<if test="englishName != null">
+					english_name=#{englishName},
+				</if>
+				<if test="merchantCode != null">
+					merchant_code=#{merchantCode},
+				</if>
+				<if test="imageUrl != null">
+					image_url=#{imageUrl},
+				</if>
+				<if test="telephone != null">
+					telephone=#{telephone},
+				</if>
+				<if test="interfaceType != null">
+					interface_type=#{interfaceType},
+				</if>
+				<if test="deliverInterface != null">
+					deliver_interface=#{deliverInterface},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			merchant_id=#{merchantId}
+		</where>
+	</update>
+
+	<delete id="deleteMerchant" parameterType="long">
+		delete from
+		tb_merchant
+		where
+		merchant_id=#{merchantId}
+	</delete>
+
+</mapper>

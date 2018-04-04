@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="marketingSms">
+	<resultMap id="marketingSmsMap" type="MarketingSms">
+		<result property="marketingSmsId" column="marketing_sms_id" jdbcType="VARCHAR" />
+		<result property="marketingTaskId" column="marketing_task_id" jdbcType="NUMERIC" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectMarketingSms" parameterType="MarketingSms" resultMap="marketingSmsMap">
+		select
+		* from
+		tb_marketing_sms
+		<where>
+			<trim suffixOverrides="and">
+				<if test="marketingSmsId != null">
+					marketing_sms_id=#{marketingSmsId} and
+				</if>
+				<if test="marketingTaskId != null">
+					marketing_task_id=#{marketingTaskId} and
+				</if>
+				<if test="mobile != null">
+					mobile=#{mobile} and
+				</if>
+				<if test="createTimeStart != null">
+				    create_time &gt; #{createTimeStart} and
+			    </if>
+			    <if test="createTimeEnd != null">
+				    create_time &lt; #{createTimeEnd} and
+			    </if>
+				<if test="status != null">
+					status=#{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+	
+	<select id="selectMarketingSmsByMobiles" parameterType="Map" resultMap="marketingSmsMap">
+		select
+		* from
+		tb_marketing_sms
+		<where>
+			mobile in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			<if test="createTimeStart != null">
+				and create_time &gt; #{createTimeStart}
+			</if>
+			<if test="createTimeEnd != null">
+				and create_time &lt; #{createTimeEnd}
+			</if>
+		</where>
+	</select>
+
+	<insert id="insertMarketingSms" parameterType="MarketingSms">
+		insert into
+		tb_marketing_sms(marketing_task_id, mobile, status, create_time, update_time)
+		values
+		(#{marketingTaskId}, #{mobile}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="marketingSmsId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateMarketingSms" parameterType="MarketingSms">
+		update tb_marketing_sms
+		<set>
+			<trim suffixOverrides=",">
+				<if test="marketingTaskId != null">
+					marketing_task_id=#{marketingTaskId},
+				</if>
+				<if test="mobile != null">
+					mobile=#{mobile},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			marketing_sms_id=#{marketingSmsId}
+		</where>
+	</update>
+
+	<delete id="deleteMarketingSms" parameterType="MarketingSms">
+		delete from tb_marketing_sms
+		where
+		marketing_sms_id=#{marketingSmsId}
+	</delete>
+
+</mapper>

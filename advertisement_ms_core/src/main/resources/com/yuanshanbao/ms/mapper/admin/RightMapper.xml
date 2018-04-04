@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuanshanbao.ms.mapper.admin.RightMapper">
+	<select id="queryRights" resultType="com.yuanshanbao.ms.model.admin.Right">
+		select * from (
+			select r.id as id, r.name as name, r.description as description, r.url as url,
+			m.name as module_name, m.id as module_id from 
+			tb_admin_rights r 
+			LEFT JOIN tb_admin_module_right mr 
+			ON r.id=mr.right_id 
+			LEFT JOIN tb_admin_modules m 
+			on mr.module_id=m.id 
+			<where>
+				<if test="id != null and id != ''">
+				r.id = #{id}
+				</if>
+				<if test="name != null and name != ''">
+				and r.name like CONCAT(CONCAT('%', #{name}),'%')
+				</if>
+				<if test="description != null and description != ''">
+				and r.description like CONCAT(CONCAT('%', #{description}),'%')
+				</if>
+				<if test="url != null and url != ''">
+				and r.url like CONCAT(CONCAT('%', #{url}),'%')
+				</if>
+				<if test="module_id != null and module_id != 'null' and module_id != 'all'">
+				and m.id like CONCAT(CONCAT('%', #{module_id}),'%')
+				</if>
+			</where>
+		) tmp
+		<where>
+			<if test="module_id == 'null'">
+			tmp.module_id is NULL
+			</if>
+		</where>
+		order by tmp.name
+	</select>
+	
+	<select id="queryRightByNameOrUrl" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.Right">
+		select * from tb_admin_rights 
+		where 
+		name=#{name} or url=#{url}
+	</select>
+	
+	<select id="queryAvailableMenuRights" resultType="com.yuanshanbao.ms.model.admin.Right">
+		select * from tb_admin_rights 
+		where 
+		id not in 
+		(select right_id from tb_admin_menus where id != null)
+	</select>
+	
+	<insert id="insertRight" parameterType="com.yuanshanbao.ms.model.admin.Right">
+		insert into
+		tb_admin_rights
+		(id,
+		name, description, url, create_time)
+		values
+		(#{id}, #{name}, #{description}, #{url}, sysdate())
+	</insert>
+	
+	<delete id="deleteRight" parameterType="com.yuanshanbao.ms.model.admin.Right">
+		delete from
+		tb_admin_rights 
+		where
+		id=#{id}
+		<set>
+			<if test="name != null and name != ''">
+			and name = #{name}
+			</if>
+			<if test="url != null and url != ''">
+			and url = #{url}
+			</if>
+		</set>
+	</delete>
+	
+	<select id="queryRightsByModuleId" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.Right">
+		select * from (
+			select r.id as id, r.name as name, r.description as description, r.url as url,
+			m.name as module_name, m.id as module_id from 
+			tb_admin_rights r 
+			LEFT JOIN tb_admin_module_right mr 
+			ON r.id=mr.right_id 
+			LEFT JOIN tb_admin_modules m 
+			on mr.module_id=m.id 
+			<where>
+				<if test="flag == 'in'">
+				r.id in (select right_id from tb_admin_module_right where module_id=#{moduleId})
+				</if>
+				<if test="flag == 'notin'">
+				r.id not in (select right_id from tb_admin_module_right where module_id=#{moduleId})
+				</if>
+			</where>
+		) tmp 
+		<if test="flag == 'notin'">
+			where tmp.module_id is NULL
+		</if>
+		
+	</select>
+	
+	<select id="queryRightsByGroupId" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.Right">
+		select * from tb_admin_rights 
+		WHERE id 
+		<if test="flag == 'in'">
+		in
+		</if>
+		<if test="flag == 'notin'">
+		not in 
+		</if>
+		(select right_id from tb_admin_group_right where module_id=#{groupId})
+	</select>
+	
+	<select id="queryRightsByUsername" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.Right">
+		select r.* from 
+		tb_admin_rights r, tb_admin_module_right mr, tb_admin_modules m, tb_admin_group_module gm, tb_admin_user_group ug
+		where r.id=mr.right_id and mr.module_id=m.id and m.id=gm.module_id and gm.group_id=ug.group_id and ug.username=#{userName};
+	</select>
+
+	<insert id="insertGroupRight" parameterType="hashMap">
+		insert into
+		tb_admin_group_right_map (groupid, oprid)
+		values (#{groupId}, #{oprId})
+	</insert>
+	
+	<delete id="deleteGroupRight" parameterType="hashMap">
+		delete from
+		tb_admin_group_right_map
+		where groupid=#{groupId} and oprid=#{oprId}
+	</delete>
+</mapper>

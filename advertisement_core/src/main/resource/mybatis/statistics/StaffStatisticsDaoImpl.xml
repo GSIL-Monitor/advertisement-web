@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="StaffStatistics">
+
+	<resultMap id="staffStatisticsMap" type="StaffStatistics">
+		<id property="staffStatisticsId" column="staff_statistics_id" jdbcType="NUMERIC" />
+		<result property="date" column="date" jdbcType="VARCHAR" />
+		<result property="staffId" column="staff_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="workingDays" column="working_days" jdbcType="VARCHAR" />
+		<result property="newDataCount" column="new_data_count" jdbcType="NUMERIC" />
+		<result property="callCount" column="call_count" jdbcType="NUMERIC" />
+		<result property="totalCallTime" column="total_call_time" jdbcType="NUMERIC" />
+		<result property="insuredSum" column="insured_sum" jdbcType="NUMERIC" />
+		<result property="onlineStatus" column="online_status" jdbcType="NUMERIC" />
+		<result property="remark" column="remark" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectStaffStatistics" parameterType="StaffStatistics" resultMap="staffStatisticsMap">
+		select
+		* from
+		tb_staff_statistics s
+		<where>
+			<trim suffixOverrides="and">
+				<if test="staffStatisticsId != null">
+					staff_statistics_id=#{staffStatisticsId} and
+				</if>
+				<if test="staffId != null">
+					staff_id = #{staffId} and
+				</if>
+				<if test="name != null">
+					name = #{name} and
+				</if>
+				<if test="workingDays != null">
+					working_days = #{workingDays} and
+				</if>
+				<if test="newDataCount != null">
+					new_data_count = #{newDataCount} and
+				</if>
+				<if test="callCount != null">
+					call_count = #{callCount} and
+				</if>
+				<if test="totalCallTime != null">
+					total_call_time = #{totalCallTime} and
+				</if>
+				<if test="insuredSum != null">
+					insured_sum = #{insuredSum} and
+				</if>
+				<if test="onlineStatus != null">
+					online_status = #{onlineStatus} and
+				</if>
+				<if test="remark != null">
+					remark = #{remark} and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="date != null">
+					date = #{date} and
+				</if>
+				<if test="queryStartTime != null">
+					 date &gt;= #{queryStartTime} and
+				</if>
+				<if test="queryEndTime != null">
+					 date &lt;= #{queryEndTime} and
+				</if>
+				<if test="status != null">
+					status = #{status}
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by date desc, create_time desc
+	</select>
+
+	<select id="selectStaffStatisticsByIds" parameterType="List" resultMap="staffStatisticsMap">
+		select
+		* from
+		tb_staff_statistics
+		<where>
+			staff_statistics_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertStaffStatistics" parameterType="StaffStatistics">
+		insert into
+		tb_staff_statistics(date, staff_id, name, working_days, new_data_count, call_count, total_call_time,
+		insured_sum, online_status, remark, type, status, create_time, update_time)
+		values
+		(#{date}, #{staffId}, #{name}, #{workingDays}, #{newDataCount}, #{callCount}, #{totalCallTime},
+		#{insuredSum}, #{onlineStatus}, #{remark}, #{type}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="staffStatisticsId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateStaffStatistics" parameterType="StaffStatistics">
+		update tb_staff_statistics
+		<set>
+			<trim suffixOverrides=",">
+				<if test="staffId != null">
+					staff_id = #{staffId},
+				</if>
+				<if test="name != null">
+					name = #{name},
+				</if>
+				<if test="workingDays != null">
+					working_days = #{workingDays},
+				</if>
+				<if test="newDataCount != null">
+					new_data_count = #{newDataCount},
+				</if>
+				<if test="callCount != null">
+					call_count = #{callCount},
+				</if>
+				<if test="totalCallTime != null">
+					total_call_time = #{totalCallTime},
+				</if>
+				<if test="insuredSum != null">
+					insured_sum = #{insuredSum},
+				</if>
+				<if test="onlineStatus != null">
+					online_status = #{onlineStatus},
+				</if>
+				<if test="remark != null">
+					remark = #{remark},
+				</if>
+				<if test="type != null">
+					type = #{type},
+				</if>
+				<if test="date != null">
+					date = #{date},
+				</if>
+				<if test="status != null">
+					status = #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			staff_statistics_id=#{staffStatisticsId}
+		</where>
+	</update>
+
+	<delete id="deleteStaffStatistics" parameterType="long">
+		delete from tb_staff_statistics
+		where
+		staff_statistics_id=#{staffStatisticsId}
+	</delete>
+
+</mapper>

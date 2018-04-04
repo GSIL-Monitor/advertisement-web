@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.grabber.mapper.CasperjsMapper">
+	<resultMap type="com.netease.grabber.model.Casperjs" id="casperjsMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="catigory" column="catigory" />
+		<result property="type" column="type" />
+		<result property="version" column="version" />
+		<result property="author" column="author" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="runnable" column="runnable" />
+		<result property="paramNumMin" column="param_num_min" />
+		<result property="paramNumMax" column="param_num_max" />
+		<result property="path" column="path" />
+		<result property="standby" column="standby" />
+	</resultMap>
+
+	<select id="queryCasperjsById" parameterType="String" resultMap="casperjsMap">
+		select * from tb_job_casperjs t1
+		<where>
+			t1.id=#{id}
+		</where>
+	</select>
+
+	<insert id="insertCasperjs" parameterType="com.netease.grabber.model.Casperjs">
+		insert into
+		tb_job_casperjs
+		(
+		id,
+		name,
+		catigory,
+		type,
+		version,
+		author,
+		create_time,
+		update_time,
+		runnable,
+		param_num_min,
+		param_num_max,
+		path,
+		standby
+		)
+		values
+		(
+		#{id, jdbcType = VARCHAR},
+		#{name, jdbcType = VARCHAR},
+		#{catigory, jdbcType = VARCHAR},
+		#{type, jdbcType = INTEGER},
+		#{version, jdbcType = VARCHAR},
+		#{author, jdbcType = VARCHAR},
+		#{createTime, jdbcType = TIMESTAMP},
+		#{updateTime, jdbcType = TIMESTAMP},
+		#{runnable, jdbcType = INTEGER},
+		#{paramNumMin, jdbcType = INTEGER},
+		#{paramNumMax, jdbcType = INTEGER},
+		#{path, jdbcType = VARCHAR},
+		#{standby, jdbcType = VARCHAR}
+		)
+	</insert>
+
+</mapper>

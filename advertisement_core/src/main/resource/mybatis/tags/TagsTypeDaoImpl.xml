@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tagsType">
+	<resultMap id="tagsTypeMap" type="TagsType">
+		<id property="typeId" column="type_id" jdbcType="NUMERIC" />	
+		<result property="typeName" column="type_name" jdbcType="VARCHAR" />
+		<result property="typeDescription" column="type_description" jdbcType="VARCHAR" />
+		<result property="parentId" column="parent_id" jdbcType="NUMERIC" />
+		<result property="level" column="level" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<!-- 简历sql -->
+	<select id="selectTagsType" parameterType="TagsType" resultMap="tagsTypeMap">
+		select
+		* from
+		tb_tags_type
+		<where>
+			<trim suffixOverrides="and">
+				<if test="typeId != null">
+					type_id=#{typeId} and
+				</if>
+				<if test="parentId != null">
+					parent_id=#{parentId} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and 1=1
+		</where>
+		order by type_id;
+	</select>
+	
+	<select id="selectTagsTypeByIds" parameterType="List" resultMap="tagsTypeMap">
+		select
+		* from
+		tb_tags_type
+		<where>
+			type_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertTagsType" parameterType="TagsType">
+		insert into
+		tb_tags_type(type_name, type_description, parent_id, level, status, create_time,update_time)
+		values
+		(#{typeName}, #{typeDescription}, #{parentId}, #{level}, #{status}, sysdate(), sysdate())
+	</insert>
+
+	<update id="updateTagsType" parameterType="TagsType">
+		update tb_tags_type
+		<set>
+			<trim suffixOverrides=",">
+				<if test="typeName != null">
+					type_name=#{typeName},
+				</if>
+				<if test="typeDescription != null">
+					type_description=#{typeDescription},
+				</if>
+				<if test="parentId != null">
+					parent_id=#{parentId},
+				</if>
+				<if test="level != null">
+					level=#{level},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			type_id=#{typeId}
+		</where>
+	</update>
+
+	<delete id="deleteTagsType" parameterType="TagsType">
+		delete from tb_tags_type
+		where 
+		type_id=#{typeId}
+	</delete>
+	
+</mapper>

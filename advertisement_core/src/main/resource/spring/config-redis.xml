@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.2.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+	<description>Enable Redis Module</description>
+	<context:property-placeholder
+		location="classpath:config/${spring.profiles.active:dev}/push.properties"
+		order="1" ignore-unresolvable="true" ignore-resource-not-found="true" />
+
+	<!-- Redis Config -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<!-- <property name="maxActive" value="5000" /> -->
+		<property name="maxTotal" value="1000" />
+		<property name="maxIdle" value="30" />
+		<property name="minIdle" value="10" />
+		<property name="maxWaitMillis" value="4000" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="true" />
+	</bean>
+	<bean id="baseRedis" class="com.yuanshanbao.ad.common.redis.base.BaseRedis"
+		init-method="initPool">
+		<property name="config" ref="jedisPoolConfig" />
+		<property name="host" value="${redis.host}" />
+		<property name="port" value="${redis.port}" />
+		<property name="password" value="${redis.password}" />
+		<property name="timeout" value="4000" />
+	</bean>
+	<aop:config>
+		<aop:aspect ref="jedisAop">
+			<aop:after
+				pointcut="@annotation(com.yuanshanbao.ad.common.redis.base.JedisWay) || @within(com.yuanshanbao.ad.common.redis.base.JedisWay)"
+				method="doAfter" />
+		</aop:aspect>
+	</aop:config>
+	<bean id="jedisAop" class="com.yuanshanbao.ad.common.redis.base.JedisAop" />
+
+	<!-- Redis Scan -->
+	<context:annotation-config />
+	<context:component-scan base-package="com.yuanshanbao" />
+</beans>

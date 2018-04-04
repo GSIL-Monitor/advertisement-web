@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="informationRelative">
+
+	<resultMap id="informationRelativeMap" type="InformationRelative">
+		<id property="relativeInsurantId" column="relative_insurant_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="infos" column="infos" jdbcType="VARCHAR" />
+		<result property="recommends" column="recommends" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectInformationRelatives" parameterType="InformationRelative" resultMap="informationRelativeMap">
+		select
+		* from
+		tb_information_relative
+		<where>
+			<trim suffixOverrides="and">
+				<if test="relativeInsurantId != null">
+					relative_insurant_id= #{relativeInsurantId} and
+				</if>
+				<if test="name != null">
+					name= #{name} and
+				</if>
+				<if test="infos != null">
+					infos= #{infos} and
+				</if>
+				<if test="recommends != null">
+					recommends= #{recommends} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectInformationRelativeByIds" parameterType="List" resultMap="informationRelativeMap">
+		select
+		* from
+		tb_information_relative
+		<where>
+			relative_insurant_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertInformationRelative" parameterType="InformationRelative">
+		insert into
+		tb_information_relative( name, infos, recommends, status, create_time, update_time )
+		values
+		( #{name}, #{infos}, #{recommends}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="relativeInsurantId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateInformationRelative" parameterType="InformationRelative">
+		update tb_information_relative
+		<set>
+			<trim suffixOverrides=",">
+				<if test="name != null">
+					name= #{name},
+				</if>
+				<if test="infos != null">
+					infos= #{infos},
+				</if>
+				<if test="recommends != null">
+					recommends= #{recommends},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			relative_insurant_id=#{relativeInsurantId}
+		</where>
+	</update>
+
+	<delete id="deleteInformationRelative" parameterType="long">
+		delete from tb_information_relative
+		where
+		relative_insurant_id=#{relativeInsurantId}
+	</delete>
+
+</mapper>

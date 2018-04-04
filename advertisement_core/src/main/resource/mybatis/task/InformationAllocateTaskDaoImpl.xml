@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="informationAllocateTask">
+	<resultMap id="informationAllocateTaskMap" type="InformationAllocateTask">
+		<result property="informationAllocateTaskId" column="information_allocate_task_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="informationTaskId" column="information_task_id" jdbcType="NUMERIC" />
+		<result property="staffId" column="staff_id" jdbcType="NUMERIC" />
+		<result property="count" column="count" jdbcType="NUMERIC" />
+		<result property="allocateProgress" column="allocate_progress" jdbcType="NUMERIC" />
+		<result property="callProgress" column="call_progress" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectInformationAllocateTasks" parameterType="InformationAllocateTask"
+		resultMap="informationAllocateTaskMap">
+		select
+		* from
+		tb_information_allocate_task
+		<where>
+			<trim suffixOverrides="and">
+				<if test="informationAllocateTaskId != null">
+					information_allocate_task_id=#{informationAllocateTaskId} and
+				</if>
+				<if test="informationTaskId != null">
+					information_task_id=#{informationTaskId} and
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
+				<if test="staffId != null">
+					staff_id=#{staffId} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<insert id="insertInformationAllocateTask" parameterType="InformationAllocateTask">
+		insert
+		into
+		tb_information_allocate_task(project_id, information_task_id, staff_id,
+		count, allocate_progress, call_progress, status, create_time,
+		update_time)
+		values
+		(#{projectId}, #{informationTaskId},
+		#{staffId}, #{count}, #{allocateProgress}, #{callProgress},
+		#{status},
+		sysdate(),
+		sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="informationAllocateTaskId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateInformationAllocateTask" parameterType="InformationAllocateTask">
+		update tb_information_allocate_task
+		<set>
+			<if test="projectId != null">
+				project_id=#{projectId},
+			</if>
+			<if test="informationTaskId != null">
+				information_task_id=#{informationTaskId},
+			</if>
+			<if test="staffId != null">
+				staff_id=#{staffId},
+			</if>
+			<if test="count != null">
+				count=#{count},
+			</if>
+			<if test="allocateProgress != null">
+				allocate_progress=#{allocateProgress},
+			</if>
+			<if test="callProgress != null">
+				call_progress=#{callProgress},
+			</if>
+			<if test="status != null">
+				status=#{status},
+			</if>
+		</set>
+		<where>
+			information_allocate_task_id=#{informationAllocateTaskId}
+		</where>
+	</update>
+
+</mapper>

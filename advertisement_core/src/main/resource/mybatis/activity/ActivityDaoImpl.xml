@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Activity">
+
+	<resultMap id="activityMap" type="Activity">
+		<id property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="key" column="key" jdbcType="VARCHAR" />
+		<result property="entranceUrl" column="entrance_url" jdbcType="VARCHAR" />
+		<result property="steps" column="steps" jdbcType="VARCHAR" />
+		<result property="baseAmount" column="base_amount" jdbcType="NUMERIC" />
+		<result property="bonus" column="bonus" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectActivity" parameterType="Activity" resultMap="activityMap">
+		select
+		* from
+		tb_activity t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="activityId != null">
+					activity_id=#{activityId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="key != null">
+					`key` = #{key} and
+				</if>
+				<if test="steps != null">
+					steps = #{steps} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectActivityByIds" parameterType="List" resultMap="activityMap">
+		select
+		* from
+		tb_activity t
+		<where>
+			activity_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertActivity" parameterType="Activity">
+		insert into
+		tb_activity(name, `key`, entrance_url, steps, bonus, base_amount, 
+		status, create_time, update_time)
+		values
+		(#{name}, #{key}, #{entranceUrl}, #{steps}, #{bonus}, #{baseAmount}, 
+		#{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="activityId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateActivity" parameterType="Activity">
+		update tb_activity
+		<set>
+			<trim suffixOverrides=",">
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="key != null">
+					`key`=#{key},
+				</if>
+				<if test="entranceUrl != null">
+					entrance_url=#{entranceUrl},
+				</if>
+				<if test="baseAmount != null">
+					base_amount=#{baseAmount},
+				</if>
+				<if test="bonus != null">
+					bonus=#{bonus},
+				</if>
+				<if test="steps != null">
+					steps=#{steps},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			activity_id=#{activityId}
+		</where>
+	</update>
+
+	<delete id="deleteActivity" parameterType="long">
+		delete from tb_activity
+		where
+		activity_id=#{activityId}
+	</delete>
+
+</mapper>

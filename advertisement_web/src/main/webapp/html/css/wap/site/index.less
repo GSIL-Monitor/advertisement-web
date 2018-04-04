@@ -1,0 +1,167 @@
+@homeBlue: #318ee6;
+@primary-color: #5FC1E8;           //蓝筹主色
+@secondary-color: #FFD133;         //蓝筹副色
+@ground-color: #F1F1F1;            //蓝筹底色
+@font-head-color: #65686E;         //标题字体颜色
+@font-text-color: #000000;         //正文字体颜色
+@font-secondary-color: #BDBEBF;    //副文字体颜色
+@font-money-color: #F69523;        //金钱字体颜色
+@btn-primary-color: #A6DEF3;       //主要按钮颜色
+@titlebar-color: #ECF7FB;          //标题栏颜色
+@tab-color: #EDEDED;               //选项卡颜色
+@tab-arrow-color: #7E7E7E;         //选项卡箭头颜色
+@border-color: #E2E2E2;            //边框颜色
+@tip-color: #F67072;               //提醒颜色
+@bottom-bar-ground: #FBFBFB;		//底栏颜色
+@newred: #ee6a56;
+.carousel-wrap {
+	position: relative;
+	width: 7.5rem;
+	height: 4.5rem;
+}
+
+.carousel-inner {
+	img {
+		width: 7.5rem;
+		height: 4.5rem;
+	}
+}
+
+.unslider-nav {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	bottom: .01rem;
+	ol {
+		list-style: none;
+  		text-align: center;
+  		li {
+  			display: inline-block;
+			width: 3px;
+			height: 3px;
+			margin: 0 3px;
+			background: transparent;
+			border-radius: 3px;
+			overflow: hidden;
+			text-indent: -999em;
+			border: 1px solid #fff;
+			background-color: #fff;
+			cursor: pointer;
+			&.unslider-active {
+				background: @homeBlue;
+  				cursor: default;
+  				border: 1px solid @homeBlue;
+			}
+  		}
+	}
+}
+
+.main-nav-wrap {
+	height: 1.35rem;
+	background-color: #fff;
+}
+
+.main-nav {
+	padding-left: .3rem;
+	padding-right: .3rem;
+	li {
+		text-align: center;
+		a {
+			display: block;
+			float: left;
+			width: 3.45rem;
+			height: 1.35rem;
+			color: @font-text-color;
+			font-size: 12px;
+		}
+		img {
+			display: inline-block;
+			height: .5rem;
+			width: .5rem;
+			margin-top: .28rem;
+		}
+		span {
+			display: block;
+		}
+	}
+}
+
+.hot-guide-wrap {
+	margin-top: .15rem;
+	background-color: #fff;
+	font-size: 12px;
+}
+
+.hot-guide-head {
+	a {
+		display: block;
+		height: .6rem;
+		padding-left: .45rem;
+		padding-right: .4rem;
+	}
+	.title {
+		float: left;
+		display: inline-block;
+		height: .36rem;
+		padding: 0 .18rem;
+		margin-top: .12rem;
+		border-radius: .1rem;
+		line-height: .36rem;
+		color: #fff;
+		background-color: @homeBlue;
+	}
+	.arrow {
+		float: right;
+		display: inline-block;
+		height: .6rem;
+		line-height: .6rem;
+		font-size: 20px;
+		color: @homeBlue;
+	}
+}
+
+.hot-guide-container {
+	li {
+		height: 1.9rem;
+		border-bottom: 1px dashed @border-color;
+	}
+	li:last-child {
+		border: none;
+	}
+	a {
+		display: block;
+		height: 1.65rem;
+		padding: .25rem .4rem 0 .45rem;
+	}
+	.cont {
+		float: left;
+		width: 3.6rem;
+		.title {
+			margin-top: .075rem;
+			color: @font-text-color;
+			font-weight: bold;
+		}
+		.price {
+			margin-top: .4rem;
+			color: @font-text-color;
+			b {
+				color: #ff6700;
+			}
+			.font {
+				font-size: 30px;
+			}
+		}
+	}
+	.pic {
+		float: right;
+		width: 3.05rem;
+		img {
+			width: 100%;
+			height: 1.36rem;
+		}
+	}
+}
+
+.blank {
+	height: 1.2rem;
+}

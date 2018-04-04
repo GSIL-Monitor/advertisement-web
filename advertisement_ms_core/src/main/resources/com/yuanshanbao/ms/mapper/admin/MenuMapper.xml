@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuanshanbao.ms.mapper.admin.MenuMapper">
+	<select id="queryMenus" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.Menu">
+		select m.id as id, m.name as name, m.parent_id as parent_id, m.icon_name as icon_name,
+		mc.name as category_name, mc.id as category_id,
+		r.id as right_id, r.name as right_name
+		from tb_admin_menus m LEFT JOIN tb_admin_menu_categorys mc 
+		on m.category_id=mc.id 
+		LEFT JOIN
+		tb_admin_rights r 
+		ON m.right_id=r.id
+		<where>
+			<if test="id != null and id != ''">
+				m.id = #{id}
+			</if>
+			<if test="parent_id != null and parent_id != ''">
+				and m.parent_id = #{parent_id}
+			</if>
+			<if test="name != null and name != ''">
+				and m.name like CONCAT(CONCAT('%', #{name}),'%')
+			</if>
+			<if test="category_id != null and category_id != ''">
+				and m.category_id = #{category_id}
+			</if>
+			<if test="right_id != null and right_id != ''">
+				and m.right_id = #{right_id}
+			</if>
+		</where>
+		order by m.id asc 
+	</select>
+	
+	<select id="queryMenusByUsername" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.Menu">
+		select distinct(m.id) as id, m.name as name, m.parent_id as parent_id, m.icon_name as icon_name,
+		mc.name as category_name, mc.id as category_id,
+		r.id as right_id, r.name as right_name, r.url as right_url 
+		from tb_admin_menus m, tb_admin_menu_categorys mc, tb_admin_rights r, tb_admin_module_right mr, tb_admin_group_module gm, tb_admin_user_group ug 
+		where m.category_id=mc.id 
+		<if test="categoryId != null and categoryId != ''">
+			and mc.id=#{categoryId}
+		</if>
+		and m.right_id=r.id and m.right_id=mr.right_id and mr.MODULE_ID=gm.MODULE_ID and gm.GROUP_ID=ug.GROUP_ID and ug.USERNAME=#{userName} 
+		order by m.id asc
+	</select>
+	
+	<select id="queryLastSbling" parameterType="String" resultType="com.yuanshanbao.ms.model.admin.Menu">
+		SELECT * FROM tb_admin_menus where id regexp CONCAT(CONCAT('^', #{idStart}),'[[:digit:]]{3}$') order by id desc limit 0,1
+	</select>
+
+	<insert id="insertMenu" parameterType="com.yuanshanbao.ms.model.admin.Menu">
+		insert into
+		tb_admin_menus
+		(id,
+		parent_id, name, category_id, right_id, create_time)
+		values
+		(#{id}, #{parent_id}, #{name},
+		#{category_id}, #{right_id}, sysdate())
+	</insert>
+
+	<delete id="deleteMenu" parameterType="com.yuanshanbao.ms.model.admin.Menu">
+		delete from 
+		tb_admin_menus 
+		<where>
+			<if test="id != null and id != ''">
+			id = #{id} or parent_id regexp CONCAT(CONCAT('^', #{id}),'[[:digit:]]*$')  
+			</if>
+			<if test="parent_id != null and parent_id != ''">
+			and parent_id = #{parent_id}
+			</if>
+			<if test="name != null and name != ''">
+			and name = #{name}
+			</if>
+			<if test="category_id != null and category_id != ''">
+			and category_id = #{category_id}
+			</if>
+			<if test="right_id != null and right_id != ''">
+			and right_id = #{right_id}
+			</if>
+		</where>
+	</delete>
+	
+	<delete id="deleteMenuByCategoryId" parameterType="string">
+		delete from 
+		tb_admin_menus 
+		where category_id=#{categoryId}
+	</delete>
+	
+	<update id="updateMenuIcon" parameterType="string">
+		update tb_admin_menus 
+		set icon_name=#{icon_name} 
+		where id=#{id}
+	</update>
+</mapper>

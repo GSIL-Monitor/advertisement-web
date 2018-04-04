@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuanshanbao.ms.mapper.admin.GroupMapper">
+	<select id="queryGroups" parameterType="com.yuanshanbao.ms.model.admin.Group" resultType="com.yuanshanbao.ms.model.admin.Group">
+		select * from
+		tb_admin_groups 
+		<where>
+			<if test="id != null and id != ''">
+			id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+			and name like CONCAT(CONCAT('%', #{name}),'%')
+			</if>
+			<if test="description != null and description != ''">
+			and description like CONCAT(CONCAT('%', #{description}),'%')
+			</if>
+			<if test="parent_id != null and parent_id != ''">
+			and parent_id = #{parent_id}
+			</if>
+			<if test="queryScope != null">
+			and id in
+				<foreach collection="queryScope" item="group" open="(" close=")" separator=",">
+				#{group.id}
+				</foreach>
+			</if>
+		</where>
+		order by id asc
+	</select>
+	
+	<select id="queryLastSbling" parameterType="String" resultType="com.yuanshanbao.ms.model.admin.Group">
+		SELECT * FROM tb_admin_groups where id regexp CONCAT(CONCAT('^', #{idStart}),'[[:digit:]]{3}$') order by id desc limit 0,1
+	</select>
+	
+	<select id="queryGroupsByUsername" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.Group">
+		select * from tb_admin_groups
+		WHERE id 
+		<if test="flag == 'in'">
+		in
+		</if>
+		<if test="flag == 'notin'">
+		not in 
+		</if>
+		(select group_id from tb_admin_user_group where username=#{userName})
+		order by id asc
+	</select>
+	
+	<select id="queryGroupByName" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.Group">
+		select * from
+		tb_admin_groups 
+		where name=#{name}
+	</select>
+	
+	<insert id="insertGroup" parameterType="com.yuanshanbao.ms.model.admin.Group">
+		insert into
+		tb_admin_groups
+		(id, name, description, parent_id, create_time)
+		values 
+		(#{id}, #{name}, #{description}, #{parent_id}, sysdate())
+	</insert>
+	
+	<delete id="deleteGroup" parameterType="com.yuanshanbao.ms.model.admin.Group">
+		delete from tb_admin_groups
+		where 
+		id=#{id} 
+		<set>
+			<if test="name != null and name != ''">
+			and name like CONCAT(CONCAT('%', #{name}),'%')
+			</if>
+			<if test="description != null and description != ''">
+			and description like CONCAT(CONCAT('%', #{description}),'%')
+			</if>
+		</set>
+	</delete>
+</mapper>

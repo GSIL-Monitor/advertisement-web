@@ -1,0 +1,781 @@
+@white: #FFF;
+@black: #000;
+@primary-color: #278dec;
+@input-background-color: #fff;
+@input-border-color: #bfbfbf;
+@text-color: #191919;
+@hint-color: #9b999a;
+@shadow-color: #ac1717;
+@tip-color: #999;
+@table-title: #e34b57;
+@table-border: #636363;
+@table-content: #f1f1f0;
+@error-color: #F67072;
+@background-color: #d7f3ff;
+@calculator-color: #ef786e;
+html, body {
+	font-size: 62.5%;
+	@media(max-width: 320px) {
+		font-size: 50%;
+	}
+}
+input::-webkit-input-placeholder {
+	color: @tip-color !important; /* WebKit browsers */
+}
+input:-moz-placeholder {
+	color: @tip-color !important; /* Mozilla Firefox 4 to 18 */
+}
+input::-moz-placeholder {
+	color: @tip-color !important; /* Mozilla Firefox 19+ */
+}
+input:-ms-input-placeholder {
+	color: @tip-color !important; /* Internet Explorer 10+ */
+}
+.container {
+	background-color: @primary-color;
+}
+.header {
+	background-color: @white;
+	height: 64px;
+	height: 4rem;
+	img {
+		height: 2rem;
+	    margin-top: 1rem;
+	    margin-left: 1rem;
+	}
+}
+
+.banner {
+	border: none;
+}
+
+.banner img {
+	width: 100%;
+	display: block;
+}
+
+.wrapper {
+	color: @text-color;
+	font-size: 1.4rem;
+	position: relative;
+}
+
+.money {
+	color: @table-title;
+	font-weight: bold;
+}
+
+.form-header {
+	background-color: @primary-color;
+	text-align: center;
+	h2 {
+		font-size: 2rem;
+		padding-top: 1.5rem;
+		padding-bottom: 1rem;
+		border-bottom: .1rem dashed @text-color;
+	}
+}
+
+.pen-area {
+	height: 2rem;
+	background-color: @primary-color;
+}
+.form-pen {
+	position: absolute;
+    right: 1rem;
+    top: 1rem;
+	background: url("../../../img/wap/activity/pinganxfdc/pen.png") no-repeat;
+	background-size: 100%;
+	display: block;
+	width: 7rem;
+	height: 3.5rem;
+}
+
+.form-area {
+	background-color: @background-color;
+	border-radius: .6rem;
+	padding: 2rem 1.5rem;
+	margin: 1rem;
+}
+
+.form-title {
+	text-align: center;
+	font-size: 1.8rem;
+	font-weight: bold;
+	color: @text-color;
+	border-bottom: .1rem dashed @table-border;
+	margin: 1rem -1.5rem;
+	padding-bottom: 1rem;
+}
+
+.form-item {
+	clear: both;
+	overflow: hidden;
+	font-size: 1.5rem;
+}
+
+.field-radio {
+    margin: 1rem 0 1rem 2rem;
+    label {
+    	width: 80%;
+   		display: inline-block;
+    	padding-left: 1rem;
+    }
+}
+
+.input-area {
+	width: 70%;
+	padding-bottom: 2rem;
+}
+
+.field-name {
+	height: 4rem;
+	line-height: 4rem;
+	font-size: 1.5rem;
+	text-align: right;
+}
+
+.field-input {
+	height: 4rem;
+	padding: 0 1rem;
+	border: 1px solid @input-border-color;
+	border-radius: .4rem;
+	margin-bottom: 20px;
+	margin-bottom: 2rem;
+	background-color: @input-background-color;
+}
+
+.name-input {
+	width: 60%;
+}
+
+.gender-radio {
+	height: 3.2rem;
+	line-height: 3.2rem;
+	margin-top: 0.4rem;
+	width: 30%;
+	border: .1rem solid @input-border-color;
+	border-radius: .4rem;
+	background-color: @input-background-color;
+	list-style: none;
+	li {
+		float: left;
+		width: 50%;
+		height: 3.2rem;
+		text-align: center;
+	}
+
+	li:first-child {
+		border-right: .1rem solid @input-border-color;
+		margin-right: -.1rem;
+	}
+}
+
+.gender-select {
+	background-color: @primary-color;
+	color: @white;
+}
+
+.placeholder {
+	color: @tip-color;
+	line-height: 4rem;
+}
+
+.field-input-error {
+	border: .1rem solid @error-color;
+}
+
+.field-input-control {
+	width: 100%;
+    height: 4rem;
+    border: none;
+    // line-height: 4rem;
+    outline: 0;
+    color: @text-color;
+    background-color: @input-background-color;
+    font-size: 1.5rem;
+}
+
+.field-select {
+	line-height: 4rem;
+}
+
+.field-center-align {
+	text-align: center;
+}
+
+.error-tip {
+	font-size: 1.4rem;
+	color: @error-color;
+	margin-top: -2rem;
+	margin-bottom: -1.6rem;
+}
+
+.protocal {
+	text-align: center;
+	margin-top: 1rem;
+	span {
+		line-height: 1.5rem;
+	}
+	a {
+		color: @table-title;
+	}
+	img {
+		margin-right: .5rem;
+		height: 1.4rem;
+	}
+}
+
+.submit-button-area {
+	margin-top: 1rem;
+}
+
+.submit-button {
+	margin: 0 auto;
+	border: none;
+	background-color: @table-title;
+	height: 4.5rem;
+	width: 24.7rem;
+	text-align: center;
+	line-height: 4.5rem;
+	font-size: 1.8rem;
+	font-weight: bold;
+	color: @white;
+	@media(max-width: 320px) {
+		height: 3.5rem;
+		width: 19.2rem;
+		line-height: 3.5rem;
+	}
+}
+
+.warm-tips {
+	color: @tip-color;
+	text-align: center;
+	margin-top: 1rem;
+}
+
+.warn-tips {
+	color: @table-title;
+	font-size: 1rem;
+	text-align: center;
+	margin-top: 1rem;
+}
+
+.insurance-description {
+	background-color: @background-color;
+	border-radius: .6rem;
+	margin: 1rem;
+}
+
+.description-title {
+	position: relative;
+	color: @text-color;
+	padding: 2rem;
+	text-align: center;
+	font-size: 2rem;
+	font-weight: bold;
+	span {
+		line-height: 3rem;
+		padding-right: .5rem;
+	}
+	.title-shield {
+		position: absolute;
+		background: url(../../../../img/wap/activity/pingan/common/shield.png) no-repeat;
+		background-size: cover;
+	    height: 2.2rem;
+    	width: 2rem;
+    	top: 2.2rem;
+	}
+}
+
+.product-description {
+	margin: 0 2%;
+	color: #000;
+	font-size: 1.4rem;
+	text-align: center;
+	padding: .5rem;
+	border-radius: .5rem;
+	table {
+		border: .1rem solid @table-border;
+		border-collapse: collapse;
+		width: 100%;
+		margin-bottom: 1rem;
+	}
+	thead {
+		background-color: @primary-color;
+		color: @white;
+	}
+	tbody {
+		background-color: @white;
+	}
+	th {
+		font-weight: normal;
+		border: .1rem solid @table-border;
+		padding: 2rem 0.5rem
+	}
+	td {
+		font-weight: normal;
+		border: .1rem solid @table-border;
+		padding: 2rem 0.5rem;
+		height: 6rem;
+	}
+	p {
+		text-align: center;
+	}
+}
+
+.insurance-provider {
+	text-align: center;
+	color: #000;
+	margin: 2rem 0;
+}
+
+.activity-rule {
+	color: #000;
+	font-size: 1.2rem;
+	line-height: 2rem;
+	padding: 1rem;
+}
+
+.rule-title {
+	text-align: center;
+}
+
+.footer {
+	padding: 2rem; 
+	font-size: 1rem;
+	text-align: center;
+	color: @white;
+}
+
+.tip-text{
+	margin: 1.5rem;
+	margin-top: -1rem;
+	padding: 1.5rem;
+	font-size: 1.2rem;
+	line-height: 2rem;
+	background-color: @background-color;
+	border-radius: .5rem;
+	text-align: left;
+	max-height: 20rem;
+	overflow: auto;
+}
+.tip-left-button-text{
+	height: 3rem;
+	line-height: 3rem;
+	width: 45%;
+	border: .2rem solid @table-title;
+	color: @primary-color;
+	// border-radius: 1.5rem;
+}
+.tip-right-button-text{
+	height: 3rem;
+	width: 45%;
+	line-height: 3rem;
+	background: @table-title;
+	border: .2rem solid @table-title;
+	color: #fff;
+	// border-radius: 1.5rem;
+}
+
+.tip-single-button-text {
+	height: 3.5rem;
+	width: 100%;
+	line-height: 3.5rem;
+	background: @table-title;
+	border: .2rem solid @table-title;
+	color: #fff;
+	// border-radius: 1.5rem;
+}
+
+.policy-header {
+	background-color: @primary-color;
+}
+
+.success-notify {
+	margin-top: 1rem;
+	text-align: center;
+	h1 {
+		display: block;
+    	font-size: 2.4rem;
+    	line-height: 3rem;
+		color: @table-title;
+		font-weight: bold;
+	}
+	h2 {
+		color: @table-title;
+		margin-bottom: 2rem;
+		font-size: 2rem;
+		line-height: 2.4rem;
+	}
+	h4 {
+		margin-bottom: 2rem;
+		font-size: 1.5rem;
+		line-height: 2rem;
+	}
+	p {
+		font-size: 1.2rem;
+		color: #000;
+	}
+}
+
+.policy-description {
+	margin: 2rem 0;
+	background: url("../../../../img/wap/activity/pingan/common/policy-flap.png") no-repeat 0 bottom;
+	background-size: contain;
+}
+
+.policy-envelope {
+	margin: -10% 3% 0 3%;
+	img {
+		width: 100%;
+	}
+}
+
+.policy-stamp {
+	position: absolute;
+	width: 6rem;
+	right: 5%;
+	top: 15rem;
+}
+
+.policy-table {
+	margin: 0 5%;
+	background-color: @table-content;
+	box-shadow: 0 0 12px @tip-color;
+	border-radius: .5rem;
+	border-top-left-radius: 1.2rem;
+	border-top-right-radius: 1.2rem;
+	font-size: 1.2rem;
+	line-height: 1.6rem;
+	color: #000;
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		border: .1rem dashed @table-title;
+		margin-bottom: 3rem;
+	}
+	th {
+		font-weight: bold;
+		font-size: 1.4rem;
+		border: .1rem dashed @table-title;
+		padding: .5rem
+	}
+	td {
+		font-weight: normal;
+		border: .1rem dashed @table-title;
+		padding: .5rem;
+		padding-right: 0;
+	}
+	.table-header {
+		width: 100%;
+	}
+	.table-area {
+		padding: .8rem;
+	}
+	.policy-title {
+		font-weight: bold;
+	}
+}
+
+.policy-tip {
+	text-align: center;
+	font-size: 1.4rem;
+	padding-bottom: 2rem;
+	color: @white;
+}
+
+.policy-footer {
+	background-color: @primary-color;
+	border-top: .1rem dashed;
+	color: @white;
+}
+
+.footer-button {
+	position: fixed;
+    padding: 1rem 0;
+    bottom: 0;
+    width: 100%;
+    height: 5rem;
+    border-top: .1rem solid #E2E2E2;
+    background: #FBFBFB;
+    .submit-button-shadow{
+		width: 80%;
+		margin: 0 auto;
+		font-weight: normal;
+		font-size: 1.4rem;
+    }
+    .submit-button {
+    	font-size: 1.4rem;
+    }
+}
+
+.footer-button-placeholder {
+	margin-bottom: 7rem;
+}
+
+.sms-button {
+	float: left;
+	color: @white;
+	text-align: center;
+	background-color: @primary-color;
+	font-size: 1.2rem;
+	height: 4rem;
+	line-height: 4rem;
+	border-radius: .2rem;
+}
+
+.poptip {
+	font-size: 1.4rem;
+}
+
+.calculate-header {
+	background-color: @white;
+}
+
+.form-title-area {
+	text-align: center;
+    margin: 1rem 0rem 1rem 0rem;
+    padding-bottom: 1rem;
+}
+
+.form-title-content {
+	font-size: 1.6rem;
+    color: @text-color;
+ 	font-weight: 600;
+    .money {
+    	font-size: 2.4rem;
+    }
+}
+
+.input-triangle {
+	position: absolute;
+    margin-top: 1.7rem;
+    right: 15%;
+    border-width: 6px;
+    border-color: @text-color transparent transparent transparent;
+    border-style: solid dashed none dashed;
+}
+
+.calculator-description {
+	margin-top: 2rem;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+	border-bottom: .1rem dashed @white;
+	// background-color: @background-color;
+	li {
+		margin: 5%;
+		line-height: 2rem;
+		height: 6rem;
+		font-size: 1.2rem;
+		clear: both;
+		img {
+			position: absolute;
+    		width: 6rem;
+		}
+		span {
+			margin-top: .5rem;
+			color: #000;
+			float: left;
+			margin-left: 4.5rem;
+			padding: .5rem 2rem .5rem 2rem;
+			border-top-right-radius: 3rem;
+			border-bottom-right-radius: 3rem;
+			background-color: @white;
+			min-width: 14rem;
+			width: 60%;
+		}
+
+		.li-right {
+			right: 5%;
+		}
+
+		.span-right {
+			float: right;
+			margin-right: 3.5rem;
+    		padding-right: 2rem;
+			border-top-right-radius: 0rem;
+			border-bottom-right-radius: 0rem;
+			border-top-left-radius: 3rem;
+			border-bottom-left-radius: 3rem;
+		}
+
+	}	
+}
+
+.calculator-description-title {
+	padding: 0 2rem 1rem 1rem;
+	text-align: center;
+	font-size: 1.6rem;
+	color: @white;
+	border-bottom: .1rem dashed @white;
+}
+
+.calculate-table { 
+	margin: 0 5%;
+	padding: .5rem;
+	background-color: @table-content;
+	border-radius: .5rem;
+	border-radius: .5rem;
+	text-align: center;
+	.title {
+		color: @table-title;
+		font-weight: bold;
+	}
+}
+
+.calculate-detail {
+	background-color: @background-color;
+	padding: 1rem;
+	margin: 2rem 2rem 1rem 2rem;
+	line-height: 3rem;
+	font-size: 1.5rem;
+	text-align: center;
+	p {
+		border-top: .1rem dashed #e0d0af;
+	}
+}
+
+.calculate-title {
+	color: @table-title;
+	font-size: 2.4rem;
+	margin: 2rem;
+}
+
+.calculate-head {
+	background-color: #f1e7d1;
+	padding: 2rem;
+	line-height: 3rem;
+	font-size: 1.6rem;
+	text-align: left;
+}
+
+.calculate-content {
+	margin-bottom: 2rem;
+	li {
+		border-bottom: .1rem dashed #e0d0af;
+		padding: 1rem;
+		line-height: 2rem;
+		font-size: 1.2rem;
+		text-align: left;
+	}
+}
+
+.field-radio {
+	margin: 1rem 0 1rem 2rem;
+	input {
+		margin-right: 1rem;
+	}
+	label {
+	    width: 80%;
+	    display: inline-block;
+	}
+}
+
+.radio-btn {
+    width: 40%;
+    height: 4rem;
+    line-height: 4rem;
+    text-align: center;
+    cursor: pointer;
+    color: @table-title;
+    border-radius: .4rem;
+    border: .1rem solid @table-title;
+    background: #fff;
+    margin-bottom: 2rem;
+}
+
+.radio-btn-select {
+    background-color: @table-title;
+    color: @white;
+}
+
+.calculate-background {
+	background-color: @primary-color;
+}
+
+.calculate-container {
+	color: @text-color;
+	margin: 2rem 1rem;
+	padding: 1.5rem;
+    padding-top: 1rem;
+    background-color: @background-color;
+    border-radius: .6rem;
+	.form-title-left-icon {
+		background-color: #ef786e;
+		right: 2rem;
+	}
+	.form-title-right-icon {
+		background-color: #ef786e;
+		left: 2rem;
+	}
+	.form-area {
+		padding-bottom: 2rem;
+	}
+}
+
+.calculate-button {
+	background-color: #ef786e;
+	width: 80%;
+	margin: 0 auto;
+}
+
+.calculate-result-pen {
+	position: absolute;
+    right: 1rem;
+    top: 6rem;
+	img {
+		width: 8rem;
+	}
+}
+
+.field-allowance {
+	margin-left: 2rem;
+	line-height: 4rem;
+	font-size: 1.8rem;
+	font-weight: bold;
+	color: @text-color;
+}
+
+.merchant-alert-tip {
+	.tip-title {
+		color: #f87c29;
+		font-size: 1.8rem;
+	}
+	.tip-text {
+		font-size: 1.4rem;
+		background-color: #f1f1f1;
+	}
+	.tip-ticket {
+		// background: url("../../../img/wap/common/ticket-background.png") center no-repeat;
+		margin: 0 1rem;
+		.tip-ticket-background {
+			width: 100%;
+		}
+		.tip-ticket-content {
+			margin: 0 1rem;
+			margin-top: -42%;
+    		margin-bottom: 25%;
+			img {
+				max-width: 70%;
+				margin: 0 auto;
+			}
+		}
+		.tip-insurance-name {
+			font-size: 1.8rem;
+			margin-top: 1rem;
+		}
+	}
+	.money {
+		color: #f87c29;
+	}
+	.tip-single-button-text {
+		background-color: #f87c29;
+		border: none;
+	}
+}
+
+.survey-tip-form {
+	text-align: left;
+	padding: 0 5%;
+}

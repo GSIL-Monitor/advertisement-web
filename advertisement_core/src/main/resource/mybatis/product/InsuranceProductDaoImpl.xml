@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="insuranceProduct">
+
+	<resultMap id="insuranceProductMap" type="InsuranceProduct">
+		<id property="insuranceProductId" column="insurance_product_id" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="calculatorId" column="calculator_id" jdbcType="NUMERIC" />
+		<result property="payway" column="payway" jdbcType="VARCHAR" />
+		<result property="premium" column="premium" jdbcType="VARCHAR" />
+		<result property="ageBracket" column="age_bracket" jdbcType="VARCHAR" />
+		<result property="applicableTargets" column="applicable_targets" jdbcType="VARCHAR" />
+		<result property="insuredDuration" column="insured_duration" jdbcType="VARCHAR" />
+		<result property="dailyAllowance" column="daily_allowance" jdbcType="NUMERIC" />
+		<result property="productFeatures" column="product_features" jdbcType="VARCHAR" />
+		<result property="guaranteeContent" column="guarantee_content" jdbcType="VARCHAR" />
+		<result property="reservationProcess" column="reservation_process" jdbcType="VARCHAR" />
+		<result property="insuranceStatements" column="insurance_statements" jdbcType="VARCHAR" />
+		<result property="productIncludeUrl" column="product_include_url" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 查询sql -->
+	<select id="selectInsuranceProducts" parameterType="InsuranceProduct" resultMap="insuranceProductMap">
+		select
+		* from
+		tb_product_insurance
+		<where>
+			<trim suffixOverrides="and">
+				<if test="insuranceProductId != null">
+					insurance_product_id= #{insuranceProductId} and
+				</if>
+				<if test="productId != null">
+					product_id= #{productId} and
+				</if>
+				<if test="calculatorId != null">
+					calculator_id= #{calculatorId} and
+				</if>
+				<if test="payway != null">
+					payway= #{payway} and
+				</if>
+				<if test="premium != null">
+					premium= #{premium} and
+				</if>
+				<if test="ageBracket != null">
+					age_bracket= #{ageBracket} and
+				</if>
+				<if test="applicableTargets != null">
+					applicable_targets= #{applicableTargets} and
+				</if>
+				<if test="insuredDuration != null">
+					insured_duration= #{insuredDuration} and
+				</if>
+				<if test="dailyAllowance != null">
+					daily_allowance= #{dailyAllowance} and
+				</if>
+				<if test="productFeatures != null">
+					product_features= #{productFeatures} and
+				</if>
+				<if test="guaranteeContent != null">
+					guarantee_content= #{guaranteeContent} and
+				</if>
+				<if test="reservationProcess != null">
+					reservation_process= #{reservationProcess} and
+				</if>
+				<if test="insuranceStatements != null">
+					insurance_statements= #{insuranceStatements} and
+				</if>
+				<if test="productIncludeUrl != null">
+					product_include_url= #{productIncludeUrl} and
+				</if>
+				<if test="status != null">
+					status= #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectInsuranceProductByIds" parameterType="List" resultMap="insuranceProductMap">
+		select
+		* from
+		tb_product_insurance
+		<where>
+			insurance_product_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertInsuranceProduct" parameterType="InsuranceProduct">
+		insert into
+		tb_product_insurance( product_id, calculator_id, payway, premium, age_bracket, applicable_targets, insured_duration, daily_allowance, product_features, guarantee_content, reservation_process, insurance_statements, product_include_url, status, create_time, update_time )
+		values
+		( #{productId}, #{calculatorId}, #{payway}, #{premium}, #{ageBracket}, #{applicableTargets}, #{insuredDuration}, #{dailyAllowance}, #{productFeatures}, #{guaranteeContent}, #{reservationProcess}, #{insuranceStatements}, #{productIncludeUrl}, #{status}, sysdate(), sysdate() )
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="insuranceProductId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateInsuranceProduct" parameterType="InsuranceProduct">
+		update tb_product_insurance
+		<set>
+			<trim suffixOverrides=",">
+				<if test="productId != null">
+					product_id= #{productId},
+				</if>
+				<if test="calculatorId != null">
+					calculator_id= #{calculatorId},
+				</if>
+				<if test="payway != null">
+					payway= #{payway},
+				</if>
+				<if test="premium != null">
+					premium= #{premium},
+				</if>
+				<if test="ageBracket != null">
+					age_bracket= #{ageBracket},
+				</if>
+				<if test="applicableTargets != null">
+					applicable_targets= #{applicableTargets},
+				</if>
+				<if test="insuredDuration != null">
+					insured_duration= #{insuredDuration},
+				</if>
+				<if test="dailyAllowance != null">
+					daily_allowance= #{dailyAllowance},
+				</if>
+				<if test="productFeatures != null">
+					product_features= #{productFeatures},
+				</if>
+				<if test="guaranteeContent != null">
+					guarantee_content= #{guaranteeContent},
+				</if>
+				<if test="reservationProcess != null">
+					reservation_process= #{reservationProcess},
+				</if>
+				<if test="insuranceStatements != null">
+					insurance_statements= #{insuranceStatements},
+				</if>
+				<if test="productIncludeUrl != null">
+					product_include_url= #{productIncludeUrl},
+				</if>
+				<if test="status != null">
+					status= #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			insurance_product_id=#{insuranceProductId}
+		</where>
+	</update>
+
+	<delete id="deleteInsuranceProduct" parameterType="long">
+		delete from tb_product_insurance
+		where
+		insurance_product_id=#{insuranceProductId}
+	</delete>
+
+</mapper>

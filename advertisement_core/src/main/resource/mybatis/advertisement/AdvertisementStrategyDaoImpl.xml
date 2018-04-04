@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="advertisementStrategy">
+
+	<resultMap id="advertisementStrategyMap" type="AdvertisementStrategy">
+		<id property="advertisementStrategyId" column="advertisement_strategy_id" jdbcType="NUMERIC" />
+		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="functionId" column="function_id" jdbcType="NUMERIC" />
+		<result property="key" column="key" jdbcType="VARCHAR" />
+		<result property="value" column="value" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="sort" column="sort" jdbcType="NUMERIC" />
+		<result property="percent" column="percent" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<select id="selectAdvertisementStrategyByFunctionIds" parameterType="List" resultMap="advertisementStrategyMap">
+		select
+		* from
+		tb_advertisement_strategy
+		<where>
+			function_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
+
+	<!-- 简历sql -->
+	<select id="selectAdvertisementStrategy" parameterType="AdvertisementStrategy" resultMap="advertisementStrategyMap">
+		select
+		* from
+		tb_advertisement_strategy
+		<where>
+			<trim suffixOverrides="and">
+				<if test="advertisementStrategyId != null">
+					advertisement_strategy_id = #{advertisementStrategyId} and
+				</if>
+				<if test="advertisementId != null">
+					advertisement_id = #{advertisementId} and
+				</if>
+				<if test="functionId != null">
+					function_id = #{functionId} and
+				</if>
+				<if test="key != null">
+					`key` = #{key} and
+				</if>
+				<if test="value != null">
+					`value` = #{value} and
+				</if>
+				<if test="description != null">
+					description = #{description} and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="sort != null">
+					sort = #{sort} and
+				</if>
+				<if test="percent != null">
+					percent = #{percent} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>			
+			and status != -1
+		</where>
+		order by sort asc, create_time desc
+	</select>
+
+	<select id="selectAdvertisementStrategyByIds" parameterType="List" resultMap="advertisementStrategyMap">
+		select
+		* from
+		tb_advertisement_strategy
+		<where>
+			advertisement_strategy_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
+
+	<insert id="insertAdvertisementStrategy" parameterType="AdvertisementStrategy">
+		insert into
+		tb_advertisement_strategy(advertisement_id, function_id, `key`, `value`, description, type,
+		 sort, percent, status, create_time, update_time)
+		values
+		(#{advertisementId}, #{functionId}, #{key}, #{value}, #{description}, #{type}, #{sort},
+		#{percent}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="advertisementStrategyId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateAdvertisementStrategy" parameterType="AdvertisementStrategy">
+		update tb_advertisement_strategy
+		<set>
+			<trim suffixOverrides=",">
+				<if test="advertisementId != null">
+					advertisement_id=#{advertisementId},
+				</if>
+				<if test="key != null">
+					`key`=#{key},
+				</if>
+				<if test="functionId != null">
+					function_id=#{functionId},
+				</if>
+				<if test="value != null">
+					`value`=#{value},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="sort != null">
+					sort=#{sort},
+				</if>
+				<if test="percent != null">
+					percent=#{percent},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			advertisement_strategy_id=#{advertisementStrategyId}
+		</where>
+	</update>
+
+	<delete id="deleteAdvertisementStrategy" parameterType="long">
+		delete from tb_advertisement_strategy
+		where
+		advertisement_strategy_id=#{advertisementStrategyId}
+	</delete>
+
+</mapper>

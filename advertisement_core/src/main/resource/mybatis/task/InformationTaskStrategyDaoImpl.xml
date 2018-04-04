@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="informationTaskStrategy">
+	<resultMap id="informationTaskStrategyMap" type="InformationTaskStrategy">
+		<result property="informationTaskStrategyId" column="information_task_strategy_id" jdbcType="NUMERIC" />
+		<result property="informationTaskId" column="information_id" jdbcType="NUMERIC" />
+		<result property="fromStaffId" column="from_staff_id" jdbcType="NUMERIC" />
+		<result property="toStaffId" column="to_staff_id" jdbcType="NUMERIC" />
+		<result property="percent" column="percent" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectInformationTaskStrategys" parameterType="InformationTaskStrategy"
+		resultMap="informationTaskStrategyMap">
+		select
+		* from
+		tb_information_task_strategy
+		<where>
+			<trim suffixOverrides="and">
+				<if test="informationTaskId != null">
+					information_task_id=#{informationTaskId} and
+				</if>
+				<if test="informationTaskStrategyId != null">
+					information_task_strategy_id=#{informationTaskStrategyId} and
+				</if>
+				<if test="fromStaffId != null">
+					from_staff_id=#{fromStaffId} and
+				</if>
+				<if test="toStaffId != null">
+					to_staff_id=#{toStaffId} and
+				</if>
+				<if test="percent != null">
+					percent=#{percent} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectRecordByInformationTaskIds" parameterType="List" resultMap="informationTaskStrategyMap">
+		select * from
+		tb_information_task_strategy
+		<where>
+			information_task_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				 #{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertInformationTaskStrategy" parameterType="InformationTaskStrategy">
+		insert
+		into
+		tb_information_task_strategy(information_task_id, from_staff_id, to_staff_id, 
+		percent, type, status, create_time, update_time)
+		values
+		(#{informationTaskId}, #{fromStaffId}, #{toStaffId}, 
+		#{percent}, #{type}, #{status}, sysdate(), sysdate())
+	</insert>
+
+	<update id="updateInformationTaskStrategy" parameterType="InformationTaskStrategy">
+		update tb_information_task_strategy
+		<set>
+			<if test="informationTaskId != null">
+				information_task_id=#{informationTaskId},
+			</if>
+			<if test="fromStaffId != null">
+				from_staff_id=#{fromStaffId},
+			</if>
+			<if test="toStaffId != null">
+				to_staff_id=#{toStaffId},
+			</if>
+			<if test="percent != null">
+				percent=#{percent},
+			</if>
+			<if test="type != null">
+				type=#{type},
+			</if>
+			<if test="status != null">
+				status=#{status},
+			</if>
+		</set>
+		<where>
+			information_task_strategy_id=#{informationTaskStrategyId}
+		</where>
+	</update>
+
+</mapper>
