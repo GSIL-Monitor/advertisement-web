@@ -27,7 +27,7 @@ import com.yuanshanbao.common.util.HttpUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.PropertyUtil;
 import com.yuanshanbao.common.util.UploadUtils;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 
 @Controller

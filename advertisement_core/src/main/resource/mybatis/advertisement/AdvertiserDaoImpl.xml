@@ -6,7 +6,11 @@
 
 	<resultMap id="advertiserMap" type="Advertiser">
 		<id property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="companyName" column="company_name" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="bindUsername" column="bind_username" jdbcType="VARCHAR" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -22,8 +26,23 @@
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId} and
 				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
+				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="companyName != null">
+					company_name like CONCAT(CONCAT('%', #{companyName}),'%') and
+				</if>
 				<if test="description != null">
 					description like CONCAT(CONCAT('%', #{description}),'%') and
+				</if>
+				<if test="bindUsername != null">
+					bind_username = #{bindUsername} and
 				</if>
 				<if test="status != null">
 					status = #{status} and
@@ -51,11 +70,11 @@
 
 	<insert id="insertAdvertiser" parameterType="Advertiser">
 		insert into
-		tb_advertiser(description, status, create_time,
-		update_time)
+		tb_advertiser(project_id, name, company_name, description, 
+		bind_username, status, create_time, update_time)
 		values
-		(#{description},
-		#{status}, sysdate(), sysdate())
+		(#{projectId}, #{name}, #{companyName}, #{description},
+		#{bindUsername}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertiserId">
 			SELECT LAST_INSERT_ID()
@@ -66,8 +85,17 @@
 		update tb_advertiser
 		<set>
 			<trim suffixOverrides=",">
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="companyName != null">
+					company_name=#{companyName},
+				</if>
 				<if test="description != null">
 					description=#{description},
+				</if>
+				<if test="bindUsername != null">
+					bind_username=#{bindUsername},
 				</if>
 				<if test="status != null">
 					status=#{status},

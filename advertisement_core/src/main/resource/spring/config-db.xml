@@ -52,7 +52,7 @@
     </bean>
     <tx:annotation-driven transaction-manager="txManager"/>
 
-    <bean id="tableShardInterceptor" class="com.yuanshanbao.ad.base.interceptor.TableShardInterceptor"></bean>
+    <bean id="tableShardInterceptor" class="com.yuanshanbao.dsp.base.interceptor.TableShardInterceptor"></bean>
 	
     <bean id="paginationInterceptor" class="com.yuanshanbao.paginator.interceptor.PaginationInterceptor">
         <property name="dialect">

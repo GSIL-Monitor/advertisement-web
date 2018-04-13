@@ -42,20 +42,20 @@ public class InjectBeanSelfProcessor implements BeanPostProcessor, ApplicationCo
                 Class c = bean.getClass();
                 Service serviceAnnotation = (Service) c.getAnnotation(Service.class);
                 if (serviceAnnotation != null) {
-                    //com.yuanshanbao.ad.service 互相引用，需要从Context从获取代理后的Bean
+                    //com.yuanshanbao.dsp.service 互相引用，需要从Context从获取代理后的Bean
                     try {
                         //						log.info("No Proxy,retrive from context "+bean.getClass());
                         bean = context.getBean(beanName);
                         if (!AopUtils.isAopProxy(bean)) {
                             //仍然不是Proxy
-							LoggerUtil.error("No Proxy Bean for com.yuanshanbao.ad.service " + bean.getClass());
+							LoggerUtil.error("No Proxy Bean for com.yuanshanbao.dsp.service " + bean.getClass());
                         }
                     } catch (BeanCurrentlyInCreationException ex) {
                         //告警，但仍然在一个No Proxy的情况正常运行
-                    	LoggerUtil.error("No Proxy Bean for com.yuanshanbao.ad.service " + bean.getClass() + " " + ex.getMessage());
+                    	LoggerUtil.error("No Proxy Bean for com.yuanshanbao.dsp.service " + bean.getClass() + " " + ex.getMessage());
                     } catch (Exception ex) {
                         //告警，但仍然在一个No Proxy的情况正常运行
-                    	LoggerUtil.error("No Proxy Bean for com.yuanshanbao.ad.service " + bean.getClass() + " " + ex.getMessage(), ex);
+                    	LoggerUtil.error("No Proxy Bean for com.yuanshanbao.dsp.service " + bean.getClass() + " " + ex.getMessage(), ex);
                     }
 
                 }

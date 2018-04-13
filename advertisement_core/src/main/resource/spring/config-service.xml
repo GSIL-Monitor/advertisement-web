@@ -11,30 +11,30 @@
     <bean id="springContextHolder" class="com.yuanshanbao.common.web.SpringContextHolder"/>
     
 	<!-- 开机加载相关基础信息 -->
-	<bean id="iniBean" class="com.yuanshanbao.ad.core.IniBean" init-method="init"></bean>
-    <bean id="constantsBean" class="com.yuanshanbao.ad.common.constant.ConstantsManager" init-method="init"></bean>
-	<bean id="serverLogBean" class="com.yuanshanbao.ad.common.service.ServerLogServiceImpl" init-method="init"></bean>
+	<bean id="iniBean" class="com.yuanshanbao.dsp.core.IniBean" init-method="init"></bean>
+    <bean id="constantsBean" class="com.yuanshanbao.dsp.common.constant.ConstantsManager" init-method="init"></bean>
+	<bean id="serverLogBean" class="com.yuanshanbao.dsp.common.service.ServerLogServiceImpl" init-method="init"></bean>
 	
 	<context:annotation-config/>
     <context:component-scan base-package="com.yuanshanbao.*"/>
     <aop:aspectj-autoproxy/>
 
-    <bean id="iniCache" class="com.yuanshanbao.ad.cache.IniCache" init-method="init"/>
-    <bean id="redisSubscribeManager" class="com.yuanshanbao.ad.common.redis.refresh.RedisSubscribeManager" init-method="init"
+    <bean id="iniCache" class="com.yuanshanbao.dsp.cache.IniCache" init-method="init"/>
+    <bean id="redisSubscribeManager" class="com.yuanshanbao.dsp.common.redis.refresh.RedisSubscribeManager" init-method="init"
           depends-on="springContextHolder"/>
     <!--  zk lock config
-    <bean id="ZKConf" class="com.yuanshanbao.ad.zk.ZkConf">
+    <bean id="ZKConf" class="com.yuanshanbao.dsp.zk.ZkConf">
         <property name="server" value="${zkServer}"/>
     </bean>
-    <bean id="zkClusterSyncProvider" class="com.yuanshanbao.ad.zk.client.impl.ZKClusterSyncProvider">
+    <bean id="zkClusterSyncProvider" class="com.yuanshanbao.dsp.zk.client.impl.ZKClusterSyncProvider">
         <property name="zkConf" ref="ZKConf"/>
     </bean>
-    <bean id="zKClusterBeanPostProcessor" class="com.yuanshanbao.ad.zk.client.impl.ZKClusterBeanPostProcessor">
+    <bean id="zKClusterBeanPostProcessor" class="com.yuanshanbao.dsp.zk.client.impl.ZKClusterBeanPostProcessor">
         <property name="clusterSyncProvider" ref="zkClusterSyncProvider"/>
     </bean>
     -->
 
-    <bean id="bannerCache" class="com.yuanshanbao.ad.cache.BannerCache" init-method="init"/>
-    <bean id="entranceCache" class="com.yuanshanbao.ad.cache.EntranceCache" init-method="init"/>
+    <bean id="bannerCache" class="com.yuanshanbao.dsp.cache.BannerCache" init-method="init"/>
+    <bean id="entranceCache" class="com.yuanshanbao.dsp.cache.EntranceCache" init-method="init"/>
 	
 </beans>

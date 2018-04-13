@@ -18,8 +18,8 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import ${defaultTemplate.ftlPath}.BrokerDepartment;
 import ${defaultTemplate.servicePath};
 

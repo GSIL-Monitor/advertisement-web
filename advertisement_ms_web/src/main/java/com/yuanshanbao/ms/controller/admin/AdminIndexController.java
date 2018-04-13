@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.util.CookieUtils;
-import com.yuanshanbao.ad.project.model.Project;
-import com.yuanshanbao.ad.project.service.ProjectService;
+import com.yuanshanbao.dsp.project.model.Project;
+import com.yuanshanbao.dsp.project.service.ProjectService;
 
 @Controller
 public class AdminIndexController {

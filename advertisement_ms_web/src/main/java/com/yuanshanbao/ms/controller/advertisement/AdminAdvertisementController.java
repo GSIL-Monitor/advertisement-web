@@ -25,16 +25,16 @@ import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
-import com.yuanshanbao.ad.advertisement.model.Advertisement;
-import com.yuanshanbao.ad.advertisement.model.AdvertisementShowType;
-import com.yuanshanbao.ad.advertisement.model.AdvertisementType;
-import com.yuanshanbao.ad.advertisement.model.Advertiser;
-import com.yuanshanbao.ad.advertisement.service.AdvertisementService;
-import com.yuanshanbao.ad.advertisement.service.AdvertiserService;
-import com.yuanshanbao.ad.common.constant.ConstantsManager;
-import com.yuanshanbao.ad.config.ConfigManager;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementShowType;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 
 @Controller
 @RequestMapping("/admin/gift")

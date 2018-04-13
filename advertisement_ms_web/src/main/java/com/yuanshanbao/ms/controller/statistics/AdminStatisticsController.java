@@ -25,20 +25,20 @@ import com.yuanshanbao.common.util.ExcelUtil;
 import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.PropertyUtil;
-import com.yuanshanbao.ad.advertisement.model.AdvertisementPosition;
-import com.yuanshanbao.ad.advertisement.service.AdvertisementService;
-import com.yuanshanbao.ad.channel.model.Channel;
-import com.yuanshanbao.ad.channel.service.ChannelService;
-import com.yuanshanbao.ad.config.ConfigManager;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
-import com.yuanshanbao.ad.statistics.model.AdvertisementStatistics;
-import com.yuanshanbao.ad.statistics.model.Statistics;
-import com.yuanshanbao.ad.statistics.model.StatisticsStatus;
-import com.yuanshanbao.ad.statistics.model.StatisticsType;
-import com.yuanshanbao.ad.statistics.model.SuccessPageClick;
-import com.yuanshanbao.ad.statistics.service.AdvertisementStatisticsService;
-import com.yuanshanbao.ad.statistics.service.StatisticsService;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.position.model.Position;
+import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
+import com.yuanshanbao.dsp.statistics.model.Statistics;
+import com.yuanshanbao.dsp.statistics.model.StatisticsStatus;
+import com.yuanshanbao.dsp.statistics.model.StatisticsType;
+import com.yuanshanbao.dsp.statistics.model.SuccessPageClick;
+import com.yuanshanbao.dsp.statistics.service.AdvertisementStatisticsService;
+import com.yuanshanbao.dsp.statistics.service.StatisticsService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.model.admin.User;
 import com.yuanshanbao.ms.service.admin.AdminUserService;
@@ -158,7 +158,7 @@ public class AdminStatisticsController extends PaginationController {
 
 	@RequestMapping("/advertisement.do")
 	public String advertisement(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
-		modelMap.put("positionList", AdvertisementPosition.getTypeDescriptionMap().values());
+		modelMap.put("positionList", Position.getTypeDescriptionMap().values());
 		addDateList(modelMap, 0);
 		return PAGE_ADVERTISEMENT_LIST;
 	}
@@ -175,7 +175,7 @@ public class AdminStatisticsController extends PaginationController {
 	@RequestMapping("/advertisementChannel.do")
 	public String advertisementChannel(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
 			Long advertisementId) {
-		modelMap.put("positionList", AdvertisementPosition.getTypeDescriptionMap().values());
+		modelMap.put("positionList", Position.getTypeDescriptionMap().values());
 		modelMap.put("advertisement", ConfigManager.getAdvertisement(advertisementId + ""));
 		modelMap.put("advertisementId", advertisementId);
 		addDateList(modelMap, 0);
@@ -194,7 +194,7 @@ public class AdminStatisticsController extends PaginationController {
 	// 按照渠道查询广告
 	@RequestMapping("/channelAdvertisement.do")
 	public String channelAdvertisement(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
-		modelMap.put("positionList", AdvertisementPosition.getTypeDescriptionMap().values());
+		modelMap.put("positionList", Position.getTypeDescriptionMap().values());
 		addDateList(modelMap, 0);
 		return PAGE_CHANNEL_ADVERTISEMENT_LIST;
 	}
@@ -211,7 +211,7 @@ public class AdminStatisticsController extends PaginationController {
 	@RequestMapping("/channelAdvertisements.do")
 	public String channelAdvertisements(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
 			String channelkey) {
-		modelMap.put("positionList", AdvertisementPosition.getTypeDescriptionMap().values());
+		modelMap.put("positionList", Position.getTypeDescriptionMap().values());
 		modelMap.put("channel", ConfigManager.getChannel(channelkey));
 		modelMap.put("channelkey", channelkey);
 		addDateList(modelMap, 0);

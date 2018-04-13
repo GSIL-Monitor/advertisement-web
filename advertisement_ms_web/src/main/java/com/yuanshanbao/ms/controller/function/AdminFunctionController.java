@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.ad.config.model.Function;
-import com.yuanshanbao.ad.config.service.FunctionService;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.config.model.Function;
+import com.yuanshanbao.dsp.config.service.FunctionService;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageList;
 

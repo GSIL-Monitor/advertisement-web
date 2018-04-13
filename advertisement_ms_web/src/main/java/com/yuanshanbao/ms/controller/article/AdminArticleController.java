@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.yuanshanbao.ad.article.model.Article;
-import com.yuanshanbao.ad.article.model.ArticleStatus;
-import com.yuanshanbao.ad.article.service.ArticleService;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.article.model.Article;
+import com.yuanshanbao.dsp.article.model.ArticleStatus;
+import com.yuanshanbao.dsp.article.service.ArticleService;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;

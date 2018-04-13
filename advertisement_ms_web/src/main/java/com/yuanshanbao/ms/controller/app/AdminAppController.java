@@ -22,21 +22,21 @@ import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
-import com.yuanshanbao.ad.advertisement.model.Advertisement;
-import com.yuanshanbao.ad.advertisement.service.AdvertisementService;
-import com.yuanshanbao.ad.advertisement.service.AdvertisementStrategyService;
-import com.yuanshanbao.ad.advertisement.service.AdvertiserService;
-import com.yuanshanbao.ad.app.model.App;
-import com.yuanshanbao.ad.app.model.AppType;
-import com.yuanshanbao.ad.channel.service.ChannelService;
-import com.yuanshanbao.ad.config.ConfigManager;
-import com.yuanshanbao.ad.config.model.Config;
-import com.yuanshanbao.ad.config.model.ConfigCategory;
-import com.yuanshanbao.ad.config.model.Function;
-import com.yuanshanbao.ad.config.service.ConfigService;
-import com.yuanshanbao.ad.config.service.FunctionService;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.app.model.App;
+import com.yuanshanbao.dsp.app.model.AppType;
+import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.config.model.Config;
+import com.yuanshanbao.dsp.config.model.ConfigCategory;
+import com.yuanshanbao.dsp.config.model.Function;
+import com.yuanshanbao.dsp.config.service.ConfigService;
+import com.yuanshanbao.dsp.config.service.FunctionService;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 
 @Controller
 @RequestMapping("/admin/app")

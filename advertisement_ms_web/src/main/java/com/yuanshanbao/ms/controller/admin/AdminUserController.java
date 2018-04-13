@@ -42,10 +42,10 @@ import com.yuanshanbao.ms.service.admin.MenuService;
 import com.yuanshanbao.ms.service.admin.RightService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
-import com.yuanshanbao.ad.project.model.Project;
-import com.yuanshanbao.ad.project.service.ProjectService;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.project.model.Project;
+import com.yuanshanbao.dsp.project.service.ProjectService;
 
 @Controller
 @RequestMapping("/admin/user")

@@ -34,7 +34,7 @@
 	</filter-mapping>
 	<filter>
 	    <filter-name>sessionFilter</filter-name>
-	    <filter-class>com.yuanshanbao.ad.core.filter.SysSessionFilter</filter-class>
+	    <filter-class>com.yuanshanbao.dsp.core.filter.SysSessionFilter</filter-class>
 	    <init-param>
 	      <param-name>sessionId</param-name>
 	      <param-value>SID</param-value>
@@ -54,7 +54,7 @@
   	</filter-mapping>
 	<filter>
 		<filter-name>DebugFilter</filter-name>
-		<filter-class>com.yuanshanbao.ad.core.filter.DebugFilter</filter-class>
+		<filter-class>com.yuanshanbao.dsp.core.filter.DebugFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>DebugFilter</filter-name>

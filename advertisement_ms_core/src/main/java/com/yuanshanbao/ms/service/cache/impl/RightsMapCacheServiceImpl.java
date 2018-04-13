@@ -8,8 +8,8 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
 import com.yuanshanbao.common.util.CommonUtil;
-import com.yuanshanbao.ad.common.redis.base.AbstractRedis;
-import com.yuanshanbao.ad.common.redis.base.JedisWay;
+import com.yuanshanbao.dsp.common.redis.base.AbstractRedis;
+import com.yuanshanbao.dsp.common.redis.base.JedisWay;
 import com.yuanshanbao.ms.service.cache.RightsMapCacheService;
 import com.yuanshanbao.ms.utils.SerializeUtil;
 

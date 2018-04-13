@@ -23,15 +23,15 @@ import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
-import com.yuanshanbao.ad.common.constant.CommonConstant;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.IniBean;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
-import com.yuanshanbao.ad.product.service.ProductService;
-import com.yuanshanbao.ad.push.model.AppPush;
-import com.yuanshanbao.ad.push.service.AppPushService;
-import com.yuanshanbao.ad.user.model.User;
-import com.yuanshanbao.ad.user.service.UserService;
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.IniBean;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.product.service.ProductService;
+import com.yuanshanbao.dsp.push.model.AppPush;
+import com.yuanshanbao.dsp.push.service.AppPushService;
+import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.service.UserService;
 
 @Controller
 @RequestMapping("/admin/appPush")

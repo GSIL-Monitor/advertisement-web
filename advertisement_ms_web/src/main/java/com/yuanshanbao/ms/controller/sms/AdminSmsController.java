@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
-import com.yuanshanbao.ad.sms.model.SmsVerifyCode;
-import com.yuanshanbao.ad.sms.service.VerifyCodeService;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.sms.model.SmsVerifyCode;
+import com.yuanshanbao.dsp.sms.service.VerifyCodeService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageList;
 

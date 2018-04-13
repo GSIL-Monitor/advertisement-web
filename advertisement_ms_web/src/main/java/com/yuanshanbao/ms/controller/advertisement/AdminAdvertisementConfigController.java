@@ -19,17 +19,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.ad.advertisement.model.AdvertisementConfig;
-import com.yuanshanbao.ad.advertisement.model.AdvertisementPosition;
-import com.yuanshanbao.ad.advertisement.service.AdvertisementCategoryService;
-import com.yuanshanbao.ad.advertisement.service.AdvertisementService;
-import com.yuanshanbao.ad.advertisement.service.AdvertiserService;
-import com.yuanshanbao.ad.app.model.App;
-import com.yuanshanbao.ad.app.model.AppType;
-import com.yuanshanbao.ad.config.ConfigManager;
-import com.yuanshanbao.ad.config.model.Function;
-import com.yuanshanbao.ad.config.service.FunctionService;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementConfig;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementCategoryService;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.app.model.App;
+import com.yuanshanbao.dsp.app.model.AppType;
+import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.config.model.Function;
+import com.yuanshanbao.dsp.config.service.FunctionService;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -83,11 +83,11 @@ public class AdminAdvertisementConfigController extends PaginationController {
 	@RequestMapping("/configWindow.do")
 	public String configWindow(String appKey, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		List<AdvertisementConfig> list = new ArrayList<AdvertisementConfig>();
-		for (String section : AdvertisementPosition.getSectionMap().values()) {
+		for (String section : Position.getSectionMap().values()) {
 			AdvertisementConfig config = new AdvertisementConfig();
-			config.setName(AdvertisementPosition.getDescription(section));
+			config.setName(Position.getDescription(section));
 			List<String> keys = new ArrayList<String>();
-			for (String configStr : AdvertisementPosition.getConfigMap().values()) {
+			for (String configStr : Position.getConfigMap().values()) {
 				keys.add(section + configStr);
 			}
 			keys.add(section + "config");

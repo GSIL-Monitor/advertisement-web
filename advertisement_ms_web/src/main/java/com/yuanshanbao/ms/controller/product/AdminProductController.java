@@ -18,11 +18,11 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
-import com.yuanshanbao.ad.core.CommonStatus;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
-import com.yuanshanbao.ad.merchant.service.MerchantService;
-import com.yuanshanbao.ad.product.model.Product;
-import com.yuanshanbao.ad.product.service.ProductService;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.merchant.service.MerchantService;
+import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.service.ProductService;
 
 @Controller
 @RequestMapping("/admin/product")

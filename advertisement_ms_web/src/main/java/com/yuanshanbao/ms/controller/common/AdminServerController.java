@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuanshanbao.ad.core.IniBean;
-import com.yuanshanbao.ad.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.core.IniBean;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.HttpUtil;
 import com.yuanshanbao.ms.controller.base.PaginationController;

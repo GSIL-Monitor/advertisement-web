@@ -53,7 +53,7 @@
 		order="1" ignore-unresolvable="true" ignore-resource-not-found="true" />
 
 	<!-- Redis Config -->
-	<bean id="baseRedis" class="com.yuanshanbao.ad.common.redis.base.BaseRedis"
+	<bean id="baseRedis" class="com.yuanshanbao.dsp.common.redis.base.BaseRedis"
 		init-method="initPool">
 		<property name="config" ref="jedisPoolConfig" />
 		<property name="host" value="${redis.host}" />

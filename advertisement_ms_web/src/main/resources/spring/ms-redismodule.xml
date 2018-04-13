@@ -22,7 +22,7 @@
 		<property name="testOnBorrow" value="true" />
 		<property name="testOnReturn" value="true" />
 	</bean>
-	<bean id="baseRedis" class="com.yuanshanbao.ad.common.redis.base.BaseRedis"
+	<bean id="baseRedis" class="com.yuanshanbao.dsp.common.redis.base.BaseRedis"
 		init-method="initPool">
 		<property name="config" ref="jedisPoolConfig" />
 		<!-- <property name="password" value="${silver.redis.password}" /> -->
@@ -34,11 +34,11 @@
 	<aop:config>
 		<aop:aspect ref="jedisAop">
 			<aop:after
-				pointcut="@annotation(com.yuanshanbao.ad.common.redis.base.JedisWay) || @within(com.yuanshanbao.ad.common.redis.base.JedisWay)"
+				pointcut="@annotation(com.yuanshanbao.dsp.common.redis.base.JedisWay) || @within(com.yuanshanbao.dsp.common.redis.base.JedisWay)"
 				method="doAfter" />
 		</aop:aspect>
 	</aop:config>
-	<bean id="jedisAop" class="com.yuanshanbao.ad.common.redis.base.JedisAop" />
+	<bean id="jedisAop" class="com.yuanshanbao.dsp.common.redis.base.JedisAop" />
 
 	<!-- Redis Scan -->
 	<context:annotation-config />

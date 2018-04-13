@@ -59,7 +59,7 @@
 	</context:component-scan>
 
 
-	<!-- <bean id="iniBean" class="com.yuanshanbao.ad.core.IniBean" init-method="init"></bean> 
+	<!-- <bean id="iniBean" class="com.yuanshanbao.dsp.core.IniBean" init-method="init"></bean> 
 		<bean id="constantsBean" class="com.yuanshanbao.core.constants.ConstantsManager" 
 		init-method="init"></bean> -->
 

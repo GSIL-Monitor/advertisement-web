@@ -13,9 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.yuanshanbao.ad.common.constant.ConstantsManager;
-import com.yuanshanbao.ad.project.model.Project;
-import com.yuanshanbao.ad.project.service.ProjectService;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.project.model.Project;
+import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.common.constant.SpringContextConstants;
 import com.yuanshanbao.ms.model.admin.Menu;
 import com.yuanshanbao.ms.model.admin.MenuCategory;

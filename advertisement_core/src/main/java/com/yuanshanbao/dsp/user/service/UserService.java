@@ -1,0 +1,52 @@
+package com.yuanshanbao.dsp.user.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
+import com.yuanshanbao.dsp.user.model.BaseInfo;
+import com.yuanshanbao.dsp.user.model.CropImage;
+import com.yuanshanbao.dsp.user.model.LoginToken;
+import com.yuanshanbao.dsp.user.model.User;
+
+public interface UserService {
+
+	public User selectUserByWeixinId(String openId);
+
+	public void insertUser(User user);
+
+	public void updateUser(User user);
+
+	public User selectUserByMobile(String mobile);
+
+	public User login(String username, String password);
+
+	public User selectUserById(String userId);
+
+	public User selectUserByToken(String token);
+
+	public void uploadAvatar(User user, CropImage avatar) throws Exception;
+
+	public LoginToken appLogin(String appId, String username, String password, String remoteAddr);
+
+	public void insertOrUpdateUser(User user);
+
+	public void insertBaseInfo(BaseInfo baseInfo);
+
+	public void insertOrUpdateBaseInfo(BaseInfo baseInfo);
+
+	public void updateBaseInfo(BaseInfo baseInfo);
+
+	public BaseInfo selectBaseInfo(String userId);
+
+	public void registerWithoutPassword(User user);
+
+	public void insertUserWithCreateTime(User user);
+
+	public User insertBaseInfoFromWeixin(HttpServletRequest request, User user, GetUserInfoResponse userInfo);
+
+	public Map<String, BaseInfo> selectBaseInfoByIds(List<String> userIdList);
+
+}

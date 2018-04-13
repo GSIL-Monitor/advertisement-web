@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Jedis;
 
-import com.yuanshanbao.ad.common.redis.base.AbstractRedis;
-import com.yuanshanbao.ad.common.redis.base.JedisWay;
+import com.yuanshanbao.dsp.common.redis.base.AbstractRedis;
+import com.yuanshanbao.dsp.common.redis.base.JedisWay;
 import com.yuanshanbao.ms.service.cache.SessionCacheService;
 import com.yuanshanbao.ms.utils.SerializeUtil;
 
