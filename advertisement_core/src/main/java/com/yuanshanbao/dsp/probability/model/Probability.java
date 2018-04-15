@@ -14,9 +14,11 @@ public class Probability {
 	private Long activityId;
 	private String channel;
 	private Long positionId;
-	private Long advertismentId;
+	private Long advertisementId;
 	private Double probability;
 	private Integer sort;
+	private Timestamp startTime;
+	private Timestamp endTime;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
@@ -56,12 +58,12 @@ public class Probability {
 		this.channel = channel;
 	}
 
-	public Long getAdvertismentId() {
-		return advertismentId;
+	public Long getAdvertisementId() {
+		return advertisementId;
 	}
 
-	public void setAdvertismentId(Long advertismentId) {
-		this.advertismentId = advertismentId;
+	public void setAdvertisementId(Long advertisementId) {
+		this.advertisementId = advertisementId;
 	}
 
 	public Long getPositionId() {
@@ -86,6 +88,22 @@ public class Probability {
 
 	public void setProbability(Double probability) {
 		this.probability = probability;
+	}
+
+	public Timestamp getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Timestamp startTime) {
+		this.startTime = startTime;
+	}
+
+	public Timestamp getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Timestamp endTime) {
+		this.endTime = endTime;
 	}
 
 	public Integer getStatus() {

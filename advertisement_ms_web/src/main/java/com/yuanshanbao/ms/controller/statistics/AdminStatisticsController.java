@@ -31,7 +31,7 @@ import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.position.model.Position;
+import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.Statistics;
 import com.yuanshanbao.dsp.statistics.model.StatisticsStatus;
@@ -99,6 +99,9 @@ public class AdminStatisticsController extends PaginationController {
 	@Autowired
 	private ChannelService channelService;
 
+	@Autowired
+	private PositionService positionService;
+
 	/**
 	 * 合作方渠道页面窗口
 	 * 
@@ -158,7 +161,7 @@ public class AdminStatisticsController extends PaginationController {
 
 	@RequestMapping("/advertisement.do")
 	public String advertisement(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
-		modelMap.put("positionList", Position.getTypeDescriptionMap().values());
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
 		addDateList(modelMap, 0);
 		return PAGE_ADVERTISEMENT_LIST;
 	}
@@ -175,7 +178,7 @@ public class AdminStatisticsController extends PaginationController {
 	@RequestMapping("/advertisementChannel.do")
 	public String advertisementChannel(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
 			Long advertisementId) {
-		modelMap.put("positionList", Position.getTypeDescriptionMap().values());
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
 		modelMap.put("advertisement", ConfigManager.getAdvertisement(advertisementId + ""));
 		modelMap.put("advertisementId", advertisementId);
 		addDateList(modelMap, 0);
@@ -194,7 +197,7 @@ public class AdminStatisticsController extends PaginationController {
 	// 按照渠道查询广告
 	@RequestMapping("/channelAdvertisement.do")
 	public String channelAdvertisement(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
-		modelMap.put("positionList", Position.getTypeDescriptionMap().values());
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
 		addDateList(modelMap, 0);
 		return PAGE_CHANNEL_ADVERTISEMENT_LIST;
 	}
@@ -211,7 +214,7 @@ public class AdminStatisticsController extends PaginationController {
 	@RequestMapping("/channelAdvertisements.do")
 	public String channelAdvertisements(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
 			String channelkey) {
-		modelMap.put("positionList", Position.getTypeDescriptionMap().values());
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
 		modelMap.put("channel", ConfigManager.getChannel(channelkey));
 		modelMap.put("channelkey", channelkey);
 		addDateList(modelMap, 0);

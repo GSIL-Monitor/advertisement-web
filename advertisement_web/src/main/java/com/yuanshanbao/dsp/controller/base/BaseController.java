@@ -3,10 +3,6 @@ package com.yuanshanbao.dsp.controller.base;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,25 +18,18 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.RequestUtil;
-import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.common.validator.util.ValidatorModel;
 import com.yuanshanbao.common.validator.util.ValidatorUtils;
-import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.dsp.advertisement.model.Advertisement;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementShowType;
-import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
-import com.yuanshanbao.dsp.config.ConfigConstants;
-import com.yuanshanbao.dsp.config.ConfigManager;
-import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserStatus;
 import com.yuanshanbao.dsp.user.service.UserService;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 public class BaseController {
 
@@ -75,8 +64,7 @@ public class BaseController {
 	 * @param response
 	 */
 	public void setNoCache(HttpServletResponse response) {
-		response.setHeader("Cache-Control",
-				"no-store, no-cache, must-revalidate");
+		response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 		response.setHeader("Pragma", "no-cache");
 		response.setDateHeader("Expires", -1);
 	}
@@ -101,10 +89,8 @@ public class BaseController {
 	}
 
 	protected User getSessionUser(HttpServletRequest request) {
-		User user = (User) request.getSession().getAttribute(
-				SessionConstants.SESSION_ACCOUNT);
-		if (user != null && user.getStatus() != null
-				&& user.getStatus() == UserStatus.LOCK) {
+		User user = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+		if (user != null && user.getStatus() != null && user.getStatus() == UserStatus.LOCK) {
 			throw new BusinessException(ComRetCode.USER_LOCKED);
 		}
 		return user;
@@ -116,10 +102,8 @@ public class BaseController {
 			token = request.getHeader(POST_UNIQUE_TOKEN);
 		}
 		if (StringUtils.isNotBlank(token)) {
-			Long count = redisCacheService.incr(RedisConstant
-					.getUniqueTokenKey(token));
-			redisCacheService.expire(RedisConstant.getUniqueTokenKey(token),
-					60 * 10);
+			Long count = redisCacheService.incr(RedisConstant.getUniqueTokenKey(token));
+			redisCacheService.expire(RedisConstant.getUniqueTokenKey(token), 60 * 10);
 			if (count != null && count > 1) {
 				return false;
 			}
@@ -135,8 +119,7 @@ public class BaseController {
 			LoggerUtil.error("[Error validate parameters: ]", e);
 		}
 		if (model != null) {
-			throw new BusinessException(model.getField().getName(),
-					model.getMessageCode());
+			throw new BusinessException(model.getField().getName(), model.getMessageCode());
 		}
 	}
 
@@ -161,8 +144,7 @@ public class BaseController {
 		return "redirect:" + getMobileLink(request, url);
 	}
 
-	protected String redirect(HttpServletResponse response, String url)
-			throws IOException {
+	protected String redirect(HttpServletResponse response, String url) throws IOException {
 		if (!url.contains(".")) {
 			url = url + ".html";
 		}
@@ -197,8 +179,7 @@ public class BaseController {
 		return "/web" + ftl;
 	}
 
-	protected String getFtlPath(HttpServletRequest request, String ftl,
-			boolean checkAgent) {
+	protected String getFtlPath(HttpServletRequest request, String ftl, boolean checkAgent) {
 		setHost(request);
 		if (RequestUtil.isFromWeixin(request)) {
 			request.setAttribute("isFromWeixin", "true");
@@ -222,14 +203,11 @@ public class BaseController {
 			String host = request.getHeader("Host");
 			if (StringUtils.isNotBlank(host) && host.contains("yuanshanbao")) {
 				request.setAttribute("isYuanshanbao", "true");
-			} else if (StringUtils.isNotBlank(host)
-					&& host.contains("dachuanbao")) {
+			} else if (StringUtils.isNotBlank(host) && host.contains("dachuanbao")) {
 				request.setAttribute("isDachuanbao", "true");
-			} else if (StringUtils.isNotBlank(host)
-					&& host.contains("yuanshanbx.com")) {
+			} else if (StringUtils.isNotBlank(host) && host.contains("yuanshanbx.com")) {
 				request.setAttribute("isYuanshanbx", "true");
-			} else if (StringUtils.isNotBlank(host)
-					&& host.contains("huhabao.com")) {
+			} else if (StringUtils.isNotBlank(host) && host.contains("huhabao.com")) {
 				request.setAttribute("isHuhabao", "true");
 			}
 			String isHttps = request.getHeader("IsHttps");
@@ -251,20 +229,15 @@ public class BaseController {
 	}
 
 	protected void verifySmsToken(HttpServletRequest request) {
-		String sessionToken = (String) request.getSession().getAttribute(
-				SessionConstants.SMS_TOKEN);
-		Long time = (Long) request.getSession().getAttribute(
-				SessionConstants.TOKEN_TIME);
+		String sessionToken = (String) request.getSession().getAttribute(SessionConstants.SMS_TOKEN);
+		Long time = (Long) request.getSession().getAttribute(SessionConstants.TOKEN_TIME);
 		String smsToken = request.getParameter("smsToken");
-		if (!(StringUtils.isNotBlank(sessionToken) && sessionToken
-				.equals(smsToken))) {
-			LoggerUtil.info(
-					"[VerifySmsToken] mobile={}, sessionToken={}, smsToken={}",
-					request.getParameter("mobile"), sessionToken, smsToken);
+		if (!(StringUtils.isNotBlank(sessionToken) && sessionToken.equals(smsToken))) {
+			LoggerUtil.info("[VerifySmsToken] mobile={}, sessionToken={}, smsToken={}", request.getParameter("mobile"),
+					sessionToken, smsToken);
 		}
 		if (time == null || (System.currentTimeMillis() - time) < 4000) {
-			LoggerUtil.info("[VerifySmsToken] mobile={}, time={}",
-					request.getParameter("mobile"), time);
+			LoggerUtil.info("[VerifySmsToken] mobile={}, time={}", request.getParameter("mobile"), time);
 		}
 	}
 
@@ -289,9 +262,7 @@ public class BaseController {
 		} else {
 			String appId = request.getParameter("appId");
 			appKey = appService.getAppKey(appId);
-			if (StringUtils.isNotBlank(appKey)
-					&& (appKey.equals(AppType.XINGDAI) || appKey
-							.equals(AppType.RUIDAI))) {
+			if (StringUtils.isNotBlank(appKey) && (appKey.equals(AppType.XINGDAI) || appKey.equals(AppType.RUIDAI))) {
 				return appKey;
 			}
 		}
@@ -309,78 +280,18 @@ public class BaseController {
 		return false;
 	}
 
-	protected void setAdvertisement(Integer client,
-			Map<String, Object> resultMap, String channel, String appKey,
-			Long activityId, String position) {
-		List<AdvertisementVo> bannerList = setAdvertisementLink(position,
-				Position.BANNER, channel, appKey, activityId,
-				client);
-		List<AdvertisementVo> connerList = setAdvertisementLink(position,
-				Position.CONNER, channel, appKey, activityId,
-				client);
-		List<AdvertisementVo> popupList = setAdvertisementLink(position,
-				Position.POPUP, channel, appKey, activityId,
-				client);
-		resultMap.put("bannerList", bannerList);
-		if (popupList != null && popupList.size() > 0) {
-			AdvertisementVo popupAd = popupList.get(0);
-			resultMap.put("popupAd", popupAd);
-		}
-		if (connerList != null && connerList.size() > 0) {
-			AdvertisementVo connerAd = connerList.get(0);
-			resultMap.put("connerAd", connerAd);
-		}
-	}
-
-	protected List<AdvertisementVo> setAdvertisementLink(String config,
-			String position, String channel, String appKey, Long activityId,
-			Integer client) {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		ConfigManager.setConfigMap(resultMap, activityId, channel, appKey);
-		String constant = config + Position.getConfig(position);
-		List<Advertisement> list = ConfigManager.getAdvertisementList(
-				(String) resultMap.get(constant), activityId, channel);
-		List<AdvertisementVo> resultList = new ArrayList<AdvertisementVo>();
-		for (Advertisement advertisement : list) {
-			String link = "";
-			if (client == null || Advertisement.IS_IOS == client
-					|| Advertisement.IS_ANDROID == client) {
-				link = advertisement.getAppLink(position, channel);
-			} else {
-				link = advertisement.getJumperLink(position, channel);
-			}
-			advertisement.setLink(link);
-			advertisement.setCount(advertisementService
-					.getAdvertisementCount(advertisement.getAdvertisementId()));
-			if (advertisement.getShowType() != null) {
-				advertisement.setPosition(constant);
-				String cycleTime = (String) resultMap
-						.get(ConfigConstants.ADVERTISEMENT_CYCLE_TIME_CONFIG);
-				if (ValidateUtil.isNumber(cycleTime)
-						&& advertisement.getShowType().equals(
-								AdvertisementShowType.PERIOD)) {
-					advertisement.setCycleTime(Long.parseLong(cycleTime));
-				}
-			}
-			resultList.add(new AdvertisementVo(advertisement));
-		}
-		return resultList;
-	}
-
 	private String formatAmount(Integer amount) {
 		if (amount >= 10000 && amount % 10000 == 0) {
 			return (amount / 10000) + "万元";
 		}
-		return amount >= 10000 ? (amount.doubleValue() / 10000) + "万元" : amount
-				+ "元";
+		return amount >= 10000 ? (amount.doubleValue() / 10000) + "万元" : amount + "元";
 	}
 
 	public String format(String template, String name, String advertisementAmount) {
 		return format(template, name, advertisementAmount, null);
 	}
 
-	public String format(String template, String name, String advertisementAmount,
-			String province) {
+	public String format(String template, String name, String advertisementAmount, String province) {
 		if (name != null) {
 			template = template.replace(TEMPLATE_VARIABLE_NAME, name);
 		}

@@ -1,7 +1,6 @@
 package com.yuanshanbao.ms.controller.advertisement;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,24 +11,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementConfig;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementCategoryService;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.app.model.App;
 import com.yuanshanbao.dsp.app.model.AppType;
-import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -78,25 +73,6 @@ public class AdminAdvertisementConfigController extends PaginationController {
 			pageList.add(app);
 		}
 		return setPageInfo(request, response, pageList);
-	}
-
-	@RequestMapping("/configWindow.do")
-	public String configWindow(String appKey, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
-		List<AdvertisementConfig> list = new ArrayList<AdvertisementConfig>();
-		for (String section : Position.getSectionMap().values()) {
-			AdvertisementConfig config = new AdvertisementConfig();
-			config.setName(Position.getDescription(section));
-			List<String> keys = new ArrayList<String>();
-			for (String configStr : Position.getConfigMap().values()) {
-				keys.add(section + configStr);
-			}
-			keys.add(section + "config");
-			config.setFunctions(new ArrayList<Function>(functionService.selectFunctionByKeys(keys).values()));
-			list.add(config);
-		}
-		request.setAttribute("configList", list);
-		request.setAttribute("categoryLists", ConfigManager.getCategoryMap());
-		return PAGE_CONFIG;
 	}
 
 	@ResponseBody

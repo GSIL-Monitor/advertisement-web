@@ -18,6 +18,12 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.position.model.Position;
+import com.yuanshanbao.dsp.position.service.PositionService;
+import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.tags.service.TagsService;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -40,9 +46,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	@Autowired
 	private TagsService tagsService;
-	
+
 	@Autowired
 	private AdvertisementCategoryService categoryService;
+
+	@Autowired
+	private PositionService positionService;
+	
+	@Autowired
+	private ProbabilityService probabilityService;
+
+	@Autowired
+	private QuotaService quotaService;
 
 	@Override
 	public void insertAdvertisement(Advertisement advertisement) {
@@ -194,5 +209,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			random = (int) (Math.random() * (max - min + 1) + min);
 		}
 		return random;
+	}
+
+	public List<Advertisement> getAdvertisement(Long projectId, Long positionId) {
+		List<Advertisement> advertismentList = new ArrayList<Advertisement>();
+		Position position = positionService.selectPosition(positionId);
+		if (position == null) {
+			return advertismentList;
+		}
+		Probability probabilityParam = new Probability();
+		probabilityParam.setProjectId(projectId);
+		probabilityParam.setPositionId(positionId);
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(probabilityParam, new PageBounds());
+		
+		Quota quotaParam = new Quota();
+		quotaParam.setPositionId(positionId);
+		return advertismentList;
 	}
 }

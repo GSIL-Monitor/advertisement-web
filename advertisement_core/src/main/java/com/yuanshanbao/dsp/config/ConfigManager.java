@@ -27,8 +27,6 @@ public class ConfigManager implements ConfigConstants {
 
 	protected static Map<String, Activity> activityMap = new LinkedHashMap<String, Activity>();
 
-	protected static Map<Long, Merchant> merchantMap = new LinkedHashMap<Long, Merchant>();
-
 	protected static Map<String, Page> pageMap = new LinkedHashMap<String, Page>();
 
 	protected static Map<Long, Page> pageIdMap = new LinkedHashMap<Long, Page>();
@@ -80,14 +78,6 @@ public class ConfigManager implements ConfigConstants {
 			}
 			pageMap = tempPageMap;
 			pageIdMap = tempPageIdMap;
-		}
-
-		Map<Long, Merchant> tempMerchantMap = new LinkedHashMap<Long, Merchant>();
-		if (activitys != null) {
-			for (Merchant merchant : merchants) {
-				tempMerchantMap.put(merchant.getMerchantId(), merchant);
-			}
-			merchantMap = tempMerchantMap;
 		}
 
 		Map<String, Function> tempFunctionMap = new LinkedHashMap<String, Function>();
@@ -209,10 +199,6 @@ public class ConfigManager implements ConfigConstants {
 		return pageIdMap.get(pageId);
 	}
 
-	public static Merchant getMerchantById(Long merchantId) {
-		return merchantMap.get(merchantId);
-	}
-
 	public static Activity getActivityById(Long activityId) {
 		return activityIdMap.get(activityId);
 	}
@@ -264,18 +250,6 @@ public class ConfigManager implements ConfigConstants {
 		} else {
 			for (AdvertisementCategory category : advertisementCategoryMap.values()) {
 				list.add(category);
-			}
-		}
-		return list;
-	}
-
-	public static List<Merchant> getMerchantList() {
-		List<Merchant> list = new ArrayList<Merchant>();
-		if (merchantMap.size() <= 0) {
-			return list;
-		} else {
-			for (Merchant merchant : merchantMap.values()) {
-				list.add(merchant);
 			}
 		}
 		return list;

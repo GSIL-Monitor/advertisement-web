@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.position.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,16 @@ public class PositionServiceImpl implements PositionService {
 			map.put(ad.getPositionId(), ad);
 		}
 		return map;
+	}
+
+	@Override
+	public List<Position> selectPositionByProjectId(Long projectId) {
+		if (projectId == null) {
+			return new ArrayList<Position>();
+		}
+		Position position = new Position();
+		position.setProjectId(projectId);
+		return selectPosition(position, new PageBounds());
 	}
 
 }

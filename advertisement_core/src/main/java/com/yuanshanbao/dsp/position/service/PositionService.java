@@ -19,4 +19,6 @@ public interface PositionService {
 
 	public Map<Long, Position> selectPositionByIds(List<Long> positionIds);
 
+	public List<Position> selectPositionByProjectId(Long projectId);
+
 }

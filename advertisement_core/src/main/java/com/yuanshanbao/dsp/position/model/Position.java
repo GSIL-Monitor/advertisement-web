@@ -9,7 +9,22 @@ public class Position {
 	private String key;
 	private String name;
 	private String description;
+	/**
+	 * 直接广告还是转盘广告
+	 */
 	private Integer type;
+	/**
+	 * 当前位置的广告数量
+	 */
+	private Integer count;
+	/**
+	 * 当前位置图片宽度
+	 */
+	private Integer imageWidth;
+	/**
+	 * 当前位置图片高度
+	 */
+	private Integer imageHeight;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
@@ -60,6 +75,30 @@ public class Position {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+
+	public Integer getImageWidth() {
+		return imageWidth;
+	}
+
+	public void setImageWidth(Integer imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+
+	public Integer getImageHeight() {
+		return imageHeight;
+	}
+
+	public void setImageHeight(Integer imageHeight) {
+		this.imageHeight = imageHeight;
 	}
 
 	public Integer getStatus() {

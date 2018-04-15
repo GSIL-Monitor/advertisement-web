@@ -23,7 +23,6 @@ import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
-import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.statistics.dao.AdvertisementStatisticsDao;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatisticsType;
@@ -389,10 +388,6 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		adStatistics.setChannel(channel);
 		adStatistics.setDate(date);
 		adStatistics.setType(AdvertisementStatisticsType.UV_DATA);
-		adStatistics.setWelfareCount(getUv(date, channel, Position.WELFARE, advertisementId));
-		adStatistics.setBannerCount(getUv(date, channel, Position.BANNER, advertisementId));
-		adStatistics.setTagsCount(getUv(date, channel, Position.TAGS, advertisementId));
-		adStatistics.setDownloadCount(getUv(date, channel, Position.DOWNLOAD, advertisementId));
 		adStatistics.setTotal(calculateTotal(adStatistics));
 		resultList.add(adStatistics);
 	}
@@ -403,10 +398,6 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		adStatistics.setChannel(channel);
 		adStatistics.setDate(date);
 		adStatistics.setType(AdvertisementStatisticsType.PV_DATA);
-		adStatistics.setWelfareCount(getPv(date, channel, Position.WELFARE, advertisementId));
-		adStatistics.setBannerCount(getPv(date, channel, Position.BANNER, advertisementId));
-		adStatistics.setTagsCount(getPv(date, channel, Position.TAGS, advertisementId));
-		adStatistics.setDownloadCount(getPv(date, channel, Position.DOWNLOAD, advertisementId));
 		adStatistics.setTotal(calculateTotal(adStatistics));
 		resultList.add(adStatistics);
 	}
@@ -468,19 +459,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			SuccessPageClick click = new SuccessPageClick();
 			click.setChannel(channel);
 			click.setDate(date);
-			String successUvStr = (String) redisCacheService.get(RedisConstant.getResultPageUVCountKey(
-					Position.WELFARE, date, channel));
 			int count = 0;
-			if (ValidateUtil.isNumber(successUvStr)) {
-				count = Integer.parseInt(successUvStr);
-			}
-			click.setSuccessUvCount(count);
-			String failUvStr = (String) redisCacheService.get(RedisConstant.getResultPageUVCountKey(
-					Position.BANNER, date, channel));
-			count = 0;
-			if (ValidateUtil.isNumber(failUvStr)) {
-				count = Integer.parseInt(failUvStr);
-			}
 			click.setFailUvCount(count);
 			click.setTotal(click.getFailUvCount() + click.getSuccessUvCount());
 			resultList.add(click);
