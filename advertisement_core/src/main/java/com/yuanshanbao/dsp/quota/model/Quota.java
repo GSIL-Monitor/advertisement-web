@@ -8,10 +8,10 @@ public class Quota {
 
 	private Long quotaId;
 	private Long projectId;
-	private Long advertisement;
 	private Long activityId;
 	private Long positionId;
 	private String channel;
+	private Long advertisementId;
 	private Integer type;
 	private Integer count;
 	private Timestamp startTime;
@@ -39,14 +39,6 @@ public class Quota {
 		this.projectId = projectId;
 	}
 
-	public Long getAdvertisement() {
-		return advertisement;
-	}
-
-	public void setAdvertisement(Long advertisement) {
-		this.advertisement = advertisement;
-	}
-
 	public Long getActivityId() {
 		return activityId;
 	}
@@ -69,6 +61,14 @@ public class Quota {
 
 	public void setChannel(String channel) {
 		this.channel = channel;
+	}
+
+	public Long getAdvertisementId() {
+		return advertisementId;
+	}
+
+	public void setAdvertisementId(Long advertisementId) {
+		this.advertisementId = advertisementId;
 	}
 
 	public Integer getType() {

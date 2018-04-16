@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="position">
+
+	<resultMap id="positionMap" type="Position">
+		<id property="positionId" column="position_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="key" column="key" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="count" column="count" jdbcType="NUMERIC" />
+		<result property="imageWidth" column="image_width" jdbcType="NUMERIC" />
+		<result property="imageHeight" column="image_height" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectPosition" parameterType="Position"
+		resultMap="positionMap">
+		select
+		* from
+		tb_position
+		<where>
+			<trim suffixOverrides="and">
+				<if test="positionId != null">
+					position_id = #{positionId} and
+				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="key != null">
+					key like CONCAT(CONCAT('%', #{key}),'%') and
+				</if>
+				<if test="description != null">
+					description like CONCAT(CONCAT('%', #{description}),'%') and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectPositionByIds" parameterType="List"
+		resultMap="positionMap">
+		select
+		* from
+		tb_position
+		<where>
+			position_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
+
+	<insert id="insertPosition" parameterType="Position">
+		insert into
+		tb_position(project_id, key, name, description, 
+		type, count, image_width, image_height, status, create_time, update_time)
+		values
+		(#{projectId}, #{key}, #{name}, #{description},
+		#{type}, #{count}, #{imageWidth}, #{imageHeight}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="positionId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updatePosition" parameterType="Position">
+		update tb_position
+		<set>
+			<trim suffixOverrides=",">
+				<if test="key != null">
+					key=#{key},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="count != null">
+					count=#{count},
+				</if>
+				<if test="imageWidth != null">
+					image_width=#{imageWidth},
+				</if>
+				<if test="imageHeight != null">
+					image_height=#{imageHeight},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			position_id=#{positionId}
+		</where>
+	</update>
+
+	<delete id="deletePosition" parameterType="long">
+		delete from
+		tb_position
+		where
+		position_id=#{positionId}
+	</delete>
+
+</mapper>

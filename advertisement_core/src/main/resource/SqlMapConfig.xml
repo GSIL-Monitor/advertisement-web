@@ -23,6 +23,10 @@
         <typeAlias type="com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy" alias="AdvertisementStrategy"/>
         <typeAlias type="com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory" alias="AdvertisementCategory"/>
         
+        <typeAlias type="com.yuanshanbao.dsp.position.model.Position" alias="Position"/>
+        <typeAlias type="com.yuanshanbao.dsp.probability.model.Probability" alias="Probability"/>
+        <typeAlias type="com.yuanshanbao.dsp.quota.model.Quota" alias="Quota"/>
+        
         <typeAlias type="com.yuanshanbao.dsp.advertiser.model.Advertiser" alias="Advertiser"/>
         
         <typeAlias type="com.yuanshanbao.dsp.user.model.User" alias="User"/>

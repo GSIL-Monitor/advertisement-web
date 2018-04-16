@@ -62,9 +62,6 @@
 <#macro sideBar >
 <div id="sidebar">
 	<div class="role-box">
-		<div class="role">
-			<span class="customer-service"></span>${staff.name}
-		</div>
 		<div class="company">${user.companyName}</div>
 	</div>
   	<ul>

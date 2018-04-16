@@ -12,8 +12,8 @@ public class Probability {
 	private Long probabilityId;
 	private Long projectId;
 	private Long activityId;
-	private String channel;
 	private Long positionId;
+	private String channel;
 	private Long advertisementId;
 	private Double probability;
 	private Integer sort;

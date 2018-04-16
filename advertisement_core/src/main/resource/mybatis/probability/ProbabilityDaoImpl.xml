@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="probability">
+
+	<resultMap id="probabilityMap" type="Probability">
+		<id property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="probability" column="probability" jdbcType="NUMERIC" />
+		<result property="sort" column="sort" jdbcType="NUMERIC" />
+		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
+		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectProbability" parameterType="Probability"
+		resultMap="probabilityMap">
+		select
+		* from
+		tb_probability
+		<where>
+			<trim suffixOverrides="and">
+				<if test="probabilityId != null">
+					probability_id = #{probabilityId} and
+				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
+				</if>
+				<if test="activityId != null">
+					activity_id = #{activityId} and
+				</if>
+				<if test="positionId != null">
+					position_id = #{positionId} and
+				</if>
+				<if test="channel != null">
+					channel = #{channel} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectProbabilityByIds" parameterType="List"
+		resultMap="probabilityMap">
+		select
+		* from
+		tb_probability
+		<where>
+			probability_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
+
+	<insert id="insertProbability" parameterType="Probability">
+		insert into
+		tb_probability(project_id, activity_id, position_id, channel, advertisement_id, probability, 
+		sort, start_time, end_time, status, create_time, update_time)
+		values
+		(#{projectId}, #{activityId}, #{positionId}, #{channel}, #{advertisementId}, #{probability}, 
+		#{sort}, #{startTime}, #{endTime}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="probabilityId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateProbability" parameterType="Probability">
+		update tb_probability
+		<set>
+			<trim suffixOverrides=",">
+				<if test="projectId != null">
+					project_id=#{projectId},
+				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId},
+				</if>
+				<if test="positionId != null">
+					position_id=#{positionId},
+				</if>
+				<if test="channel != null">
+					channel=#{channel},
+				</if>
+				<if test="advertisementId != null">
+					advertisement_id=#{advertisementId},
+				</if>
+				<if test="probability != null">
+					probability=#{probability},
+				</if>
+				<if test="sort != null">
+					sort=#{sort},
+				</if>
+				<if test="startTime != null">
+					start_time=#{startTime},
+				</if>
+				<if test="endTime != null">
+					end_time=#{endTime},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			probability_id=#{probabilityId}
+		</where>
+	</update>
+
+	<delete id="deleteProbability" parameterType="long">
+		delete from
+		tb_probability
+		where
+		probability_id=#{probabilityId}
+	</delete>
+
+</mapper>
