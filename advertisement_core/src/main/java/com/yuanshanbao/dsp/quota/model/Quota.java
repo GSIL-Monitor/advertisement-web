@@ -2,6 +2,7 @@ package com.yuanshanbao.dsp.quota.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Quota {
 
@@ -19,6 +20,8 @@ public class Quota {
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+
+	private List<Long> advertisementIdList;
 
 	public Long getQuotaId() {
 		return quotaId;
@@ -130,6 +133,14 @@ public class Quota {
 
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public List<Long> getAdvertisementIdList() {
+		return advertisementIdList;
+	}
+
+	public void setAdvertisementIdList(List<Long> advertisementIdList) {
+		this.advertisementIdList = advertisementIdList;
 	}
 
 }

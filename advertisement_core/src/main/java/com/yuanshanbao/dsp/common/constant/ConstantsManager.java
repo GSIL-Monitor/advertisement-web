@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
@@ -35,9 +34,7 @@ import com.yuanshanbao.dsp.config.service.ConfigService;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.location.model.Location;
-import com.yuanshanbao.dsp.location.model.MerchantLocation;
 import com.yuanshanbao.dsp.location.service.LocationService;
-import com.yuanshanbao.dsp.location.service.MerchantLocationService;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.page.model.Page;
@@ -48,6 +45,7 @@ import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.tags.model.TagsType;
 import com.yuanshanbao.dsp.tags.service.TagsService;
 import com.yuanshanbao.dsp.tags.service.TagsTypeService;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 public class ConstantsManager {
 
@@ -72,8 +70,6 @@ public class ConstantsManager {
 
 	private static Map<String, Location> locationMap = new HashMap<String, Location>();
 	private static Map<String, Location> locationNameMap = new HashMap<String, Location>();
-
-	private static Map<Long, Map<String, MerchantLocation>> merchantLocationMap = new HashMap<Long, Map<String, MerchantLocation>>();
 
 	private static ConstantsManager instance = null;
 
@@ -112,9 +108,6 @@ public class ConstantsManager {
 
 	@Resource
 	private AdvertisementCategoryService advertisementCategoryService;
-
-	@Resource
-	private MerchantLocationService merchantLocationService;
 
 	public static boolean validateConstants(long[] types, Long id) {
 		for (long type : types) {
@@ -307,8 +300,6 @@ public class ConstantsManager {
 		Map<String, Location> map = new HashMap<String, Location>();
 		Map<String, Location> nameMap = new HashMap<String, Location>();
 		List<Location> locationList = locationService.selectLocations(new Location(), new PageBounds());
-		Map<Long, Map<String, MerchantLocation>> tempMerchantLocationMap = merchantLocationService
-				.selectMerchantLocationMap();
 		for (Location location : locationList) {
 			map.put(location.getCode(), location);
 			nameMap.put(location.getName(), location);
@@ -322,7 +313,6 @@ public class ConstantsManager {
 		}
 		locationMap = map;
 		locationNameMap = nameMap;
-		merchantLocationMap = tempMerchantLocationMap;
 	}
 
 	/**
@@ -452,14 +442,6 @@ public class ConstantsManager {
 			return locationStr;
 		}
 		return null;
-	}
-
-	public static Map<Long, Map<String, MerchantLocation>> getMerchantLocationMap() {
-		return merchantLocationMap;
-	}
-
-	public static Map<String, MerchantLocation> getMerchantLocationById(Long merchantId) {
-		return merchantLocationMap.get(merchantId);
 	}
 
 	public static List<Tags> getTagsListSortByScore(Long type) {

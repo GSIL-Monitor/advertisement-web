@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.advertisement.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	@Autowired
 	private PositionService positionService;
-	
+
 	@Autowired
 	private ProbabilityService probabilityService;
 
@@ -221,9 +222,30 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		probabilityParam.setProjectId(projectId);
 		probabilityParam.setPositionId(positionId);
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(probabilityParam, new PageBounds());
-		
+		List<Long> advertisementIdList = new ArrayList<Long>();
+		for (Probability probability : probabilityList) {
+			if (probability.getStartTime() != null) {
+				if (probability.getStartTime().after(new Date())) {
+					continue;
+				}
+			}
+			if (probability.getEndTime() != null) {
+				if (probability.getEndTime().before(new Date())) {
+					continue;
+				}
+			}
+			advertisementIdList.add(probability.getAdvertisementId());
+		}
+		if (advertisementIdList.size() == 0) {
+			return advertismentList;
+		}
 		Quota quotaParam = new Quota();
 		quotaParam.setPositionId(positionId);
+		quotaParam.setAdvertisementIdList(advertisementIdList);
+		List<Quota> quotaList = quotaService.selectQuota(quotaParam, new PageBounds());
+		for (Quota quota : quotaList) {
+		
+		}
 		return advertismentList;
 	}
 }

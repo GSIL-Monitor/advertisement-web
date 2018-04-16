@@ -5,9 +5,6 @@ import java.util.Date;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.cache.IniCache;
 
-/**
- * Created by Singal
- */
 public class RedisConstant {
 	// redis
 	public static String REDIS_DEFAULT_CHARSET = IniCache.getIniValue(IniConstant.REDIS_DEFAULT_CHARSET, "UTF-8");
@@ -27,7 +24,6 @@ public class RedisConstant {
 	public final static String PREFIX_LOG_HITS = "advertisement_log:hits:";
 
 	public static final String ADVERTISEMENT_SHOW_COUNT = "advertisement_show_count:";
-	public static final String APPLY_SHOW_COUNT = "apply_show_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT = "advertisement_click_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_PV_COUNT = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CHANNEL = "advertisement_channel" + COMMON_REDIS_PREFIX;
@@ -66,10 +62,6 @@ public class RedisConstant {
 
 	public static String getAdvertisementShowCountKey(String key) {
 		return new StringBuffer().append(ADVERTISEMENT_SHOW_COUNT).append(key).toString();
-	}
-
-	public static String getApplyShowCountKey() {
-		return new StringBuffer().append(APPLY_SHOW_COUNT).toString();
 	}
 
 	/**
@@ -136,6 +128,5 @@ public class RedisConstant {
 	public static String getResultPageChannelKey(String date) {
 		return getCachePrefix(RESULT_PAGE_CHANNEL, date);
 	}
-	
 
 }

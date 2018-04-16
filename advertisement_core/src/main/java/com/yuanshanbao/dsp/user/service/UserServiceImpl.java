@@ -41,9 +41,6 @@ public class UserServiceImpl implements UserService {
 	private static int width = 240;
 
 	@Autowired
-	private UserIdService userIdService;
-
-	@Autowired
 	private IndexUserService indexUserService;
 
 	@Autowired
@@ -65,11 +62,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void insertUser(User user) {
 		int result = -1;
-		if (StringUtils.isNotBlank(user.getMobile())) {
-			user.setUserId(userIdService.generateUserId(user.getMobile()));
-		} else if (StringUtils.isNotBlank(user.getWeixinId())) {
-			user.setUserId(userIdService.generateUserId(user.getWeixinId()));
-		}
 		if (StringUtils.isNotBlank(user.getWeixinId())) {
 			IndexUser indexUser = new IndexUser();
 			indexUser.setOpenId(user.getWeixinId());
