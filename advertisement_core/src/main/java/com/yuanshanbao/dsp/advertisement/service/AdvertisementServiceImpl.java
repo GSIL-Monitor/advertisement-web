@@ -15,7 +15,6 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
@@ -27,7 +26,6 @@ import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
-import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.tags.service.TagsService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
@@ -108,21 +106,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	private List<Advertisement> setProperty(List<Advertisement> list) {
 		List<Long> advertiserIds = new ArrayList<Long>();
-		List<Long> tagsIds = new ArrayList<Long>();
-		List<Long> categoryIds = new ArrayList<Long>();
 		for (Advertisement advertisement : list) {
 			advertiserIds.add(advertisement.getAdvertiserId());
-			tagsIds.add(advertisement.getTagsId());
-			categoryIds.add(advertisement.getCategory());
 		}
 
 		Map<Long, Advertiser> map = advertiserService.selectAdvertiserByIds(advertiserIds);
-		Map<Long, Tags> tagsMap = tagsService.selectTagsByIds(tagsIds);
-		Map<Long, AdvertisementCategory> categoryMap = categoryService.selectCategoryByIds(categoryIds);
 		for (Advertisement advertisement : list) {
 			advertisement.setAdvertiser(map.get(advertisement.getAdvertiserId()));
-			advertisement.setTags(tagsMap.get(advertisement.getTagsId()));
-			advertisement.setAdvertisementCategory(categoryMap.get(advertisement.getCategory()));
 		}
 		return list;
 	}
@@ -301,6 +291,22 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		}
 		recordAdvertisementCount(projectId, positionId, resultAdvertisementIdList, false);
 		return advertismentList;
+	}
+
+	@Override
+	public Map<String, Object> countAdvertisementSize(Advertisement advertisement) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<Advertisement> advertisements = this.selectAdvertisement(advertisement, new PageBounds());
+		int count = 0;
+		for (Advertisement adv : advertisements) {
+			if (adv.getStatusValue().equals("已失效")) {
+				count++;
+			}
+		}
+		result.put("total", advertisements.size());
+		result.put("use", advertisements.size() - count);
+		result.put("down", count);
+		return null;
 	}
 
 	private void recordAdvertisementCount(Long projectId, Long positionId, List<Long> advertisementIdList,

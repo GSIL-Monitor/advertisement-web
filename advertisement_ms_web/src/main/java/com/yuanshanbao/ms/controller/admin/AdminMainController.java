@@ -3,6 +3,7 @@ package com.yuanshanbao.ms.controller.admin;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -29,7 +30,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
+import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
+import com.yuanshanbao.dsp.statistics.service.AdvertisementStatisticsService;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.model.admin.Menu;
@@ -66,7 +73,16 @@ public class AdminMainController extends PaginationController {
 
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private AdvertisementService advertisementService;
+	
+	@Autowired
+	private AdvertiserService advertiserService;
 
+	@Autowired
+	private AdvertisementStatisticsService advertisementStatisticsService;
+	
 	@RequestMapping("/main.do")
 	public String main(HttpServletRequest request, HttpServletResponse response) {
 		User user = getCurrentUser();
@@ -76,6 +92,15 @@ public class AdminMainController extends PaginationController {
 		Set<MenuCategory> categorys = new LinkedHashSet<MenuCategory>();
 
 		Set<String> categoryNameSet = new LinkedHashSet<String>();
+		
+		Map<String,Object> advertiserMap = new HashMap<String, Object>();
+		Map<String,Object> advertisementMap = new HashMap<String, Object>();
+		
+		Advertisement advertisement = new Advertisement();
+		Advertiser advertiser = new Advertiser();
+		
+		advertiserMap = advertiserService.countAdvertiserSize(advertiser);
+		advertisementMap = advertisementService.countAdvertisementSize(advertisement);
 
 		for (Menu m : menus) {
 			if (!categoryNameSet.contains(m.getCategory_name())) {
@@ -89,9 +114,23 @@ public class AdminMainController extends PaginationController {
 		request.setAttribute("project", projectService.selectProject(getProjectId(request)));
 		request.setAttribute("user", user);
 		request.setAttribute("categorys", categorys);
+		request.setAttribute("advertiser", advertiserMap);
+		request.setAttribute("advertisement", advertisementMap);
 		return PAGE_MAIN;
 	}
 
+	@ResponseBody
+	@RequestMapping("/query.do")
+	public Object query(AdvertisementStatistics statistics,HttpServletRequest request, HttpServletResponse response){
+		Map<String,Object> modelMap = new HashMap<String, Object>();
+		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistics(advertisementStatistics, new PageBounds());
+		resultList = advertisementStatisticsService.combineAdvertiserAndPosition(list);
+		modelMap.put("data", resultList);
+		return modelMap;
+	}
+	
 	private String getCreateTimeEnd(Date date) {
 		if (DateUtils.getDiffDays(date, new Date()) == 0) {
 			return DateUtils.format(DateUtils.addDays(new Date(), 1), "yyyy-MM-dd");
@@ -99,6 +138,7 @@ public class AdminMainController extends PaginationController {
 			return DateUtils.format(new Date(), "yyyy-MM-dd");
 		}
 	}
+	
 
 	@ResponseBody
 	@RequestMapping("/queryUserMenusByCategoryId.do")

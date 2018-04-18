@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.statistics.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.LICENSE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,15 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.NumberUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.position.service.PositionService;
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.statistics.dao.AdvertisementStatisticsDao;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatisticsType;
@@ -41,6 +46,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	@Autowired
 	private AdvertisementService advertisementService;
 
+	@Autowired
+	private PositionService positionService;
+	
 	@Override
 	public void insertAdvertisementStatistics(AdvertisementStatistics advertisementStatistics) {
 		int result = -1;
@@ -318,9 +326,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 				if (StringUtils.isNotBlank(adStatistics.getChannel())) {
 					result.setChannel(adStatistics.getChannel());
 				}
-				result.addWelfareCount(adStatistics.getWelfareCount());
-				result.addBannerCount(adStatistics.getBannerCount());
-				result.addTagsCount(adStatistics.getTagsCount());
+//				result.addWelfareCount(adStatistics.getWelfareCount());
+//				result.addBannerCount(adStatistics.getBannerCount());
+//				result.addTagsCount(adStatistics.getTagsCount());
 				result.addDownloadCount(adStatistics.getDownloadCount());
 			}
 		}
@@ -345,9 +353,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 					result.setAdvertisementId(advertisementId);
 					result.setAdvertisement(advertisementService.selectAdvertisement(advertisementId));
 				}
-				result.addWelfareCount(adStatistics.getWelfareCount());
-				result.addBannerCount(adStatistics.getBannerCount());
-				result.addTagsCount(adStatistics.getTagsCount());
+//				result.addWelfareCount(adStatistics.getWelfareCount());
+//				result.addBannerCount(adStatistics.getBannerCount());
+//				result.addTagsCount(adStatistics.getTagsCount());
 				result.addDownloadCount(adStatistics.getDownloadCount());
 			}
 		}
@@ -403,8 +411,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	}
 
 	private Integer calculateTotal(AdvertisementStatistics adStatistics) {
-		return adStatistics.getWelfareCount() + adStatistics.getBannerCount() + adStatistics.getTagsCount()
-				+ adStatistics.getDownloadCount();
+//		return adStatistics.getWelfareCount() + adStatistics.getBannerCount() + adStatistics.getTagsCount()
+//				+ adStatistics.getDownloadCount();
+		return 1;
 	}
 
 	private Integer getUv(String date, String channel, String position, Long advertisementId) {
@@ -427,14 +436,14 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			return count;
 		}
 
-		String key = RedisConstant.getAdvertisementClickCountKey(date, position, advertisementId + "");
+		//String key = RedisConstant.getAdvertisementClickCountKey(date, position, advertisementId + "");
 		if (StringUtils.isNotBlank(channel)) {
-			key = RedisConstant.getAdvertisementChannelClickCountKey(date, position, advertisementId + "", channel);
+			//key = RedisConstant.getAdvertisementChannelClickCountKey(date, position, advertisementId + "", channel);
 		}
-		String str = (String) redisCacheService.get(key);
-		if (ValidateUtil.isNumber(str)) {
-			return Integer.parseInt(str);
-		}
+		//String str = (String) redisCacheService.get(key);
+//		if (ValidateUtil.isNumber(str)) {
+//			return Integer.parseInt(str);
+//		}
 		return 0;
 	}
 
@@ -465,6 +474,137 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			resultList.add(click);
 		}
 		return resultList;
+	}
+
+
+	@Override
+	public List<AdvertisementStatistics> combineAdvertiserAndPosition(
+			List<AdvertisementStatistics> list) {
+		int exposureCount;
+		int clickCount;
+		BigDecimal totalMoney;
+		List<String> existDateList = new ArrayList<String>();
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
+		for(AdvertisementStatistics statistic : list){
+			if(!existDateList.contains(statistic.getDate())){
+				existDateList.add(statistic.getDate());
+			}
+		}
+		for(String date : existDateList){
+			advertisementStatistics = new AdvertisementStatistics();
+			exposureCount = 0;
+			clickCount = 0;
+			totalMoney = new BigDecimal(0);
+			for(AdvertisementStatistics sta : list){
+				if(date.equals(sta.getDate())){
+					exposureCount += sta.getExposureCount();
+					clickCount += sta.getClickCount();
+					totalMoney = totalMoney.add(sta.getTotalAmount());
+				}
+			}
+			advertisementStatistics .setDate(date);
+			advertisementStatistics.setClickCount(clickCount);
+			advertisementStatistics.setExposureCount(exposureCount);
+			advertisementStatistics.setTotalAmount(totalMoney);
+			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, exposureCount));
+			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			resultList.add(advertisementStatistics);
+		}
+		return resultList;
+	}
+
+	@Override
+	public List<AdvertisementStatistics> combineDateAndPosition(
+			List<AdvertisementStatistics> list) {
+		int exposureCount;
+		int clickCount;
+		BigDecimal totalMoney;
+		List<Long> existAdvertiserList = new ArrayList<Long>();
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
+		for(AdvertisementStatistics statistic : list){
+			if(!existAdvertiserList.contains(statistic.getAdvertisement().getAdvertiserId())){
+				existAdvertiserList.add(statistic.getAdvertisement().getAdvertiserId());
+			}
+		}
+		for(Long adverId : existAdvertiserList){
+			advertisementStatistics = new AdvertisementStatistics();
+			exposureCount = 0;
+			clickCount = 0;
+			totalMoney = new BigDecimal(0);
+			for(AdvertisementStatistics sta : list){
+				if(adverId.equals(sta.getAdvertisement().getAdvertiserId())){
+					exposureCount += sta.getExposureCount();
+					clickCount += sta.getClickCount();
+					totalMoney = totalMoney.add(sta.getTotalAmount());
+				}
+			}
+			advertisementStatistics.setAdvertisementId(adverId);
+			advertisementStatistics.setClickCount(clickCount);
+			advertisementStatistics.setExposureCount(exposureCount);
+			advertisementStatistics.setTotalAmount(totalMoney);
+			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, exposureCount));
+			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			resultList.add(advertisementStatistics);
+			
+		}
+		return resultList;
+	}
+
+	@Override
+	public List<AdvertisementStatistics> combineAdvertiserAndDate(
+			List<AdvertisementStatistics> list) {
+		int exposureCount;
+		int clickCount;
+		BigDecimal totalMoney;
+		List<Long> existPositionList = new ArrayList<Long>();
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
+		for(AdvertisementStatistics statistic : list){
+			if(!existPositionList.contains(statistic.getAdvertisement().getPositionId())){
+				existPositionList.add(statistic.getAdvertisement().getPositionId());
+			}
+		}
+		for(Long posId : existPositionList){
+			advertisementStatistics = new AdvertisementStatistics();
+			exposureCount = 0;
+			clickCount = 0;
+			totalMoney = new BigDecimal(0);
+			for(AdvertisementStatistics sta : list){
+				if(posId.equals(sta.getAdvertisement().getPositionId())){
+					exposureCount += 1;
+					clickCount += 1;
+					totalMoney = totalMoney.add(sta.getTotalAmount());
+				}
+			}
+			advertisementStatistics.setPositionName("");
+			advertisementStatistics.setClickCount(clickCount);
+			advertisementStatistics.setExposureCount(exposureCount);
+			advertisementStatistics.setTotalAmount(totalMoney);
+			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, exposureCount));
+			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			resultList.add(advertisementStatistics);
+		}
+
+		return resultList;
+	}
+	
+	@Override
+	public List<AdvertisementStatistics> calculateStatistics(
+			List<Probability> list,String date) {
+		List<Long> advertisementIds = new ArrayList<Long>();
+		List<Long> positionIds = new ArrayList<Long>();
+		String showKey = null;
+		String clickKey = null;
+		
+		
+		for(Probability pro : list){
+			showKey = RedisConstant.getAdvertisementShowCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
+			clickKey = RedisConstant.getAdvertisementClickCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
+		}
+		
+		return null;
 	}
 
 }

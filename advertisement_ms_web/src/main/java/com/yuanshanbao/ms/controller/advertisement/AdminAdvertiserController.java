@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -36,10 +38,16 @@ public class AdminAdvertiserController extends PaginationController {
 	private static final String PAGE_UPDATE = "advertisement/advertiser/updateAdvertiser";
 
 	private static final String PAGE_VIEW = "advertisement/advertiser/viewAdvertiser";
+	
+	private static final String PAGE_LIST_VIEW = "advertisement/advertiser/listAdvertisementOfAdvertiser";
+	
 
 	@Autowired
 	private AdvertiserService advertiserService;
 
+	@Autowired
+	private AdvertisementService advertisementService;
+	
 	@RequestMapping("/list.do")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
 		return PAGE_LIST;
@@ -143,4 +151,22 @@ public class AdminAdvertiserController extends PaginationController {
 		return PAGE_VIEW;
 	}
 
+	@RequestMapping("/jump.do")
+	public String jump(String range, Advertiser advertiser, HttpServletRequest request,
+			HttpServletResponse response) {
+		request.setAttribute("advertiserId", advertiser.getAdvertiserId());
+		return PAGE_LIST_VIEW;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/viewAd.do")
+	public Object viewAd(String range, Advertiser advertiser, HttpServletRequest request,
+			HttpServletResponse response) {
+		Map<String,Object> result = new HashMap<String, Object>();
+		Advertisement advertisement = new Advertisement();
+		advertisement.setAdvertiserId(advertiser.getAdvertiserId());
+		Object resultList = advertisementService.selectAdvertisement(advertisement,getPageBounds(range, request));
+		PageList pageList = (PageList) resultList;
+		return setPageInfo(request, response, pageList);
+	}
 }

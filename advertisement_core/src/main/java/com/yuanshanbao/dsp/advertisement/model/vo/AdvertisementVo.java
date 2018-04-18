@@ -9,7 +9,6 @@ public class AdvertisementVo {
 	private String subTitle;
 	private String imageUrl;
 	private String link;
-
 	public AdvertisementVo() {
 		super();
 	}
@@ -20,6 +19,7 @@ public class AdvertisementVo {
 		this.subTitle = advertisement.getSubTitle();
 		this.imageUrl = advertisement.getImageUrl();
 		this.link = advertisement.getLink();
+
 	}
 
 	public Long getAdvertisementId() {

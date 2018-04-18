@@ -8,37 +8,21 @@
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
 		dataTableConfig.columns = [{
-	      		"data": "advertiserId"
-	    	},{
-	      		"data": "advertiser.description"
-	    	},{
-	      		"data": "${functionId}"
-	    	},{
-	      		"data": "typeContent"
-	    	},{
-		    	"data": null,
-		        "render": function ( data, type, full, meta ) {
-		            return '【'+data.description+'】'+data.advertiser.description;
-		        }
-		    },  {
-		    	"data": "title"
-		    },{
-		    	"data": "url"	
-		    },{
-		    	"data": "appUrl"	
+	      		"data": "advertisementId"
+	    	}, {
+	      		"data": "title"
+	    	}, {
+	      		"data": "advertiser.name"
+	    	}, {
+	      		"data": "createTimeContent"
+	    	}, {
+		    	"data": "typeContent"	
 		    }, {
 		    	"data": "statusValue"
 		    }, {
-		    	"data": "createTimeContent"
-		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/view.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看详情</a>';
-		        }
-		    }, {
-		    	"data": "${functionId}",
-		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue" target="_blank">修改</a>';
+		            return '<a href="${rc.contextPath}/admin/${functionName}/view.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",
@@ -83,19 +67,14 @@
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
 								<tr>
-									<th>广告主ID</th>
-									<th>广告主描述</th>
 									<th>广告ID</th>
+									<th>广告名称</th>
+									<th>广告主名称</th>
+									<th>上线日期</th>
 									<th>广告类型</th>
-									<th>广告描述</th>
-									<th>文案</th>
-									<th>链接</th>
-									<th>APP链接</th>
 									<th>状态</th>
-									<th>创建时间</th>
-									<th>详情</th>
-									<th>修改</th>
-									<th>删除</th>
+									<th>配置</th>
+									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>

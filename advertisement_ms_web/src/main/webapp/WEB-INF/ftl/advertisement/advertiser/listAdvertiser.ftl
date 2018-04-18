@@ -8,31 +8,22 @@
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do";
 		dataTableConfig.columns = [{
-	      		"data": "${functionId}"
+	      		"data": "advertiserId"
 	    	}, {
-		    	"data": "description"
-		    }, {
 		    	"data": "createTimeContent"
 		    }, {
+		    	"data": "companyName"
+		    }, {
+		    	"data": "status"
+		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/gift/list.do?${functionId}='+data+'"  class="btn btn-yellow" target="_blank">广告列表</a>';
-		        }
-		    },{
-		    	"data": "${functionId}",
-		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/view.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看详情</a>';
+		            return '<a href="${rc.contextPath}/admin/${functionName}/jump.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看详情</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
 		            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue" target="_blank">修改</a>';
-		        }
-		    }, {
-		    	"data": "${functionId}",
-		        "render": function ( data, type, full, meta ) {
-		        	var deleteUrl = '${rc.contextPath}/admin/${functionName}/delete.do?${functionId}='+data;
-		            return '<a href="#" class="btn btn-red" onclick="confirmDelete(\''+deleteUrl+'\');">删除</a>';
 		        }
 		    }];
 		dataTableConfig.initComplete = function(settings, json) {
@@ -70,13 +61,12 @@
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
 								<tr>
-									<th>ID</th>
-									<th>广告主描述</th>
+									<th>广告主ID</th>
 									<th>创建时间</th>
-									<th>广告配置</th>
-									<th>详情</th>
-									<th>修改</th>
-									<th>删除</th>
+									<th>广告主公司名称</th>
+									<th>状态</th>
+									<th>查看广告</th>
+									<th>操作</th>
 								</tr>
 							</thead>
 							<tbody>

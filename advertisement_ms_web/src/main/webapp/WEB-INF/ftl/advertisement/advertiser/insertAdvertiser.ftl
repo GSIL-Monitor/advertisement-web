@@ -10,7 +10,7 @@
 			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
 				${functionTitle}管理
 			</a>
-			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">${functionTitle}管理</a>
+			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">${functionTitle}管理</a><a href="#" class="current">新建广告主</a>
 		</div>
 		<h1>添加${functionTitle}</h1>
 	</div>
@@ -28,7 +28,61 @@
 								<table class="table table-bordered table-striped" id="">
 									<tbody>
 										<tr>
-											<td>广告主描述：</td>
+											<td>广告主</td>
+											<td>
+												<input type="text" name="companyName" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>广告主描述</td>
+											<td>
+												<input type="text" name="description" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>账户名</td>
+											<td>
+												<input type="text" name="description" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>密码</td>
+											<td>
+												<input type="text" name="description" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>营业执照照片</td>
+											<td>
+												<input type="text" name="description" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>公司营业执照注册号</td>
+											<td>
+												<input type="text" name="description" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>公司地址</td>
+											<td>
+												<input type="text" name="description" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>联系人姓名</td>
+											<td>
+												<input type="text" name="description" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>联系人电话</td>
+											<td>
+												<input type="text" name="description" style="width:60%;"/>
+											</td>
+										</tr>
+										<tr>
+											<td>联系人微信</td>
 											<td>
 												<input type="text" name="description" style="width:60%;"/>
 											</td>

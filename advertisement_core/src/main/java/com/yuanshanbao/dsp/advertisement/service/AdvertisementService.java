@@ -27,5 +27,8 @@ public interface AdvertisementService {
 	public Long getAdvertisementCount(Long advertisementId);
 	
 	public void increaseAdvertisementCount(Long advertisementId);
+	
+	public Map<String,Object> countAdvertisementSize(Advertisement advertisement);
+	
 
 }

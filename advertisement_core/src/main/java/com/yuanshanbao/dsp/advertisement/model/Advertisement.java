@@ -112,7 +112,7 @@ public class Advertisement {
 	}
 
 	public String getStatusValue() {
-		return CommonStatus.getDescription(status);
+		return AdvertisementStatus.getDescription(status);
 	}
 
 	public String getCreateTimeContent() {
@@ -135,8 +135,11 @@ public class Advertisement {
 		this.advertiser = advertiser;
 	}
 
-	@Override
-	public String toString() {
-		return "Advertisement [advertisementId=" + advertisementId + "]";
+	public Long getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
 	}
 }

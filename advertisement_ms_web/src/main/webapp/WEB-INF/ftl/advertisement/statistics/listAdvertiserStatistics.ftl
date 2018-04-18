@@ -7,28 +7,22 @@
 <script>
 	$(document).ready(function(){
 		dataTableConfig.iDisplayLength = 1000;
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertisement.do";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertiser.do";
 		dataTableConfig.columns = [
 			{
-		    	"data": null,
-		    	 "render": function ( data, type, full, meta ) {
-		            return '【'+data.advertisement.advertisementId+'】'+ data.advertisement.description;
-		        }
-	      	}, {
-		    	"data": "total"
+		    	"data": "advertisement.advertiser.advertiserId"
 		    }, {
-		    	"data": "welfareCount"
+		    	"data": "advertisement.advertiser.companyName"
 		    }, {
-		    	"data": "bannerCount"
+		    	"data": "exposureCount"
 		    }, {
-		    	"data": "tagsCount"
+		    	"data": "clickCount"
 		    }, {
-		    	"data": "downloadCount"
+		    	"data": "clickRate
 		    }, {
-		    	"data": "advertisement",
-		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/advertisementChannel.do?advertisementId='+data.advertisementId+'"  class="btn btn-cyan" target="_blank">查看渠道统计</a>';
-		        }
+		    	"data": "avgPrice
+		    }, {
+		    	"data": "totalAmount
 		    }];
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -74,14 +68,13 @@
 					<div class="widget-content nopadding">
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
-								<tr>
-									<td>广告名称</td>
-									<td>总数</td>
-									<#list positionList as position>
-										<td>${position}</td>
-									</#list>
-									<td>渠道统计</td>
-								</tr>
+								<th>ID</th>
+			                  	<th>客户公司名称(广告主名称)</th>
+			                  	<th>曝光量(次)</th>
+			                  	<th>点击量(次)</th>
+			                  	<th>点击率</th>
+			                  	<th>点击均价</th>
+			                  	<th>总消耗(元)</th>
 							</thead>
 							<tbody>
 							</tbody>

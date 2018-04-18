@@ -3,6 +3,8 @@ package com.yuanshanbao.dsp.advertiser.model;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementStatus;
+import com.yuanshanbao.dsp.advertisement.model.AdvertiserStatus;
 
 public class Advertiser {
 
@@ -11,6 +13,9 @@ public class Advertiser {
 	private String name;
 	private String companyName;
 	private String description;
+	private String phone;
+	private String address;
+	private String wechat;
 	private String bindUsername;
 	private Integer status;
 	private Timestamp createTime;
@@ -92,4 +97,31 @@ public class Advertiser {
 		return DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss");
 	}
 
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getWechat() {
+		return wechat;
+	}
+
+	public void setWechat(String wechat) {
+		this.wechat = wechat;
+	}
+	
+	public String getStatusValue() {
+		return AdvertiserStatus.getDescription(status);
+	}
 }

@@ -2,6 +2,7 @@ package com.yuanshanbao.dsp.statistics.service;
 
 import java.util.List;
 
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.SuccessPageClick;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -27,4 +28,17 @@ public interface AdvertisementStatisticsService {
 	public List<AdvertisementStatistics> selectChannelAdvertisementStatistic(int diffDate, Boolean pv, String channelKey);
 
 	public List<SuccessPageClick> selectSuccessPageClicks(int dateDiff, boolean fromDB);
+	
+	public List<AdvertisementStatistics> combineAdvertiserAndPosition(
+			List<AdvertisementStatistics> list);
+
+	public List<AdvertisementStatistics> combineDateAndPosition(
+			List<AdvertisementStatistics> list);
+
+	public List<AdvertisementStatistics> combineAdvertiserAndDate(
+			List<AdvertisementStatistics> list);
+
+
+	public List<AdvertisementStatistics> calculateStatistics(List<Probability> list,
+			String date);
 }

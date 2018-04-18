@@ -9,9 +9,9 @@
 		<result property="date" column="date" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
-		<result property="welfareCount" column="welfare_count" jdbcType="NUMERIC" />
-		<result property="bannerCount" column="banner_count" jdbcType="NUMERIC" />
-		<result property="tagsCount" column="tags_count" jdbcType="NUMERIC" />
+		<result property="exposureCount" column="exposure_count" jdbcType="NUMERIC" />
+		<result property="clickCount" column="click_count" jdbcType="NUMERIC" />
+		<result property="totalAmount" column="total_amount" jdbcType="NUMERIC" />
 		<result property="downloadCount" column="download_count" jdbcType="NUMERIC" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
@@ -141,8 +141,8 @@
 	<insert id="insertAdvertisementStatistics" parameterType="advertisementStatistics">
 		insert into
 		tb_advertisement_statistics(advertisement_id, date,
-		channel, welfare_count, banner_count,
-		tags_count, download_count,
+		channel, exposure_count, click_count,
+		total_amount, download_count,
 		type, status, create_time,
 		update_time)
 		values

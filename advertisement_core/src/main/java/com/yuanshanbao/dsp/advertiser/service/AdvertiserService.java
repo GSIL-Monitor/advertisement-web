@@ -18,5 +18,7 @@ public interface AdvertiserService {
 	public Advertiser selectAdvertiser(Long advertiserId);
 
 	public Map<Long, Advertiser> selectAdvertiserByIds(List<Long> advertiserIds);
+	
+	public Map<String,Object> countAdvertiserSize(Advertiser advertiser);
 
 }
