@@ -7,21 +7,14 @@
 	<resultMap id="advertisementMap" type="Advertisement">
 		<id property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
-		<result property="advertiserId" column="advertiser_id"
-			jdbcType="NUMERIC" />
+		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="title" column="title" jdbcType="VARCHAR" />
-		<result property="type" column="type" jdbcType="VARCHAR" />
 		<result property="subTitle" column="sub_title" jdbcType="VARCHAR" />
-		<result property="url" column="url" jdbcType="VARCHAR" />
-		<result property="appUrl" column="app_url" jdbcType="VARCHAR" />
+		<result property="link" column="link" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
 		<result property="bigImageUrl" column="big_image_url" jdbcType="VARCHAR" />
-		<result property="tagsId" column="tags_id" jdbcType="NUMERIC" />
-		<result property="buttonName" column="button_name" jdbcType="VARCHAR" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
-		<result property="category" column="category" jdbcType="NUMERIC" />
-		<result property="showType" column="show_type" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 	</resultMap>
@@ -46,14 +39,8 @@
 				<if test="title != null">
 					title like CONCAT(CONCAT('%', #{title}),'%') and
 				</if>
-				<if test="appUrl != null">
-					app_url = #{appUrl} and
-				</if>
-				<if test="url != null">
-					url = #{url} and
-				</if>
-				<if test="type != null">
-					type = #{type} and
+				<if test="link != null">
+					link = #{link} and
 				</if>
 				<if test="description != null">
 					description = #{description} and
@@ -66,12 +53,6 @@
 				</if>
 				<if test="status != null">
 					status = #{status} and
-				</if>
-				<if test="category != null">
-					category = #{category} and
-				</if>
-				<if test="showType != null">
-					show_type = #{showType} and
 				</if>
 			</trim>
 			and status != -1
@@ -96,17 +77,13 @@
 
 	<insert id="insertAdvertisement" parameterType="Advertisement">
 		insert into
-		tb_advertisement(project_id, advertiser_id, type, title, sub_title,
-		url,app_url,
-		description,
-		image_url, big_image_url, tags_id, button_name,
-		status,category,show_type, create_time,
-		update_time)
+		tb_advertisement(project_id, advertiser_id, title, sub_title,
+		link, description,image_url, big_image_url, 
+		status, create_time, update_time)
 		values
-		(#{projectId}, #{advertiserId},#{type}, #{title}, #{subTitle},
-		#{url}, #{appUrl}, #{description},
-		#{imageUrl}, #{bigImageUrl}, #{tagsId}, #{buttonName},
-		#{status},#{category}, #{showType},sysdate(), sysdate())
+		(#{projectId}, #{advertiserId}, #{title}, #{subTitle},
+		#{link}, #{description}, #{imageUrl}, #{bigImageUrl}, 
+		#{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertisementId">
 			SELECT LAST_INSERT_ID()
@@ -123,20 +100,14 @@
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId},
 				</if>
-				<if test="type != null">
-					type=#{type},
-				</if>
 				<if test="title != null">
 					title=#{title},
 				</if>
 				<if test="subTitle != null">
 					sub_title=#{subTitle},
 				</if>
-				<if test="url != null">
-					url=#{url},
-				</if>
-				<if test="appUrl != null">
-					app_url=#{appUrl},
+				<if test="link != null">
+					link=#{link},
 				</if>
 				<if test="description != null">
 					description=#{description},
@@ -147,18 +118,8 @@
 				<if test="bigImageUrl != null">
 					big_image_url=#{bigImageUrl},
 				</if>
-				<if test="buttonName != null">
-					button_name=#{buttonName},
-				</if>
-				tags_id=#{tagsId},
 				<if test="status != null">
 					status=#{status},
-				</if>
-				<if test="category != null">
-					category=#{category},
-				</if>
-				<if test="showType != null">
-					show_type = #{showType},
 				</if>
 				update_time=sysdate(),
 			</trim>

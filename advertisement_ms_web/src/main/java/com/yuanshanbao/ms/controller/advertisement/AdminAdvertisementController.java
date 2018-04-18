@@ -21,13 +21,8 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.ms.controller.base.PaginationController;
-import com.yuanshanbao.ms.controller.common.AdminServerController;
-import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.paginator.domain.PageList;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementShowType;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
@@ -35,6 +30,10 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
+import com.yuanshanbao.paginator.domain.PageBounds;
+import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
 @RequestMapping("/admin/gift")
@@ -53,7 +52,6 @@ public class AdminAdvertisementController extends PaginationController {
 
 	@Autowired
 	private AdvertiserService advertiserService;
-
 
 	@RequestMapping("/list.do")
 	public String list(String advertiserId, HttpServletRequest request, HttpServletResponse response) {
@@ -82,7 +80,6 @@ public class AdminAdvertisementController extends PaginationController {
 	private void setProperty(HttpServletRequest request, String advertiserId, Integer type) {
 		Advertiser advertiser = advertiserService.selectAdvertiser(Long.parseLong(advertiserId));
 		request.setAttribute("type", type);
-		request.setAttribute("typeContent", Advertisement.getTypeContent(type));
 		request.setAttribute("advertiser", advertiser);
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
 		request.setAttribute("dynamicShowTypes", AdvertisementShowType.getDynamicDescriptionMap().entrySet());
@@ -100,15 +97,14 @@ public class AdminAdvertisementController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			//checkForm(advertisement);
+			// checkForm(advertisement);
 			if (image != null && !image.isEmpty()) {
 				advertisement.setImageUrl(UploadUtils.uploadFile(image, "file/game"));
 			}
-			if (advertisement.getShowType() != null && advertisement.getShowType().equals(AdvertisementShowType.NET)
-					&& (bigImage == null || bigImage.isEmpty())) {
+			if (bigImage == null || bigImage.isEmpty()) {
 				throw new BusinessException("大图不能为空");
 			}
-			
+
 			validateParameters(advertisement);
 			advertService.insertAdvertisement(advertisement);
 			AdminServerController.refreshConfirm();
@@ -123,7 +119,7 @@ public class AdminAdvertisementController extends PaginationController {
 	}
 
 	private void checkForm(Advertisement advertisement) {
-		advertisement.setUrl(StringUtils.trim(advertisement.getLink()));
+		advertisement.setLink(StringUtils.trim(advertisement.getLink()));
 		if (StringUtils.isNotBlank(advertisement.getLink()) && !ValidateUtil.isUrl(advertisement.getLink())) {
 			throw new BusinessException("广告链接格式错误");
 		}
@@ -152,7 +148,7 @@ public class AdminAdvertisementController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			//checkForm(advertisement);
+			// checkForm(advertisement);
 			if (image != null && !image.isEmpty()) {
 				advertisement.setImageUrl(UploadUtils.uploadFile(image, "file/game"));
 			}
@@ -199,7 +195,6 @@ public class AdminAdvertisementController extends PaginationController {
 		if (list != null && list.size() >= 0) {
 			advertisement = list.get(0);
 		}
-		request.setAttribute("tags", advertisement.getTags());
 		request.setAttribute("itemEdit", advertisement);
 		return PAGE_VIEW;
 	}

@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -143,9 +144,12 @@ public class Config {
 
 	public boolean isMatch(Long activityId, String channel, String appKey, Long merchantId, Long productId,
 			Long functionId) {
-		return isNullOrEquals(this.activityId, activityId) && isNullOrEquals(this.channel, channel)
-				&& isNullOrEquals(this.merchantId, merchantId) && isNullOrEquals(this.productId, productId)
-				&& isNullOrEquals(this.functionId, functionId) && isNullOrEquals(this.appKey, appKey);
+		return CommonUtil.isNullOrEquals(this.activityId, activityId)
+				&& CommonUtil.isNullOrEquals(this.channel, channel)
+				&& CommonUtil.isNullOrEquals(this.merchantId, merchantId)
+				&& CommonUtil.isNullOrEquals(this.productId, productId)
+				&& CommonUtil.isNullOrEquals(this.functionId, functionId)
+				&& CommonUtil.isNullOrEquals(this.appKey, appKey);
 	}
 
 	public boolean isMatch(Long activityId, String channel, String appKey, Long merchantId, Long productId) {
@@ -162,9 +166,11 @@ public class Config {
 
 	public boolean isMatchWithoutFunction(Long activityId, String channel, String appKey, Long merchantId,
 			Long productId) {
-		return isNullOrEquals(this.activityId, activityId) && isNullOrEquals(this.channel, channel)
-				&& isNullOrEquals(this.merchantId, merchantId) && isNullOrEquals(this.productId, productId)
-				&& isNullOrEquals(this.appKey, appKey);
+		return CommonUtil.isNullOrEquals(this.activityId, activityId)
+				&& CommonUtil.isNullOrEquals(this.channel, channel)
+				&& CommonUtil.isNullOrEquals(this.merchantId, merchantId)
+				&& CommonUtil.isNullOrEquals(this.productId, productId)
+				&& CommonUtil.isNullOrEquals(this.appKey, appKey);
 	}
 
 	public boolean isMatchWithoutFunction(Long activityId, String channel, String appKey, Long merchantId) {
@@ -173,22 +179,6 @@ public class Config {
 
 	public boolean isMatchWithoutFunction(Long activityId, String channel, String appKey) {
 		return isMatchWithoutFunction(activityId, channel, appKey, null, null);
-	}
-
-	private boolean isNullOrEquals(Long value1, Long value2) {
-		if (value1 != null) {
-			return value1.equals(value2);
-		} else {
-			return true;
-		}
-	}
-
-	private boolean isNullOrEquals(String content1, String content2) {
-		if (StringUtils.isNotBlank(content1)) {
-			return content1.equals(content2);
-		} else {
-			return true;
-		}
 	}
 
 	public Activity getActivity() {

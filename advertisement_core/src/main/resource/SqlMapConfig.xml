@@ -100,5 +100,8 @@
         <mapper resource="mybatis/product/ProductDaoImpl.xml"/>
         <mapper resource="mybatis/product/ProductCategoryDaoImpl.xml"/>
         
+        <mapper resource="mybatis/position/PositionDaoImpl.xml"/>
+        <mapper resource="mybatis/probability/ProbabilityDaoImpl.xml"/>
+        <mapper resource="mybatis/quota/QuotaDaoImpl.xml"/>
     </mappers>
 </configuration>
