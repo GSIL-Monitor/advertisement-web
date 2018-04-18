@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.quota.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.CommonUtil;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.quota.dao.QuotaDao;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -82,6 +85,27 @@ public class QuotaServiceImpl implements QuotaService {
 			map.put(quota.getQuotaId(), quota);
 		}
 		return map;
+	}
+
+	@Override
+	public List<Quota> selectQuotaFromCache(Long projectId, Long positionId, List<Long> advertisementIdList) {
+		List<Quota> resultList = new ArrayList<Quota>();
+		if (projectId == null) {
+			return resultList;
+		}
+		List<Quota> quotaList = ConstantsManager.getQuotaList(projectId);
+		if (quotaList == null) {
+			return resultList;
+		}
+		for (Quota quota : quotaList) {
+			if (!CommonUtil.isNullOrEquals(quota.getPositionId(), positionId)) {
+				continue;
+			}
+			if (advertisementIdList == null || advertisementIdList.contains(quota.getAdvertisementId())) {
+				resultList.add(quota);
+			}
+		}
+		return resultList;
 	}
 
 }

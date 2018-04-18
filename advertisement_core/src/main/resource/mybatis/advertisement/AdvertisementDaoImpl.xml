@@ -6,6 +6,7 @@
 
 	<resultMap id="advertisementMap" type="Advertisement">
 		<id property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="advertiserId" column="advertiser_id"
 			jdbcType="NUMERIC" />
 		<result property="title" column="title" jdbcType="VARCHAR" />
@@ -35,6 +36,9 @@
 			<trim suffixOverrides="and">
 				<if test="advertisementId != null">
 					advertisement_id = #{advertisementId} and
+				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
 				</if>
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId} and
@@ -92,17 +96,15 @@
 
 	<insert id="insertAdvertisement" parameterType="Advertisement">
 		insert into
-		tb_advertisement(advertiser_id, type, title, sub_title,
+		tb_advertisement(project_id, advertiser_id, type, title, sub_title,
 		url,app_url,
 		description,
 		image_url, big_image_url, tags_id, button_name,
 		status,category,show_type, create_time,
 		update_time)
 		values
-		(#{advertiserId},#{type}, #{title}, #{subTitle},
-		#{url},
-		#{appUrl},
-		#{description},
+		(#{projectId}, #{advertiserId},#{type}, #{title}, #{subTitle},
+		#{url}, #{appUrl}, #{description},
 		#{imageUrl}, #{bigImageUrl}, #{tagsId}, #{buttonName},
 		#{status},#{category}, #{showType},sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
@@ -115,6 +117,9 @@
 		update tb_advertisement
 		<set>
 			<trim suffixOverrides=",">
+				<if test="projectId != null">
+					project_id = #{projectId},
+				</if>
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId},
 				</if>

@@ -16,15 +16,16 @@ public class Advertisement {
 	public static final String JUMPER_URL = "/j/common";
 	public static final String APP_URL_PREFIX = "ruidai://";
 	public static final String HOST = PropertyUtil.getProperty("advertisement.host");
-	
+
 	public static final String WAP_CONTENT_KEY = "wap";
 	public static final String APP_CONTENT_KEY = "app";
-	
+
 	public static final int IS_ANDROID = 0;
 	public static final int IS_IOS = 1;
 	public static final int IS_WAP = 4;
 
 	private Long advertisementId;
+	private Long projectId;
 	private Long advertiserId;
 	private String title;
 	private Integer type;
@@ -50,7 +51,7 @@ public class Advertisement {
 	private Long count;
 
 	private Advertiser advertiser;
-	
+
 	private AdvertisementCategory advertisementCategory;
 
 	private Tags tags;
@@ -61,6 +62,14 @@ public class Advertisement {
 
 	public void setAdvertisementId(Long advertisementId) {
 		this.advertisementId = advertisementId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 
 	public String getTitle() {
@@ -238,7 +247,7 @@ public class Advertisement {
 	public void setAppUrl(String appUrl) {
 		this.appUrl = appUrl;
 	}
-	
+
 	public String getCategoryDesc() {
 		return categoryDesc;
 	}
@@ -254,7 +263,7 @@ public class Advertisement {
 	public void setShowType(Integer showType) {
 		this.showType = showType;
 	}
-	
+
 	public Long getCycleTime() {
 		return cycleTime;
 	}
@@ -262,7 +271,7 @@ public class Advertisement {
 	public void setCycleTime(Long cycleTime) {
 		this.cycleTime = cycleTime;
 	}
-	
+
 	public String getPosition() {
 		return position;
 	}
