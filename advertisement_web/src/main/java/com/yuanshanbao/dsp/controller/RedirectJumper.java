@@ -44,7 +44,7 @@ public class RedirectJumper extends BaseController {
 		}
 		Advertisement advertisement = ConfigManager.getAdvertisement(id);
 		if (advertisement != null) {
-			modelMap.put("url", advertisement.getUrl());
+			modelMap.put("url", advertisement.getLink());
 		}
 		return "/web/activity/common/jump";
 	}

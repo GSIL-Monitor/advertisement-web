@@ -123,8 +123,8 @@ public class AdminAdvertisementController extends PaginationController {
 	}
 
 	private void checkForm(Advertisement advertisement) {
-		advertisement.setUrl(StringUtils.trim(advertisement.getUrl()));
-		if (StringUtils.isNotBlank(advertisement.getUrl()) && !ValidateUtil.isUrl(advertisement.getUrl())) {
+		advertisement.setUrl(StringUtils.trim(advertisement.getLink()));
+		if (StringUtils.isNotBlank(advertisement.getLink()) && !ValidateUtil.isUrl(advertisement.getLink())) {
 			throw new BusinessException("广告链接格式错误");
 		}
 	}
