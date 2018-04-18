@@ -248,4 +248,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		}
 		return advertismentList;
 	}
+
+	@Override
+	public Map<String, Object> countAdvertisementSize(
+			Advertisement advertisement) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<Advertisement> advertisements = this.selectAdvertisement(advertisement,new PageBounds());
+		int count = 0;
+		for(Advertisement adv : advertisements){
+			if(adv.getStatusValue().equals("已失效")){
+				count ++;
+			}
+		}
+		result.put("total", advertisements.size());
+		result.put("use", advertisements.size() - count);
+		result.put("down", count);
+		return null;
+	}
 }

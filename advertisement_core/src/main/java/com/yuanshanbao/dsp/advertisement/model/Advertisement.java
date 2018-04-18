@@ -45,7 +45,7 @@ public class Advertisement {
 	private Timestamp updateTime;
 	private String link;
 	private Long cycleTime;
-	private String position;
+	private Long positionId;
 
 	private Long count;
 
@@ -164,7 +164,7 @@ public class Advertisement {
 	}
 
 	public String getStatusValue() {
-		return CommonStatus.getDescription(status);
+		return AdvertisementStatus.getDescription(status);
 	}
 
 	public String getCreateTimeContent() {
@@ -263,13 +263,6 @@ public class Advertisement {
 		this.cycleTime = cycleTime;
 	}
 	
-	public String getPosition() {
-		return position;
-	}
-
-	public void setPosition(String position) {
-		this.position = position;
-	}
 
 	@Override
 	public String toString() {
@@ -298,5 +291,13 @@ public class Advertisement {
 	public static void main(String[] args) {
 		int type = 1;
 		System.out.println(getTypeContent(type));
+	}
+
+	public Long getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
 	}
 }
