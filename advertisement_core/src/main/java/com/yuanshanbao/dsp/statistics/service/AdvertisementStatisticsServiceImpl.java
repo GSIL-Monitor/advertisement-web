@@ -26,6 +26,8 @@ import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.position.service.PositionService;
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.statistics.dao.AdvertisementStatisticsDao;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatisticsType;
@@ -44,6 +46,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	@Autowired
 	private AdvertisementService advertisementService;
 
+	@Autowired
+	private PositionService positionService;
+	
 	@Override
 	public void insertAdvertisementStatistics(AdvertisementStatistics advertisementStatistics) {
 		int result = -1;
@@ -431,14 +436,14 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			return count;
 		}
 
-		String key = RedisConstant.getAdvertisementClickCountKey(date, position, advertisementId + "");
+		//String key = RedisConstant.getAdvertisementClickCountKey(date, position, advertisementId + "");
 		if (StringUtils.isNotBlank(channel)) {
-			key = RedisConstant.getAdvertisementChannelClickCountKey(date, position, advertisementId + "", channel);
+			//key = RedisConstant.getAdvertisementChannelClickCountKey(date, position, advertisementId + "", channel);
 		}
-		String str = (String) redisCacheService.get(key);
-		if (ValidateUtil.isNumber(str)) {
-			return Integer.parseInt(str);
-		}
+		//String str = (String) redisCacheService.get(key);
+//		if (ValidateUtil.isNumber(str)) {
+//			return Integer.parseInt(str);
+//		}
 		return 0;
 	}
 
@@ -583,6 +588,23 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		}
 
 		return resultList;
+	}
+	
+	@Override
+	public List<AdvertisementStatistics> calculateStatistics(
+			List<Probability> list,String date) {
+		List<Long> advertisementIds = new ArrayList<Long>();
+		List<Long> positionIds = new ArrayList<Long>();
+		String showKey = null;
+		String clickKey = null;
+		
+		
+		for(Probability pro : list){
+			showKey = RedisConstant.getAdvertisementShowCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
+			clickKey = RedisConstant.getAdvertisementClickCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
+		}
+		
+		return null;
 	}
 
 }
