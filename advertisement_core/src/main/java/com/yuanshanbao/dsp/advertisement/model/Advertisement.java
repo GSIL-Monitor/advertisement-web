@@ -134,12 +134,4 @@ public class Advertisement {
 	public void setAdvertiser(Advertiser advertiser) {
 		this.advertiser = advertiser;
 	}
-
-	public Long getPositionId() {
-		return positionId;
-	}
-
-	public void setPositionId(Long positionId) {
-		this.positionId = positionId;
-	}
 }
