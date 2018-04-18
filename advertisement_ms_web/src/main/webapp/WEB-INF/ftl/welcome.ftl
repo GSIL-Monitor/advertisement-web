@@ -4,9 +4,9 @@
 <@sideBar />
 <script>
 $(document).ready(function(){
-    dataTableConfig.ajax = "${rc.contextPath}/admin/main/query.do";
+    dataTableConfig.ajax = "${rc.contextPath}/admin/query.do";
     dataTableConfig.columns = [{
-            "data": "workOrderId"
+            "data": "date"
         }, {
             "data": "taskName"
         }, {
@@ -17,23 +17,6 @@ $(document).ready(function(){
             "data": "informationInsurance.age"
         }, {
             "data": "informationInsurance.address"
-        }, {
-            "data": "callRecordCount"   
-        }, {
-            "data": "lastCallTime"
-        }, {
-            "data": "nextCallBackTime"
-        }, {
-            "data": "statusValue"
-        }, {
-            "data": "stageValue"
-        }, {
-            "data": "createTimeContent"
-        }, {
-            "data": "${functionId}",
-            "render": function ( data, type, full, meta ) {
-                return '<div class="list-btn"><a href="#"  class="btn btn-green">拨打</a></div>';
-            }
         }, {
             "data": "${functionId}",
             "render": function ( data, type, full, meta ) {
@@ -91,36 +74,24 @@ $(document).ready(function(){
             <div class="span4">
                 <div class="widget-box">
                     <div class="widget-title">
-                        <h5 class="curr">今日统计</h5>
+                        <h5 class="curr">广告主概况</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <div class="data-piece clearfix"><span class="fl">新发数据</span><span class="fr">${currentStatistics.newDataCount}条</span></div>
-                        <div class="data-piece clearfix"><span class="fl">已拨数据</span><span class="fr">${currentStatistics.callCount}次</span></div>
-                        <div class="data-piece clearfix"><span class="fl">受理保费额</span><span class="fr">${currentStatistics.insuredSum}万</span></div>
+                        <div class="data-piece clearfix"><span class="fl">总数</span><span class="fr">${advertiser.total}</span></div>
+                        <div class="data-piece clearfix"><span class="fl">使用中</span><span class="fr">${advertiser.use}</span></div>
+                        <div class="data-piece clearfix"><span class="fl">冻结中</span><span class="fr">${advertiser.down}</span></div>
                     </div>
                 </div>
             </div>
             <div class="span4">
                 <div class="widget-box">
                     <div class="widget-title">
-                        <h5 class="week">本周统计</h5>
+                        <h5 class="week">广告概况</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <div class="data-piece clearfix"><span class="fl">新发数据</span><span class="fr">${weekStatistics.newDataCount}条</span></div>
-                        <div class="data-piece clearfix"><span class="fl">已拨数据</span><span class="fr">${weekStatistics.callCount}次</span></div>
-                        <div class="data-piece clearfix"><span class="fl">受理保费额</span><span class="fr">${weekStatistics.insuredSum}万</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="span4">
-                <div class="widget-box">
-                    <div class="widget-title">
-                        <h5 class="month">本月统计</h5>
-                    </div>
-                    <div class="widget-content nopadding">
-                        <div class="data-piece clearfix"><span class="fl">新发数据</span><span class="fr">${monthStatistics.newDataCount}条</span></div>
-                        <div class="data-piece clearfix"><span class="fl">已拨数据</span><span class="fr">${monthStatistics.callCount}次</span></div>
-                        <div class="data-piece clearfix"><span class="fl">受理保费额</span><span class="fr">${monthStatistics.insuredSum}万</span></div>
+                        <div class="data-piece clearfix"><span class="fl">总数</span><span class="fr">${advertisement.total}条</span></div>
+                        <div class="data-piece clearfix"><span class="fl">投放中</span><span class="fr">${advertisement.use}次</span></div>
+                        <div class="data-piece clearfix"><span class="fl">已失效</span><span class="fr">${advertisement.down}万</span></div>
                     </div>
                 </div>
             </div>
@@ -136,20 +107,12 @@ $(document).ready(function(){
                     <table class="table table-bordered data-table" id="dataTable">
                         <thead>
                             <tr>
-                                <th>编号</th>
-                                <th>批次</th>
-                                <th>姓名</th>
-                                <th>性别</th>
-                                <th>年龄</th>
-                                <th>所在城市</th>
-                                <th>拨打次数</th>
-                                <th>最新拨打时间</th>
-                                <th>下次回拨时间</th>
-                                <th>客户状态</th>
-                                <th>客户阶段</th>
-                                <th>创建时间</th>
-                                <th>拨打</th>
-                                <th>详情</th>
+                                <th>日期</th>
+                                <th>曝光量(次)</th>
+                                <th>点击量(次)</th>
+                                <th>点击率</th>
+                                <th>点击均价(元)</th>
+                                <th>总消耗(元)</th>
                             </tr>
                         </thead>
                         <tbody>

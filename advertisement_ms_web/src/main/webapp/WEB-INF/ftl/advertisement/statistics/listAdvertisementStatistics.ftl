@@ -10,25 +10,21 @@
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertisement.do";
 		dataTableConfig.columns = [
 			{
-		    	"data": null,
-		    	 "render": function ( data, type, full, meta ) {
-		            return '【'+data.advertisement.advertisementId+'】'+ data.advertisement.description;
-		        }
-	      	}, {
-		    	"data": "total"
+		    	"data": "title"
 		    }, {
-		    	"data": "welfareCount"
+		    	"data": "advitiser.companyName"
 		    }, {
-		    	"data": "bannerCount"
+		    	"data": "data"
 		    }, {
-		    	"data": "tagsCount"
+		    	"data": "exposureCount"
 		    }, {
-		    	"data": "downloadCount"
+		    	"data": "clickCount"
 		    }, {
-		    	"data": "advertisement",
-		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/advertisementChannel.do?advertisementId='+data.advertisementId+'"  class="btn btn-cyan" target="_blank">查看渠道统计</a>';
-		        }
+		    	"data": "clickRate"
+		    }, {
+		    	"data": "avgPrice"
+		    }, {
+		    	"data": "totalAmount"
 		    }];
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -39,6 +35,40 @@
 		$('#pv').change(function(){
 			reload();
 		});
+		$('#downloadButton').on('click', function(){
+			var queryStartTime=$('#createTimeStart').val();
+			var queryEndTime=$('#createTimeEnd').val();
+		
+			var isAdvertiser=document.getElementById("isAdvertiser").checked;
+			var isPosition=document.getElementById("isPosition").checked;
+			var isDate=document.getElementById("isDate").checked;
+			
+			var params = "isAdvertiser=" + isAdvertiser + "&isPosition=" + isPosition + "&isDate=" + isDate + "&";
+			if (isNotEmpty($('#createTimeStart').val())) {
+				params += "queryStartTime=" + encodeURI(encodeURI($('#createTimeStart').val())) + "&";
+			}
+			if (isNotEmpty($('#createTimeEnd').val())) {
+				params += "queryEndTime="+encodeURI(encodeURI($('#createTimeEnd').val())) + "&";
+			}
+			if (isNotEmpty($('#name').val())) {
+				params += "name=" +encodeURI(encodeURI($('#name').val())) + "&";
+			}
+			var url="${rc.contextPath}/admin/${functionName}/download.do?" + params;
+			 $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: url,
+                data: "",
+                success: function (data) {
+                	var newUrl = data.path;
+                	if (isNotEmpty(newUrl)){
+                    	window.location.href = newUrl;
+                	} else {
+                		alert("无数据！");
+                	}
+                }
+            });
+		});
 		function reload() {
 			var date=$('#date').val();
 			var pv=$('#pv').val();
@@ -47,6 +77,16 @@
 			dataTable.ajax.reload();
 		}
 	});
+	var checkNum = 0;
+	function countChoices(obj) {
+		var max = 2;
+		obj.checked?checkNum++:checkNum--;
+   		if(checkNum>max){
+   			alert("对不起，你只能选择" + max + "个选项!");
+   			checkNum--;
+   			obj.checked=false;
+		}
+	}
 </script>
 <div id="content">
 	<div id="content-header">
@@ -64,24 +104,38 @@
 								<option value="false" selected>uv</option>
 								<option value="true">pv</option>
 							</select>
+						<div class="btn-group">
+	            			<div class="filter-component">
+								<h6>日期：</h6>
+								<@timeRangeSearchBar/>
+							</div>	  
+						</div>
 							<select name="date" id="date">
 								<#list dateList as date>
 									<option value="${date}"<#if date_index == 0>selected</#if>>${date}</option>
 								</#list>
 							</select>
 						</div>
+						<div class="btn-group">
+	            				  <h6>广告主：</h6><input type="checkbox" name="box1" id="isAdvtiser" onClick="countChoices(this)">
+	            				  <h6>位置：</h6><input type="checkbox" name="box2" id="isPosition" onClick="countChoices(this)">
+	            				  <h6>日期：</h6><input type="checkbox" name="box3" id="isDate" onClick="countChoices(this)">
+						</div>
+						<div class="btn btn-green" id="queryButton">确定</div>
+						<div class="btn btn-white" id="queryReset">重置</div>
+						<div class="btn btn-red" id="downloadButton" style="float:right">下载</div>
 					</div>
 					<div class="widget-content nopadding">
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
-								<tr>
-									<td>广告名称</td>
-									<td>总数</td>
-									<#list positionList as position>
-										<td>${position}</td>
-									</#list>
-									<td>渠道统计</td>
-								</tr>
+								<th>广告名称</th>
+			                  	<th>广告主名称</th>
+			                  	<th>时间</th>
+			                  	<th>曝光量(次)</th>
+			                  	<th>点击量(次)</th>
+			                  	<th>点击率</th>
+			                  	<th>点击均价</th>
+			                  	<th>总消耗(元)</th>	
 							</thead>
 							<tbody>
 							</tbody>

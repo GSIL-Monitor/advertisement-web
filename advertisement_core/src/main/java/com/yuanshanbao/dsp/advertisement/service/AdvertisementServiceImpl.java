@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.advertisement.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.tags.service.TagsService;
@@ -181,7 +183,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	@Override
 	public Long getAdvertisementCount(Long advertisementId) {
-		String key = RedisConstant.getAdvertisementShowCountKey(advertisementId + "");
+		String key = RedisConstant.getAdvertisementShowCountKey(advertisementId, null);
 		String str = (String) redisCacheService.get(key);
 		long count = 0;
 		if (ValidateUtil.isNumber(str)) {
@@ -198,7 +200,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	public void increaseAdvertisementCount(Long advertisementId) {
 		int increaseCount = 1;
 		increaseCount = getRandomFromRange(ADVERTIEMENT_INCREASE_RANGE);
-		redisCacheService.increBy(RedisConstant.getAdvertisementShowCountKey(advertisementId + ""), increaseCount);
+		redisCacheService.increBy(RedisConstant.getAdvertisementShowCountKey(advertisementId, null), increaseCount);
 	}
 
 	private Integer getRandomFromRange(String numRange) {
@@ -218,11 +220,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		if (position == null) {
 			return advertismentList;
 		}
-		Probability probabilityParam = new Probability();
-		probabilityParam.setProjectId(projectId);
-		probabilityParam.setPositionId(positionId);
-		List<Probability> probabilityList = probabilityService.selectProbabilitys(probabilityParam, new PageBounds());
-		List<Long> advertisementIdList = new ArrayList<Long>();
+		List<Probability> probabilityList = probabilityService.selectProbabilityFromCache(projectId, positionId, null);
+		Map<Long, Probability> advertisementIdMap = new LinkedHashMap<Long, Probability>();
 		for (Probability probability : probabilityList) {
 			if (probability.getStartTime() != null) {
 				if (probability.getStartTime().after(new Date())) {
@@ -234,20 +233,76 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 					continue;
 				}
 			}
-			advertisementIdList.add(probability.getAdvertisementId());
+			advertisementIdMap.put(probability.getAdvertisementId(), probability);
 		}
-		if (advertisementIdList.size() == 0) {
+		if (advertisementIdMap.size() == 0) {
 			return advertismentList;
 		}
-		Quota quotaParam = new Quota();
-		quotaParam.setPositionId(positionId);
-		quotaParam.setAdvertisementIdList(advertisementIdList);
-		List<Quota> quotaList = quotaService.selectQuota(quotaParam, new PageBounds());
+		List<Quota> quotaList = quotaService.selectQuotaFromCache(projectId, positionId, new ArrayList<Long>(
+				advertisementIdMap.keySet()));
 		for (Quota quota : quotaList) {
-		
+			if (quota.getCount() != null && quota.getCount() > 0) {
+				String countValue = redisCacheService.get(RedisConstant.getQuotaCount(quota.getQuotaId()));
+				if (ValidateUtil.isNumber(countValue)) {
+					Integer currentCount = Integer.parseInt(countValue);
+					if (currentCount > quota.getCount()) {
+						advertisementIdMap.remove(quota.getAdvertisementId());
+					}
+				}
+			}
+			if (quota.getStartTime() != null) {
+				if (quota.getStartTime().after(new Date())) {
+					advertisementIdMap.remove(quota.getAdvertisementId());
+				}
+			}
+			if (quota.getEndTime() != null) {
+				if (quota.getEndTime().before(new Date())) {
+					advertisementIdMap.remove(quota.getAdvertisementId());
+				}
+			}
 		}
+		List<Long> resultAdvertisementIdList = new ArrayList<Long>();
+		Double totalProbability = 0D;
+		for (Probability probability : advertisementIdMap.values()) {
+			if (resultAdvertisementIdList.size() < position.getCount()) {
+				if (probability.getProbability() == null) {
+					resultAdvertisementIdList.add(probability.getAdvertisementId());
+				} else if (advertisementIdMap.size() <= position.getCount()) {
+					resultAdvertisementIdList.add(probability.getAdvertisementId());
+				} else {
+					totalProbability += probability.getProbability();
+				}
+			} else {
+				break;
+			}
+		}
+		for (int i = 0; i < 5; i++) {
+
+			if (resultAdvertisementIdList.size() >= position.getCount() || totalProbability <= 0) {
+				break;
+			}
+			for (Probability probability : advertisementIdMap.values()) {
+				if (resultAdvertisementIdList.size() < position.getCount()) {
+					if (probability.getProbability() != null) {
+						double random = Math.random() * totalProbability;
+						if (random < probability.getProbability()) {
+							resultAdvertisementIdList.add(probability.getAdvertisementId());
+							totalProbability -= probability.getProbability();
+						}
+					}
+				} else {
+					break;
+				}
+			}
+		}
+		Map<Long, Advertisement> advertisementMap = selectAdvertisementByIds(resultAdvertisementIdList);
+		for (Long advertisementId : resultAdvertisementIdList) {
+			advertismentList.add(advertisementMap.get(advertisementId));
+		}
+		recordAdvertisementCount(projectId, positionId, resultAdvertisementIdList, false);
 		return advertismentList;
 	}
+
 
 	@Override
 	public Map<String, Object> countAdvertisementSize(
@@ -264,5 +319,25 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		result.put("use", advertisements.size() - count);
 		result.put("down", count);
 		return null;
+	}
+	
+	private void recordAdvertisementCount(Long projectId, Long positionId, List<Long> advertisementIdList,
+			boolean isClick) {
+		List<Quota> quotaList = quotaService.selectQuotaFromCache(projectId, positionId, advertisementIdList);
+		for (Quota quota : quotaList) {
+			if (isClick) {
+				redisCacheService.incr(RedisConstant.getAdvertisementClickCountKey(quota.getAdvertisementId(),
+						positionId));
+				if (QuotaType.CPC.equals(quota.getType())) {
+					redisCacheService.incr(RedisConstant.getQuotaCount(quota.getQuotaId()));
+				}
+			} else {
+				redisCacheService.incr(RedisConstant.getAdvertisementShowCountKey(quota.getAdvertisementId(),
+						positionId));
+				if (QuotaType.CPM.equals(quota.getType()) || QuotaType.CPT.equals(quota.getType())) {
+					redisCacheService.incr(RedisConstant.getQuotaCount(quota.getQuotaId()));
+				}
+			}
+		}
 	}
 }

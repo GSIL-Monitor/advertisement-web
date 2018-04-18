@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
@@ -252,5 +253,26 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	@Override
 	public List<Probability> selectGeneralProbabilitys(Probability probability, PageBounds pageBounds) {
 		return setProperty(probabilityDao.selectGeneralProbabilitys(probability, pageBounds));
+	}
+
+	@Override
+	public List<Probability> selectProbabilityFromCache(Long projectId, Long positionId, List<Long> advertisementIdList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		if (projectId == null) {
+			return resultList;
+		}
+		List<Probability> probabilityList = ConstantsManager.getProbabilityList(projectId);
+		if (probabilityList == null) {
+			return resultList;
+		}
+		for (Probability probability : probabilityList) {
+			if (!CommonUtil.isNullOrEquals(probability.getPositionId(), positionId)) {
+				continue;
+			}
+			if (advertisementIdList == null || advertisementIdList.contains(probability.getAdvertisementId())) {
+				resultList.add(probability);
+			}
+		}
+		return resultList;
 	}
 }

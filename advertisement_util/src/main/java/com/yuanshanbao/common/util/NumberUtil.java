@@ -2,6 +2,7 @@ package com.yuanshanbao.common.util;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,5 +43,19 @@ public class NumberUtil {
 			list.add(Integer.parseInt(String.valueOf(num.charAt(i))));
 		}
 		return list;
+	}
+	
+	public static String getPercent(Integer num,Integer total ){
+		String percent;
+		Double per = 0.0;
+		if(total == 0){
+			per = 0.0;
+		}else{
+			per = num*1.0/total;
+		}
+		NumberFormat nf = NumberFormat.getPercentInstance();
+		nf.setMinimumFractionDigits(2);
+		percent = nf.format(per);
+		return percent;
 	}
 }

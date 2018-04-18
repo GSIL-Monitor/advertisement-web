@@ -39,8 +39,14 @@ import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.page.model.Page;
 import com.yuanshanbao.dsp.page.service.PageService;
+import com.yuanshanbao.dsp.position.model.Position;
+import com.yuanshanbao.dsp.position.service.PositionService;
+import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.project.model.Project;
 import com.yuanshanbao.dsp.project.service.ProjectService;
+import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.tags.model.TagsType;
 import com.yuanshanbao.dsp.tags.service.TagsService;
@@ -71,6 +77,10 @@ public class ConstantsManager {
 	private static Map<String, Location> locationMap = new HashMap<String, Location>();
 	private static Map<String, Location> locationNameMap = new HashMap<String, Location>();
 
+	private static Map<Long, List<Position>> positionMap = new HashMap<Long, List<Position>>();
+	private static Map<Long, List<Advertisement>> advertisementMap = new HashMap<Long, List<Advertisement>>();
+	private static Map<Long, List<Probability>> probabilityMap = new HashMap<Long, List<Probability>>();
+	private static Map<Long, List<Quota>> quotaMap = new HashMap<Long, List<Quota>>();
 	private static ConstantsManager instance = null;
 
 	@Resource
@@ -108,6 +118,15 @@ public class ConstantsManager {
 
 	@Resource
 	private AdvertisementCategoryService advertisementCategoryService;
+
+	@Resource
+	private PositionService positionService;
+
+	@Resource
+	private QuotaService quotaService;
+
+	@Resource
+	private ProbabilityService probabilityService;
 
 	public static boolean validateConstants(long[] types, Long id) {
 		for (long type : types) {
@@ -246,6 +265,7 @@ public class ConstantsManager {
 		refreshConstantsTags();
 		refreshLocationMap();
 		refreshConfigs();
+		refreshAdvertisement();
 	}
 
 	private void refreshTagsType() {
@@ -359,6 +379,58 @@ public class ConstantsManager {
 			list1.add(t);
 		}
 		LoggerUtil.info("refresh " + (tagsList == null ? 0 : tagsList.size()) + " inis");
+	}
+
+	private void refreshAdvertisement() {
+		List<Advertisement> advertisementList = advertisementService.selectAdvertisement(new Advertisement(),
+				new PageBounds());
+		Map<Long, List<Advertisement>> tempAdvertisementMap = new HashMap<Long, List<Advertisement>>();
+		for (Advertisement advertisement : advertisementList) {
+			List<Advertisement> list = tempAdvertisementMap.get(advertisement.getProjectId());
+			if (list == null) {
+				list = new ArrayList<Advertisement>();
+				tempAdvertisementMap.put(advertisement.getProjectId(), list);
+			}
+			list.add(advertisement);
+		}
+		advertisementMap = tempAdvertisementMap;
+
+		List<Position> positionList = positionService.selectPosition(new Position(), new PageBounds());
+		Map<Long, List<Position>> tempPositionMap = new HashMap<Long, List<Position>>();
+		for (Position position : positionList) {
+			List<Position> list = tempPositionMap.get(position.getProjectId());
+			if (list == null) {
+				list = new ArrayList<Position>();
+				tempPositionMap.put(position.getProjectId(), list);
+			}
+			list.add(position);
+		}
+		positionMap = tempPositionMap;
+
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(new Probability(), new PageBounds());
+		Map<Long, List<Probability>> tempProbabilityMap = new HashMap<Long, List<Probability>>();
+		for (Probability probability : probabilityList) {
+			List<Probability> list = tempProbabilityMap.get(probability.getProjectId());
+			if (list == null) {
+				list = new ArrayList<Probability>();
+				tempProbabilityMap.put(probability.getProjectId(), list);
+			}
+			list.add(probability);
+		}
+		probabilityMap = tempProbabilityMap;
+
+		List<Quota> quotaList = quotaService.selectQuota(new Quota(), new PageBounds());
+		Map<Long, List<Quota>> tempQuotaMap = new HashMap<Long, List<Quota>>();
+		for (Quota quota : quotaList) {
+			List<Quota> list = tempQuotaMap.get(quota.getProjectId());
+			if (list == null) {
+				list = new ArrayList<Quota>();
+				tempQuotaMap.put(quota.getProjectId(), list);
+			}
+			list.add(quota);
+		}
+		quotaMap = tempQuotaMap;
+
 	}
 
 	public static Map<Long, TagsType> getTagsTypeMap() {
@@ -475,5 +547,21 @@ public class ConstantsManager {
 			return projectService.selectProject(projectKey);
 		}
 		return null;
+	}
+
+	public static List<Advertisement> getAdvertisementList(Long projectId) {
+		return advertisementMap.get(projectId);
+	}
+
+	public static List<Position> getPositionList(Long projectId) {
+		return positionMap.get(projectId);
+	}
+
+	public static List<Probability> getProbabilityList(Long projectId) {
+		return probabilityMap.get(projectId);
+	}
+
+	public static List<Quota> getQuotaList(Long projectId) {
+		return quotaMap.get(projectId);
 	}
 }

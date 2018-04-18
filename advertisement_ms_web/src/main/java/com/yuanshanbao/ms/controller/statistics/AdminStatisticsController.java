@@ -819,5 +819,48 @@ public class AdminStatisticsController extends PaginationController {
 		tiList.setPaginator(paginator);
 		return setPageInfo(request, response, tiList);
 	}
+	
+	@ResponseBody
+	@RequestMapping("/queryStatisticToday.do")
+	public Object queryStatisticToday(String queryChannel, AdvertisementStatistics statistics,HttpServletRequest request, 
+			HttpServletResponse response) {
+		
+		return "";
+	}
+	
+	@ResponseBody
+	@RequestMapping("/queryStatisticFromDB.do")
+	public Object queryStatisticFromDB(String queryChannel, AdvertisementStatistics statistics,boolean isAdvertiser,boolean isPosition,
+			boolean isDate,HttpServletRequest request,HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<AdvertisementStatistics> list	 = advertisementStatisticsService.selectAdvertisementStatistics(statistics, new PageBounds());
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		if(isAdvertiser==false&&isDate==false&&isPosition==false){
+			resultList = list;
+		}else{
+			if(isAdvertiser&&isPosition){
+				resultList = advertisementStatisticsService.combineAdvertiserAndPosition(list);
+			}else if(isDate&&isPosition){
+				resultList = advertisementStatisticsService.combineDateAndPosition(list);
+			}else if(isAdvertiser&&isDate){
+				resultList = advertisementStatisticsService.combineAdvertiserAndDate(list);
+			}
+		}
+		result.put("date", resultList);
+		return result;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/queryStatisticByAdvertiser.do")
+	public Object queryStatisticByAdvertiser(String queryChannel, AdvertisementStatistics statistics,boolean isAdvertiser,boolean isPosition,
+			boolean isDate,HttpServletRequest request,HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<AdvertisementStatistics> list	 = advertisementStatisticsService.selectAdvertisementStatistics(statistics, new PageBounds());
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		
+		resultList = advertisementStatisticsService.combineDateAndPosition(list);
+		result.put("date", resultList);
+		return result;
+	}
 
 }

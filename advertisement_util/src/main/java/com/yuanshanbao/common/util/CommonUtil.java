@@ -742,4 +742,20 @@ public class CommonUtil {
 		return new String(ch);
 	}
 
+	public static boolean isNullOrEquals(Long value1, Long value2) {
+		if (value1 != null) {
+			return value1.equals(value2);
+		} else {
+			return true;
+		}
+	}
+
+	public static boolean isNullOrEquals(String content1, String content2) {
+		if (StringUtils.isNotBlank(content1)) {
+			return content1.equals(content2);
+		} else {
+			return true;
+		}
+	}
+
 }

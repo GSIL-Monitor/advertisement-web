@@ -6,7 +6,7 @@
 <@sideBar />
 <script>
 	$(document).ready(function(){
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/viewAd.do?advertiserId=${advertiserId}";
 		dataTableConfig.columns = [{
 	      		"data": "advertisementId"
 	    	}, {
@@ -43,7 +43,7 @@
 </script>
 <div id="content">
 	<div id="content-header">
-		<div id="breadcrumb"><a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a><a href="#" class="current">${functionTitle}列表</a></div>
+		<div id="breadcrumb"><a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a><a href="#" class="current">${functionTitle}列表</a><a href="#" class="current">列表</a></div>
 		<h1>${functionTitle}列表</h1>
 	</div>
 	<div class="container-fluid">

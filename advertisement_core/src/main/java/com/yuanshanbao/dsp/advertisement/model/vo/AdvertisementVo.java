@@ -17,7 +17,7 @@ public class AdvertisementVo {
 	private Long count;
 	private Integer showType;
 	private Long cycleTime;
-	private String position;
+	private Long positionId;
 	
 	public AdvertisementVo() {
 		super();
@@ -35,7 +35,7 @@ public class AdvertisementVo {
 		this.count = advertisement.getCount();
 		this.showType = advertisement.getShowType();
 		this.cycleTime = advertisement.getCycleTime();
-		this.position = advertisement.getPosition();
+		this.positionId = advertisement.getPositionId();
 	}
 	
 	public Long getAdvertisementId() {
@@ -115,12 +115,13 @@ public class AdvertisementVo {
 		this.cycleTime = cycleTime;
 	}
 
-	public String getPosition() {
-		return position;
+	public Long getPositionId() {
+		return positionId;
 	}
 
-	public void setPosition(String position) {
-		this.position = position;
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
 	}
+
 	
 }
