@@ -30,182 +30,97 @@
 											${advertiser.description}
 											<input type="hidden" name="advertiserId" value="${advertiser.advertiserId}" />
 										<#else>
-											<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
-												<#list advertiserList as advertiser>
-													<option value="${advertiser.advertiserId}">${advertiser.name}</option>
-												</#list>
-											</select>
+											<div style="width:60%;">
+												<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+													<#list advertiserList as advertiser>
+														<option value="${advertiser.advertiserId}">${advertiser.name}</option>
+													</#list>
+												</select>
+											</div>
 										</#if>
 										</td>
 									</td>
 									<tr>
-										<td style="width:20%;">广告描述：</td>
+										<td>广告标题：</td>
+										<td>
+											<input type="text" name="title" style="width:60%;"></td>
+										</td>
+									</tr>
+									<tr>
+										<td>广告描述：</td>
 										<td>
 											<input type="text" name="description" style="width:60%;"></td>
-									</td>
+										</td>
 									</tr>
 									<tr>
 										<td>广告链接：</td>
 										<td>
-											<input type="text" name="url" style="width:60%;"></td>
+											<input type="text" name="link" style="width:60%;"></td>
 									</tr>
 									<tr>
-										<td style="width:20%;" >广告app链接：</td>
+										<td>图片：</td>
+										<td>
+											<input type="file" name="image" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>位置：</td>
 										<td>
 											<div style="width:60%;">
-											<#if type == 6 >
-												<select name="productId" id="productId" class="selectpicker form-control">
-													<option selected>默认为空</option>
-													<#list products as product>
-														<option value="${product.productId}">【${product.productId}】【${product.name}】ruidai://productDetail?productId=${product.productId}</option>
+												<select name="positionId" class="selectpicker form-control">
+													<#list positionList as position>
+														<option value="${position.positionId}">${position.name}</option>
 													</#list>
 												</select>
-											<#else>
-												<select name="appUrl" id="appUrl" class="selectpicker form-control">
-													<option selected>默认为空</option>
-													<#list products as product>
-														<option value="ruidai://productDetail?productId=${product.productId}">【${product.productId}】【${product.name}】ruidai://productDetail?productId=${product.productId}</option>
-													</#list>
-												</select>
-											</#if>
 											</div>
 										</td>
 									</tr>
-									<#if type == 1 >
-										<tr>
-											<td>福利主文案：</td>
-											<td>
-												<input type="text" name="title" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>福利副文案：</td>
-											<td>
-												<input type="text" name="subTitle" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>显示类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="showType" id="showType" class="selectpicker form-control">
-														<#list staticShowTypes as showType>
-															<option value="${showType.key}">${showType.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>按钮文案：</td>
-											<td>
-												<input type="text" name="buttonName" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>图片：</td>
-											<td>
-												<input type="file" name="image" style="width:60%;">
-											</td>
-										</tr>
-										<tr id="bigImage">
-											<td>大图：</td>
-											<td>
-												<input type="file" name="bigImage" style="width:60%;">
-											</td>
-										</tr>
-										<tr>
-											<td>分类：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="category" class="selectpicker form-control" data-live-search="true">
-														<option value="">默认(空)</option>
-														<#list categories as category>
-															<option value="${category.categoryId}">【${category.categoryId}】${category.name}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
-									</#if>
-									<#if type == 2 >
-										<tr>
-											<td>轮播图广告图片：</td>
-											<td>
-												<input type="file" name="image" style="width:60%;">
-											</td>
-										</tr>
-									</#if>
-									<#if type == 3 >
-										<tr>
-											<td>标签文案：</td>
-											<td>
-												<input type="text" name="title" style="width:60%;" value="${tempAdvertisement.title}"></td>
-										</tr>
-										<tr>
-											<td>标签图片：</td>
-											<td>
-												<input type="file" name="image" style="width:60%;">
-											</td>
-										</tr>
-									</#if>
-									<#if type == 4 >
-										<tr>
-											<td>弹窗广告图片：</td>
-											<td>
-												<input type="file" name="image" style="width:60%;">
-											</td>
-										</tr>
-										<tr>
-											<td>显示类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="showType" class="selectpicker form-control">
-														<#list dynamicShowTypes as showType>
-															<option value="${showType.key}">${showType.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
-									</#if>
-									<#if type == 5 >
-										<tr>
-											<td>角标广告图片：</td>
-											<td>
-												<input type="file" name="image" style="width:60%;">
-											</td>
-										</tr>
-										<tr>
-											<td>显示类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="showType" class="selectpicker form-control">
-														<#list dynamicShowTypes as showType>
-															<option value="${showType.key}">${showType.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
-									</#if>
-									<#if type == 6 >
-										<tr>
-											<td>按钮文案：</td>
-											<td>
-												<input type="text" name="buttonName" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>分类：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="category" class="selectpicker form-control" data-live-search="true">
-														<option value="">默认(空)</option>
-														<#list categories as category>
-															<option value="${category.categoryId}">【${category.categoryId}】${category.name}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
-									</#if>
+									<tr>
+										<td>概率：</td>
+										<td>
+											<input type="text" name="probability" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>排序：</td>
+										<td>
+											<input type="text" name="sort" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>类型：</td>
+										<td>
+											<div style="width:60%;">
+												<select name="type" class="selectpicker form-control">
+													<#list typeList as type>
+														<option value="${type.key}">${type.value}</option>
+													</#list>
+												</select>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>数量：</td>
+										<td>
+											<input type="text" name="count" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>开始时间：</td>
+										<td>
+											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;"></td>
+									</tr>
+									<tr>
+										<td>结束时间：</td>
+										<td>
+											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;"></td>
+									</tr>
+									<tr>
+										<td>单价：</td>
+										<td>
+											<input type="text" name="unitPrice" style="width:60%;">
+										</td>
+									</tr>
 									<tr>
 										<td>状态：</td>
 										<td>
@@ -234,23 +149,29 @@
 </div>
 <script>
 	$(function() {
-		if($("#showType").val()==4){
-			$("#bigImage").hide();
-			$("#bigImage").removeClass("name");
-		}
-		if($("#showType").val()==5){
-			$("#bigImage").show();
-			$("#bigImage").attr("name","bigImage");
-		}
-		$("#showType").change(function(){
-			if($("#showType").val()==4){
-				$("#bigImage").hide();
-				$("#bigImage").removeClass("name");
-			}
-			if($("#showType").val()==5){
-				$("#bigImage").show();
-				$("#bigImage").attr("name","bigImage");
-			}
+		timer('#startTimeValue');
+		$('#startTimeValue').datetimepicker({
+			maxDate:0,
+			onShow:function( ct ){
+				this.setOptions({
+					maxDate:$('#endTimeValue').val()?$('#endTimeValue').val():false
+				})
+			},
+			step: 15,
+			defaultTime: '08:00',
+			format:'Y-m-d H:i'
+		});
+		timer('#endTimeValue');
+		$('#endTimeValue').datetimepicker({
+			minDate:0,
+			onShow:function( ct ){
+				this.setOptions({
+					minDate:$('#startTimeValue').val()?$('#startTimeValue').val():false
+				})
+			},
+			step: 15,
+			defaultTime: '08:00',
+			format:'Y-m-d H:i'
 		});
 	});
 </script>

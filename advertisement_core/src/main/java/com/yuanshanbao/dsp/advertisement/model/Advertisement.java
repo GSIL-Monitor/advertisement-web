@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
-import com.yuanshanbao.dsp.core.CommonStatus;
 
 public class Advertisement {
 

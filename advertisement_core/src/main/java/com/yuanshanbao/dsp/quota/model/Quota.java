@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.yuanshanbao.common.util.DateUtils;
+
 public class Quota {
 
 	private Long quotaId;
@@ -95,12 +97,20 @@ public class Quota {
 		this.startTime = startTime;
 	}
 
+	public void setStartTimeValue(String startTimeValue) {
+		this.startTime = DateUtils.formatToTimestamp(startTimeValue, "yyyy-MM-dd HH:mm");
+	}
+
 	public Timestamp getEndTime() {
 		return endTime;
 	}
 
 	public void setEndTime(Timestamp endTime) {
 		this.endTime = endTime;
+	}
+
+	public void setEndTimeValue(String endTimeValue) {
+		this.endTime = DateUtils.formatToTimestamp(endTimeValue, "yyyy-MM-dd HH:mm");
 	}
 
 	public BigDecimal getUnitPrice() {

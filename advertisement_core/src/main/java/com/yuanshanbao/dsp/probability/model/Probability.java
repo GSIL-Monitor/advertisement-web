@@ -98,12 +98,20 @@ public class Probability {
 		this.startTime = startTime;
 	}
 
+	public void setStartTimeValue(String startTimeValue) {
+		this.startTime = DateUtils.formatToTimestamp(startTimeValue, "yyyy-MM-dd HH:mm");
+	}
+
 	public Timestamp getEndTime() {
 		return endTime;
 	}
 
 	public void setEndTime(Timestamp endTime) {
 		this.endTime = endTime;
+	}
+
+	public void setEndTimeValue(String endTimeValue) {
+		this.endTime = DateUtils.formatToTimestamp(endTimeValue, "yyyy-MM-dd HH:mm");
 	}
 
 	public Integer getStatus() {
