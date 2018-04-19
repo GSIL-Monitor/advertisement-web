@@ -3,7 +3,6 @@ package com.yuanshanbao.dsp.advertiser.model;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementStatus;
 import com.yuanshanbao.dsp.advertisement.model.AdvertiserStatus;
 
 public class Advertiser {
@@ -16,7 +15,9 @@ public class Advertiser {
 	private String phone;
 	private String address;
 	private String wechat;
-	private String bindUsername;
+	private String bindUserName;
+	private String businessNumber;
+	private String businessPicture;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
@@ -59,14 +60,6 @@ public class Advertiser {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getBindUsername() {
-		return bindUsername;
-	}
-
-	public void setBindUsername(String bindUsername) {
-		this.bindUsername = bindUsername;
 	}
 
 	public Integer getStatus() {
@@ -120,8 +113,33 @@ public class Advertiser {
 	public void setWechat(String wechat) {
 		this.wechat = wechat;
 	}
-	
+
 	public String getStatusValue() {
 		return AdvertiserStatus.getDescription(status);
 	}
+
+	public String getBusinessNumber() {
+		return businessNumber;
+	}
+
+	public void setBusinessNumber(String businessNumber) {
+		this.businessNumber = businessNumber;
+	}
+
+	public String getBindUserName() {
+		return bindUserName;
+	}
+
+	public void setBindUserName(String bindUserName) {
+		this.bindUserName = bindUserName;
+	}
+
+	public String getBusinessPicture() {
+		return businessPicture;
+	}
+
+	public void setBusinessPicture(String businessPicture) {
+		this.businessPicture = businessPicture;
+	}
+
 }

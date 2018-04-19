@@ -10,11 +10,14 @@ public class AdvertisementStatistics {
 	private Long advertisementStatisticsId;
 	private String date;
 	private Long advertisementId;
+	private String title;
 	private Long positionId;
 	private String positionName;
+	private Long advertiserId;
+	private String companyName;
 	private String channel;
 	private Integer downloadCount;
-	private Integer exposureCount;
+	private Integer showCount;
 	private String clickRate;
 	private Integer clickCount;
 	private BigDecimal totalAmount;
@@ -24,26 +27,25 @@ public class AdvertisementStatistics {
 	private Timestamp updateTime;
 	private BigDecimal avgPrice;
 	private Integer total;
-	
+
 	private String queryStartTime;
 	private String queryEndTime;
-	
-	
+
 	private Advertisement advertisement;
 
 	public AdvertisementStatistics(Long advertisementId) {
 		super();
 		this.advertisementId = advertisementId;
-		this.exposureCount = 0;
+		this.setShowCount(0);
 		this.setTotalAmount(new BigDecimal(0));
 		this.clickCount = 0;
 		this.downloadCount = 0;
 		this.total = 0;
 	}
-	
+
 	public AdvertisementStatistics() {
 		super();
-		this.exposureCount = 0;
+		this.setShowCount(0);
 		this.setTotalAmount(new BigDecimal(0));
 		this.clickCount = 0;
 		this.downloadCount = 0;
@@ -81,8 +83,6 @@ public class AdvertisementStatistics {
 	public void setChannel(String channel) {
 		this.channel = channel;
 	}
-
-
 
 	public Integer getDownloadCount() {
 		return downloadCount;
@@ -168,14 +168,6 @@ public class AdvertisementStatistics {
 		this.queryEndTime = queryEndTime;
 	}
 
-	public Integer getExposureCount() {
-		return exposureCount;
-	}
-
-	public void setExposureCount(Integer exposureCount) {
-		this.exposureCount = exposureCount;
-	}
-
 	public Integer getClickCount() {
 		return clickCount;
 	}
@@ -215,5 +207,37 @@ public class AdvertisementStatistics {
 	public void setAvgPrice(BigDecimal avgPrice) {
 		this.avgPrice = avgPrice;
 	}
-	
+
+	public Integer getShowCount() {
+		return showCount;
+	}
+
+	public void setShowCount(Integer showCount) {
+		this.showCount = showCount;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public Long getAdvertiserId() {
+		return advertiserId;
+	}
+
+	public void setAdvertiserId(Long advertiserId) {
+		this.advertiserId = advertiserId;
+	}
+
 }

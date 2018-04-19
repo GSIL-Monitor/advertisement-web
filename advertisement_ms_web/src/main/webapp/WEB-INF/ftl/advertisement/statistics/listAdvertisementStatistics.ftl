@@ -7,12 +7,14 @@
 <script>
 	$(document).ready(function(){
 		dataTableConfig.iDisplayLength = 1000;
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertisement.do";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryStatisticToday.do";
 		dataTableConfig.columns = [
 			{
 		    	"data": "title"
 		    }, {
 		    	"data": "advitiser.companyName"
+		    }, {
+		    	"data": "positionName"
 		    }, {
 		    	"data": "data"
 		    }, {
@@ -35,7 +37,30 @@
 		$('#pv').change(function(){
 			reload();
 		});
-		$('#downloadButton').on('click', function(){
+		$('#queryButton').on('click', function(){
+			var queryStartTime=$('#createTimeStart').val();
+			var queryEndTime=$('#createTimeEnd').val();
+		
+			var isAdvertiser=document.getElementById("isAdvertiser").checked;
+			var isPosition=document.getElementById("isPosition").checked;
+			var isDate=document.getElementById("isDate").checked;
+			
+			var params = "isAdvertiser=" + isAdvertiser + "&isPosition=" + isPosition + "&isDate=" + isDate + "&";
+			if (isNotEmpty($('#createTimeStart').val())) {
+				params += "queryStartTime=" + encodeURI(encodeURI($('#createTimeStart').val())) + "&";
+			}
+			if (isNotEmpty($('#createTimeEnd').val())) {
+				params += "queryEndTime="+encodeURI(encodeURI($('#createTimeEnd').val())) + "&";
+			}
+			if (isNotEmpty($('#name').val())) {
+				params += "name=" +encodeURI(encodeURI($('#name').val())) + "&";
+			}
+			var url="${rc.contextPath}/admin/${functionName}/download.do?" + params;
+			dataTable.ajax.url(newUrl);
+			dataTable.ajax.reload();
+		});
+		
+		$('#queryButton').on('click', function(){
 			var queryStartTime=$('#createTimeStart').val();
 			var queryEndTime=$('#createTimeEnd').val();
 		
@@ -69,6 +94,7 @@
                 }
             });
 		});
+		
 		function reload() {
 			var date=$('#date').val();
 			var pv=$('#pv').val();
@@ -99,37 +125,29 @@
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
 						<h5>数据表格</h5>
-						<div style="float:right;margin:3px 8px 3px 0">
-							<select name="pv" id="pv">
-								<option value="false" selected>uv</option>
-								<option value="true">pv</option>
-							</select>
-						<div class="btn-group">
-	            			<div class="filter-component">
-								<h6>日期：</h6>
-								<@timeRangeSearchBar/>
-							</div>	  
+						<div class="filter-box" style="float:right;margin:3px 8px 3px 0">
+							<div class="btn-group">
+		            			<div class="filter-component">
+									<h6>日期：</h6>
+									<@timeRangeSearchBar/>
+								</div>	  
+							</div>
+							<div class="btn-group">
+		            				  <h6>广告主：</h6><input type="checkbox" name="box1" id="isAdvtiser" onClick="countChoices(this)">
+		            				  <h6>位置：</h6><input type="checkbox" name="box2" id="isPosition" onClick="countChoices(this)">
+		            				  <h6>日期：</h6><input type="checkbox" name="box3" id="isDate" onClick="countChoices(this)">
+							</div>
+							<div class="btn btn-green" id="queryButton">确定</div>
+							<div class="btn btn-white" id="queryReset">重置</div>
+							<div class="btn btn-red" id="downloadButton" style="float:right">下载</div>
 						</div>
-							<select name="date" id="date">
-								<#list dateList as date>
-									<option value="${date}"<#if date_index == 0>selected</#if>>${date}</option>
-								</#list>
-							</select>
-						</div>
-						<div class="btn-group">
-	            				  <h6>广告主：</h6><input type="checkbox" name="box1" id="isAdvtiser" onClick="countChoices(this)">
-	            				  <h6>位置：</h6><input type="checkbox" name="box2" id="isPosition" onClick="countChoices(this)">
-	            				  <h6>日期：</h6><input type="checkbox" name="box3" id="isDate" onClick="countChoices(this)">
-						</div>
-						<div class="btn btn-green" id="queryButton">确定</div>
-						<div class="btn btn-white" id="queryReset">重置</div>
-						<div class="btn btn-red" id="downloadButton" style="float:right">下载</div>
 					</div>
 					<div class="widget-content nopadding">
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
 								<th>广告名称</th>
 			                  	<th>广告主名称</th>
+			                  	<th>位置</th>
 			                  	<th>时间</th>
 			                  	<th>曝光量(次)</th>
 			                  	<th>点击量(次)</th>

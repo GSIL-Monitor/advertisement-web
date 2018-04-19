@@ -11,23 +11,28 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.LICENSE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.ExcelUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.NumberUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.dsp.statistics.dao.AdvertisementStatisticsDao;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatisticsType;
@@ -47,10 +52,16 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private AdvertisementService advertisementService;
 
 	@Autowired
+	private AdvertiserService advertiserService;
+
+	@Autowired
 	private PositionService positionService;
 
 	@Autowired
 	private RedisService redisService;
+
+	@Autowired
+	private QuotaService quotaService;
 
 	@Override
 	public void insertAdvertisementStatistics(AdvertisementStatistics advertisementStatistics) {
@@ -484,7 +495,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 	@Override
 	public List<AdvertisementStatistics> combineAdvertiserAndPosition(List<AdvertisementStatistics> list) {
-		int exposureCount;
+		int showCount;
 		int clickCount;
 		BigDecimal totalMoney;
 		List<String> existDateList = new ArrayList<String>();
@@ -497,21 +508,21 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		}
 		for (String date : existDateList) {
 			advertisementStatistics = new AdvertisementStatistics();
-			exposureCount = 0;
+			showCount = 0;
 			clickCount = 0;
 			totalMoney = new BigDecimal(0);
 			for (AdvertisementStatistics sta : list) {
 				if (date.equals(sta.getDate())) {
-					exposureCount += sta.getExposureCount();
+					showCount += sta.getShowCount();
 					clickCount += sta.getClickCount();
 					totalMoney = totalMoney.add(sta.getTotalAmount());
 				}
 			}
 			advertisementStatistics.setDate(date);
 			advertisementStatistics.setClickCount(clickCount);
-			advertisementStatistics.setExposureCount(exposureCount);
+			advertisementStatistics.setShowCount(showCount);
 			advertisementStatistics.setTotalAmount(totalMoney);
-			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, exposureCount));
+			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, showCount));
 			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
 			resultList.add(advertisementStatistics);
 		}
@@ -520,12 +531,15 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 	@Override
 	public List<AdvertisementStatistics> combineDateAndPosition(List<AdvertisementStatistics> list) {
-		int exposureCount;
+		int showCount;
 		int clickCount;
 		BigDecimal totalMoney;
 		List<Long> existAdvertiserList = new ArrayList<Long>();
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		Map<Long, String> companyNames = new HashMap<Long, String>();
 		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
+
+		companyNames = this.getAdvertiserName();
 		for (AdvertisementStatistics statistic : list) {
 			if (!existAdvertiserList.contains(statistic.getAdvertisement().getAdvertiserId())) {
 				existAdvertiserList.add(statistic.getAdvertisement().getAdvertiserId());
@@ -533,21 +547,22 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		}
 		for (Long adverId : existAdvertiserList) {
 			advertisementStatistics = new AdvertisementStatistics();
-			exposureCount = 0;
+			showCount = 0;
 			clickCount = 0;
 			totalMoney = new BigDecimal(0);
 			for (AdvertisementStatistics sta : list) {
 				if (adverId.equals(sta.getAdvertisement().getAdvertiserId())) {
-					exposureCount += sta.getExposureCount();
+					showCount += sta.getShowCount();
 					clickCount += sta.getClickCount();
 					totalMoney = totalMoney.add(sta.getTotalAmount());
 				}
 			}
 			advertisementStatistics.setAdvertisementId(adverId);
+			advertisementStatistics.setCompanyName(companyNames.get(adverId));
 			advertisementStatistics.setClickCount(clickCount);
-			advertisementStatistics.setExposureCount(exposureCount);
+			advertisementStatistics.setShowCount(showCount);
 			advertisementStatistics.setTotalAmount(totalMoney);
-			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, exposureCount));
+			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, showCount));
 			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
 			resultList.add(advertisementStatistics);
 
@@ -557,12 +572,15 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 	@Override
 	public List<AdvertisementStatistics> combineAdvertiserAndDate(List<AdvertisementStatistics> list) {
-		int exposureCount;
+		int showCount;
 		int clickCount;
 		BigDecimal totalMoney;
+		Map<Long, String> positionNames = new HashMap<Long, String>();
 		List<Long> existPositionList = new ArrayList<Long>();
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
+
+		positionNames = this.getPositionName();
 		for (AdvertisementStatistics statistic : list) {
 			if (!existPositionList.contains(statistic.getPositionId())) {
 				existPositionList.add(statistic.getPositionId());
@@ -570,21 +588,21 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		}
 		for (Long posId : existPositionList) {
 			advertisementStatistics = new AdvertisementStatistics();
-			exposureCount = 0;
+			showCount = 0;
 			clickCount = 0;
 			totalMoney = new BigDecimal(0);
 			for (AdvertisementStatistics sta : list) {
 				if (posId.equals(sta.getPositionId())) {
-					exposureCount += 1;
-					clickCount += 1;
+					showCount += sta.getShowCount();
+					clickCount += sta.getClickCount();
 					totalMoney = totalMoney.add(sta.getTotalAmount());
 				}
 			}
-			advertisementStatistics.setPositionName("");
+			advertisementStatistics.setPositionName(positionNames.get(posId));
 			advertisementStatistics.setClickCount(clickCount);
-			advertisementStatistics.setExposureCount(exposureCount);
+			advertisementStatistics.setShowCount(showCount);
 			advertisementStatistics.setTotalAmount(totalMoney);
-			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, exposureCount));
+			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, showCount));
 			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
 			resultList.add(advertisementStatistics);
 		}
@@ -597,17 +615,139 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		String showKey = null;
 		String clickKey = null;
 
-		String showCount = null;
-		String clickCount = null;
+		Integer showCount = null;
+		Integer clickCount = null;
+		String clickRate = null;
+		BigDecimal totalAmount = null;
+		BigDecimal unitPrice = new BigDecimal(0);
+
+		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
+
+		List<Long> advertisementIdList = new ArrayList<Long>();
+		List<Long> positions = new ArrayList<Long>();
+		List<Quota> quotaList = new ArrayList<Quota>();
+		List<Advertisement> adList = new ArrayList<Advertisement>();
+		List<AdvertisementStatistics> resutlList = new ArrayList<AdvertisementStatistics>();
+		Map<Long, String> titleMap = new HashMap<Long, String>();
+		Map<Long, String> companyMap = new HashMap<Long, String>();
+		Map<Long, String> positionMap = new HashMap<Long, String>();
+		Map<Long, Advertisement> adMap = new HashMap<Long, Advertisement>();
+
+		titleMap = this.getAdvertisementName();
+		companyMap = this.getAdvertiserName();
+		positionMap = this.getPositionName();
 
 		for (Probability pro : list) {
-			showKey = RedisConstant.getAdvertisementShowCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
-			clickKey = RedisConstant.getAdvertisementClickCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
-			showCount = redisService.get(showKey);
-			showCount = redisService.get(clickKey);
+			if (!positions.contains(pro.getPositionId())) {
+				positions.add(pro.getPositionId());
+			}
 		}
 
-		return null;
+		adMap = advertisementService.selectAdvertisementByIds(advertisementIdList);
+
+		for (Probability pro : list) {
+			advertisementIdList = new ArrayList<Long>();
+			advertisementIdList.add(pro.getAdvertisementId());
+
+			quotaList = quotaService.selectQuotaFromCache((long) 1, pro.getPositionId(), advertisementIdList);
+
+			showKey = RedisConstant.getAdvertisementShowCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
+			clickKey = RedisConstant.getAdvertisementClickCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
+			showCount = Integer.parseInt(redisService.get(showKey));
+			clickCount = Integer.parseInt(redisService.get(clickKey));
+			if (quotaList.get(0) != null) {
+				unitPrice = quotaList.get(0).getUnitPrice();
+			} else {
+				break;
+			}
+			clickRate = NumberUtil.getPercent(clickCount, showCount);
+			totalAmount = unitPrice.multiply(new BigDecimal(clickCount));
+			advertisementStatistics.setTitle(titleMap.get(pro.getAdvertisementId()));
+			advertisementStatistics.setPositionName(positionMap.get(pro.getPositionId()));
+			advertisementStatistics
+					.setCompanyName(adMap.get(pro.getAdvertisementId()).getAdvertiser().getCompanyName());
+			advertisementStatistics.setClickCount(clickCount);
+			advertisementStatistics.setShowCount(showCount);
+			advertisementStatistics.setClickRate(clickRate);
+			advertisementStatistics.setTotalAmount(totalAmount);
+			advertisementStatistics.setDate(date);
+			resutlList.add(advertisementStatistics);
+		}
+
+		return resutlList;
 	}
 
+	public String downStatistics(List<AdvertisementStatistics> list) {
+		String path = null;
+
+		if (list.size() != 0 && list != null) {
+			Map<String, List<List<String>>> sheetMap = new HashMap<String, List<List<String>>>();
+			List<List<String>> rowList = new ArrayList<List<String>>();
+			List<String> columnList = new ArrayList<String>();
+
+			columnList.add("广告名称");
+			columnList.add("广告主名称");
+			columnList.add("时间");
+			columnList.add("曝光量(次)");
+			columnList.add("点击量(次)");
+			columnList.add("点击率");
+			columnList.add("点击均价");
+			columnList.add("总消耗(元)");
+			rowList.add(columnList);
+
+			for (AdvertisementStatistics temp : list) {
+				columnList = new ArrayList<String>();
+
+				columnList.add(temp.getTitle());
+				columnList.add(temp.getCompanyName());
+				columnList.add(temp.getDate());
+				columnList.add(temp.getShowCount().toString());
+				columnList.add(temp.getClickCount().toString());
+				columnList.add(temp.getClickRate());
+				columnList.add(temp.getAvgPrice().toString());
+				columnList.add(temp.getTotalAmount().toString());
+				rowList.add(columnList);
+			}
+			sheetMap.put("sheet1", rowList);
+			try {
+				path = ExcelUtil.createSuffixXlsExcelByMoreSheets(sheetMap, "数据统计表");
+			} catch (Exception e) {
+				LoggerUtil.error("[excel creat error]", e);
+			}
+		}
+		return path;
+	}
+
+	private Map<Long, String> getPositionName() {
+		Map<Long, String> result = new HashMap<Long, String>();
+		List<Position> list = new ArrayList<Position>();
+		Position position = new Position();
+		list = positionService.selectPosition(position, new PageBounds());
+		for (Position pos : list) {
+			result.put(pos.getPositionId(), pos.getName());
+		}
+		return result;
+	}
+
+	private Map<Long, String> getAdvertisementName() {
+		Map<Long, String> result = new HashMap<Long, String>();
+		Advertisement advertisement = new Advertisement();
+		List<Advertisement> list = new ArrayList<Advertisement>();
+		list = advertisementService.selectAdvertisement(advertisement, new PageBounds());
+		for (Advertisement adv : list) {
+			result.put(adv.getAdvertisementId(), adv.getTitle());
+		}
+		return result;
+	}
+
+	private Map<Long, String> getAdvertiserName() {
+		Map<Long, String> result = new HashMap<Long, String>();
+		Advertiser advertiser = new Advertiser();
+		List<Advertiser> list = new ArrayList<Advertiser>();
+		list = advertiserService.selectAdvertiser(advertiser, new PageBounds());
+		for (Advertiser adv : list) {
+			result.put(adv.getAdvertiserId(), adv.getCompanyName());
+		}
+		return result;
+	}
 }

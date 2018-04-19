@@ -7,7 +7,7 @@
 <script>
 	$(document).ready(function(){
 		dataTableConfig.iDisplayLength = 1000;
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertiser.do";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertiserStatisticToday.do";
 		dataTableConfig.columns = [
 			{
 		    	"data": "advertisement.advertiser.advertiserId"
@@ -18,11 +18,11 @@
 		    }, {
 		    	"data": "clickCount"
 		    }, {
-		    	"data": "clickRate
+		    	"data": "clickRate"
 		    }, {
-		    	"data": "avgPrice
+		    	"data": "avgPrice"
 		    }, {
-		    	"data": "totalAmount
+		    	"data": "totalAmount"
 		    }];
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);

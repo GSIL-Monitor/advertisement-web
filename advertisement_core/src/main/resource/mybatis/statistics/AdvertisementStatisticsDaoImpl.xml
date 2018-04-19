@@ -9,7 +9,7 @@
 		<result property="date" column="date" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
-		<result property="exposureCount" column="exposure_count" jdbcType="NUMERIC" />
+		<result property="showCount" column="show_count" jdbcType="NUMERIC" />
 		<result property="clickCount" column="click_count" jdbcType="NUMERIC" />
 		<result property="totalAmount" column="total_amount" jdbcType="NUMERIC" />
 		<result property="downloadCount" column="download_count" jdbcType="NUMERIC" />
@@ -141,16 +141,16 @@
 	<insert id="insertAdvertisementStatistics" parameterType="advertisementStatistics">
 		insert into
 		tb_advertisement_statistics(advertisement_id, date,
-		channel, exposure_count, click_count,
+		channel, show_count, click_count,
 		total_amount, download_count,
 		type, status, create_time,
 		update_time)
 		values
-		(#{advertisementId}, #{date}, #{channel}, #{welfareCount},
-		#{bannerCount},
-		#{tagsCount}, #{downloadCount},
-		#{type},
-		#{status}, sysdate(), sysdate())
+		(#{advertisementId}, #{date}, #{channel}, 
+		#{showCount}, #{clickCount},#{totalAmount},
+		#{downloadCount},
+		#{type},#{status},
+		 sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertisementStatisticsId">
 			SELECT LAST_INSERT_ID()

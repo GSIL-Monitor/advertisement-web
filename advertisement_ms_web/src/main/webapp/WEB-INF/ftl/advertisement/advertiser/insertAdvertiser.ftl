@@ -1,5 +1,6 @@
 
-<#include "core.ftl" />
+<#include "core.ftl" />.
+
 <@htmlHead title="添加${functionTitle}"/>
 <@headerPart />
 <@topHeaderMenu />
@@ -42,49 +43,49 @@
 										<tr>
 											<td>账户名</td>
 											<td>
-												<input type="text" name="description" style="width:60%;"/>
+												<input type="text" name="username" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>
 											<td>密码</td>
 											<td>
-												<input type="text" name="description" style="width:60%;"/>
+												<input type="password" name="password" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>
 											<td>营业执照照片</td>
 											<td>
-												<input type="text" name="description" style="width:60%;"/>
+												<input type="text" name="picture" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>
 											<td>公司营业执照注册号</td>
 											<td>
-												<input type="text" name="description" style="width:60%;"/>
+												<input type="text" name="busineeNumber" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>
 											<td>公司地址</td>
 											<td>
-												<input type="text" name="description" style="width:60%;"/>
+												<input type="text" name="address" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>
 											<td>联系人姓名</td>
 											<td>
-												<input type="text" name="description" style="width:60%;"/>
+												<input type="text" name="name" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>
 											<td>联系人电话</td>
 											<td>
-												<input type="text" name="description" style="width:60%;"/>
+												<input type="text" name="phone" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>
 											<td>联系人微信</td>
 											<td>
-												<input type="text" name="description" style="width:60%;"/>
+												<input type="text" name="wechat" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>
