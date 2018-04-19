@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,8 @@ import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.controller.common.AdminServerController;
+import com.yuanshanbao.ms.model.admin.User;
+import com.yuanshanbao.ms.service.admin.GroupService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -38,16 +41,18 @@ public class AdminAdvertiserController extends PaginationController {
 	private static final String PAGE_UPDATE = "advertisement/advertiser/updateAdvertiser";
 
 	private static final String PAGE_VIEW = "advertisement/advertiser/viewAdvertiser";
-	
+
 	private static final String PAGE_LIST_VIEW = "advertisement/advertiser/listAdvertisementOfAdvertiser";
-	
 
 	@Autowired
 	private AdvertiserService advertiserService;
 
 	@Autowired
 	private AdvertisementService advertisementService;
-	
+
+	@Autowired
+	private GroupService groupService;
+
 	@RequestMapping("/list.do")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
 		return PAGE_LIST;
@@ -70,13 +75,19 @@ public class AdminAdvertiserController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
+	public Object insert(Advertiser advertiser, User user, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
 			validateParameters(advertiser);
+			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+			advertiser.setBindUserName(user.getUsername());
+			user.setPassword(encoder.encodePassword(user.getPassword(), null));
+			user.setProjectId(getProjectId(request));
 			advertiserService.insertAdvertiser(advertiser);
-			AdminServerController.refreshConfirm();
+			userService.insertUser(user);
+			groupService.insertUserGroups(user.getUsername(), new String[] { "002", "002003" });
+			// AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
@@ -152,20 +163,18 @@ public class AdminAdvertiserController extends PaginationController {
 	}
 
 	@RequestMapping("/jump.do")
-	public String jump(String range, Advertiser advertiser, HttpServletRequest request,
-			HttpServletResponse response) {
+	public String jump(String range, Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("advertiserId", advertiser.getAdvertiserId());
 		return PAGE_LIST_VIEW;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/viewAd.do")
-	public Object viewAd(String range, Advertiser advertiser, HttpServletRequest request,
-			HttpServletResponse response) {
-		Map<String,Object> result = new HashMap<String, Object>();
+	public Object viewAd(String range, Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
 		Advertisement advertisement = new Advertisement();
 		advertisement.setAdvertiserId(advertiser.getAdvertiserId());
-		Object resultList = advertisementService.selectAdvertisement(advertisement,getPageBounds(range, request));
+		Object resultList = advertisementService.selectAdvertisement(advertisement, getPageBounds(range, request));
 		PageList pageList = (PageList) resultList;
 		return setPageInfo(request, response, pageList);
 	}

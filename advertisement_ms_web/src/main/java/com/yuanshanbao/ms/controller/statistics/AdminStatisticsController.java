@@ -32,6 +32,8 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.position.service.PositionService;
+import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.Statistics;
 import com.yuanshanbao.dsp.statistics.model.StatisticsStatus;
@@ -59,6 +61,8 @@ public class AdminStatisticsController extends PaginationController {
 	private static final String PAGE_MERCHANT_LIST = "advertisement/statistics/listMerchantStatistics";
 
 	private static final String PAGE_ADVERTISEMENT_LIST = "advertisement/statistics/listAdvertisementStatistics";
+
+	private static final String PAGE_ADVERTISER_LIST = "advertisement/statistics/listAdvertiserStatistics";
 
 	private static final String PAGE_ADVERTISEMENT_CHANNEL_LIST = "advertisement/statistics/listAdvertisementChannelStatistics";
 
@@ -101,6 +105,9 @@ public class AdminStatisticsController extends PaginationController {
 
 	@Autowired
 	private PositionService positionService;
+
+	@Autowired
+	private ProbabilityService probabilityService;
 
 	/**
 	 * 合作方渠道页面窗口
@@ -819,48 +826,109 @@ public class AdminStatisticsController extends PaginationController {
 		tiList.setPaginator(paginator);
 		return setPageInfo(request, response, tiList);
 	}
-	
+
+	@RequestMapping("/list.do")
+	public String statisticList(String range, Statistics statistics, ModelMap modelMap, HttpServletRequest request,
+			HttpServletResponse response) {
+		return PAGE_ADVERTISEMENT_LIST;
+	}
+
+	@RequestMapping("/advertiserList.do")
+	public String advertiserList(String range, Statistics statistics, ModelMap modelMap, HttpServletRequest request,
+			HttpServletResponse response) {
+		return PAGE_ADVERTISER_LIST;
+	}
+
 	@ResponseBody
 	@RequestMapping("/queryStatisticToday.do")
-	public Object queryStatisticToday(String queryChannel, AdvertisementStatistics statistics,HttpServletRequest request, 
-			HttpServletResponse response) {
-		
-		return "";
+	public Object queryStatisticToday(String queryChannel, AdvertisementStatistics statistics,
+			HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		String today = DateUtils.format(new Date(), "yyyy-MM-dd");
+		Probability probability = new Probability();
+		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
+		resultList = advertisementStatisticsService.calculateStatistics(list, today);
+		result.put("data", resultList);
+		return result;
 	}
-	
+
+	@ResponseBody
+	@RequestMapping("/queryAdvertiserStatisticToday.do")
+	public Object queryAdvertiserStatisticToday(String queryChannel, AdvertisementStatistics statistics,
+			HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		String today = DateUtils.format(new Date(), "yyyy-MM-dd");
+		Probability probability = new Probability();
+		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
+		resultList = advertisementStatisticsService.calculateStatistics(list, today);
+		resultList = advertisementStatisticsService.combineDateAndPosition(resultList);
+		result.put("data", resultList);
+		return result;
+	}
+
 	@ResponseBody
 	@RequestMapping("/queryStatisticFromDB.do")
-	public Object queryStatisticFromDB(String queryChannel, AdvertisementStatistics statistics,boolean isAdvertiser,boolean isPosition,
-			boolean isDate,HttpServletRequest request,HttpServletResponse response) {
+	public Object queryStatisticFromDB(String queryChannel, AdvertisementStatistics statistics, boolean isAdvertiser,
+			boolean isPosition, boolean isDate, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<AdvertisementStatistics> list	 = advertisementStatisticsService.selectAdvertisementStatistics(statistics, new PageBounds());
+		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistics(statistics,
+				new PageBounds());
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
-		if(isAdvertiser==false&&isDate==false&&isPosition==false){
+		if (isAdvertiser == false && isDate == false && isPosition == false) {
 			resultList = list;
-		}else{
-			if(isAdvertiser&&isPosition){
+		} else {
+			if (isAdvertiser && isPosition) {
 				resultList = advertisementStatisticsService.combineAdvertiserAndPosition(list);
-			}else if(isDate&&isPosition){
+			} else if (isDate && isPosition) {
 				resultList = advertisementStatisticsService.combineDateAndPosition(list);
-			}else if(isAdvertiser&&isDate){
+			} else if (isAdvertiser && isDate) {
 				resultList = advertisementStatisticsService.combineAdvertiserAndDate(list);
 			}
 		}
 		result.put("date", resultList);
 		return result;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/queryStatisticByAdvertiser.do")
-	public Object queryStatisticByAdvertiser(String queryChannel, AdvertisementStatistics statistics,boolean isAdvertiser,boolean isPosition,
-			boolean isDate,HttpServletRequest request,HttpServletResponse response) {
+	public Object queryStatisticByAdvertiser(String queryChannel, AdvertisementStatistics statistics,
+			boolean isAdvertiser, boolean isPosition, boolean isDate, HttpServletRequest request,
+			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<AdvertisementStatistics> list	 = advertisementStatisticsService.selectAdvertisementStatistics(statistics, new PageBounds());
+		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistics(statistics,
+				new PageBounds());
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
-		
+
 		resultList = advertisementStatisticsService.combineDateAndPosition(list);
 		result.put("date", resultList);
 		return result;
 	}
 
+	@ResponseBody
+	@RequestMapping("/taskSchedule.do")
+	public void taskSchedule(String queryChannel, AdvertisementStatistics statistics, HttpServletRequest request,
+			HttpServletResponse response) {
+		Probability probability = new Probability();
+		Date yesterday = DateUtils.getYesterday();
+		String date = DateUtils.format(yesterday, "yyyy-MM-dd");
+
+		List<Probability> proList = new ArrayList<Probability>();
+		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();
+
+		proList = probabilityService.selectProbabilitys(probability, new PageBounds());
+		result = advertisementStatisticsService.calculateStatistics(proList, date);
+		for (AdvertisementStatistics sta : result) {
+			advertisementStatisticsService.insertAdvertisementStatistics(sta);
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("/download.do")
+	public Object download(boolean isAdvertiser, boolean isDate, boolean isPosition, HttpServletRequest request,
+			HttpServletResponse response) {
+
+		return "";
+	}
 }

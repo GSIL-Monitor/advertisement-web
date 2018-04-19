@@ -6,11 +6,15 @@
 
 	<resultMap id="advertiserMap" type="Advertiser">
 		<id property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
-		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="companyName" column="company_name" jdbcType="VARCHAR" />
+		<result property="phone" column="phone" jdbcType="VARCHAR" />
+		<result property="wechat" column="wechat" jdbcType="VARCHAR" />
+		<result property="address" column="address" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
-		<result property="bindUsername" column="bind_username" jdbcType="VARCHAR" />
+		<result property="bindUserName" column="bind_username" jdbcType="VARCHAR" />
+		<result property="businessNumber" column="business_number" jdbcType="VARCHAR" />
+		<result property="businessPicture" column="business_picture" jdbcType="VARCHAR" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -70,11 +74,12 @@
 
 	<insert id="insertAdvertiser" parameterType="Advertiser">
 		insert into
-		tb_advertiser(project_id, name, company_name, description, 
-		bind_username, status, create_time, update_time)
+		tb_advertiser(name,company_name, phone,wechat,address,
+		 description, bind_username, business_number,business_picture,status, create_time, update_time)
 		values
-		(#{projectId}, #{name}, #{companyName}, #{description},
-		#{bindUsername}, #{status}, sysdate(), sysdate())
+		(#{name}, #{companyName}, #{phone},#{wechat},
+		#{address},#{description},#{bindUserName}, #{businessNumber},
+		#{businessPicture},#{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertiserId">
 			SELECT LAST_INSERT_ID()
