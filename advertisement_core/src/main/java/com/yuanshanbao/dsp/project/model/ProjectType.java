@@ -5,28 +5,26 @@ import java.util.Map;
 
 public class ProjectType {
 
-	protected static Map<Integer, String> typeMap = new LinkedHashMap<Integer, String>();
+	protected static Map<String, String> typeMap = new LinkedHashMap<String, String>();
 
-	public static final Integer INSURANCE = 1;
-	public static final String INSURANCE_DESCRIPTION = "保险";
+	public static final String SHIJIJIAYUAN = "1";
+	public static final String SHIJIJIAYUAN_DESCRIPTION = "jiayuan";
 
-	public static final Integer LOAN = 2;
-	public static final String LOAN_DESCRIPTION = "贷款";
+
 
 	static {
 		initMap();
 	}
 
 	public static void initMap() {
-		typeMap.put(INSURANCE, INSURANCE_DESCRIPTION);
-		typeMap.put(LOAN, LOAN_DESCRIPTION);
+		typeMap.put(SHIJIJIAYUAN_DESCRIPTION, SHIJIJIAYUAN);
 	}
 
-	public static String getLevelValue(Integer code) {
-		return typeMap.get(code);
+	public static String getProjectId(String key) {
+		return typeMap.get(key);
 	}
 
-	public static Map<Integer, String> getLevelMap() {
+	public static Map<String, String> getLevelMap() {
 		return typeMap;
 	}
 }
