@@ -36,7 +36,7 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
-@RequestMapping("/admin/gift")
+@RequestMapping("/admin/advertisement")
 public class AdminAdvertisementController extends PaginationController {
 
 	private static final String PAGE_LIST = "advertisement/advertisement/listAdvertisement";

@@ -77,7 +77,10 @@ public class ConstantsManager {
 	private static Map<String, Location> locationMap = new HashMap<String, Location>();
 	private static Map<String, Location> locationNameMap = new HashMap<String, Location>();
 
-	private static Map<Long, List<Position>> positionMap = new HashMap<Long, List<Position>>();
+	private static Map<Long, Project> projectIdMap = new HashMap<Long, Project>();
+	private static Map<String, Project> projectKeyMap = new HashMap<String, Project>();
+	private static Map<Long, List<Position>> positionListMap = new HashMap<Long, List<Position>>();
+	private static Map<Long, Map<String, Position>> positionKeyMap = new HashMap<Long, Map<String, Position>>();
 	private static Map<Long, List<Advertisement>> advertisementMap = new HashMap<Long, List<Advertisement>>();
 	private static Map<Long, List<Probability>> probabilityMap = new HashMap<Long, List<Probability>>();
 	private static Map<Long, List<Quota>> quotaMap = new HashMap<Long, List<Quota>>();
@@ -109,6 +112,9 @@ public class ConstantsManager {
 
 	@Resource
 	private ChannelService channelService;
+
+	@Resource
+	private ProjectService projectService;
 
 	@Resource
 	private AdvertisementService advertisementService;
@@ -265,6 +271,7 @@ public class ConstantsManager {
 		refreshConstantsTags();
 		refreshLocationMap();
 		refreshConfigs();
+		refreshProject();
 		refreshAdvertisement();
 	}
 
@@ -381,6 +388,18 @@ public class ConstantsManager {
 		LoggerUtil.info("refresh " + (tagsList == null ? 0 : tagsList.size()) + " inis");
 	}
 
+	private void refreshProject() {
+		List<Project> projectList = projectService.selectProjects(new Project(), new PageBounds());
+		Map<Long, Project> tempProjectIdMap = new HashMap<Long, Project>();
+		Map<String, Project> tempProjectKeyMap = new HashMap<String, Project>();
+		for (Project project : projectList) {
+			tempProjectIdMap.put(project.getProjectId(), project);
+			tempProjectKeyMap.put(project.getProjectKey(), project);
+		}
+		projectIdMap = tempProjectIdMap;
+		projectKeyMap = tempProjectKeyMap;
+	}
+
 	private void refreshAdvertisement() {
 		List<Advertisement> advertisementList = advertisementService.selectAdvertisement(new Advertisement(),
 				new PageBounds());
@@ -397,6 +416,7 @@ public class ConstantsManager {
 
 		List<Position> positionList = positionService.selectPosition(new Position(), new PageBounds());
 		Map<Long, List<Position>> tempPositionMap = new HashMap<Long, List<Position>>();
+		Map<Long, Map<String, Position>> tempPositionKeyMap = new HashMap<Long, Map<String, Position>>();
 		for (Position position : positionList) {
 			List<Position> list = tempPositionMap.get(position.getProjectId());
 			if (list == null) {
@@ -404,8 +424,15 @@ public class ConstantsManager {
 				tempPositionMap.put(position.getProjectId(), list);
 			}
 			list.add(position);
+			Map<String, Position> map = tempPositionKeyMap.get(position.getProjectId());
+			if (map == null) {
+				map = new HashMap<String, Position>();
+				tempPositionKeyMap.put(position.getPositionId(), map);
+			}
+			map.put(position.getKey(), position);
 		}
-		positionMap = tempPositionMap;
+		positionListMap = tempPositionMap;
+		positionKeyMap = tempPositionKeyMap;
 
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(new Probability(), new PageBounds());
 		Map<Long, List<Probability>> tempProbabilityMap = new HashMap<Long, List<Probability>>();
@@ -549,12 +576,20 @@ public class ConstantsManager {
 		return null;
 	}
 
+	public static Project getProjectById(Long projectId) {
+		return projectIdMap.get(projectId);
+	}
+
+	public static Project getProjectByKey(String projectKey) {
+		return projectKeyMap.get(projectKey);
+	}
+
 	public static List<Advertisement> getAdvertisementList(Long projectId) {
 		return advertisementMap.get(projectId);
 	}
 
 	public static List<Position> getPositionList(Long projectId) {
-		return positionMap.get(projectId);
+		return positionListMap.get(projectId);
 	}
 
 	public static List<Probability> getProbabilityList(Long projectId) {
@@ -563,5 +598,13 @@ public class ConstantsManager {
 
 	public static List<Quota> getQuotaList(Long projectId) {
 		return quotaMap.get(projectId);
+	}
+
+	public static Position getPositionByKey(Long projectId, String positionKey) {
+		Map<String, Position> map = positionKeyMap.get(projectId);
+		if (map == null) {
+			return null;
+		}
+		return map.get(positionKey);
 	}
 }
