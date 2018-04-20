@@ -28,13 +28,32 @@
                 <tbody>
                  
                   <tr>
-                    <td>广告主描述：</td>
-                    <td>${itemEdit.description}</td>
+                    <td>公司全称：</td>
+                    <td>${itemEdit.companyName}</td>
                   </tr>
-                  
                   <tr>
-                    <td>创建时间：</td>
-                    <td>${itemEdit.createTimeContent}</td>
+                    <td>公司营业执照注册号：</td>
+                    <td>${itemEdit.businessNumber}</td>
+                  </tr>
+                  <tr>
+                    <td>营业执照照片：</td>
+                    <td>${itemEdit.businessPicture}</td>
+                  </tr>
+                  <tr>
+                    <td>公司地址：</td>
+                    <td>${itemEdit.address}</td>
+                  </tr>
+                  <tr>
+                    <td>联系人姓名：</td>
+                    <td>${itemEdit.name}</td>
+                  </tr>
+                  <tr>
+                    <td>手机：</td>
+                    <td>${itemEdit.phone}</td>
+                  </tr>
+                  <tr>
+                    <td>微信号：</td>
+                    <td>${itemEdit.wechat}</td>
                   </tr>
                   
                 </tbody>

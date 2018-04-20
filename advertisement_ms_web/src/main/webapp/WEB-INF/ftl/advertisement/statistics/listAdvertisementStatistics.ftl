@@ -12,13 +12,13 @@
 			{
 		    	"data": "title"
 		    }, {
-		    	"data": "advitiser.companyName"
+		    	"data": "companyName"
 		    }, {
 		    	"data": "positionName"
 		    }, {
-		    	"data": "data"
+		    	"data": "date"
 		    }, {
-		    	"data": "exposureCount"
+		    	"data": "showCount"
 		    }, {
 		    	"data": "clickCount"
 		    }, {
@@ -37,6 +37,7 @@
 		$('#pv').change(function(){
 			reload();
 		});
+		
 		$('#queryButton').on('click', function(){
 			var queryStartTime=$('#createTimeStart').val();
 			var queryEndTime=$('#createTimeEnd').val();
@@ -55,12 +56,12 @@
 			if (isNotEmpty($('#name').val())) {
 				params += "name=" +encodeURI(encodeURI($('#name').val())) + "&";
 			}
-			var url="${rc.contextPath}/admin/${functionName}/download.do?" + params;
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryStatisticFromDB.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
 		
-		$('#queryButton').on('click', function(){
+		$('#downloadButton').on('click', function(){
 			var queryStartTime=$('#createTimeStart').val();
 			var queryEndTime=$('#createTimeEnd').val();
 		
@@ -133,7 +134,7 @@
 								</div>	  
 							</div>
 							<div class="btn-group">
-		            				  <h6>广告主：</h6><input type="checkbox" name="box1" id="isAdvtiser" onClick="countChoices(this)">
+		            				  <h6>广告主：</h6><input type="checkbox" name="box1" id="isAdvertiser" onClick="countChoices(this)">
 		            				  <h6>位置：</h6><input type="checkbox" name="box2" id="isPosition" onClick="countChoices(this)">
 		            				  <h6>日期：</h6><input type="checkbox" name="box3" id="isDate" onClick="countChoices(this)">
 							</div>

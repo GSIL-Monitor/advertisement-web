@@ -124,7 +124,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			return map;
 		}
 		List<Advertisement> list = advertisementDao.selectAdvertisementByIds(advertisementIds);
-		for (Advertisement ad : list) {
+		List<Advertisement> result = setProperty(list);
+		for (Advertisement ad : result) {
 			map.put(ad.getAdvertisementId(), ad);
 		}
 		return map;

@@ -36,8 +36,8 @@ public class AdvertisementStatistics {
 	public AdvertisementStatistics(Long advertisementId) {
 		super();
 		this.advertisementId = advertisementId;
-		this.setShowCount(0);
-		this.setTotalAmount(new BigDecimal(0));
+		this.showCount = 0;
+		this.totalAmount = new BigDecimal(0);
 		this.clickCount = 0;
 		this.downloadCount = 0;
 		this.total = 0;
@@ -45,8 +45,8 @@ public class AdvertisementStatistics {
 
 	public AdvertisementStatistics() {
 		super();
-		this.setShowCount(0);
-		this.setTotalAmount(new BigDecimal(0));
+		this.showCount = 0;
+		this.totalAmount = new BigDecimal(0);
 		this.clickCount = 0;
 		this.downloadCount = 0;
 		this.total = 0;
@@ -144,14 +144,6 @@ public class AdvertisementStatistics {
 		this.advertisement = advertisement;
 	}
 
-	public Long getPositionId() {
-		return positionId;
-	}
-
-	public void setPositionId(Long positionId) {
-		this.positionId = positionId;
-	}
-
 	public String getQueryStartTime() {
 		return queryStartTime;
 	}
@@ -238,6 +230,14 @@ public class AdvertisementStatistics {
 
 	public void setAdvertiserId(Long advertiserId) {
 		this.advertiserId = advertiserId;
+	}
+
+	public Long getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(Long positionId) {
+		this.positionId = positionId;
 	}
 
 }

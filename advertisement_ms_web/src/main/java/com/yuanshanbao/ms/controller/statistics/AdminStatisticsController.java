@@ -887,7 +887,10 @@ public class AdminStatisticsController extends PaginationController {
 				resultList = advertisementStatisticsService.combineAdvertiserAndDate(list);
 			}
 		}
-		result.put("date", resultList);
+		result.put("data", resultList);
+		result.put("draw", request.getParameter("draw"));
+		result.put("recordsTotal", 1000);
+		result.put("recordsFiltered", 1000);
 		return result;
 	}
 
@@ -924,11 +927,31 @@ public class AdminStatisticsController extends PaginationController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@ResponseBody
 	@RequestMapping("/download.do")
-	public Object download(boolean isAdvertiser, boolean isDate, boolean isPosition, HttpServletRequest request,
-			HttpServletResponse response) {
+	public Object download(AdvertisementStatistics statistics, boolean isAdvertiser, boolean isDate,
+			boolean isPosition, HttpServletRequest request, HttpServletResponse response) {
+		String queryChannel = null;
+		Map<String, Object> map = new HashMap<String, Object>();
 
-		return "";
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		Object object = new HashMap<String, Object>();
+
+		List<AdvertisementStatistics> list = new ArrayList<AdvertisementStatistics>();
+		if (statistics.getQueryStartTime() == null && statistics.getQueryEndTime() == null) {
+			object = queryStatisticToday(queryChannel, statistics, request, response);
+			map = (Map<String, Object>) object;
+		} else {
+			object = queryStatisticFromDB(queryChannel, statistics, isAdvertiser, isDate, isPosition, request, response);
+			map = (Map<String, Object>) object;
+		}
+
+		list = (List<AdvertisementStatistics>) map.get("data");
+
+		String path = advertisementStatisticsService.downStatistics(list);
+		result.put("path", path);
+		return result;
 	}
 }

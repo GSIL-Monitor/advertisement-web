@@ -87,7 +87,7 @@ public class AdminAdvertiserController extends PaginationController {
 			advertiserService.insertAdvertiser(advertiser);
 			userService.insertUser(user);
 			groupService.insertUserGroups(user.getUsername(), new String[] { "002", "002003" });
-			// AdminServerController.refreshConfirm();
+			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

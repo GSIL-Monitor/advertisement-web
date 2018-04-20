@@ -10,11 +10,11 @@
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertiserStatisticToday.do";
 		dataTableConfig.columns = [
 			{
-		    	"data": "advertisement.advertiser.advertiserId"
+		    	"data": "advertiserId"
 		    }, {
 		    	"data": "advertisement.advertiser.companyName"
 		    }, {
-		    	"data": "exposureCount"
+		    	"data": "showCount"
 		    }, {
 		    	"data": "clickCount"
 		    }, {

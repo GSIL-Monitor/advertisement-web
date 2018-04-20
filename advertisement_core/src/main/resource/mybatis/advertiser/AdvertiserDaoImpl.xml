@@ -45,8 +45,8 @@
 				<if test="description != null">
 					description like CONCAT(CONCAT('%', #{description}),'%') and
 				</if>
-				<if test="bindUsername != null">
-					bind_username = #{bindUsername} and
+				<if test="bindUserName != null">
+					bind_username = #{bindUserName} and
 				</if>
 				<if test="status != null">
 					status = #{status} and
@@ -99,8 +99,8 @@
 				<if test="description != null">
 					description=#{description},
 				</if>
-				<if test="bindUsername != null">
-					bind_username=#{bindUsername},
+				<if test="bindUserName != null">
+					bind_username=#{bindUserName},
 				</if>
 				<if test="status != null">
 					status=#{status},

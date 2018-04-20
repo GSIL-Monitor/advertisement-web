@@ -8,9 +8,16 @@
 		<id property="advertisementStatisticsId" column="advertisement_statistics_id" jdbcType="NUMERIC" />
 		<result property="date" column="date" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
+		<result property="companyName" column="company_name" jdbcType="VARCHAR" />
+		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
+		<result property="positionName" column="position_name" jdbcType="VARCHAR" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="showCount" column="show_count" jdbcType="NUMERIC" />
 		<result property="clickCount" column="click_count" jdbcType="NUMERIC" />
+		<result property="clickRate" column="click_rate" jdbcType="NUMERIC" />
+		<result property="avgPrice" column="avg_price" jdbcType="NUMERIC" />
 		<result property="totalAmount" column="total_amount" jdbcType="NUMERIC" />
 		<result property="downloadCount" column="download_count" jdbcType="NUMERIC" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
@@ -40,6 +47,12 @@
 				</if>
 				<if test="date != null">
 					date = #{date} and
+				</if>
+				<if test="queryStartTime != null">
+					 date &gt;= #{queryStartTime} and
+				</if>
+				<if test="queryEndTime != null">
+					 date &lt;= #{queryEndTime} and
 				</if>
 				<if test="status != null">
 					status = #{status}
@@ -140,15 +153,17 @@
 	
 	<insert id="insertAdvertisementStatistics" parameterType="advertisementStatistics">
 		insert into
-		tb_advertisement_statistics(advertisement_id, date,
-		channel, show_count, click_count,
-		total_amount, download_count,
-		type, status, create_time,
+		tb_advertisement_statistics(advertisement_id,title, advertiser_id,
+		company_name, position_id,position_name,
+		date,channel, show_count, click_count,
+		total_amount, download_count,click_rate,
+		avg_price,type, status, create_time,
 		update_time)
 		values
-		(#{advertisementId}, #{date}, #{channel}, 
+		(#{advertisementId},#{title},#{advertiserId},#{companyName},
+		 #{positionId}, #{positionName},#{date}, #{channel}, 
 		#{showCount}, #{clickCount},#{totalAmount},
-		#{downloadCount},
+		#{downloadCount},#{clickRate},#{avgPrice},
 		#{type},#{status},
 		 sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"

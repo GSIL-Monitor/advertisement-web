@@ -541,8 +541,8 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 		companyNames = this.getAdvertiserName();
 		for (AdvertisementStatistics statistic : list) {
-			if (!existAdvertiserList.contains(statistic.getAdvertisement().getAdvertiserId())) {
-				existAdvertiserList.add(statistic.getAdvertisement().getAdvertiserId());
+			if (!existAdvertiserList.contains(statistic.getAdvertiserId())) {
+				existAdvertiserList.add(statistic.getAdvertiserId());
 			}
 		}
 		for (Long adverId : existAdvertiserList) {
@@ -551,19 +551,23 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			clickCount = 0;
 			totalMoney = new BigDecimal(0);
 			for (AdvertisementStatistics sta : list) {
-				if (adverId.equals(sta.getAdvertisement().getAdvertiserId())) {
+				if (adverId.equals(sta.getAdvertiserId())) {
 					showCount += sta.getShowCount();
 					clickCount += sta.getClickCount();
 					totalMoney = totalMoney.add(sta.getTotalAmount());
 				}
 			}
-			advertisementStatistics.setAdvertisementId(adverId);
+			advertisementStatistics.setAdvertiserId(adverId);
 			advertisementStatistics.setCompanyName(companyNames.get(adverId));
 			advertisementStatistics.setClickCount(clickCount);
 			advertisementStatistics.setShowCount(showCount);
 			advertisementStatistics.setTotalAmount(totalMoney);
 			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, showCount));
-			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			if (clickCount != 0) {
+				advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			} else {
+				advertisementStatistics.setAvgPrice(totalMoney);
+			}
 			resultList.add(advertisementStatistics);
 
 		}
@@ -641,20 +645,29 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			if (!positions.contains(pro.getPositionId())) {
 				positions.add(pro.getPositionId());
 			}
+			if (!advertisementIdList.contains(pro.getAdvertisementId())) {
+				advertisementIdList.add(pro.getAdvertisementId());
+			}
 		}
 
 		adMap = advertisementService.selectAdvertisementByIds(advertisementIdList);
 
 		for (Probability pro : list) {
 			advertisementIdList = new ArrayList<Long>();
+			showCount = 0;
+			clickCount = 0;
 			advertisementIdList.add(pro.getAdvertisementId());
 
 			quotaList = quotaService.selectQuotaFromCache((long) 1, pro.getPositionId(), advertisementIdList);
 
 			showKey = RedisConstant.getAdvertisementShowCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
 			clickKey = RedisConstant.getAdvertisementClickCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
-			showCount = Integer.parseInt(redisService.get(showKey));
-			clickCount = Integer.parseInt(redisService.get(clickKey));
+			if (redisService.get(showKey) != null) {
+				showCount = Integer.parseInt(redisService.get(showKey));
+			}
+			if (redisService.get(clickKey) != null) {
+				clickCount = Integer.parseInt(redisService.get(clickKey));
+			}
 			if (quotaList.get(0) != null) {
 				unitPrice = quotaList.get(0).getUnitPrice();
 			} else {
@@ -662,7 +675,13 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			}
 			clickRate = NumberUtil.getPercent(clickCount, showCount);
 			totalAmount = unitPrice.multiply(new BigDecimal(clickCount));
+			advertisementStatistics.setAdvertisementId(pro.getAdvertisementId());
+			advertisementStatistics.setAdvertiserId(adMap.get(pro.getAdvertisementId()).getAdvertiser()
+					.getAdvertiserId());
+			advertisementStatistics
+					.setCompanyName(adMap.get(pro.getAdvertisementId()).getAdvertiser().getCompanyName());
 			advertisementStatistics.setTitle(titleMap.get(pro.getAdvertisementId()));
+			advertisementStatistics.setPositionId(pro.getPositionId());
 			advertisementStatistics.setPositionName(positionMap.get(pro.getPositionId()));
 			advertisementStatistics
 					.setCompanyName(adMap.get(pro.getAdvertisementId()).getAdvertiser().getCompanyName());
@@ -670,7 +689,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			advertisementStatistics.setShowCount(showCount);
 			advertisementStatistics.setClickRate(clickRate);
 			advertisementStatistics.setTotalAmount(totalAmount);
+			advertisementStatistics.setAvgPrice(unitPrice);
 			advertisementStatistics.setDate(date);
+			advertisementStatistics.setStatus(1);
 			resutlList.add(advertisementStatistics);
 		}
 
