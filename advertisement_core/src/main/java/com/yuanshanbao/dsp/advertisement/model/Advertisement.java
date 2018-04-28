@@ -17,6 +17,7 @@ public class Advertisement {
 	private String bigImageUrl;
 	private String description;
 	private Integer status;
+	private Integer type;
 	private Timestamp createTime;
 	private Timestamp updateTime;
 
@@ -132,5 +133,17 @@ public class Advertisement {
 
 	public void setAdvertiser(Advertiser advertiser) {
 		this.advertiser = advertiser;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getTypeContent() {
+		return AdvertisementType.getDescription(type);
 	}
 }

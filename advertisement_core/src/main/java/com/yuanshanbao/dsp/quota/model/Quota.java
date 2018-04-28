@@ -65,14 +65,6 @@ public class Quota {
 		this.channel = channel;
 	}
 
-	public Long getAdvertisementId() {
-		return advertisementId;
-	}
-
-	public void setAdvertisementId(Long advertisementId) {
-		this.advertisementId = advertisementId;
-	}
-
 	public Integer getType() {
 		return type;
 	}
@@ -151,6 +143,14 @@ public class Quota {
 
 	public void setAdvertisementIdList(List<Long> advertisementIdList) {
 		this.advertisementIdList = advertisementIdList;
+	}
+
+	public Long getAdvertisementId() {
+		return advertisementId;
+	}
+
+	public void setAdvertisementId(Long advertisementId) {
+		this.advertisementId = advertisementId;
 	}
 
 }

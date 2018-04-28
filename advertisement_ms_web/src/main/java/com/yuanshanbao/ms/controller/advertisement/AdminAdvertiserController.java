@@ -13,10 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
@@ -75,10 +77,14 @@ public class AdminAdvertiserController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(Advertiser advertiser, User user, HttpServletRequest request, HttpServletResponse response) {
+	public Object insert(Advertiser advertiser, User user, MultipartFile image, HttpServletRequest request,
+			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
+			if (image != null && !image.isEmpty()) {
+				advertiser.setBusinessPicture(UploadUtils.uploadFile(image, "file/game"));
+			}
 			validateParameters(advertiser);
 			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
 			advertiser.setBindUserName(user.getUsername());

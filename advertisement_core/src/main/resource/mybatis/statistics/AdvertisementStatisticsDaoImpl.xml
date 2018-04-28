@@ -42,6 +42,9 @@
 				<if test="channel != null">
 					channel = #{channel} and
 				</if>
+				<if test="companyName != null">
+					company_name LIKE CONCAT('%',#{companyName},'%') and
+				</if>
 				<if test="type != null">
 					type = #{type} and
 				</if>

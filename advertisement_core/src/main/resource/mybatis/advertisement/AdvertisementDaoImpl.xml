@@ -15,6 +15,7 @@
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
 		<result property="bigImageUrl" column="big_image_url" jdbcType="VARCHAR" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 	</resultMap>
@@ -54,6 +55,9 @@
 				<if test="status != null">
 					status = #{status} and
 				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
 			</trim>
 			and status != -1
 		</where>
@@ -79,11 +83,11 @@
 		insert into
 		tb_advertisement(project_id, advertiser_id, title, sub_title,
 		link, description,image_url, big_image_url, 
-		status, create_time, update_time)
+		status, type,create_time, update_time)
 		values
 		(#{projectId}, #{advertiserId}, #{title}, #{subTitle},
 		#{link}, #{description}, #{imageUrl}, #{bigImageUrl}, 
-		#{status}, sysdate(), sysdate())
+		#{status}, #{type}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertisementId">
 			SELECT LAST_INSERT_ID()
@@ -120,6 +124,9 @@
 				</if>
 				<if test="status != null">
 					status=#{status},
+				</if>
+				<if test="type != null">
+					type=#{type},
 				</if>
 				update_time=sysdate(),
 			</trim>

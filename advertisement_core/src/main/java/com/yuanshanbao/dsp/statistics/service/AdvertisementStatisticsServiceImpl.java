@@ -654,8 +654,10 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 		for (Probability pro : list) {
 			advertisementIdList = new ArrayList<Long>();
+			advertisementStatistics = new AdvertisementStatistics();
 			showCount = 0;
 			clickCount = 0;
+			unitPrice = new BigDecimal(0);
 			advertisementIdList.add(pro.getAdvertisementId());
 
 			quotaList = quotaService.selectQuotaFromCache((long) 1, pro.getPositionId(), advertisementIdList);
@@ -668,10 +670,8 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			if (redisService.get(clickKey) != null) {
 				clickCount = Integer.parseInt(redisService.get(clickKey));
 			}
-			if (quotaList.get(0) != null) {
+			if (quotaList.size() != 0) {
 				unitPrice = quotaList.get(0).getUnitPrice();
-			} else {
-				break;
 			}
 			clickRate = NumberUtil.getPercent(clickCount, showCount);
 			totalAmount = unitPrice.multiply(new BigDecimal(clickCount));

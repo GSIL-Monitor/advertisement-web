@@ -2,6 +2,8 @@ package com.yuanshanbao.dsp.common.constant;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.cache.IniCache;
 
@@ -128,10 +130,16 @@ public class RedisConstant {
 	}
 
 	public static String getAdvertisementShowCountKey(String date, Long advertisementId, Long positionId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
 		return getCachePrefix(ADVERTISEMENT_SHOW_COUNT, date + "_" + advertisementId + "_" + positionId);
 	}
 
 	public static String getAdvertisementClickCountKey(String date, Long advertisementId, Long positionId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
 		return getCachePrefix(ADVERTISEMENT_CLICK_COUNT, date + "_" + advertisementId + "_" + positionId);
 	}
 

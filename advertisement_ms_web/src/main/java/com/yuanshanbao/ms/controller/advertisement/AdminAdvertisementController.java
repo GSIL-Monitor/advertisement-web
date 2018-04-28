@@ -20,12 +20,13 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementStatus;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
-import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
@@ -62,8 +63,9 @@ public class AdminAdvertisementController extends PaginationController {
 	private QuotaService quotaService;
 
 	@RequestMapping("/list.do")
-	public String list(String advertiserId, HttpServletRequest request, HttpServletResponse response) {
+	public String list(Long advertiserId, HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("advertiserId", advertiserId);
+		setProperty(request, getProjectId(request), advertiserId);
 		return PAGE_LIST;
 	}
 
@@ -95,8 +97,9 @@ public class AdminAdvertisementController extends PaginationController {
 			request.setAttribute("advertiserList", advertiserService.selectAdvertiser(param, new PageBounds()));
 		}
 		request.setAttribute("positionList", ConstantsManager.getPositionList(projectId));
-		request.setAttribute("typeList", QuotaType.getCodeDescriptionMap().entrySet());
-		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("statusList", AdvertisementStatus.getCodeDescriptionMap().entrySet());
 	}
 
 	@ResponseBody
@@ -111,12 +114,14 @@ public class AdminAdvertisementController extends PaginationController {
 			}
 
 			validateParameters(advertisement);
+			String quotaType = request.getParameter("quotaType");
 			advertisement.setProjectId(getProjectId(request));
 			advertisementService.insertAdvertisement(advertisement);
 			probability.setProjectId(getProjectId(request));
 			probability.setAdvertisementId(advertisement.getAdvertisementId());
 			probabilityService.insertProbability(probability);
 			quota.setProjectId(getProjectId(request));
+			quota.setType(Integer.valueOf(quotaType));
 			quota.setAdvertisementId(advertisement.getAdvertisementId());
 			quotaService.insertQuota(quota);
 			AdminServerController.refreshConfirm();
@@ -131,21 +136,36 @@ public class AdminAdvertisementController extends PaginationController {
 	}
 
 	@RequestMapping("/updateWindow.do")
-	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Advertisement advertisement) {
+	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Advertisement advertisement,
+			Probability probability, Quota quota) {
+		String isDisplay = "false";
 		List<Advertisement> list = advertisementService.selectAdvertisement(advertisement, new PageBounds());
+		List<Probability> proList = probabilityService.selectProbabilitys(probability, new PageBounds());
+		List<Quota> quotaList = quotaService.selectQuota(quota, new PageBounds());
 		if (list != null && list.size() >= 0) {
 			advertisement = list.get(0);
 		}
+		if (proList != null && proList.size() == 1) {
+			if (quotaList != null && quotaList.size() == 1) {
+				probability = proList.get(0);
+				quota = quotaList.get(0);
+				isDisplay = "true";
+			}
+		}
+		Long advertiserId = null;
+		request.setAttribute("isDisplay", isDisplay);
+		setProperty(request, getProjectId(request), advertiserId);
 		request.setAttribute("categories", ConfigManager.getCategoryMap());
-		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
 		request.setAttribute("tagsList", ConstantsManager.getTagsList(ConstantsManager.ADVERTISEMENT));
 		request.setAttribute("itemEdit", advertisement);
+		request.setAttribute("probability", probability);
+		request.setAttribute("quota", quota);
 		return PAGE_UPDATE;
 	}
 
 	@ResponseBody
 	@RequestMapping("/update.do")
-	public Object update(Advertisement advertisement, String prizeDesc,
+	public Object update(Advertisement advertisement, String prizeDesc, Probability probability, Quota quota,
 			@RequestParam(value = "smallImage", required = false) MultipartFile smallImage,
 			@RequestParam(value = "bigImage", required = false) MultipartFile bigImage,
 			@RequestParam(value = "image", required = false) MultipartFile image, HttpServletRequest request,
@@ -159,6 +179,8 @@ public class AdminAdvertisementController extends PaginationController {
 			}
 			validateParameters(advertisement);
 			advertisementService.updateAdvertisement(advertisement);
+			probabilityService.updateProbability(probability);
+			quotaService.updateQuota(quota);
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -181,7 +203,7 @@ public class AdminAdvertisementController extends PaginationController {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			Advertisement advertisement = new Advertisement();
-			advertisement.setStatus(CommonStatus.OFFLINE);
+			advertisement.setStatus(AdvertisementStatus.DELETE);
 			advertisement.setAdvertisementId(advertisementId);
 			advertisementService.updateAdvertisement(advertisement);
 
@@ -204,4 +226,30 @@ public class AdminAdvertisementController extends PaginationController {
 		return PAGE_VIEW;
 	}
 
+	@ResponseBody
+	@RequestMapping("/updateStatus.do")
+	public Object updateStatus(Long advertisementId, HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		try {
+
+			if (advertisementId == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Advertisement advertisement = new Advertisement();
+			advertisement.setAdvertisementId(advertisementId);
+			advertisement = advertisementService.selectAdvertisement(advertisement);
+			if (advertisement.getStatus() == 1) {
+				advertisement.setStatus(AdvertisementStatus.OFFLINE);
+			} else if (advertisement.getStatus() == 2) {
+				advertisement.setStatus(AdvertisementStatus.ONLINE);
+			}
+			advertisementService.updateAdvertisement(advertisement);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		}
+
+		return result;
+	}
 }

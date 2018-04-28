@@ -41,13 +41,13 @@ import com.yuanshanbao.paginator.domain.PageList;
 @RequestMapping("/admin/strategy")
 public class AdminAdvertisementStrategyController extends PaginationController {
 
-	private static final String PAGE_LIST = "insurance/strategy/listStrategy";
+	private static final String PAGE_LIST = "advertisement/strategy/listStrategy";
 
-	private static final String PAGE_INSERT = "insurance/strategy/insertStrategy";
+	private static final String PAGE_INSERT = "advertisement/strategy/insertStrategy";
 
-	private static final String PAGE_UPDATE = "insurance/strategy/updateStrategy";
+	private static final String PAGE_UPDATE = "advertisement/strategy/updateStrategy";
 
-	private static final String PAGE_VIEW = "insurance/strategy/viewStrategy";
+	private static final String PAGE_VIEW = "advertisement/strategy/viewStrategy";
 
 	@Autowired
 	private AdvertisementStrategyService strategyService;

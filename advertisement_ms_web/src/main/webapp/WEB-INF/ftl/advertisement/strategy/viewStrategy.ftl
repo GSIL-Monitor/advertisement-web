@@ -1,3 +1,4 @@
+
 <#include "core.ftl" />
 <@htmlHead title="${itemEdit.typeContent}${functionTitle}详情"/>
 <@headerPart />

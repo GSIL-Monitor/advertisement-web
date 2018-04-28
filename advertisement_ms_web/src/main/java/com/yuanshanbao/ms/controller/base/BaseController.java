@@ -7,13 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.yuanshanbao.dsp.common.constant.ConstantsManager;
-import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.common.constant.SystemConstants;
 import com.yuanshanbao.common.exception.BusinessException;
+import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.validator.util.ValidatorModel;
 import com.yuanshanbao.common.validator.util.ValidatorUtils;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.ms.model.admin.User;
 import com.yuanshanbao.ms.service.admin.AdminUserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -44,6 +47,9 @@ public class BaseController {
 
 	@Autowired
 	protected ProjectService projectService;
+
+	@Autowired
+	protected AdvertiserService advertiserService;
 
 	protected String getSuccessHtml(String msg) {
 		return SystemConstants.HTML_SUCCESS.replace("#msg#", msg);
@@ -84,5 +90,33 @@ public class BaseController {
 
 	protected Long getProjectId(HttpServletRequest request) {
 		return ConstantsManager.getProjectId(projectService, request);
+	}
+
+	protected Advertiser getBindStaffByUser() {
+		User user = null;
+
+		Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (obj == null || !(obj instanceof User)) {
+			if ("dev".equals(CommonUtil.getEnvironment())) {
+				Advertiser advertiser = new Advertiser();
+				advertiser.setBindUserName("admin");
+				advertiser.setProjectId(1L);
+				List<Advertiser> advertiserList = advertiserService.selectAdvertiser(advertiser, new PageBounds());
+				if (advertiserList != null && advertiserList.size() > 0) {
+					return advertiserList.get(0);
+				}
+			}
+			return null;
+		}
+		user = (User) obj;
+		Advertiser advertiser = new Advertiser();
+		advertiser.setBindUserName(user.getUsername());
+		advertiser.setProjectId(user.getProjectId());
+		List<Advertiser> advertiserList = advertiserService.selectAdvertiser(advertiser, new PageBounds());
+		if (advertiserList != null && advertiserList.size() > 0) {
+			return advertiserList.get(0);
+		}
+		return null;
 	}
 }

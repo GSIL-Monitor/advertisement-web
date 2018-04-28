@@ -14,7 +14,7 @@
 		    }, {
 		    	"data": "companyName"
 		    }, {
-		    	"data": "status"
+		    	"data": "statusValue"
 		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
@@ -34,7 +34,7 @@
 		
 		$('#queryButton').on('click', function(){
 			var searchText=$('#search').val();
-			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?description="+encodeURI(encodeURI(searchText));
+			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?companyName="+encodeURI(encodeURI(searchText));
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
@@ -52,9 +52,9 @@
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
 						<h5>数据表格</h5>
-						<div style="float:right;margin:3px 8px 10px 0">
-							<input type="text" name="search" id="search" placeholder="名称查询"/>
-							<input type="button" class="btn btn-green" value="查询" style="float:right;margin:0px 0px 10px 3px" id="queryButton"/>
+						<div class="filter-box">
+							<input type="text" name="search" id="search" placeholder="公司名称"/>
+							<input type="button" class="btn btn-green" value="查询" id="queryButton"/>
 						</div>
 					</div>
 					<div class="widget-content nopadding">

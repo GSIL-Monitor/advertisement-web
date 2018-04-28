@@ -24,7 +24,7 @@
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
 									<tr>
-										<td style="width:20%;">广告主：</td>
+										<td style="width:20%;">广告主描述：</td>
 										<td>
 										<#if advertiser??>
 											${advertiser.description}
@@ -33,7 +33,7 @@
 											<div style="width:60%;">
 												<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
 													<#list advertiserList as advertiser>
-														<option value="${advertiser.advertiserId}">${advertiser.companyName}</option>
+														<option value="${advertiser.advertiserId}">${advertiser.name}</option>
 													</#list>
 												</select>
 											</div>
@@ -103,18 +103,6 @@
 										<td>数量：</td>
 										<td>
 											<input type="text" name="count" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td>收費方式：</td>
-										<td>
-											<div style="width:60%;">
-												<select name="quotaType" class="selectpicker form-control">
-													<#list quotaTypeList as type>
-														<option value="${type.key}">${type.value}</option>
-													</#list>
-												</select>
-											</div>
 										</td>
 									</tr>
 									<tr>

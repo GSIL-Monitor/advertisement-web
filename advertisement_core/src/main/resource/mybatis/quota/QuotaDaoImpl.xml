@@ -40,6 +40,9 @@
 				<if test="positionId != null">
 					position_id = #{positionId} and
 				</if>
+				<if test="advertisementId != null">
+					advertisement_id = #{advertisementId} and
+				</if>
 				<if test="channel != null">
 					channel = #{channel} and
 				</if>

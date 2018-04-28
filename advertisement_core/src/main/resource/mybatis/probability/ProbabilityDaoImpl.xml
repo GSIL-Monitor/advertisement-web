@@ -33,8 +33,11 @@
 				<if test="projectId != null">
 					project_id = #{projectId} and
 				</if>
-				<if test="activityId != null">
-					activity_id = #{activityId} and
+				<if test="projectId != null">
+					project_id = #{projectId} and
+				</if>
+				<if test="advertisementId != null">
+					advertisement_id = #{advertisementId} and
 				</if>
 				<if test="positionId != null">
 					position_id = #{positionId} and

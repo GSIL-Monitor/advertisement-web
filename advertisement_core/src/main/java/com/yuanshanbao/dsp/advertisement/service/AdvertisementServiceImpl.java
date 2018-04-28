@@ -307,7 +307,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		result.put("total", advertisements.size());
 		result.put("use", advertisements.size() - count);
 		result.put("down", count);
-		return null;
+		return result;
 	}
 
 	private void recordAdvertisementCount(Long projectId, Long positionId, List<Long> advertisementIdList,

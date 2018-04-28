@@ -55,7 +55,7 @@
 										<tr>
 											<td>营业执照照片</td>
 											<td>
-												<input type="text" name="picture" style="width:60%;"/>
+												<input type="file" name="image" style="width:60%;"/>
 											</td>
 										</tr>
 										<tr>

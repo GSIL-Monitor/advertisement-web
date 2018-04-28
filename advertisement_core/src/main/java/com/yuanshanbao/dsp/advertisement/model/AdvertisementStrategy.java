@@ -18,6 +18,7 @@ public class AdvertisementStrategy {
 	private Double percent;
 	private Integer sort;
 	private Integer status;
+	private Integer flag;
 	private Timestamp createTime;
 	private Timestamp updateTime;
 
@@ -152,39 +153,35 @@ public class AdvertisementStrategy {
 	public String toString() {
 		return "AdvertisementStrategy [strategyId=" + advertisementStrategyId + "]";
 	}
-	
+
 	public boolean judge(Long activityId, String channel) {
-		/*if (activityId == null && StringUtil.isBlank(channel)) {
-			return true;
-		}
-		try {
-			if (type != null && type.equals(AdvertisementStrategyType.AGE)) {
-				String[] ages = value.split("-");
-				if (ages.length < 2) {
-					return false;
-				}
-				int min = Integer.valueOf(ages[0]);
-				int max = Integer.valueOf(ages[1]);
-				int age = insurant.getAge();
-				if (age < min || age > max) {
-					return false;
-				}
-			}
-			if (type != null && type.equals(AdvertisementStrategyType.REGION) && StringUtils.isNotBlank(value)) {
-				// 如果省不为空，并且value不包含省的话，判断市是否包含
-				if (StringUtils.isNotBlank(insurant.getProvince()) && !value.contains(insurant.getProvince())) {
-					// 如果市为空，省不相等就返回false，如果市不为空，但value不包含市，也返回错误
-					if (StringUtils.isBlank(insurant.getCity()) || !value.contains(insurant.getCity())) {
-						return false;
-					}
-				}
-			}
-			return true;
-		} catch (BusinessException e) {
-			LoggerUtil.error("selectAdvertisementStrategy error :", e);
-			return true;
-		}*/
+		/*
+		 * if (activityId == null && StringUtil.isBlank(channel)) { return true;
+		 * } try { if (type != null &&
+		 * type.equals(AdvertisementStrategyType.AGE)) { String[] ages =
+		 * value.split("-"); if (ages.length < 2) { return false; } int min =
+		 * Integer.valueOf(ages[0]); int max = Integer.valueOf(ages[1]); int age
+		 * = insurant.getAge(); if (age < min || age > max) { return false; } }
+		 * if (type != null && type.equals(AdvertisementStrategyType.REGION) &&
+		 * StringUtils.isNotBlank(value)) { // 如果省不为空，并且value不包含省的话，判断市是否包含 if
+		 * (StringUtils.isNotBlank(insurant.getProvince()) &&
+		 * !value.contains(insurant.getProvince())) { //
+		 * 如果市为空，省不相等就返回false，如果市不为空，但value不包含市，也返回错误 if
+		 * (StringUtils.isBlank(insurant.getCity()) ||
+		 * !value.contains(insurant.getCity())) { return false; } } } return
+		 * true; } catch (BusinessException e) {
+		 * LoggerUtil.error("selectAdvertisementStrategy error :", e); return
+		 * true; }
+		 */
 		return true;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
 	}
 
 }

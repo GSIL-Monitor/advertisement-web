@@ -57,7 +57,7 @@
 				<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}&type=6" target="_blank"><button class="btn btn-green">添加产品${functionTitle}</button></a></span>
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
-						<h5>数据表格</h5>
+						<h5>广告列表</h5>
 						<div style="float:right;margin:3px 8px 10px 0">
 							<input type="text" name="search" id="search" placeholder="名称查询"/>
 							<input type="button" class="btn btn-green" value="查询" style="float:right;margin:0px 0px 10px 3px" id="queryButton"/>

@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.quota.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +12,14 @@ import org.springframework.stereotype.Service;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.quota.dao.QuotaDao;
 import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
+import com.yuanshanbao.dsp.statistics.service.AdvertisementStatisticsService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -21,6 +27,12 @@ public class QuotaServiceImpl implements QuotaService {
 
 	@Autowired
 	private QuotaDao quotaDao;
+
+	@Autowired
+	private RedisService redisService;
+
+	@Autowired
+	private AdvertisementStatisticsService advertisementStatisticsService;
 
 	@Override
 	public void insertQuota(Quota quota) {
@@ -108,4 +120,34 @@ public class QuotaServiceImpl implements QuotaService {
 		return resultList;
 	}
 
+	public List<Long> isHide(List<Quota> list) {
+		List<Long> advertisementIdList = new ArrayList<Long>();
+		return advertisementIdList;
+	}
+
+	private boolean isOverTime(Quota quota) {
+		Date nowDate = new Date();
+		Date startTime = quota.getStartTime();
+		Date endTime = quota.getEndTime();
+		if (DateUtils.compareDate(nowDate, endTime) < 0 && DateUtils.compareDate(nowDate, startTime) > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private boolean isOverClickCount(Quota quota) {
+		Long advertisementId = quota.getAdvertisementId();
+		Long positionId = quota.getPositionId();
+		Integer count = 0;
+		String key = RedisConstant.getAdvertisementClickCountKey(null, advertisementId, positionId);
+		if (key != null) {
+			count = Integer.valueOf(redisService.get(key));
+		}
+		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
+		advertisementStatistics.setAdvertisementId(advertisementId);
+		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistics(
+				advertisementStatistics, new PageBounds());
+		return true;
+	}
 }

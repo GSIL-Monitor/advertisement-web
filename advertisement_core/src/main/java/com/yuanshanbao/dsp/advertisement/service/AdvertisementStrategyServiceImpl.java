@@ -5,18 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jsoup.helper.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.util.StringUtils;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementStrategyDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.FunctionService;
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -113,25 +114,23 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return null;
 	}
 
-	/*@Override
-	public List<AdvertisementStrategy> selectAdvertisementStrategy(Long activityId, String channel) {
-		List<AdvertisementStrategy> adList = new ArrayList<AdvertisementStrategy>();
-
-		if (activityId == null && StringUtil.isBlank(channel)) {
-			return adList;
-		}
-
-		AdvertisementStrategy param = new AdvertisementStrategy();
-		List<AdvertisementStrategy> list = selectAdvertisementStrategy(param, new PageBounds());
-
-		for (AdvertisementStrategy strategy : list) {
-			if (strategy.judge(activityId, channel)) {
-				adList.add(strategy);
-			}
-		}
-
-		return adList;
-	}*/
+	/*
+	 * @Override public List<AdvertisementStrategy>
+	 * selectAdvertisementStrategy(Long activityId, String channel) {
+	 * List<AdvertisementStrategy> adList = new
+	 * ArrayList<AdvertisementStrategy>();
+	 * 
+	 * if (activityId == null && StringUtil.isBlank(channel)) { return adList; }
+	 * 
+	 * AdvertisementStrategy param = new AdvertisementStrategy();
+	 * List<AdvertisementStrategy> list = selectAdvertisementStrategy(param, new
+	 * PageBounds());
+	 * 
+	 * for (AdvertisementStrategy strategy : list) { if
+	 * (strategy.judge(activityId, channel)) { adList.add(strategy); } }
+	 * 
+	 * return adList; }
+	 */
 
 	@Override
 	public Map<Long, List<AdvertisementStrategy>> selectStrategyByFunctionIds(List<Long> functionIds) {
@@ -151,4 +150,95 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		}
 		return map;
 	}
+
+	public List<Probability> avilalabeList(int age, String province, String city) {
+
+		List<Probability> probabilityList = new ArrayList<Probability>();
+		List<Probability> ageList = new ArrayList<Probability>();
+		List<Probability> regionList = new ArrayList<Probability>();
+		List<Probability> resultList = new ArrayList<Probability>();
+		List<AdvertisementStrategy> strategyList = new ArrayList<AdvertisementStrategy>();
+
+		// 符合年龄的广告
+		for (Probability pro : probabilityList) {
+			for (AdvertisementStrategy strategy : strategyList) {
+				if (strategy.getAdvertisementId().equals(pro.getAdvertisementId())
+						&& strategy.getType().equals(AdvertisementStrategyType.AGE)) {
+					// 首先判断年龄
+					if (judgeAge(strategy.getValue(), age)) {
+						ageList.add(pro);
+					}
+
+				} else {
+					continue;
+				}
+			}
+		}
+
+		// 符合地域限制的广告
+		for (Probability pro : probabilityList) {
+			// 判断地域
+			for (AdvertisementStrategy strategy : strategyList) {
+				if (strategy.getAdvertisementId().equals(pro.getAdvertisementId())
+						&& strategy.getType().equals(AdvertisementStrategyType.REGION)) {
+					if (strategy.getFlag() == 1) {
+						if (judgeRegionForDisplay(strategy.getValue(), province, city)) {
+							regionList.add(pro);
+						}
+					} else if (strategy.getFlag() == 0) {
+						if (judgeRegionForDisplay(strategy.getValue(), province, city)) {
+							continue;
+						} else {
+							regionList.add(pro);
+						}
+					}
+				}
+			}
+		}
+		ageList.retainAll(regionList);
+		resultList = ageList;
+		List<Long> hasStrategyList = new ArrayList<Long>();
+		// 获取已经配置过策略的广告
+		for (AdvertisementStrategy strategy : strategyList) {
+			if (!hasStrategyList.contains(strategy.getAdvertisementId())) {
+				hasStrategyList.add(strategy.getAdvertisementId());
+			}
+		}
+		// 若没有配置过广告策略，则不进行屏蔽
+		for (Probability pro : probabilityList) {
+			if (!hasStrategyList.contains(pro.getAdvertisementId())) {
+				resultList.add(pro);
+			}
+		}
+		return resultList;
+	}
+
+	// 配置了该城市就显示
+	private boolean judgeRegionForDisplay(String value, String province, String city) {
+		if (StringUtils.isNotBlank(province)) {
+			if (!value.contains(province)) {
+				// 如果市为空，省不相等就返回false，如果市不为空，但value不包含市，也返回错误
+				if (StringUtils.isBlank(city) || !value.contains(city)) {
+					return false;
+				}
+			}
+		} else {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean judgeAge(String value, int age) {
+		String[] ages = value.split("-");
+		if (ages.length < 2) {
+			return false;
+		}
+		int min = Integer.valueOf(ages[0]);
+		int max = Integer.valueOf(ages[1]);
+		if (age < min || age > max) {
+			return false;
+		}
+		return true;
+	}
+
 }

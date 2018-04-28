@@ -1,7 +1,31 @@
+
 <#include "core.ftl" />
 <@htmlHead title="${functionTitle}列表"/>
 <@sideBar />
 <script>
+	function change(id,status){
+			var url = "";
+			var message = "";
+			if(status=="投放中"){
+				message="您确认将状态更改为未投放吗";
+				url = "${rc.contextPath}/admin/${functionName}/updateStatus.do?${functionId}="+id;
+			}else if(status=="未投放"){
+				message="您确认将状态更改为投放吗";
+				url = "${rc.contextPath}/admin/${functionName}/updateStatus.do?${functionId}="+id;
+			}
+			var r=confirm(message);
+			if(r==true){
+				$.ajax({
+	                type: "POST",
+	                dataType: "json",
+	                url: url,
+	                data: "",
+	                success: function (data) {
+	                	alert("修改成功");
+					}
+            	});
+			}
+		}
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
 		dataTableConfig.columns = [{
@@ -16,10 +40,21 @@
 		    	"data": "typeContent"	
 		    }, {
 		    	"data": "statusValue"
+		    },   {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
+		        	if(data.statusValue =="投放中"){
+		            	return "<a href='javascript:;' onclick=\"change('"+data.advertisementId+"','"+data.statusValue+"')\" class='btn btn-red' target='_blank'>下线</a>";
+		        	}else if(data.statusValue =="未投放"){
+		        		return "<a href='javascript:;' onclick=\"change('"+data.advertisementId+"','"+data.statusValue+"')\" class='btn btn-cyan' target='_blank'>投放</a>";
+		        	}else if(data.statusValue =="失效"){
+		        		return "<a href='javascript:;'  class='btn btn-cyan' target='_blank'>投放</a>";
+		        	}
+		        }
 		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/view.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
+		            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",
@@ -31,11 +66,18 @@
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
 		
 		$('#queryButton').on('click', function(){
-			var searchText=$('#search').val();
-			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?title="+encodeURI(encodeURI(searchText));
+			var params = "";
+			if (isNotEmpty($('#advertiserId').val())) {
+				params += "advertiserId=" + encodeURI(encodeURI($('#advertiserId').val())) + "&";
+			}
+			if (isNotEmpty($('#title').val())) {
+				params += "title=" + encodeURI(encodeURI($('#title').val())) + "&";
+			}
+			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
+		
 	});
 </script>
 <div id="content">
@@ -54,6 +96,46 @@
         <div class="widget-box">
           	<div class="widget-title"></span>
             	<h5>${functionTitle}列表</h5>
+            	<div class="filter-box">
+					<div class="btn-group">
+            			<div class="filter-component">
+							<h6>广告名称：</h6>
+							<input type="text" name="title" id="title" placeholder="输入广告名称" />
+						</div>	  
+					</div>
+					<div class="btn-group">
+            			<div style="width:60%;">
+							<h6>广告主名称：</h6>
+							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+								<#list advertiserList as advertiser>
+									<option value="${advertiser.advertiserId}">${advertiser.name}</option>
+								</#list>
+							</select>
+						</div>
+					</div>
+					<div class="btn-group">
+            			<div style="width:60%;">
+							<h6>广告类型：</h6>
+							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+								<#list typeList as type>
+									<option value="${type.key}">${type.value}</option>
+								</#list>
+							</select>
+						</div>
+					</div>
+					<div class="btn-group">
+            			<div style="width:60%;">
+							<h6>广告状态：</h6>
+							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+								<#list statusList as status>
+									<option value="${status.key}">${status.value}</option>
+								</#list>
+							</select>
+						</div>
+					</div>
+					<div class="btn btn-green" id="queryButton">确定</div>
+					<div class="btn btn-white" id="queryReset">重置</div>
+				</div>
           	</div>
 			<div class="widget-content nopadding">
 				<table class="table table-bordered data-table" id="dataTable">
@@ -65,8 +147,9 @@
 							<th>上线日期</th>
 							<th>广告类型</th>
 							<th>状态</th>
-							<th>配置</th>
 							<th>操作</th>
+							<th>配置</th>
+							<th>删除</th>
 						</tr>
 					</thead>
 					<tbody>
