@@ -20,11 +20,11 @@ import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
-import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.project.model.Project;
 import com.yuanshanbao.dsp.project.service.ProjectService;
+import com.yuanshanbao.ms.controller.base.BaseController;
 
 @RequestMapping({ "/index" })
 @Controller
@@ -38,8 +38,8 @@ public class IndexAdvertisementController extends BaseController {
 	@RequestMapping("/{projectKey}/advertisement")
 	@ResponseBody
 	public Object getAdvertisements(HttpServletRequest request, HttpServletResponse response, String userId,
-			String appId, String moblileLocation, String gender, String age, String deviceType, String deviceId, String mac,
-			String coordinate, String positionKey, @PathVariable("projectKey") String projectKey) {
+			String appId, String moblileLocation, String gender, String age, String deviceType, String deviceId,
+			String mac, String coordinate, String positionKey, @PathVariable("projectKey") String projectKey) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Project project = ConstantsManager.getProjectByKey(projectKey);
@@ -49,9 +49,9 @@ public class IndexAdvertisementController extends BaseController {
 					List<Advertisement> resultAdList = advertisementService.getAdvertisement(project.getProjectId(),
 							position.getPositionId());
 					resultMap.put("advertisementList", resultAdList);
-				}	
+				}
 			}
-			
+
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
 		} catch (BusinessException e) {
@@ -62,7 +62,7 @@ public class IndexAdvertisementController extends BaseController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 
-		return resultMap;		
+		return resultMap;
 	}
 
 	// 广告点击
@@ -75,7 +75,7 @@ public class IndexAdvertisementController extends BaseController {
 			if (ValidateUtil.isNumber(advertisementId)) {
 				advertisementService.increaseAdvertisementCount(Long.parseLong(advertisementId));
 			}
-			
+
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
 		} catch (BusinessException e) {
