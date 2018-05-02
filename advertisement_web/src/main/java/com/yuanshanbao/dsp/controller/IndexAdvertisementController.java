@@ -38,7 +38,7 @@ public class IndexAdvertisementController extends BaseController {
 	@RequestMapping("/{projectKey}/advertisement")
 	@ResponseBody
 	public Object getAdvertisements(HttpServletRequest request, HttpServletResponse response, String userId,
-			String appId, String moblileLocation, String gender, String age, String deviceType, String idfa, String mac,
+			String appId, String moblileLocation, String gender, String age, String deviceType, String deviceId, String mac,
 			String coordinate, String positionKey, @PathVariable("projectKey") String projectKey) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
@@ -75,7 +75,7 @@ public class IndexAdvertisementController extends BaseController {
 			if (ValidateUtil.isNumber(advertisementId)) {
 				advertisementService.increaseAdvertisementCount(Long.parseLong(advertisementId));
 			}
-
+			
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
 		} catch (BusinessException e) {
