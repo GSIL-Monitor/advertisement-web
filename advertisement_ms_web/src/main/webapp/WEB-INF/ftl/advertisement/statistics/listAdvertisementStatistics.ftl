@@ -131,6 +131,7 @@
 								<tr>
 									<th></th>
 									<th></th>
+									<th></th>
 								</tr>
 								<tr>
 									<td>
@@ -145,14 +146,22 @@
 											<input type="text" name="name" id="name" placeholder="搜索姓名" />
 										</div>	 
 									</td>
+									<td>
+										<div class="filter-component">
+											<h6>位置：</h6>
+											<input type="text" name="name" id="name" placeholder="搜索位置" />
+										</div>	 
+									</td>
 								</tr>
 								<tr>
 									<td>
 				            			<div class="btn-group">
-				            				  <h6>广告主：</h6><input type="checkbox" name="box1" id="isAdvertiser" onClick="countChoices(this)">
-				            				  <h6>位置：</h6><input type="checkbox" name="box2" id="isPosition" onClick="countChoices(this)">
-				            				  <h6>日期：</h6><input type="checkbox" name="box3" id="isDate" onClick="countChoices(this)">
+				            				  <h6>合并广告主：</h6><input type="checkbox" name="box1" id="isAdvertiser" onClick="countChoices(this)">
+				            				  <h6>合并位置：</h6><input type="checkbox" name="box2" id="isPosition" onClick="countChoices(this)">
+				            				  <h6>合并日期：</h6><input type="checkbox" name="box3" id="isDate" onClick="countChoices(this)">
 										</div>
+									</td>
+									<td>
 									</td>
 									<td>
 										<div class="btn btn-green" id="queryButton">确定</div>

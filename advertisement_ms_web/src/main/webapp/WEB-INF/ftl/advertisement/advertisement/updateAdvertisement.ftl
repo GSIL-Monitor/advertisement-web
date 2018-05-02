@@ -19,6 +19,8 @@
 			<div class="row-fluid">
 				<form action="${rc.contextPath}/admin/${functionName}/update.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
 					<input type="hidden" name="${functionId}" value="${itemEdit.advertisementId?c}"/>
+					<input type="hidden" name="quotaId" value="${quota.quotaId?c}"/>
+					<input type="hidden" name="probabilityId" value="${probability.probabilityId?c}"/>
 					<input type="hidden" name="type" value="${itemEdit.type}" />
 					<div class="span12">
 						<div class="widget-box">
@@ -111,12 +113,12 @@
 									<tr>
 										<td>开始时间：</td>
 										<td>
-											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;" value="${itemEdit.startTimeValue}"></td>
+											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;" value="${quota.startTimeValue}"></td>
 									</tr>
 									<tr>
 										<td>结束时间：</td>
 										<td>
-											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;" value="${itemEdit.endTimeValue}"></td>
+											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;" value="${quota.endTimeValue}"></td>
 									</tr>
 									<tr>
 										<td>数量：</td>
@@ -170,6 +172,34 @@
 			</div>
 	</div>
 </div>
+<script>
+	$(function() {
+		timer('#startTimeValue');
+		$('#startTimeValue').datetimepicker({
+			maxDate:0,
+			onShow:function( ct ){
+				this.setOptions({
+					maxDate:$('#endTimeValue').val()?$('#endTimeValue').val():false
+				})
+			},
+			step: 15,
+			defaultTime: '08:00',
+			format:'Y-m-d H:i'
+		});
+		timer('#endTimeValue');
+		$('#endTimeValue').datetimepicker({
+			minDate:0,
+			onShow:function( ct ){
+				this.setOptions({
+					minDate:$('#startTimeValue').val()?$('#startTimeValue').val():false
+				})
+			},
+			step: 15,
+			defaultTime: '08:00',
+			format:'Y-m-d H:i'
+		});
+	});
+</script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
 <@footPart />
 <@htmlFoot />

@@ -850,6 +850,9 @@ public class AdminStatisticsController extends PaginationController {
 		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
 		resultList = advertisementStatisticsService.calculateStatistics(list, today);
 		result.put("data", resultList);
+		result.put("draw", request.getParameter("draw"));
+		result.put("recordsTotal", 1000);
+		result.put("recordsFiltered", 1000);
 		return result;
 	}
 
@@ -865,6 +868,9 @@ public class AdminStatisticsController extends PaginationController {
 		resultList = advertisementStatisticsService.calculateStatistics(list, today);
 		resultList = advertisementStatisticsService.combineDateAndPosition(resultList);
 		result.put("data", resultList);
+		result.put("draw", request.getParameter("draw"));
+		result.put("recordsTotal", 1000);
+		result.put("recordsFiltered", 1000);
 		return result;
 	}
 

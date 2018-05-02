@@ -3,29 +3,33 @@
 <@htmlHead title="${functionTitle}列表"/>
 <@sideBar />
 <script>
+	function reload() {
+		var newUrl="${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
+		dataTable.ajax.url(newUrl);
+		dataTable.ajax.reload();
+	}
 	function change(id,status){
-			var url = "";
-			var message = "";
-			if(status=="投放中"){
-				message="您确认将状态更改为未投放吗";
-				url = "${rc.contextPath}/admin/${functionName}/updateStatus.do?${functionId}="+id;
-			}else if(status=="未投放"){
-				message="您确认将状态更改为投放吗";
-				url = "${rc.contextPath}/admin/${functionName}/updateStatus.do?${functionId}="+id;
-			}
-			var r=confirm(message);
-			if(r==true){
-				$.ajax({
-	                type: "POST",
-	                dataType: "json",
-	                url: url,
-	                data: "",
-	                success: function (data) {
-	                	alert("修改成功");
-					}
-            	});
-			}
+		var url = "${rc.contextPath}/admin/${functionName}/updateStatus.do?${functionId}="+id;
+		var message = "";
+		if(status=="投放中"){
+			message="您确认将状态更改为未投放吗";
+		}else if(status=="未投放"){
+			message="您确认将状态更改为投放吗";
 		}
+		var r=confirm(message);
+		if(r==true){
+			$.ajax({
+                type: "POST",
+                dataType: "json",
+                url: url,
+                data: "",
+                success: function (data) {
+                	alert("修改成功");
+			    	reload();
+				}
+        	});
+		}
+	}
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
 		dataTableConfig.columns = [{

@@ -276,7 +276,4 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return resultList;
 	}
 
-	public void isHide(List<Probability> list) {
-		List 
-	}
 }
