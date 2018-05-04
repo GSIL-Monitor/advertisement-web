@@ -15,6 +15,8 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
+import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
@@ -59,6 +61,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	@Autowired
 	private QuotaService quotaService;
+
+	@Autowired
+	private AdvertisementStrategyService strategyService;
 
 	@Override
 	public void insertAdvertisement(Advertisement advertisement) {
@@ -188,10 +193,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	}
 
 	@Override
-	public void increaseAdvertisementCount(Long advertisementId) {
-		int increaseCount = 1;
-		increaseCount = getRandomFromRange(ADVERTIEMENT_INCREASE_RANGE);
-		redisCacheService.increBy(RedisConstant.getAdvertisementShowCountKey(advertisementId, null), increaseCount);
+	public void increaseAdvertisementCount(Long projectId, Long advertisementId, Long positionId) {
+		List<Long> advertisementIdList = new ArrayList<Long>();
+		advertisementIdList.add(advertisementId);
+		recordAdvertisementCount(projectId, positionId, advertisementIdList, true);
 	}
 
 	private Integer getRandomFromRange(String numRange) {
@@ -205,7 +210,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		return random;
 	}
 
-	public List<Advertisement> getAdvertisement(Long projectId, Long positionId) {
+	public List<Advertisement> getAdvertisement(Long projectId, Long positionId, Instance instance) {
 		List<Advertisement> advertismentList = new ArrayList<Advertisement>();
 		Position position = positionService.selectPosition(positionId);
 		if (position == null) {
@@ -286,6 +291,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 				}
 			}
 		}
+
+		// 判断广告策略
+		List<AdvertisementStrategy> strategyList = strategyService.selectAdvertisementStrategyFromCache(projectId);
+		resultAdvertisementIdList = strategyService.getAvailableAdvertisementList(resultAdvertisementIdList,
+				strategyList, instance);
+
 		Map<Long, Advertisement> advertisementMap = selectAdvertisementByIds(resultAdvertisementIdList);
 		for (Long advertisementId : resultAdvertisementIdList) {
 			advertismentList.add(advertisementMap.get(advertisementId));

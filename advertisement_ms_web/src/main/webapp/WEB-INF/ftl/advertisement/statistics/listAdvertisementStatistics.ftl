@@ -56,6 +56,9 @@
 			if (isNotEmpty($('#name').val())) {
 				params += "companyName=" +encodeURI(encodeURI($('#name').val())) + "&";
 			}
+			if (isNotEmpty($('#positionName').val())) {
+				params += "positionName=" +encodeURI(encodeURI($('#positionName').val())) + "&";
+			}
 			var newUrl="${rc.contextPath}/admin/${functionName}/queryStatisticFromDB.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
@@ -78,6 +81,9 @@
 			}
 			if (isNotEmpty($('#name').val())) {
 				params += "companyName=" +encodeURI(encodeURI($('#name').val())) + "&";
+			}
+			if (isNotEmpty($('#positionName').val())) {
+				params += "positionName=" +encodeURI(encodeURI($('#positionName').val())) + "&";
 			}
 			var url="${rc.contextPath}/admin/${functionName}/download.do?" + params;
 			 $.ajax({
@@ -149,7 +155,7 @@
 									<td>
 										<div class="filter-component">
 											<h6>位置：</h6>
-											<input type="text" name="name" id="name" placeholder="搜索位置" />
+											<input type="text" name="positionName" id="positionName" placeholder="搜索位置" />
 										</div>	 
 									</td>
 								</tr>

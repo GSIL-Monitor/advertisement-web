@@ -51,6 +51,9 @@
 				<if test="date != null">
 					date = #{date} and
 				</if>
+				<if test="positionName != null">
+					position_name LIKE CONCAT('%',#{positionName},'%') and
+				</if>
 				<if test="queryStartTime != null">
 					 date &gt;= #{queryStartTime} and
 				</if>

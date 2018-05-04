@@ -2,6 +2,7 @@ package com.yuanshanbao.dsp.advertisement.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -15,9 +16,10 @@ import com.yuanshanbao.dsp.advertisement.dao.AdvertisementStrategyDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
+import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.FunctionService;
-import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -151,66 +153,92 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return map;
 	}
 
-	public List<Probability> avilalabeList(int age, String province, String city) {
-
-		List<Probability> probabilityList = new ArrayList<Probability>();
-		List<Probability> ageList = new ArrayList<Probability>();
-		List<Probability> regionList = new ArrayList<Probability>();
-		List<Probability> resultList = new ArrayList<Probability>();
-		List<AdvertisementStrategy> strategyList = new ArrayList<AdvertisementStrategy>();
-
-		// 符合年龄的广告
-		for (Probability pro : probabilityList) {
-			for (AdvertisementStrategy strategy : strategyList) {
-				if (strategy.getAdvertisementId().equals(pro.getAdvertisementId())
-						&& strategy.getType().equals(AdvertisementStrategyType.AGE)) {
-					// 首先判断年龄
-					if (judgeAge(strategy.getValue(), age)) {
-						ageList.add(pro);
-					}
-
-				} else {
-					continue;
-				}
-			}
+	@Override
+	public List<AdvertisementStrategy> selectAdvertisementStrategyFromCache(Long projectId) {
+		List<AdvertisementStrategy> resultList = new ArrayList<AdvertisementStrategy>();
+		if (projectId == null) {
+			return resultList;
 		}
-
-		// 符合地域限制的广告
-		for (Probability pro : probabilityList) {
-			// 判断地域
-			for (AdvertisementStrategy strategy : strategyList) {
-				if (strategy.getAdvertisementId().equals(pro.getAdvertisementId())
-						&& strategy.getType().equals(AdvertisementStrategyType.REGION)) {
-					if (strategy.getFlag() == 1) {
-						if (judgeRegionForDisplay(strategy.getValue(), province, city)) {
-							regionList.add(pro);
-						}
-					} else if (strategy.getFlag() == 0) {
-						if (judgeRegionForDisplay(strategy.getValue(), province, city)) {
-							continue;
-						} else {
-							regionList.add(pro);
-						}
-					}
-				}
-			}
+		List<AdvertisementStrategy> strategyList = ConstantsManager.getStrategyList(projectId);
+		if (strategyList == null) {
+			return resultList;
 		}
-		ageList.retainAll(regionList);
-		resultList = ageList;
+		resultList = strategyList;
+		return resultList;
+	}
+
+	@Override
+	public List<Long> getAvailableAdvertisementList(List<Long> advertisementIdList,
+			List<AdvertisementStrategy> strategyList, Instance instrance) {
+		List<Long> result = new ArrayList<Long>();
+		List<Long> ageList = new ArrayList<Long>();
+		List<Long> regionList = new ArrayList<Long>();
 		List<Long> hasStrategyList = new ArrayList<Long>();
+		List<AdvertisementStrategy> ageStrategyList = new ArrayList<AdvertisementStrategy>();
+		List<AdvertisementStrategy> regionStrategyList = new ArrayList<AdvertisementStrategy>();
+		List<AdvertisementStrategy> deviceTypeList = new ArrayList<AdvertisementStrategy>();
+		List<AdvertisementStrategy> ipRegionList = new ArrayList<AdvertisementStrategy>();
+
 		// 获取已经配置过策略的广告
 		for (AdvertisementStrategy strategy : strategyList) {
 			if (!hasStrategyList.contains(strategy.getAdvertisementId())) {
 				hasStrategyList.add(strategy.getAdvertisementId());
 			}
-		}
-		// 若没有配置过广告策略，则不进行屏蔽
-		for (Probability pro : probabilityList) {
-			if (!hasStrategyList.contains(pro.getAdvertisementId())) {
-				resultList.add(pro);
+			if (strategy.getType() != null && strategy.getType().equals(AdvertisementStrategyType.AGE)) {
+				ageStrategyList.add(strategy);
+			} else if (strategy.getType() != null && strategy.getType().equals(AdvertisementStrategyType.REGION)) {
+				regionStrategyList.add(strategy);
+			} else if (strategy.getType() != null && strategy.getType().equals(AdvertisementStrategyType.DEVICETYPE)) {
+				deviceTypeList.add(strategy);
+			} else if (strategy.getType() != null && strategy.getType().equals(AdvertisementStrategyType.IP_REGION)) {
+				deviceTypeList.add(strategy);
 			}
 		}
-		return resultList;
+		// 若没有配置过广告策略，则不进行屏蔽
+		for (Long advertisementId : advertisementIdList) {
+			if (!hasStrategyList.contains(advertisementId)) {
+				result.add(advertisementId);
+			}
+		}
+
+		// 符合年龄的广告
+		for (Long advertisementId : hasStrategyList) {
+			for (AdvertisementStrategy strategy : ageStrategyList) {
+				// 首先判断年龄
+				if (strategy.getAdvertisementId().equals(advertisementId)) {
+					if (instrance.getAge() != null
+							&& judgeAge(strategy.getValue(), Integer.valueOf(instrance.getAge()))) {
+						ageList.add(advertisementId);
+					} else {
+						continue;
+					}
+				}
+			}
+		}
+
+		// 符合地域限制的广告
+		for (Long advertisementId : hasStrategyList) {
+			// 判断地域
+			for (AdvertisementStrategy strategy : regionStrategyList) {
+				if (strategy.getAdvertisementId().equals(advertisementId)) {
+					if (strategy.getFlag() == 1) {
+						if (judgeRegionForDisplay(strategy.getValue(), instrance.getProvince(), instrance.getCity())) {
+							regionList.add(advertisementId);
+						}
+					} else if (strategy.getFlag() == 0) {
+						if (judgeRegionForDisplay(strategy.getValue(), instrance.getProvince(), instrance.getCity())) {
+							continue;
+						} else {
+							regionList.add(advertisementId);
+						}
+					}
+				}
+			}
+		}
+		ageList.addAll(regionList);
+		List<Long> newList = new ArrayList<Long>(new HashSet<Long>(ageList));
+		result.addAll(newList);
+		return result;
 	}
 
 	// 配置了该城市就显示

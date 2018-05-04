@@ -708,6 +708,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 			columnList.add("广告名称");
 			columnList.add("广告主名称");
+			columnList.add("位置");
 			columnList.add("时间");
 			columnList.add("曝光量(次)");
 			columnList.add("点击量(次)");
@@ -721,11 +722,14 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 				columnList.add(temp.getTitle());
 				columnList.add(temp.getCompanyName());
+				columnList.add(temp.getPositionName());
 				columnList.add(temp.getDate());
 				columnList.add(temp.getShowCount().toString());
 				columnList.add(temp.getClickCount().toString());
 				columnList.add(temp.getClickRate());
-				columnList.add(temp.getAvgPrice().toString());
+				if (temp.getAvgPrice() != null) {
+					columnList.add(temp.getAvgPrice().toString());
+				}
 				columnList.add(temp.getTotalAmount().toString());
 				rowList.add(columnList);
 			}
