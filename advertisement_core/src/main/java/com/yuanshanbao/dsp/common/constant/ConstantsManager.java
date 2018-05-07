@@ -621,10 +621,17 @@ public class ConstantsManager {
 	}
 
 	public static Position getPositionByKey(Long projectId, String positionKey) {
-		Map<String, Position> map = positionKeyMap.get(projectId);
-		if (map == null) {
-			return null;
+		// Map<String, Position> map = positionKeyMap.get(projectId);
+		// if (map == null) {
+		// return null;
+		// }
+		// return map.get(positionKey);
+		List<Position> list = positionListMap.get(projectId);
+		for (Position position : list) {
+			if (position.getKey().equals(positionKey)) {
+				return position;
+			}
 		}
-		return map.get(positionKey);
+		return new Position();
 	}
 }
