@@ -431,7 +431,7 @@ public class ConstantsManager {
 			Map<String, Position> map = tempPositionKeyMap.get(position.getProjectId());
 			if (map == null) {
 				map = new HashMap<String, Position>();
-				tempPositionKeyMap.put(position.getPositionId(), map);
+				tempPositionKeyMap.put(position.getProjectId(), map);
 			}
 			map.put(position.getKey(), position);
 		}
@@ -621,17 +621,10 @@ public class ConstantsManager {
 	}
 
 	public static Position getPositionByKey(Long projectId, String positionKey) {
-		// Map<String, Position> map = positionKeyMap.get(projectId);
-		// if (map == null) {
-		// return null;
-		// }
-		// return map.get(positionKey);
-		List<Position> list = positionListMap.get(projectId);
-		for (Position position : list) {
-			if (position.getKey().equals(positionKey)) {
-				return position;
-			}
+		Map<String, Position> map = positionKeyMap.get(projectId);
+		if (map == null) {
+			return null;
 		}
-		return new Position();
+		return map.get(positionKey);
 	}
 }
