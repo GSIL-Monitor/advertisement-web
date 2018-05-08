@@ -622,7 +622,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		Integer showCount = null;
 		Integer clickCount = null;
 		String clickRate = null;
-		BigDecimal totalAmount = null;
+		BigDecimal totalAmount = new BigDecimal(0);
 		BigDecimal unitPrice = new BigDecimal(0);
 
 		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
@@ -657,6 +657,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			advertisementStatistics = new AdvertisementStatistics();
 			showCount = 0;
 			clickCount = 0;
+			totalAmount = new BigDecimal(0);
 			unitPrice = new BigDecimal(0);
 			advertisementIdList.add(pro.getAdvertisementId());
 

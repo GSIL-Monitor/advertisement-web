@@ -18,7 +18,7 @@
 		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/jump.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看详情</a>';
+		            return '<a href="${rc.contextPath}/admin/${functionName}/viewAdvertisement.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看详情</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",

@@ -20,9 +20,9 @@
 		    }, {
 		    	"data": "statusValue"
 		    }, {
-		    	"data": "${functionId}",
+		    	"data": "advertisementId",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/view.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
+		            return '<a href="${rc.contextPath}/admin/advertisement/updateWindow.do?advertisementId='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",
@@ -49,12 +49,6 @@
 	<div class="container-fluid">
 		<hr>
 			<div class="row-fluid">
-				<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}&type=1" target="_blank"><button class="btn btn-cyan">添加福利${functionTitle}</button></a></span>
-				<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}&type=2" target="_blank"><button class="btn btn-green">添加轮播图${functionTitle}</button></a></span>
-				<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}&type=3" target="_blank"><button class="btn btn-yellow">添加标签${functionTitle}</button></a></span>
-				<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}&type=4" target="_blank"><button class="btn btn-red">添加弹窗${functionTitle}</button></a></span>
-				<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}&type=5" target="_blank"><button class="btn btn-cyan">添加角标${functionTitle}</button></a></span>
-				<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}&type=6" target="_blank"><button class="btn btn-green">添加产品${functionTitle}</button></a></span>
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
 						<h5>广告列表</h5>

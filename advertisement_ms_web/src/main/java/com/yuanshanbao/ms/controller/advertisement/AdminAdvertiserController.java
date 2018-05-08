@@ -158,8 +158,8 @@ public class AdminAdvertiserController extends PaginationController {
 	}
 
 	@RequestMapping("/view.do")
-	public String view(Advertiser advertiser, ModelMap modelMap, HttpServletRequest request,
-			HttpServletResponse response) {
+	public String view(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
 		List<Advertiser> list = advertiserService.selectAdvertiser(advertiser, new PageBounds());
 		if (list != null && list.size() >= 0) {
 			advertiser = list.get(0);
@@ -168,8 +168,9 @@ public class AdminAdvertiserController extends PaginationController {
 		return PAGE_VIEW;
 	}
 
-	@RequestMapping("/jump.do")
-	public String jump(String range, Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping("/viewAdvertisement.do")
+	public String viewAdvertisement(String range, Advertiser advertiser, HttpServletRequest request,
+			HttpServletResponse response) {
 		request.setAttribute("advertiserId", advertiser.getAdvertiserId());
 		return PAGE_LIST_VIEW;
 	}

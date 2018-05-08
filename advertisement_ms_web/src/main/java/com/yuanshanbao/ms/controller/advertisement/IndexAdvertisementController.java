@@ -67,6 +67,37 @@ public class IndexAdvertisementController extends BaseController {
 	}
 
 	// 广告点击
+	@RequestMapping("/{projectKey}/adShow")
+	@ResponseBody
+	public Object adShow(HttpServletRequest request, HttpServletResponse response, String userId,
+			String advertisementId, String adPosition, String positionKey, @PathVariable("projectKey") String projectKey) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			Project project = ConstantsManager.getProjectByKey(projectKey);
+			if (project != null) {
+				Position position = ConstantsManager.getPositionByKey(project.getProjectId(), positionKey);
+				if (position != null) {
+					if (ValidateUtil.isNumber(advertisementId)) {
+						advertisementService.increaseAdvertisementShowCount(project.getProjectId(),
+								Long.parseLong(advertisementId), position.getPositionId());
+					}
+
+				}
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+
+		} catch (BusinessException e) {
+			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+
+		} catch (Exception e) {
+			LoggerUtil.error("[adClick index]: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+		}
+
+		return resultMap;
+	}
+
+	// 广告点击
 	@RequestMapping("/{projectKey}/adclick")
 	@ResponseBody
 	public Object adClick(HttpServletRequest request, HttpServletResponse response, String userId,

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -166,10 +165,7 @@ public class AdminAdvertisementController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/update.do")
 	public Object update(Advertisement advertisement, String prizeDesc, Probability probability, Quota quota,
-			@RequestParam(value = "smallImage", required = false) MultipartFile smallImage,
-			@RequestParam(value = "bigImage", required = false) MultipartFile bigImage,
-			@RequestParam(value = "image", required = false) MultipartFile image, HttpServletRequest request,
-			HttpServletResponse response) {
+			MultipartFile image, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {

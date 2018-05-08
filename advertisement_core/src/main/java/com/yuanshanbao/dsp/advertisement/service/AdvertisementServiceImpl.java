@@ -199,6 +199,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		recordAdvertisementCount(projectId, positionId, advertisementIdList, true);
 	}
 
+	@Override
+	public void increaseAdvertisementShowCount(Long projectId, Long advertisementId, Long positionId) {
+		List<Long> advertisementIdList = new ArrayList<Long>();
+		advertisementIdList.add(advertisementId);
+		recordAdvertisementCount(projectId, positionId, advertisementIdList, false);
+	}
+
 	private Integer getRandomFromRange(String numRange) {
 		int random = 0;
 		String[] s = numRange.split(",");
@@ -301,7 +308,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		for (Long advertisementId : resultAdvertisementIdList) {
 			advertismentList.add(advertisementMap.get(advertisementId));
 		}
-		recordAdvertisementCount(projectId, positionId, resultAdvertisementIdList, false);
 		return advertismentList;
 	}
 

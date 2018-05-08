@@ -37,7 +37,7 @@
 	    	}, {
 	      		"data": "title"
 	    	}, {
-	      		"data": "advertiser.name"
+	      		"data": "advertiser.companyName"
 	    	}, {
 	      		"data": "createTimeContent"
 	    	}, {
