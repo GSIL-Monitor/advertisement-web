@@ -112,7 +112,7 @@
 							<h6>广告主名称：</h6>
 							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
 								<#list advertiserList as advertiser>
-									<option value="${advertiser.advertiserId}">${advertiser.name}</option>
+									<option value="${advertiser.advertiserId}">${advertiser.companyName}</option>
 								</#list>
 							</select>
 						</div>

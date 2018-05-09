@@ -921,10 +921,13 @@ public class AdminStatisticsController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/taskSchedule.do")
 	public void taskSchedule(String queryChannel, AdvertisementStatistics statistics, HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response, Integer days) {
 		Probability probability = new Probability();
-		Date yesterday = DateUtils.getYesterday();
-		String date = DateUtils.format(yesterday, "yyyy-MM-dd");
+		if (days == null) {
+			days = 1;
+		}
+		Date recordDate = DateUtils.addDays(new Date(), -days);
+		String date = DateUtils.format(recordDate, "yyyy-MM-dd");
 
 		List<Probability> proList = new ArrayList<Probability>();
 		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();

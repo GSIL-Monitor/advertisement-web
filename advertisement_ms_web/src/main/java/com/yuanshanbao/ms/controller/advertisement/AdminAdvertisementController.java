@@ -1,5 +1,6 @@
 package com.yuanshanbao.ms.controller.advertisement;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
@@ -198,6 +200,15 @@ public class AdminAdvertisementController extends PaginationController {
 			if (advertisementId == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
+			List<Probability> proList = new ArrayList<Probability>();
+			Probability probability = new Probability();
+			probability.setAdvertisementId(advertisementId);
+			proList = probabilityService.selectProbabilitys(probability, new PageBounds());
+			if (proList.size() > 0) {
+				probability = proList.get(0);
+			}
+			probability.setStatus(ProbabilityStatus.DELETE);
+			probabilityService.updateProbability(probability);
 			Advertisement advertisement = new Advertisement();
 			advertisement.setStatus(AdvertisementStatus.DELETE);
 			advertisement.setAdvertisementId(advertisementId);
@@ -232,15 +243,25 @@ public class AdminAdvertisementController extends PaginationController {
 			if (advertisementId == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
+			List<Probability> proList = new ArrayList<Probability>();
+			Probability probability = new Probability();
+			probability.setAdvertisementId(advertisementId);
+			proList = probabilityService.selectProbabilitys(probability, new PageBounds());
+			if (proList.size() > 0) {
+				probability = proList.get(0);
+			}
 			Advertisement advertisement = new Advertisement();
 			advertisement.setAdvertisementId(advertisementId);
 			advertisement = advertisementService.selectAdvertisement(advertisement);
 			if (advertisement.getStatus() == 1) {
 				advertisement.setStatus(AdvertisementStatus.OFFLINE);
+				probability.setStatus(ProbabilityStatus.OFFLINE);
 			} else if (advertisement.getStatus() == 2) {
 				advertisement.setStatus(AdvertisementStatus.ONLINE);
+				probability.setStatus(ProbabilityStatus.ONLINE);
 			}
 			advertisementService.updateAdvertisement(advertisement);
+			probabilityService.updateProbability(probability);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
