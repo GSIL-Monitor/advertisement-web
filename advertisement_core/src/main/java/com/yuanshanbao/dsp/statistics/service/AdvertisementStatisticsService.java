@@ -38,7 +38,7 @@ public interface AdvertisementStatisticsService {
 
 	public List<AdvertisementStatistics> combineAdvertiserAndDate(List<AdvertisementStatistics> list);
 
-	public List<AdvertisementStatistics> calculateStatistics(List<Probability> list, String date);
+	public List<AdvertisementStatistics> calculateStatistics(Long projectId, List<Probability> list, String date);
 
 	public String downStatistics(List<AdvertisementStatistics> list);
 }

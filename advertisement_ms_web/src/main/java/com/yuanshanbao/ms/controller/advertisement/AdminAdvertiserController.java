@@ -20,6 +20,7 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.model.AdvertiserStatus;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
@@ -110,7 +111,7 @@ public class AdminAdvertiserController extends PaginationController {
 		if (list != null && list.size() >= 0) {
 			advertiser = list.get(0);
 		}
-		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("statusList", AdvertiserStatus.getCodeDescriptionMap().entrySet());
 		request.setAttribute("itemEdit", advertiser);
 		return PAGE_UPDATE;
 	}

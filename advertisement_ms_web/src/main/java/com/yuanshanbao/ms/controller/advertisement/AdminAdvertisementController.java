@@ -213,10 +213,12 @@ public class AdminAdvertisementController extends PaginationController {
 			advertisement.setStatus(AdvertisementStatus.DELETE);
 			advertisement.setAdvertisementId(advertisementId);
 			advertisementService.updateAdvertisement(advertisement);
-
+			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("advertisement update function - upload image error", e2);
 		}
 
 		return result;
@@ -262,9 +264,12 @@ public class AdminAdvertisementController extends PaginationController {
 			}
 			advertisementService.updateAdvertisement(advertisement);
 			probabilityService.updateProbability(probability);
+			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("advertisement update function - upload image error", e2);
 		}
 
 		return result;

@@ -615,7 +615,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	}
 
 	@Override
-	public List<AdvertisementStatistics> calculateStatistics(List<Probability> list, String date) {
+	public List<AdvertisementStatistics> calculateStatistics(Long projectId, List<Probability> list, String date) {
 		String showKey = null;
 		String clickKey = null;
 
@@ -630,15 +630,12 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		List<Long> advertisementIdList = new ArrayList<Long>();
 		List<Long> positions = new ArrayList<Long>();
 		List<Quota> quotaList = new ArrayList<Quota>();
-		List<Advertisement> adList = new ArrayList<Advertisement>();
 		List<AdvertisementStatistics> resutlList = new ArrayList<AdvertisementStatistics>();
 		Map<Long, String> titleMap = new HashMap<Long, String>();
-		Map<Long, String> companyMap = new HashMap<Long, String>();
 		Map<Long, String> positionMap = new HashMap<Long, String>();
 		Map<Long, Advertisement> adMap = new HashMap<Long, Advertisement>();
 
 		titleMap = this.getAdvertisementName();
-		companyMap = this.getAdvertiserName();
 		positionMap = this.getPositionName();
 
 		for (Probability pro : list) {
@@ -661,7 +658,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			unitPrice = new BigDecimal(0);
 			advertisementIdList.add(pro.getAdvertisementId());
 
-			quotaList = quotaService.selectQuotaFromCache((long) 1, pro.getPositionId(), advertisementIdList);
+			quotaList = quotaService.selectQuotaFromCache(projectId, pro.getPositionId(), advertisementIdList);
 
 			showKey = RedisConstant.getAdvertisementShowCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
 			clickKey = RedisConstant.getAdvertisementClickCountKey(date, pro.getAdvertisementId(), pro.getPositionId());

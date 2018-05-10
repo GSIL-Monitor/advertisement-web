@@ -43,7 +43,7 @@ import com.yuanshanbao.common.exception.AppException;
  */
 public class HttpUtil {
 	public static final int DEFAULT_CONNECT_TIME_OUT = 10000;
-	public static final int DEFAULT_READ_TIME_OUT = 10000;
+	public static final int DEFAULT_READ_TIME_OUT = 50000;
 	public static final String DEFAULT_CHARSET = "UTF-8";
 	public static final int DEFAULT_RETRY_TIME = 1;// 打开URL失败默认重新连接的次数
 
@@ -205,8 +205,7 @@ public class HttpUtil {
 
 	public static String sendPostRequest(String url, String content, String charset, int connectTimeout,
 			int readTimeout, Map<String, String> header) throws RemoteInvocationFailureException {
-		return sendPostRequestWithHeader(url, content, charset, connectTimeout, readTimeout, false,
-				header);
+		return sendPostRequestWithHeader(url, content, charset, connectTimeout, readTimeout, false, header);
 	}
 
 	public static String sendPostRequestWithHeader(String url, String content, String charset, int connectTimeout,
