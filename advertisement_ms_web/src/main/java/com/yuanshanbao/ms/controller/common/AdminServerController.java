@@ -61,6 +61,8 @@ public class AdminServerController extends PaginationController {
 			}
 			HttpUtil.sendGetRequest("http://" + ip + "/internal/server/refreshConstants.html");
 		}
+		String ip = "127.0.0.1";
+		HttpUtil.sendGetRequest("http://" + ip + "/ms/internal/server/refreshConstants.html");
 		// ConstantsManager.refresh();
 	}
 
