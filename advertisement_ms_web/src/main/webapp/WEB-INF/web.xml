@@ -70,7 +70,7 @@
     </init-param>
     <init-param>
       <param-name>cookieDomain</param-name>
-      <param-value>ms.51yuanshan.com</param-value>
+      <param-value>adsales.jiayuan.com</param-value>
     </init-param>
     <init-param>
       <param-name>cookiePath</param-name>
