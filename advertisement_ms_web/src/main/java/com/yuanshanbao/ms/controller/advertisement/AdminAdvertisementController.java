@@ -1,5 +1,6 @@
 package com.yuanshanbao.ms.controller.advertisement;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +29,7 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
@@ -166,10 +167,7 @@ public class AdminAdvertisementController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/update.do")
 	public Object update(Advertisement advertisement, String prizeDesc, Probability probability, Quota quota,
-			@RequestParam(value = "smallImage", required = false) MultipartFile smallImage,
-			@RequestParam(value = "bigImage", required = false) MultipartFile bigImage,
-			@RequestParam(value = "image", required = false) MultipartFile image, HttpServletRequest request,
-			HttpServletResponse response) {
+			MultipartFile image, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
@@ -202,14 +200,25 @@ public class AdminAdvertisementController extends PaginationController {
 			if (advertisementId == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
+			List<Probability> proList = new ArrayList<Probability>();
+			Probability probability = new Probability();
+			probability.setAdvertisementId(advertisementId);
+			proList = probabilityService.selectProbabilitys(probability, new PageBounds());
+			if (proList.size() > 0) {
+				probability = proList.get(0);
+			}
+			probability.setStatus(ProbabilityStatus.DELETE);
+			probabilityService.updateProbability(probability);
 			Advertisement advertisement = new Advertisement();
 			advertisement.setStatus(AdvertisementStatus.DELETE);
 			advertisement.setAdvertisementId(advertisementId);
 			advertisementService.updateAdvertisement(advertisement);
-
+			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("advertisement update function - upload image error", e2);
 		}
 
 		return result;
@@ -236,18 +245,31 @@ public class AdminAdvertisementController extends PaginationController {
 			if (advertisementId == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
+			List<Probability> proList = new ArrayList<Probability>();
+			Probability probability = new Probability();
+			probability.setAdvertisementId(advertisementId);
+			proList = probabilityService.selectProbabilitys(probability, new PageBounds());
+			if (proList.size() > 0) {
+				probability = proList.get(0);
+			}
 			Advertisement advertisement = new Advertisement();
 			advertisement.setAdvertisementId(advertisementId);
 			advertisement = advertisementService.selectAdvertisement(advertisement);
 			if (advertisement.getStatus() == 1) {
 				advertisement.setStatus(AdvertisementStatus.OFFLINE);
+				probability.setStatus(ProbabilityStatus.OFFLINE);
 			} else if (advertisement.getStatus() == 2) {
 				advertisement.setStatus(AdvertisementStatus.ONLINE);
+				probability.setStatus(ProbabilityStatus.ONLINE);
 			}
 			advertisementService.updateAdvertisement(advertisement);
+			probabilityService.updateProbability(probability);
+			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("advertisement update function - upload image error", e2);
 		}
 
 		return result;

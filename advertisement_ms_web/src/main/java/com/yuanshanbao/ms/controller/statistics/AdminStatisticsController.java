@@ -848,7 +848,7 @@ public class AdminStatisticsController extends PaginationController {
 		String today = DateUtils.format(new Date(), "yyyy-MM-dd");
 		Probability probability = new Probability();
 		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
-		resultList = advertisementStatisticsService.calculateStatistics(list, today);
+		resultList = advertisementStatisticsService.calculateStatistics(getProjectId(request), list, today);
 		result.put("data", resultList);
 		result.put("draw", request.getParameter("draw"));
 		result.put("recordsTotal", 1000);
@@ -865,7 +865,7 @@ public class AdminStatisticsController extends PaginationController {
 		String today = DateUtils.format(new Date(), "yyyy-MM-dd");
 		Probability probability = new Probability();
 		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
-		resultList = advertisementStatisticsService.calculateStatistics(list, today);
+		resultList = advertisementStatisticsService.calculateStatistics(getProjectId(request), list, today);
 		resultList = advertisementStatisticsService.combineDateAndPosition(resultList);
 		result.put("data", resultList);
 		result.put("draw", request.getParameter("draw"));
@@ -921,17 +921,21 @@ public class AdminStatisticsController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/taskSchedule.do")
 	public void taskSchedule(String queryChannel, AdvertisementStatistics statistics, HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response, Integer days) {
 		Probability probability = new Probability();
-		Date yesterday = DateUtils.getYesterday();
-		String date = DateUtils.format(yesterday, "yyyy-MM-dd");
+		if (days == null) {
+			days = 1;
+		}
+		Date recordDate = DateUtils.addDays(new Date(), -days);
+		String date = DateUtils.format(recordDate, "yyyy-MM-dd");
 
 		List<Probability> proList = new ArrayList<Probability>();
 		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();
 
 		proList = probabilityService.selectProbabilitys(probability, new PageBounds());
-		result = advertisementStatisticsService.calculateStatistics(proList, date);
+		result = advertisementStatisticsService.calculateStatistics(getProjectId(request), proList, date);
 		for (AdvertisementStatistics sta : result) {
+			sta.setProjectId(getProjectId(request));
 			advertisementStatisticsService.insertAdvertisementStatistics(sta);
 		}
 	}

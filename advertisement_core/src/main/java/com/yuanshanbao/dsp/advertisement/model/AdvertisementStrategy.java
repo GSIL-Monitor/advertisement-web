@@ -9,6 +9,7 @@ import com.yuanshanbao.dsp.core.CommonStatus;
 public class AdvertisementStrategy {
 
 	private Long advertisementStrategyId;
+	private Long projectId;
 	private Long functionId;
 	private Long advertisementId;
 	private String key;
@@ -182,6 +183,14 @@ public class AdvertisementStrategy {
 
 	public void setFlag(Integer flag) {
 		this.flag = flag;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 
 }

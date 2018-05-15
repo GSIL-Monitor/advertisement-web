@@ -7,6 +7,7 @@
 	<resultMap id="advertisementStrategyMap" type="AdvertisementStrategy">
 		<id property="advertisementStrategyId" column="advertisement_strategy_id" jdbcType="NUMERIC" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="functionId" column="function_id" jdbcType="NUMERIC" />
 		<result property="key" column="key" jdbcType="VARCHAR" />
 		<result property="value" column="value" jdbcType="VARCHAR" />
@@ -41,6 +42,9 @@
 			<trim suffixOverrides="and">
 				<if test="advertisementStrategyId != null">
 					advertisement_strategy_id = #{advertisementStrategyId} and
+				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
 				</if>
 				<if test="advertisementId != null">
 					advertisement_id = #{advertisementId} and
@@ -90,10 +94,10 @@
 
 	<insert id="insertAdvertisementStrategy" parameterType="AdvertisementStrategy">
 		insert into
-		tb_advertisement_strategy(advertisement_id, function_id, `key`, `value`, description, type,
+		tb_advertisement_strategy(advertisement_id, project_id, function_id, `key`, `value`, description, type,
 		 sort, percent, status, create_time, update_time)
 		values
-		(#{advertisementId}, #{functionId}, #{key}, #{value}, #{description}, #{type}, #{sort},
+		(#{advertisementId}, #{projectId}, #{functionId}, #{key}, #{value}, #{description}, #{type}, #{sort},
 		#{percent}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="advertisementStrategyId">
 			SELECT LAST_INSERT_ID()

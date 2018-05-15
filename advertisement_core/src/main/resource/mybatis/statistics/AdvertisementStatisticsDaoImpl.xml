@@ -6,6 +6,7 @@
 
 	<resultMap id="advertisementStatisticsMap" type="AdvertisementStatistics">
 		<id property="advertisementStatisticsId" column="advertisement_statistics_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="date" column="date" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="title" column="title" jdbcType="VARCHAR" />
@@ -36,6 +37,9 @@
 				<if test="advertisementStatisticsId != null">
 					advertisement_statistics_id=#{advertisementStatisticsId} and
 				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
+				</if>
 				<if test="advertisementId != null">
 					advertisement_id = #{advertisementId} and
 				</if>
@@ -50,6 +54,9 @@
 				</if>
 				<if test="date != null">
 					date = #{date} and
+				</if>
+				<if test="positionName != null">
+					position_name LIKE CONCAT('%',#{positionName},'%') and
 				</if>
 				<if test="queryStartTime != null">
 					 date &gt;= #{queryStartTime} and
@@ -156,14 +163,14 @@
 	
 	<insert id="insertAdvertisementStatistics" parameterType="advertisementStatistics">
 		insert into
-		tb_advertisement_statistics(advertisement_id,title, advertiser_id,
+		tb_advertisement_statistics(project_id,advertisement_id,title, advertiser_id,
 		company_name, position_id,position_name,
 		date,channel, show_count, click_count,
 		total_amount, download_count,click_rate,
 		avg_price,type, status, create_time,
 		update_time)
 		values
-		(#{advertisementId},#{title},#{advertiserId},#{companyName},
+		(#{projectId},#{advertisementId},#{title},#{advertiserId},#{companyName},
 		 #{positionId}, #{positionName},#{date}, #{channel}, 
 		#{showCount}, #{clickCount},#{totalAmount},
 		#{downloadCount},#{clickRate},#{avgPrice},

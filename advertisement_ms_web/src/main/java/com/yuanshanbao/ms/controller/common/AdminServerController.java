@@ -10,10 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuanshanbao.dsp.core.IniBean;
-import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.HttpUtil;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.core.IniBean;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 
 @Controller
@@ -61,6 +62,7 @@ public class AdminServerController extends PaginationController {
 			}
 			HttpUtil.sendGetRequest("http://" + ip + "/internal/server/refreshConstants.html");
 		}
+		ConstantsManager.refresh();
 		// ConstantsManager.refresh();
 	}
 

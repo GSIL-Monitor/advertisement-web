@@ -92,7 +92,7 @@
 											<div style="width:60%;">
 												<select name="positionId" class="selectpicker form-control">
 													<#list positionList as position>
-														<option value="${position.positionId}" <#if probability.positionId == position.key>selected</#if>>${position.name}</option>
+														<option value="${position.positionId}" <#if probability.positionId == position.positionId>selected</#if>>${position.name}</option>
 													</#list>
 												</select>
 											</div>
@@ -113,24 +113,24 @@
 									<tr>
 										<td>开始时间：</td>
 										<td>
-											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;" value="${quota.startTimeValue}"></td>
+											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;" value="${quota.startTime}"></td>
 									</tr>
 									<tr>
 										<td>结束时间：</td>
 										<td>
-											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;" value="${quota.endTimeValue}"></td>
+											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;" value="${quota.endTime}"></td>
 									</tr>
 									<tr>
 										<td>数量：</td>
 										<td>
-											<input type="text" name="count" style="width:60%;" value="${quota.count}">
+											<input type="text" name="count" style="width:60%;" value="${quota.count?c}">
 										</td>
 									</tr>
 									<tr>
 										<td>收费类型：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="positionId" class="selectpicker form-control">
+												<select name="quotaType" class="selectpicker form-control">
 													<#list quotaTypeList as quotaType>
 														<option value="${quotaType.key}" <#if quota.type == quotaType.key>selected</#if>>${quotaType.value}</option>
 													</#list>

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
+import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface AdvertisementStrategyService {
@@ -23,5 +24,13 @@ public interface AdvertisementStrategyService {
 
 	public Map<Long, List<AdvertisementStrategy>> selectStrategyByFunctionIds(List<Long> functionIds);
 
-	/*public List<AdvertisementStrategy> selectAdvertisementStrategy(Long activityId, String channel);*/
+	/*
+	 * public List<AdvertisementStrategy> selectAdvertisementStrategy(Long
+	 * activityId, String channel);
+	 */
+
+	public List<AdvertisementStrategy> selectAdvertisementStrategyFromCache(Long projectId);
+
+	public List<Long> getAvailableAdvertisementList(List<Long> advertisementIdList,
+			List<AdvertisementStrategy> stagtegyList, Instance instrance);
 }

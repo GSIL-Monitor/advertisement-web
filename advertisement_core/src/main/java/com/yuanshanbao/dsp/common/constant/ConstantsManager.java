@@ -84,6 +84,7 @@ public class ConstantsManager {
 	private static Map<Long, List<Advertisement>> advertisementMap = new HashMap<Long, List<Advertisement>>();
 	private static Map<Long, List<Probability>> probabilityMap = new HashMap<Long, List<Probability>>();
 	private static Map<Long, List<Quota>> quotaMap = new HashMap<Long, List<Quota>>();
+	private static Map<Long, List<AdvertisementStrategy>> strategyMap = new HashMap<Long, List<AdvertisementStrategy>>();
 	private static ConstantsManager instance = null;
 
 	@Resource
@@ -133,6 +134,9 @@ public class ConstantsManager {
 
 	@Resource
 	private ProbabilityService probabilityService;
+
+	@Resource
+	private AdvertisementStrategyService strategyService;
 
 	public static boolean validateConstants(long[] types, Long id) {
 		for (long type : types) {
@@ -427,7 +431,7 @@ public class ConstantsManager {
 			Map<String, Position> map = tempPositionKeyMap.get(position.getProjectId());
 			if (map == null) {
 				map = new HashMap<String, Position>();
-				tempPositionKeyMap.put(position.getPositionId(), map);
+				tempPositionKeyMap.put(position.getProjectId(), map);
 			}
 			map.put(position.getKey(), position);
 		}
@@ -458,6 +462,18 @@ public class ConstantsManager {
 		}
 		quotaMap = tempQuotaMap;
 
+		List<AdvertisementStrategy> stragetyList = strategyService.selectAdvertisementStrategy(
+				new AdvertisementStrategy(), new PageBounds());
+		Map<Long, List<AdvertisementStrategy>> tempStrategyMap = new HashMap<Long, List<AdvertisementStrategy>>();
+		for (AdvertisementStrategy strategy : stragetyList) {
+			List<AdvertisementStrategy> list = tempStrategyMap.get(strategy.getProjectId());
+			if (list == null) {
+				list = new ArrayList<AdvertisementStrategy>();
+				tempStrategyMap.put(strategy.getProjectId(), list);
+			}
+			list.add(strategy);
+		}
+		strategyMap = tempStrategyMap;
 	}
 
 	public static Map<Long, TagsType> getTagsTypeMap() {
@@ -598,6 +614,10 @@ public class ConstantsManager {
 
 	public static List<Quota> getQuotaList(Long projectId) {
 		return quotaMap.get(projectId);
+	}
+
+	public static List<AdvertisementStrategy> getStrategyList(Long projectId) {
+		return strategyMap.get(projectId);
 	}
 
 	public static Position getPositionByKey(Long projectId, String positionKey) {

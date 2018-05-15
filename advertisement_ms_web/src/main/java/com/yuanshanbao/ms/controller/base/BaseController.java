@@ -92,7 +92,7 @@ public class BaseController {
 		return ConstantsManager.getProjectId(projectService, request);
 	}
 
-	protected Advertiser getBindStaffByUser() {
+	protected Advertiser getBindAdvertiserByUser() {
 		User user = null;
 
 		Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

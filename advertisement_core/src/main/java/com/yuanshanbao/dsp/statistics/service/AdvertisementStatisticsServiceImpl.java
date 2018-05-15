@@ -615,14 +615,14 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	}
 
 	@Override
-	public List<AdvertisementStatistics> calculateStatistics(List<Probability> list, String date) {
+	public List<AdvertisementStatistics> calculateStatistics(Long projectId, List<Probability> list, String date) {
 		String showKey = null;
 		String clickKey = null;
 
 		Integer showCount = null;
 		Integer clickCount = null;
 		String clickRate = null;
-		BigDecimal totalAmount = null;
+		BigDecimal totalAmount = new BigDecimal(0);
 		BigDecimal unitPrice = new BigDecimal(0);
 
 		AdvertisementStatistics advertisementStatistics = new AdvertisementStatistics();
@@ -630,15 +630,12 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		List<Long> advertisementIdList = new ArrayList<Long>();
 		List<Long> positions = new ArrayList<Long>();
 		List<Quota> quotaList = new ArrayList<Quota>();
-		List<Advertisement> adList = new ArrayList<Advertisement>();
 		List<AdvertisementStatistics> resutlList = new ArrayList<AdvertisementStatistics>();
 		Map<Long, String> titleMap = new HashMap<Long, String>();
-		Map<Long, String> companyMap = new HashMap<Long, String>();
 		Map<Long, String> positionMap = new HashMap<Long, String>();
 		Map<Long, Advertisement> adMap = new HashMap<Long, Advertisement>();
 
 		titleMap = this.getAdvertisementName();
-		companyMap = this.getAdvertiserName();
 		positionMap = this.getPositionName();
 
 		for (Probability pro : list) {
@@ -657,10 +654,11 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			advertisementStatistics = new AdvertisementStatistics();
 			showCount = 0;
 			clickCount = 0;
+			totalAmount = new BigDecimal(0);
 			unitPrice = new BigDecimal(0);
 			advertisementIdList.add(pro.getAdvertisementId());
 
-			quotaList = quotaService.selectQuotaFromCache((long) 1, pro.getPositionId(), advertisementIdList);
+			quotaList = quotaService.selectQuotaFromCache(projectId, pro.getPositionId(), advertisementIdList);
 
 			showKey = RedisConstant.getAdvertisementShowCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
 			clickKey = RedisConstant.getAdvertisementClickCountKey(date, pro.getAdvertisementId(), pro.getPositionId());
@@ -708,6 +706,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 			columnList.add("广告名称");
 			columnList.add("广告主名称");
+			columnList.add("位置");
 			columnList.add("时间");
 			columnList.add("曝光量(次)");
 			columnList.add("点击量(次)");
@@ -721,11 +720,14 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 				columnList.add(temp.getTitle());
 				columnList.add(temp.getCompanyName());
+				columnList.add(temp.getPositionName());
 				columnList.add(temp.getDate());
 				columnList.add(temp.getShowCount().toString());
 				columnList.add(temp.getClickCount().toString());
 				columnList.add(temp.getClickRate());
-				columnList.add(temp.getAvgPrice().toString());
+				if (temp.getAvgPrice() != null) {
+					columnList.add(temp.getAvgPrice().toString());
+				}
 				columnList.add(temp.getTotalAmount().toString());
 				rowList.add(columnList);
 			}

@@ -8,6 +8,7 @@ import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 public class AdvertisementStatistics {
 
 	private Long advertisementStatisticsId;
+	private Long projectId;
 	private String date;
 	private Long advertisementId;
 	private String title;
@@ -238,6 +239,14 @@ public class AdvertisementStatistics {
 
 	public void setPositionId(Long positionId) {
 		this.positionId = positionId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 
 }
