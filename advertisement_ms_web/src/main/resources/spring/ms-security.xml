@@ -27,6 +27,8 @@
 	
 	<http pattern="/redirect.do" security="none" />
 	
+	<http pattern="/index/**" security="none" />
+	
 	<http access-denied-page="/common/403.jsp" entry-point-ref="authenticationProcessingFilterEntryPoint" servlet-api-provision="false" use-expressions="true">
 		<session-management invalid-session-url="/redirect.do">
 			<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
