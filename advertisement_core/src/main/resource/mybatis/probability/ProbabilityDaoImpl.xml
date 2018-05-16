@@ -8,6 +8,7 @@
 		<id property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
 		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
@@ -33,8 +34,8 @@
 				<if test="projectId != null">
 					project_id = #{projectId} and
 				</if>
-				<if test="projectId != null">
-					project_id = #{projectId} and
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
 				</if>
 				<if test="advertisementId != null">
 					advertisement_id = #{advertisementId} and
@@ -71,10 +72,10 @@
 
 	<insert id="insertProbability" parameterType="Probability">
 		insert into
-		tb_probability(project_id, activity_id, position_id, channel, advertisement_id, probability, 
+		tb_probability(project_id, activity_id, advertiser_id, position_id, channel, advertisement_id, probability, 
 		sort, start_time, end_time, status, create_time, update_time)
 		values
-		(#{projectId}, #{activityId}, #{positionId}, #{channel}, #{advertisementId}, #{probability}, 
+		(#{projectId}, #{activityId}, #{advertiserId}, #{positionId}, #{channel}, #{advertisementId}, #{probability}, 
 		#{sort}, #{startTime}, #{endTime}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="probabilityId">

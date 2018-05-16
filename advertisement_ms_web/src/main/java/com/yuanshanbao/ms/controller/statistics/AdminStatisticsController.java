@@ -26,6 +26,7 @@ import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.PropertyUtil;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -843,10 +844,14 @@ public class AdminStatisticsController extends PaginationController {
 	@RequestMapping("/queryStatisticToday.do")
 	public Object queryStatisticToday(String queryChannel, AdvertisementStatistics statistics,
 			HttpServletRequest request, HttpServletResponse response) {
+		Probability probability = new Probability();
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			probability.setAdvertiserId(advertiser.getAdvertiserId());
+		}
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		String today = DateUtils.format(new Date(), "yyyy-MM-dd");
-		Probability probability = new Probability();
 		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
 		resultList = advertisementStatisticsService.calculateStatistics(getProjectId(request), list, today);
 		result.put("data", resultList);
@@ -860,10 +865,14 @@ public class AdminStatisticsController extends PaginationController {
 	@RequestMapping("/queryAdvertiserStatisticToday.do")
 	public Object queryAdvertiserStatisticToday(String queryChannel, AdvertisementStatistics statistics,
 			HttpServletRequest request, HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		Probability probability = new Probability();
+		if (advertiser != null) {
+			probability.setAdvertiserId(advertiser.getAdvertiserId());
+		}
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		String today = DateUtils.format(new Date(), "yyyy-MM-dd");
-		Probability probability = new Probability();
 		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
 		resultList = advertisementStatisticsService.calculateStatistics(getProjectId(request), list, today);
 		resultList = advertisementStatisticsService.combineDateAndPosition(resultList);
@@ -879,6 +888,10 @@ public class AdminStatisticsController extends PaginationController {
 	public Object queryStatisticFromDB(String queryChannel, AdvertisementStatistics statistics, boolean isAdvertiser,
 			boolean isPosition, boolean isDate, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			statistics.setAdvertiserId(advertiser.getAdvertiserId());
+		}
 		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistics(statistics,
 				new PageBounds());
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
@@ -906,6 +919,10 @@ public class AdminStatisticsController extends PaginationController {
 			boolean isAdvertiser, boolean isPosition, boolean isDate, HttpServletRequest request,
 			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			statistics.setAdvertiserId(advertiser.getAdvertiserId());
+		}
 		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistics(statistics,
 				new PageBounds());
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();

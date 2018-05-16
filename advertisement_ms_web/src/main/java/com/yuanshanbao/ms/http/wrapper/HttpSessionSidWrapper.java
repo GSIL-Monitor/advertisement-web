@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -45,8 +44,9 @@ public class HttpSessionSidWrapper extends HttpSessionWrapper {
 			if ("dev".equals(CommonUtil.getEnvironment())) {
 				if ("SPRING_SECURITY_CONTEXT".equals(arg0)) {
 					SecurityContext context = SecurityContextHolder.getContext();
-					context.setAuthentication(new UsernamePasswordAuthenticationToken("admin",
-							"21232f297a57a5a743894a0e4a801fc3"));
+					// context.setAuthentication(new
+					// UsernamePasswordAuthenticationToken("admin",
+					// "21232f297a57a5a743894a0e4a801fc3"));
 					return context;
 				}
 			}

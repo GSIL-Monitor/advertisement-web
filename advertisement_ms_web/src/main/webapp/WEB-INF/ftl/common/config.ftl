@@ -4,7 +4,7 @@
 <#assign domainUrl = domainUrl!'' />
 
 <#-- cdn -->
-<#assign cdnUrl = cdnUrl!'/ms/html' />
+<#assign cdnUrl = cdnUrl!'/html' />
 
 <#-- 时间戳 -->
 <#assign cdnFileVersion = cdnFileVersion!(.now?string('yyyyMMddhhmmss'))/>

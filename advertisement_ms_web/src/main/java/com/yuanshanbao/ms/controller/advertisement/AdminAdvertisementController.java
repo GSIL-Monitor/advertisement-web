@@ -75,6 +75,10 @@ public class AdminAdvertisementController extends PaginationController {
 	@RequestMapping("/query.do")
 	public Object query(String range, Advertisement advertisement, HttpServletRequest request,
 			HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertisement.setAdvertiserId(advertiser.getAdvertiserId());
+		}
 		Object object = advertisementService.selectAdvertisement(advertisement, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
