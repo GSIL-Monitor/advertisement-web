@@ -672,6 +672,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 				unitPrice = quotaList.get(0).getUnitPrice();
 			}
 			clickRate = NumberUtil.getPercent(clickCount, showCount);
+			if (unitPrice == null) {
+				unitPrice = new BigDecimal(0);
+			}
 			totalAmount = unitPrice.multiply(new BigDecimal(clickCount));
 			advertisementStatistics.setAdvertisementId(pro.getAdvertisementId());
 			advertisementStatistics.setAdvertiserId(adMap.get(pro.getAdvertisementId()).getAdvertiser()

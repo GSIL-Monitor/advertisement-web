@@ -93,6 +93,7 @@ public class AdminAdvertiserController extends PaginationController {
 			validateParameters(advertiser);
 			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
 			advertiser.setBindUserName(user.getUsername());
+			advertiser.setProjectId(getProjectId(request));
 			user.setPassword(encoder.encodePassword(user.getPassword(), null));
 			user.setProjectId(getProjectId(request));
 			advertiserService.insertAdvertiser(advertiser);

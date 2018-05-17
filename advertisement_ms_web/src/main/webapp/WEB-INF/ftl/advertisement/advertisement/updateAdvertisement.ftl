@@ -10,7 +10,7 @@
 			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
 				${functionTitle}管理
 			</a>
-			<a href="#" class="current">修改${itemEdit.typeContent}${functionTitle}</a>
+			<a href="#" class="current">修改${itemEdit.typeContent}</a>
 		</div>
 		<h1>修改${itemEdit.typeContent}${functionTitle}</h1>
 	</div>

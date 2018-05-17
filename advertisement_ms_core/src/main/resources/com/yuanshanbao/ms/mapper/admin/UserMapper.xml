@@ -74,7 +74,7 @@
 	<delete id="deleteUser" parameterType="String">
 		delete from tb_admin_users
 		where
-		username=#{userName} and project_id=#{projectId}
+		username=#{userName}
 	</delete>
 	
 	<update id="updateUser" parameterType="com.yuanshanbao.ms.model.admin.User">
