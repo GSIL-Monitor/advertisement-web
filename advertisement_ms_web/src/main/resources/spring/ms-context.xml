@@ -115,6 +115,7 @@
 				<prop key="template_update_delay">10</prop>
 				<prop key="locale">zh_CN</prop>
 				<prop key="template_exception_handler">ignore</prop><!-- ignore,debug,html_debug,rethrow -->
+				<prop key="log_template_exceptions">false</prop> 
 			</props>
 		</property>
 	</bean>

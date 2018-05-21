@@ -117,19 +117,25 @@ public class AdminAdvertisementController extends PaginationController {
 			if (image != null && !image.isEmpty()) {
 				advertisement.setImageUrl(UploadUtils.uploadFile(image, "file/game"));
 			}
+			LoggerUtil.info("[InsertAd] uploadImage");
 
 			validateParameters(advertisement);
+			LoggerUtil.info("[InsertAd] validateParameters");
 			String quotaType = request.getParameter("quotaType");
 			advertisement.setProjectId(getProjectId(request));
 			advertisementService.insertAdvertisement(advertisement);
+			LoggerUtil.info("[InsertAd] insertAdvertisement");
 			probability.setProjectId(getProjectId(request));
 			probability.setAdvertisementId(advertisement.getAdvertisementId());
 			probabilityService.insertProbability(probability);
+			LoggerUtil.info("[InsertAd] insertProbability");
 			quota.setProjectId(getProjectId(request));
 			quota.setType(Integer.valueOf(quotaType));
 			quota.setAdvertisementId(advertisement.getAdvertisementId());
 			quotaService.insertQuota(quota);
+			LoggerUtil.info("[InsertAd] insertQuota");
 			AdminServerController.refreshConfirm();
+			LoggerUtil.info("[InsertAd] refreshConfirm");
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
