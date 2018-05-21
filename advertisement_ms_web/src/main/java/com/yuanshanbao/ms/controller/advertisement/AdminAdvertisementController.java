@@ -112,30 +112,35 @@ public class AdminAdvertisementController extends PaginationController {
 	public Object insert(HttpServletRequest request, HttpServletResponse response, Advertisement advertisement,
 			Probability probability, Quota quota, MultipartFile image) {
 		Map<String, Object> result = new HashMap<String, Object>();
-
+		System.out.println("[InsertAd] start");
 		try {
 			if (image != null && !image.isEmpty()) {
 				advertisement.setImageUrl(UploadUtils.uploadFile(image, "file/game"));
 			}
 			LoggerUtil.info("[InsertAd] uploadImage");
-
+			System.out.println("[InsertAd] uploadImage");
 			validateParameters(advertisement);
 			LoggerUtil.info("[InsertAd] validateParameters");
+			System.out.println("[InsertAd] validateParameters");
 			String quotaType = request.getParameter("quotaType");
 			advertisement.setProjectId(getProjectId(request));
 			advertisementService.insertAdvertisement(advertisement);
 			LoggerUtil.info("[InsertAd] insertAdvertisement");
+			System.out.println("[InsertAd] insertAdvertisement");
 			probability.setProjectId(getProjectId(request));
 			probability.setAdvertisementId(advertisement.getAdvertisementId());
 			probabilityService.insertProbability(probability);
 			LoggerUtil.info("[InsertAd] insertProbability");
+			System.out.println("[InsertAd] insertProbability");
 			quota.setProjectId(getProjectId(request));
 			quota.setType(Integer.valueOf(quotaType));
 			quota.setAdvertisementId(advertisement.getAdvertisementId());
 			quotaService.insertQuota(quota);
 			LoggerUtil.info("[InsertAd] insertQuota");
+			System.out.println("[InsertAd] insertQuota");
 			AdminServerController.refreshConfirm();
 			LoggerUtil.info("[InsertAd] refreshConfirm");
+			System.out.println("[InsertAd] refreshConfirm");
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
