@@ -13,6 +13,8 @@
 		    }, {
 		    	"data": "key"
 		    }, {
+		    	"data": "typeValue"
+		    },{
 		     	"data": "entranceUrl"
 		    }, {
 		    	"data": "bonus"
@@ -20,20 +22,20 @@
 		    	"data": "statusValue"
 		    }, {
 		    	"data": "createTimeContent"
-		    	 }, {
+		    }, {
 		    	"data": null,
 		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/banner/list.do?activityId='+data.activityId+'"  class="btn btn-green">Banner配置</a>';
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/channel/list.do?activityId='+data.activityId+'"  class="btn btn-green">查看</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/channel/list.do?${functionId}='+data+'"  class="btn btn-green">渠道配置</a>';
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/channel/list.do?${functionId}='+data+'"  class="btn btn-green">修改</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue">修改活动</a>';
+		            return '<a target="_blank" href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue">删除</a>';
 		        }
 		  
 		   
@@ -73,13 +75,14 @@
 									<th>ID</th>
 									<th>活动名称</th>
 									<th>key</th>
+									<th>活动类型</th>
 									<th>入口地址</th>
 									<th>bonus</th>
 									<th>状态</th>
 									<th>创建时间</th>
-									<th>Banner配置</th>
-									<th>渠道配置</th>
-									<th>活动修改</th>									
+									<th>渠道列表</th>
+									<th>修改</th>
+									<th>删除</th>									
 								</tr>
 							</thead>
 							<tbody>

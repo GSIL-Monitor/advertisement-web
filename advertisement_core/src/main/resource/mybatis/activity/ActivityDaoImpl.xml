@@ -9,6 +9,7 @@
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="key" column="key" jdbcType="VARCHAR" />
 		<result property="entranceUrl" column="entrance_url" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -29,6 +30,9 @@
 				</if>
 				<if test="key != null">
 					`key` = #{key} and
+				</if>
+				<if test="type != null">
+					type = #{type} and
 				</if>
 				<if test="status != null">
 					status = #{status} and
@@ -53,11 +57,11 @@
 
 	<insert id="insertActivity" parameterType="Activity">
 		insert into
-		tb_activity(name, `key`, entrance_url,  
+		tb_activity(name, `key`, entrance_url,type,  
 		status, create_time, update_time)
 		values
 		(#{name}, #{key}, #{entranceUrl},  
-		#{status}, sysdate(), sysdate())
+		#{type}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="activityId">
 			SELECT LAST_INSERT_ID()
 		</selectKey>

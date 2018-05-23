@@ -30,6 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.FileUtil;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.project.model.Project;
+import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.model.admin.Group;
 import com.yuanshanbao.ms.model.admin.Menu;
@@ -42,10 +46,6 @@ import com.yuanshanbao.ms.service.admin.MenuService;
 import com.yuanshanbao.ms.service.admin.RightService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
-import com.yuanshanbao.dsp.core.CommonStatus;
-import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.project.model.Project;
-import com.yuanshanbao.dsp.project.service.ProjectService;
 
 @Controller
 @RequestMapping("/admin/user")
@@ -133,9 +133,9 @@ public class AdminUserController extends PaginationController {
 			result.put(RET_ERROR_MSG, br.getAllErrors().get(0).getDefaultMessage());
 			return result;
 		}
-		if (userService.isUserExits(user.getName())) {
+		if (userService.isUserExits(user.getUsername())) {
 			result.put(RET_CODE_PARAM, RET_INTERROR);
-			result.put(RET_ERROR_MSG, "该用户已经存在，请重新输入用户名！");
+			result.put(ComRetCode.RET_DESC, "该用户已经存在，请重新输入用户名！");
 			return result;
 		}
 

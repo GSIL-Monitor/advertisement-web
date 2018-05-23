@@ -4,13 +4,19 @@
 <@sideBar />
 <script>
 	$(document).ready(function(){
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?activityId=${activityId}";
 		dataTableConfig.columns = [{
-			"data": "key"
-		}, {
 			"data": "name"
 		}, {
+			"data": "key"
+		}, {
+			"data": "typeContent"
+		}, {
 			"data": "createTimeContent"
+		}, {
+			"data": "prizeCount"
+		}, {
+			"data": "statusContent"
 		}, {
 			"data": "${functionId}",
 			"render": function ( data, type, full, meta ) {
@@ -74,11 +80,15 @@
 					<table class="table table-bordered data-table" id="dataTable">
 						<thead>
 							<tr>
-								<th>渠道编号</th>
 								<th>渠道名称</th>
-								<th>创建时间</th>
-								<th>获客流程</th>
-								<th>修改</th>
+								<th>渠道编号</th>
+								<th>渠道类型</th>
+								<th>上线时间</th>
+								<th>奖品个数</th>
+								<th>状态</th>
+								<th>查看奖品</th>
+								<th>投放策略</th>
+								<th>操作</th>
 								<th>删除</th>
 							</tr>
 						</thead>

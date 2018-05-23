@@ -96,8 +96,13 @@ public class AdminAdvertiserController extends PaginationController {
 			advertiser.setProjectId(getProjectId(request));
 			user.setPassword(encoder.encodePassword(user.getPassword(), null));
 			user.setProjectId(getProjectId(request));
-			advertiserService.insertAdvertiser(advertiser);
+			if (userService.isUserExits(user.getUsername())) {
+				result.put(RET_CODE_PARAM, RET_INTERROR);
+				result.put(ComRetCode.RET_DESC, "该用户已经存在，请重新输入用户名！");
+				return result;
+			}
 			userService.insertUser(user);
+			advertiserService.insertAdvertiser(advertiser);
 			groupService.insertUserGroups(user.getUsername(), new String[] { "002", "002003" });
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);

@@ -36,6 +36,19 @@
                   </tr>
                   
                   <tr>
+                    <td style="width:20%;">活动类型：</td>
+                    <td>
+                      <div style="width:60%;">
+                      <select name="status" class="selectpicker form-control">
+                        <#list statusList as status>
+                        <option value="${status.key}">${status.value}</option>
+                        </#list>
+                      </select>
+                      </div>
+                    </td>
+                  </tr>
+                  
+                  <tr>
                     <td>key：</td>
                     <td>
                       <input type="text" name="key" style="width:60%;">
@@ -57,7 +70,7 @@
                   </tr>                                                 
                
                   <tr>
-                    <td>状态：</td>
+                    <td>活动状态：</td>
                     <td>
                       <div style="width:60%;">
                       <select name="status" class="selectpicker form-control">

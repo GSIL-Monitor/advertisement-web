@@ -33,8 +33,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 	private PlatformTransactionManager transactionManager;
 
 	@Override
-	public boolean isUserExits(String name) {
-		List<User> users = userMapper.queryUserByName(name);
+	public boolean isUserExits(String username) {
+		List<User> users = userMapper.queryUserByName(username);
 
 		return users != null && users.size() > 0;
 	}

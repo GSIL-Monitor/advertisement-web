@@ -20,6 +20,8 @@ public class Channel {
 	 * 渠道key值
 	 */
 	private String key;
+
+	private String activityId;
 	/**
 	 * 软件ID
 	 */
@@ -318,6 +320,14 @@ public class Channel {
 
 	public void setDeliverOrderUrl(String deliverOrderUrl) {
 		this.deliverOrderUrl = deliverOrderUrl;
+	}
+
+	public String getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(String activityId) {
+		this.activityId = activityId;
 	}
 
 }

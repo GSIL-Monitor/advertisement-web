@@ -14,6 +14,7 @@ public class Activity {
 	private Long activityId;
 	private String name;
 	private String key;
+	private String type;
 	private String entranceUrl;
 	private String imageUrl;
 	private Integer status;
@@ -90,6 +91,14 @@ public class Activity {
 
 	public String getCreateTimeContent() {
 		return DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss");
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

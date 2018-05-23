@@ -37,7 +37,7 @@
 											<td>
 												<input type="text" name="name" style="width:60%;"></td>
 										</tr>
-										<!-- <tr>
+										<tr>
 											<td>类型：</td>
 											<td>
 												<div style="width:60%;">
@@ -49,7 +49,7 @@
 												</div>
 											</td>
 										</tr>
-										<tr>
+										<!-- <tr>
 											<td>描述：</td>
 											<td>
 												<input type="text" name="description" style="width:60%;"></td>
@@ -64,28 +64,7 @@
 											<td>
 												<input type="text" name="unitPrice" style="width:60%;"></td>
 										</tr>
-										<!-- 
-										<tr>
-											<td>显示字段（逗号分割）：</td>
-											<td>
-												<input type="text" name="showFields" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>渠道回调：</td>
-											<td>
-												<input type="text" name="notifyHandler" style="width:60%;"></td>
-										</tr>
-										-->
-										<tr>
-											<td>密钥：</td>
-											<td>
-												<input type="text" name="encryptKey" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>反射接口：</td>
-											<td>
-												<input type="text" name="deliverOrderUrl" style="width:60%;"></td>
-										</tr>
+										
 										<!-- 
 						                  <tr>
 						                    <td>来源-只在平安接口传数使用（如：移动端微信支付）：</td>
@@ -111,41 +90,7 @@
 												</div>
 											</td>
 										</tr>
-										<tr>
-											<td>ios下载链接地址：</td>
-											<td>
-												<input type="text" name="iosDownloadUrl" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>android下载链链接地址：</td>
-											<td>
-												<input type="text" name="androidDownloadUrl" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>android安装包：</td>
-											<td>
-												<input type="file" name="androidFile" style="width:60%;"></td>
-										</tr>
-										<!--
-										<tr>
-											<td>添加logo：</td>
-											<td>
-												<input type="file" name="image" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>承保接口类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="deliverType" class="selectpicker form-control">
-														<option value="" selected>默认(空)</option>
-														<#list deliverTypeList as param>
-															<option value="${param.key}">${param.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
-										 -->
+										
 										<tr>
 											<td>统计展示类型：</td>
 											<td>

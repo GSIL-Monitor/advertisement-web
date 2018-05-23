@@ -39,6 +39,9 @@
 				<if test="channelId != null">
 					channel_id=#{channelId} and
 				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId} and
+				</if>
 				<if test="name != null">
 					name like CONCAT(CONCAT('%', #{name}),'%') and
 				</if>

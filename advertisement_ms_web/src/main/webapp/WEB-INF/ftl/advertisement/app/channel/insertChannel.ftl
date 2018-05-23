@@ -28,6 +28,11 @@
 								<table class="table table-bordered table-striped" id="">
 									<tbody>
 										<tr>
+											<td style="width:20%;">活动：</td>
+											<td>
+												<input type="text" name="key" style="width:60%;"></td>
+										</tr>
+										<tr>
 											<td style="width:20%;">key：</td>
 											<td>
 												<input type="text" name="key" style="width:60%;"></td>
@@ -37,7 +42,7 @@
 											<td>
 												<input type="text" name="name" style="width:60%;"></td>
 										</tr>
-										<!-- <tr>
+										<tr>
 											<td>类型：</td>
 											<td>
 												<div style="width:60%;">
@@ -53,7 +58,7 @@
 											<td>描述：</td>
 											<td>
 												<input type="text" name="description" style="width:60%;"></td>
-										</tr>-->
+										</tr>
 										<tr>
 											<td>bonus(填写数字)：</td>
 											<td>

@@ -523,7 +523,11 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			advertisementStatistics.setShowCount(showCount);
 			advertisementStatistics.setTotalAmount(totalMoney);
 			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, showCount));
-			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			if (clickCount != 0) {
+				advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			} else {
+				advertisementStatistics.setAvgPrice(totalMoney);
+			}
 			resultList.add(advertisementStatistics);
 		}
 		return resultList;
@@ -607,7 +611,11 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			advertisementStatistics.setShowCount(showCount);
 			advertisementStatistics.setTotalAmount(totalMoney);
 			advertisementStatistics.setClickRate(NumberUtil.getPercent(clickCount, showCount));
-			advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			if (clickCount != 0) {
+				advertisementStatistics.setAvgPrice(totalMoney.divide(new BigDecimal(clickCount), 2));
+			} else {
+				advertisementStatistics.setAvgPrice(totalMoney);
+			}
 			resultList.add(advertisementStatistics);
 		}
 

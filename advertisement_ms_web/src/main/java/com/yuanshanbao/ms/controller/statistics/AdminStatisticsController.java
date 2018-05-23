@@ -937,8 +937,9 @@ public class AdminStatisticsController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/taskSchedule.do")
-	public void taskSchedule(String queryChannel, AdvertisementStatistics statistics, HttpServletRequest request,
+	public Object taskSchedule(String queryChannel, AdvertisementStatistics statistics, HttpServletRequest request,
 			HttpServletResponse response, Integer days) {
+		Map<String, Object> resultMap = new HashMap<>();
 		Probability probability = new Probability();
 		if (days == null) {
 			days = 1;
@@ -948,13 +949,32 @@ public class AdminStatisticsController extends PaginationController {
 
 		List<Probability> proList = new ArrayList<Probability>();
 		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();
+		try {
+			proList = probabilityService.selectProbabilitys(probability, new PageBounds());
+			result = advertisementStatisticsService.calculateStatistics(getProjectId(request), proList, date);
+			for (AdvertisementStatistics sta : result) {
+				sta.setProjectId(getProjectId(request));
+				AdvertisementStatistics param = new AdvertisementStatistics();
+				param.setDate(date);
+				param.setAdvertisementId(sta.getAdvertisementId());
+				param.setPositionId(sta.getPositionId());
+				List<AdvertisementStatistics> existList = advertisementStatisticsService.selectAdvertisementStatistics(
+						param, new PageBounds());
+				if (existList.size() > 0) {
+					// 不作处理
+				} else {
+					advertisementStatisticsService.insertAdvertisementStatistics(sta);
+				}
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 
-		proList = probabilityService.selectProbabilitys(probability, new PageBounds());
-		result = advertisementStatisticsService.calculateStatistics(getProjectId(request), proList, date);
-		for (AdvertisementStatistics sta : result) {
-			sta.setProjectId(getProjectId(request));
-			advertisementStatisticsService.insertAdvertisementStatistics(sta);
+		} catch (Exception e) {
+			LoggerUtil.error("[advertisement statistics]: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
+		return resultMap;
 	}
 
 	@SuppressWarnings("unchecked")
