@@ -27,6 +27,7 @@
 							<div class="widget-content nopadding">
 								<table class="table table-bordered table-striped" id="">
 									<tbody>
+										<input type="hidden" name="allocateType" value="0"></td>
 										<tr>
 											<td style="width:20%;">key：</td>
 											<td>
@@ -43,17 +44,17 @@
 												<div style="width:60%;">
 													<select name="type" class="selectpicker form-control">
 														<#list typeList as type>
-															<option value="${type.tagsId}">${type.name}</option>
+															<option value="${type.key}">${type.value}</option>
 														</#list>
 													</select>
 												</div>
 											</td>
 										</tr>
-										<!-- <tr>
+										<tr>
 											<td>描述：</td>
 											<td>
 												<input type="text" name="description" style="width:60%;"></td>
-										</tr>-->
+										</tr>
 										<tr>
 											<td>bonus(填写数字)：</td>
 											<td>
@@ -78,32 +79,7 @@
 						                      <input type="text" name="deliverMediaCode" style="width:60%;"></td>
 						                  </tr>
 						                 -->
-										<tr>
-											<td>app类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="appId" class="selectpicker form-control">
-														<#list appList as param>
-															<option value="${param.key}">${param.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
 										
-										<tr>
-											<td>统计展示类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="showType" class="selectpicker form-control">
-														<option value="">默认(空)</option>
-														<#list showTypeList as param>
-															<option value="${param.key}">${param.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
 										<tr>
 											<td>状态：</td>
 											<td>

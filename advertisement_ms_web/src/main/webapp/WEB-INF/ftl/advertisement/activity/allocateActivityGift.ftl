@@ -13,7 +13,7 @@
 	</div>
 	<div class="container-fluid">
 		<div class="row-fluid">
-			<form action="${rc.contextPath}/admin/${functionName}/insert.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
+			<form action="${rc.contextPath}/admin/${functionName}/allocateGift.do?activityId=${activityId}&channel=${channel}" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
 				<div class="span12">
 					<div class="widget-box">
 						<div class="widget-title">
@@ -27,7 +27,7 @@
 										<td style="width:20%;">广告主：</td>
 										<td>
 										<#if advertiser??>
-											${advertiser.companyName}
+											${advertiser.description}
 											<input type="hidden" name="advertiserId" value="${advertiser.advertiserId}" />
 										<#else>
 											<div style="width:60%;">
@@ -41,26 +41,21 @@
 										</td>
 									</td>
 									<tr>
-										<td>广告标题：</td>
+										<td>奖品类型：</td>
 										<td>
 											<input type="text" name="title" style="width:60%;"></td>
 										</td>
 									</tr>
 									<tr>
-										<td>广告描述：</td>
+										<td>奖品名称：</td>
 										<td>
-											<input type="text" name="description" style="width:60%;"></td>
-										</td>
-									</tr>
-									<tr>
-										<td>广告链接：</td>
-										<td>
-											<input type="text" name="link" style="width:60%;"></td>
-									</tr>
-									<tr>
-										<td>图片：</td>
-										<td>
-											<input type="file" name="image" style="width:60%;">
+											<div style="width:60%;">
+												<select name="advertisementId" id="advertisementId" class="selectpicker form-control">
+													<#list advertisementList as advertisement>
+														<option value="${advertisement.advertisementId}">${advertisement.title}</option>
+													</#list>
+												</select>
+											</div>
 										</td>
 									</tr>
 									<tr>
@@ -76,13 +71,13 @@
 										</td>
 									</tr>
 									<tr>
-										<td>概率：</td>
+										<td>奖品概率：</td>
 										<td>
 											<input type="text" name="probability" style="width:60%;">
 										</td>
 									</tr>
 									<tr>
-										<td>排序：</td>
+										<td>奖品排序：</td>
 										<td>
 											<input type="text" name="sort" style="width:60%;">
 										</td>
@@ -101,6 +96,18 @@
 									</tr>
 									<tr>
 										<td>数量：</td>
+										<td>
+											<input type="text" name="count" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>每日最高限额：</td>
+										<td>
+											<input type="text" name="count" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>广告总预算：</td>
 										<td>
 											<input type="text" name="count" style="width:60%;">
 										</td>

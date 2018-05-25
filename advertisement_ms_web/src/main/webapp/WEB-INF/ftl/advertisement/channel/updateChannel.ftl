@@ -29,22 +29,17 @@
 								<table class="table table-bordered table-striped" id="">
 									<tbody>
 										<tr>
-											<td style="width:20%;">key：</td>
+											<td>名称(必须填写)：</td>
 											<td>
-												<input type="text" name="key" style="width:60%;" value="${itemEdit.key}"></td>
+												<input type="text" name="name" style="width:60%;" value="${channel.name}"></td>
 										</tr>
 										<tr>
-											<td>名称（必须填写）：</td>
-											<td>
-												<input type="text" name="name" style="width:60%;" value="${itemEdit.name}"></td>
-										</tr>
-										<!--<tr>
 											<td>类型：</td>
 											<td>
 												<div style="width:60%;">
 													<select name="type" class="selectpicker form-control">
 														<#list typeList as type>
-															<option value="${type.tagsId}"<#if itemEdit.type == type.value>selected</#if>>${type.name}</option>
+															<option value="${type.tagsId}" <#if channel.type == type.tagsId>selected</#if>>${type.name}</option>
 														</#list>
 													</select>
 												</div>
@@ -53,114 +48,40 @@
 										<tr>
 											<td>描述：</td>
 											<td>
-												<input type="text" name="description" style="width:60%;" value="${itemEdit.description}"></td>
-										</tr>  -->
+												<input type="text" name="description" style="width:60%;" value="${channel.description}"></td>
+										</tr>
 										<tr>
 											<td>bonus(填写数字)：</td>
 											<td>
-												<input type="text" name="bonus" style="width:60%;" value="${itemEdit.bonus?c}"></td>
+												<input type="text" name="bonus" style="width:60%;"></td>
 										</tr>
 										<tr>
 											<td>单价(填写数字)：</td>
 											<td>
-												<input type="text" name="unitPrice" style="width:60%;" value="${itemEdit.unitPrice?c}"></td>
+												<input type="text" name="unitPrice" style="width:60%;"></td>
 										</tr>
-										<!--<tr>
-											<td>显示字段：</td>
-											<td>
-												<input type="text" name="showFields" style="width:60%;" value="${itemEdit.showFields}"></td>
-										</tr>
-										<tr>
-											<td>渠道回调：</td>
-											<td>
-												<input type="text" name="notifyHandler" style="width:60%;" value="${itemEdit.notifyHandler}"></td>
-										</tr>-->
-										<tr>
-											<td>密钥：</td>
-											<td>
-												<input type="text" name="encryptKey" style="width:60%;" value="${itemEdit.encryptKey}"></td>
-										</tr>
-										<tr>
-											<td>反射接口：</td>
-											<td>
-												<input type="text" name="deliverOrderUrl" style="width:60%;" value="${itemEdit.deliverOrderUrl}"></td>
-										</tr>
-										<!--<tr>
-											<td>来源：</td>
-											<td>
-												<input type="text" name="mark" style="width:60%;" value="${itemEdit.mark}"></td>
-										</tr>
-										<tr>
-											<td>渠道编码：</td>
-											<td>
-												<input type="text" name="deliverMediaCode" style="width:60%;" value="${itemEdit.deliverMediaCode}"></td>
-										</tr>-->
-										<tr>
-											<td>app类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="appId" class="selectpicker form-control">
-														<#list appList as param>
-															<option value="${param.key}"<#if itemEdit.appId == param.key>selected</#if>>${param.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>ios下载链接地址：</td>
-											<td>
-												<input type="text" name="iosDownloadUrl" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>android下载链链接地址：</td>
-											<td>
-												<input type="text" name="androidDownloadUrl" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>android安装包：</td>
-											<td>
-												<input type="file" name="androidFile" style="width:60%;"></td>
-										</tr>
-										<!--
-										<tr>
-											<td>添加logo：</td>
-											<td>
-												<input type="file" name="image" style="width:60%;"></td>
-										</tr>
-										<tr>
-											<td>承保接口类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="deliverType" class="selectpicker form-control">
-														<option value="" selected>默认(空)</option>
-														<#list deliverTypeList as param>
-															<option value="${param.key}"<#if itemEdit.deliverType == param.key>selected</#if>>${param.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>-->
-										<tr>
-											<td>统计展示类型：</td>
-											<td>
-												<div style="width:60%;">
-													<select name="showType" class="selectpicker form-control">
-														<option value="">默认(空)</option>
-														<#list showTypeList as param>
-															<option value="${param.key}"<#if itemEdit.showType == param.key>selected</#if>>${param.value}</option>
-														</#list>
-													</select>
-												</div>
-											</td>
-										</tr>
+										
+										<!-- 
+						                  <tr>
+						                    <td>来源-只在平安接口传数使用（如：移动端微信支付）：</td>
+						                    <td>
+						                      <input type="text" name="mark" style="width:60%;"></td>
+						                  </tr>
+						                  
+						                  <tr>
+						                    <td>渠道编码：</td>
+						                    <td>
+						                      <input type="text" name="deliverMediaCode" style="width:60%;"></td>
+						                  </tr>
+						                 -->
+										
 										<tr>
 											<td>状态：</td>
 											<td>
 												<div style="width:60%;">
 													<select name="status" class="selectpicker form-control">
 														<#list statusList as status>
-															<option value="${status.key}"<#if itemEdit.status == status.key>selected</#if>>${status.value}</option>
+															<option value="${status.key}" <#if channel.status == status.key>selected</#if>>${status.value}</option>
 														</#list>
 													</select>
 												</div>

@@ -37,6 +37,9 @@
 				<if test="activityId != null">
 					activity_id = #{activityId} and
 				</if>
+				<if test="activityId != null">
+					activity_id = #{activityId} and
+				</if>
 				<if test="positionId != null">
 					position_id = #{positionId} and
 				</if>

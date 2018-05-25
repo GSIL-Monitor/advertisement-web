@@ -14,20 +14,23 @@
 		    	"data": "key"
 		    }, {
 		    	"data": "typeValue"
-		    },{
-		     	"data": "entranceUrl"
-		    }, {
-		    	"data": "bonus"
-		    }, {
-		    	"data": "statusValue"
 		    }, {
 		    	"data": "createTimeContent"
 		    }, {
+		     	"data": "entranceUrl"
+		    }, {
+		    	"data": "statusValue"
+		    },  {
 		    	"data": null,
 		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/channel/list.do?activityId='+data.activityId+'"  class="btn btn-green">查看</a>';
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/giftList.do?activityId='+data.activityId+'"  class="btn btn-green">活动奖品列表</a>';
 		        }
-		    }, {
+		    },  {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/listChannel.do?activityId='+data.activityId+'"  class="btn btn-green">渠道列表</a>';
+		        }
+		    },  {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
 		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/channel/list.do?${functionId}='+data+'"  class="btn btn-green">修改</a>';
@@ -76,10 +79,10 @@
 									<th>活动名称</th>
 									<th>key</th>
 									<th>活动类型</th>
+									<th>创建时间</th> 
 									<th>入口地址</th>
-									<th>bonus</th>
 									<th>状态</th>
-									<th>创建时间</th>
+									<th>活动奖品列表</th>
 									<th>渠道列表</th>
 									<th>修改</th>
 									<th>删除</th>									

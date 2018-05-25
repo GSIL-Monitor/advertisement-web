@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface AdvertisementService {
@@ -35,4 +36,5 @@ public interface AdvertisementService {
 
 	public Map<String, Object> countAdvertisementSize(Advertisement advertisement);
 
+	public List<AdvertisementVo> selectGift(String activityId, String channel);
 }

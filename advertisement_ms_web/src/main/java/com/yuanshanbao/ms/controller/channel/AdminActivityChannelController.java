@@ -1,6 +1,7 @@
 package com.yuanshanbao.ms.controller.channel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,11 +13,16 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
@@ -61,11 +67,48 @@ public class AdminActivityChannelController extends PaginationController {
 	public Object insert(String range, Channel channel, HttpServletRequest request, HttpServletResponse response,
 			ModelMap modelMap) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		channelService.insertChannel(channel);
-		InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		try {
+			channelService.insertChannel(channel);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("channel insert function ", e2);
+		}
 		return result;
 	}
 
 	private void setProperty(HttpServletRequest request) {
+		request.setAttribute("typeList", ChannelType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
 	}
+
+	@RequestMapping("/updateWindow.do")
+	public String updateWindow(Channel channel, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		List<Channel> list = channelService.selectChannels(channel, new PageBounds());
+		if (list != null && list.size() > 0) {
+			channel = list.get(0);
+		}
+		request.setAttribute("channel", channel);
+		setProperty(request);
+		return PAGE_UPDATE;
+	}
+
+	@ResponseBody
+	@RequestMapping("/update.do")
+	public Object update(String range, Channel channel, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			channelService.updateChannel(channel);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("channel update function ", e2);
+		}
+		return result;
+	}
+
 }

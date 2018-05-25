@@ -65,6 +65,10 @@ public class AdminAdvertisementController extends PaginationController {
 
 	@RequestMapping("/list.do")
 	public String list(Long advertiserId, HttpServletRequest request, HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertiserId = advertiser.getAdvertiserId();
+		}
 		request.setAttribute("advertiserId", advertiserId);
 		setProperty(request, getProjectId(request), advertiserId);
 		return PAGE_LIST;

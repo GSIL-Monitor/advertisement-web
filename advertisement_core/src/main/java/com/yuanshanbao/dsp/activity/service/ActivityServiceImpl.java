@@ -111,6 +111,7 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 		Activity param = new Activity();
 		param.setKey(key);
+
 		List<Activity> list = selectActivitys(param, new PageBounds());
 		for (Activity activity : list) {
 			if (key.equals(activity.getKey())) {

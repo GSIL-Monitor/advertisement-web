@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import com.yuanshanbao.dsp.advertisement.dao.AdvertisementDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
@@ -346,4 +348,40 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			}
 		}
 	}
+
+	public List<AdvertisementVo> selectGift(String activityId, String channel) {
+		Map<Long, Probability> proMap = new HashMap<Long, Probability>();
+		Map<Long, Quota> quotaMap = new HashMap<Long, Quota>();
+		Probability probability = new Probability();
+		Quota quota = new Quota();
+		List<AdvertisementVo> result = new ArrayList<AdvertisementVo>();
+		List<Long> advertisementIds = new ArrayList<Long>();
+		Map<Long, Advertisement> adMap = new HashMap<Long, Advertisement>();
+
+		probability.setActivityId(Long.valueOf(activityId));
+		quota.setActivityId(Long.valueOf(activityId));
+		if (!StringUtils.isBlank(channel)) {
+			probability.setChannel(channel);
+			quota.setChannel(channel);
+		}
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(probability, new PageBounds());
+		List<Quota> quotaList = quotaService.selectQuota(quota, new PageBounds());
+		for (Probability pro : probabilityList) {
+			proMap.put(pro.getAdvertisementId(), pro);
+			advertisementIds.add(pro.getAdvertisementId());
+		}
+		for (Quota quo : quotaList) {
+			quotaMap.put(quo.getAdvertisementId(), quo);
+		}
+		adMap = selectAdvertisementByIds(advertisementIds);
+		for (Long advertisementId : advertisementIds) {
+			AdvertisementVo adVo = new AdvertisementVo(adMap.get(advertisementId));
+			adVo.setAdvertisementId(advertisementId);
+			adVo.setProbability(proMap.get(advertisementId));
+			adVo.setQuota(quotaMap.get(advertisementId));
+			result.add(adVo);
+		}
+		return result;
+	}
+
 }

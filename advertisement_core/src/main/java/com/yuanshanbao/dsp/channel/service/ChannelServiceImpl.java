@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
-import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.channel.dao.ChannelDao;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -35,14 +34,14 @@ public class ChannelServiceImpl implements ChannelService {
 	private List<Channel> setProperty(List<Channel> list) {
 		List<Long> idsList = new ArrayList<Long>();
 
-		for (Channel channel : list) {
-			idsList.add(channel.getAppId());
-		}
-
-		for (Channel channel : list) {
-			channel.setAppKey(AppType.getkey(channel.getAppId()));
-			channel.setAppName(AppType.getDescription(channel.getAppKey()));
-		}
+		// for (Channel channel : list) {
+		// idsList.add(channel.getAppId());
+		// }
+		//
+		// for (Channel channel : list) {
+		// channel.setAppKey(AppType.getkey(channel.getAppId()));
+		// channel.setAppName(AppType.getDescription(channel.getAppKey()));
+		// }
 		return list;
 
 	}

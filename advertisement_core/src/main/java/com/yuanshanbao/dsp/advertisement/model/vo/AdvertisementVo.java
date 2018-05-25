@@ -1,6 +1,8 @@
 package com.yuanshanbao.dsp.advertisement.model.vo;
 
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.quota.model.Quota;
 
 public class AdvertisementVo {
 
@@ -9,6 +11,9 @@ public class AdvertisementVo {
 	private String subTitle;
 	private String imageUrl;
 	private String link;
+	private Probability probability;
+	private Quota quota;
+
 	public AdvertisementVo() {
 		super();
 	}
@@ -60,5 +65,21 @@ public class AdvertisementVo {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	public Probability getProbability() {
+		return probability;
+	}
+
+	public void setProbability(Probability probability) {
+		this.probability = probability;
+	}
+
+	public Quota getQuota() {
+		return quota;
+	}
+
+	public void setQuota(Quota quota) {
+		this.quota = quota;
 	}
 }
