@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ActivityCombine">
+
+	<resultMap id="activityCombineMap" type="ActivityCombine">
+		<id property="activityCombineId" column="activity_combine_id" jdbcType="NUMERIC" />
+		<result property="parentId" column="parent_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="sort" column="sort" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectActivityCombine" parameterType="ActivityCombine" resultMap="activityCombineMap">
+		select
+		* from
+		tb_activity_combine t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="parentId != null">
+					parent_id=#{parentId} and
+				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+
+	<insert id="insertActivityCombine" parameterType="ActivityCombine">
+		insert into
+		tb_activity_combine(parent_id,activity_id,
+		sort,status, create_time, update_time)
+		values
+		(#{parentId},#{activityId}, #{sort}, 
+		 #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="activityCombineId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateActivityCombine" parameterType="ActivityCombine">
+		update tb_activity_combine
+		<set>
+			<trim suffixOverrides=",">
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			activity_combine_id=#{activityCombineId}
+		</where>
+	</update>
+
+	<delete id="deleteActivityCombine" parameterType="long">
+		delete from tb_activity
+		where
+		activity_combine_id=#{activityCombineId}
+	</delete>
+
+</mapper>

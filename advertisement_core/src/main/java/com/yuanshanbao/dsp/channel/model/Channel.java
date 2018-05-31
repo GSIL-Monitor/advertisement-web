@@ -21,7 +21,7 @@ public class Channel {
 	 */
 	private String key;
 
-	private String activityId;
+	private Long activityId;
 
 	/**
 	 * 类型，用于分类使用
@@ -74,6 +74,7 @@ public class Channel {
 	 * 状态
 	 */
 	private Integer allocateType;
+	private Integer independent;
 	/**
 	 * 创建时间
 	 */
@@ -238,11 +239,11 @@ public class Channel {
 		this.deliverOrderUrl = deliverOrderUrl;
 	}
 
-	public String getActivityId() {
+	public Long getActivityId() {
 		return activityId;
 	}
 
-	public void setActivityId(String activityId) {
+	public void setActivityId(Long activityId) {
 		this.activityId = activityId;
 	}
 
@@ -272,6 +273,14 @@ public class Channel {
 
 	public String getAllocateTypeValue() {
 		return ChannelAllocateStatus.getDescription(allocateType);
+	}
+
+	public Integer getIndependent() {
+		return independent;
+	}
+
+	public void setIndependent(Integer independent) {
+		this.independent = independent;
 	}
 
 }

@@ -14,10 +14,11 @@ public class Activity {
 	private Long activityId;
 	private String name;
 	private String key;
-	private String type;
+	private Integer type;
 	private String entranceUrl;
 	private String imageUrl;
 	private Integer status;
+	private Integer combination;
 	private Timestamp createTime;
 	private Timestamp updateTime;
 
@@ -93,12 +94,24 @@ public class Activity {
 		return DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss");
 	}
 
-	public String getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getTypeValue() {
+		return ActivityType.getDescription(type);
+	}
+
+	public Integer getCombination() {
+		return combination;
+	}
+
+	public void setCombination(Integer combination) {
+		this.combination = combination;
 	}
 
 }

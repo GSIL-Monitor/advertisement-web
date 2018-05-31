@@ -20,6 +20,7 @@ public class Probability {
 	private Integer sort;
 	private Timestamp startTime;
 	private Timestamp endTime;
+	private Integer displayType;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
@@ -169,5 +170,13 @@ public class Probability {
 
 	public void setAdvertiserId(Long advertiserId) {
 		this.advertiserId = advertiserId;
+	}
+
+	public Integer getDisplayType() {
+		return displayType;
+	}
+
+	public void setDisplayType(Integer displayType) {
+		this.displayType = displayType;
 	}
 }

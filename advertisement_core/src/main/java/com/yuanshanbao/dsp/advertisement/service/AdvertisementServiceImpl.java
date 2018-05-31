@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
@@ -21,6 +22,7 @@ import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.position.model.Position;
@@ -66,6 +68,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	@Autowired
 	private AdvertisementStrategyService strategyService;
+
+	@Autowired
+	private ChannelService channelService;
+
+	@Autowired
+	private ActivityService activityService;
 
 	@Override
 	public void insertAdvertisement(Advertisement advertisement) {
@@ -384,4 +392,53 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		return result;
 	}
 
+	public List<Advertisement> getGift(Long projectId, String activityKey, String channelKey, Instance instance) {
+		List<Advertisement> advertismentList = new ArrayList<Advertisement>();
+		List<Probability> probabilityList = probabilityService.selectProbabilityByKeyFromCache(projectId, activityKey,
+				channelKey, null);
+		Map<Long, Probability> advertisementIdMap = new LinkedHashMap<Long, Probability>();
+		for (Probability probability : probabilityList) {
+			if (probability.getStartTime() != null) {
+				if (probability.getStartTime().after(new Date())) {
+					continue;
+				}
+			}
+			if (probability.getEndTime() != null) {
+				if (probability.getEndTime().before(new Date())) {
+					continue;
+				}
+			}
+			advertisementIdMap.put(probability.getAdvertisementId(), probability);
+		}
+		if (advertisementIdMap.size() == 0) {
+			return advertismentList;
+		}
+
+		List<Long> resultAdvertisementIdList = new ArrayList<Long>();
+		Double totalProbability = 0D;
+		for (Probability probability : advertisementIdMap.values()) {
+			if (probability.getProbability() == null) {
+				continue;
+			} else {
+				totalProbability += probability.getProbability();
+			}
+
+		}
+
+		for (Probability probability : advertisementIdMap.values()) {
+			if (probability.getProbability() != null) {
+				double random = Math.random() * totalProbability;
+				if (random < probability.getProbability()) {
+					resultAdvertisementIdList.add(probability.getAdvertisementId());
+					break;
+				} else {
+					totalProbability -= probability.getProbability();
+				}
+			} else {
+				continue;
+			}
+		}
+
+		return advertismentList;
+	}
 }

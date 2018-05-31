@@ -57,6 +57,7 @@
         
         <typeAlias type="com.yuanshanbao.dsp.information.model.FieldConstrains" alias="FieldConstrains"/>
         <typeAlias type="com.yuanshanbao.dsp.prize.model.Prize" alias="Prize"/>
+        <typeAlias type="com.yuanshanbao.dsp.activity.model.ActivityCombine" alias="ActivityCombine"/>
     </typeAliases>
 
     <mappers>
@@ -105,5 +106,6 @@
         <mapper resource="mybatis/probability/ProbabilityDaoImpl.xml"/>
         <mapper resource="mybatis/quota/QuotaDaoImpl.xml"/>
         <mapper resource="mybatis/prize/PrizeDaoImpl.xml"/>
+        <mapper resource="mybatis/activity/ActivityCombineDaoImpl.xml"/>
     </mappers>
 </configuration>

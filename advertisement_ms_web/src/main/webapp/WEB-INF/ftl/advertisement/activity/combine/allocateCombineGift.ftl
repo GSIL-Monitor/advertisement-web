@@ -8,7 +8,8 @@
 			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
 				${functionTitle}管理
 			</a>
-			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">添加奖品</a>
+			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">奖品管理</a>
+			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">配置渠道奖品</a>
 		</div>
 	</div>
 	<div class="container-fluid">
@@ -132,6 +133,18 @@
 										<td>单价：</td>
 										<td>
 											<input type="text" name="unitPrice" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>展示状态：</td>
+										<td>
+											<div style="width:60%;">
+												<select name="status" class="selectpicker form-control">
+													<#list displayList as display>
+														<option value="${display.key}">${display.value}</option>
+													</#list>
+												</select>
+											</div>
 										</td>
 									</tr>
 									<tr>

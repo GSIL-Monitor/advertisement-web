@@ -148,4 +148,20 @@ public class ChannelServiceImpl implements ChannelService {
 		return map;
 	}
 
+	@Override
+	public Channel selectChannelByKey(String key) {
+		Channel channel = new Channel();
+		if (StringUtils.isBlank(key)) {
+			return null;
+		}
+		List<String> keys = new ArrayList<String>();
+		keys.add(key);
+		List<Channel> channelList = channelDao.selectChannelByKeys(keys);
+		if (channelList.size() > 0) {
+			channel = channelList.get(0);
+			return channel;
+		} else {
+			return null;
+		}
+	}
 }

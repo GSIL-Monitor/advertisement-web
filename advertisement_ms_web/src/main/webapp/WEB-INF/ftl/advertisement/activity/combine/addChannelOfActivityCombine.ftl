@@ -11,6 +11,7 @@
         ${functionTitle}管理
       </a>
       <a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">${functionTitle}管理</a>
+      <a href="#" class="current">${functionTitle}添加渠道</a>
     </div>
     <h1>添加${functionTitle}</h1>
   </div>

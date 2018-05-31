@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementDisplayType;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
@@ -276,4 +278,111 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return resultList;
 	}
 
+	@Override
+	public List<Probability> selectProbabilityByKeyFromCache(Long projectId, String activityKey, String channelKey,
+			List<Long> advertisementIdList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		List<Probability> activityProList = new ArrayList<Probability>();
+		List<Probability> channelProList = new ArrayList<Probability>();
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
+		Channel channel = ConfigManager.getChannel(channelKey);
+		if (channel == null) {
+			LoggerUtil.info("未找到对应渠道,channelKey={}", channelKey);
+			throw new BusinessException();
+		}
+		if (activity == null) {
+			LoggerUtil.info("未找到对应活动,activitykey={}", activityKey);
+			throw new BusinessException();
+		}
+		if (projectId == null) {
+			return resultList;
+		}
+		List<Probability> probabilityList = ConstantsManager.getProbabilityList(projectId);
+		if (probabilityList == null) {
+			return resultList;
+		}
+		if (isCombination(activity.getCombination())) {
+			resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey, probabilityList);
+		} else {
+			if (isIndependent(channel.getIndependent())) {
+				resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
+						probabilityList);
+			} else {
+				activityProList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
+				channelProList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
+						probabilityList);
+				resultList = dealProbabilityConfig(activityProList, channelProList);
+			}
+		}
+		return resultList;
+	}
+
+	private List<Probability> selectProbabilityByActivityId(Long activityId, List<Probability> probabilityList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		for (Probability probability : probabilityList) {
+			if (activityId.equals(probability.getActivityId()) && probability.getChannel() == null) {
+				resultList.add(probability);
+			}
+		}
+		return resultList;
+	}
+
+	private List<Probability> selectProbabilityByChannelAndActivityKey(Long activityId, String channelKey,
+			List<Probability> probabilityList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		for (Probability probability : probabilityList) {
+			if (activityId.equals(probability.getActivityId()) && channelKey.equals(probability.getChannel())) {
+				resultList.add(probability);
+			}
+		}
+		return resultList;
+	}
+
+	private boolean isCombination(Integer combination) {
+		if (combination.equals(0)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private boolean isIndependent(Integer independent) {
+		if (independent.equals(0)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private List<Probability> dealProbabilityConfig(List<Probability> activityProList, List<Probability> channelProList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		for (Probability probability : channelProList) {
+			activityProList = dealDisplayType(probability, activityProList);
+		}
+		resultList = activityProList;
+		return resultList;
+	}
+
+	private List<Probability> dealDisplayType(Probability probability, List<Probability> activityProList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		if (probability.getDisplayType().equals(AdvertisementDisplayType.ADD)) {
+			activityProList.add(probability);
+		} else {
+			ListIterator<Probability> it = activityProList.listIterator();
+			while (it.hasNext()) {
+				Probability pro = it.next();
+				if (probability.getAdvertisementId().equals(pro.getAdvertisementId())) {
+					if (probability.getDisplayType().equals(AdvertisementDisplayType.COVER)) {
+						it.remove();
+						it.set(probability);
+					}
+					if (probability.getDisplayType().equals(AdvertisementDisplayType.DELETE)) {
+						it.remove();
+					}
+				}
+			}
+		}
+		resultList = activityProList;
+		return resultList;
+	}
 }

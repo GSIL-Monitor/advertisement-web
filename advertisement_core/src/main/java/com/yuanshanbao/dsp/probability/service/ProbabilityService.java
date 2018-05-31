@@ -33,4 +33,6 @@ public interface ProbabilityService {
 
 	public List<Probability> selectProbabilityFromCache(Long projectId, Long positionId, List<Long> advertisementIdList);
 
+	public List<Probability> selectProbabilityByKeyFromCache(Long projectId, String activityKey, String channelKey,
+			List<Long> advertisementIdList);
 }

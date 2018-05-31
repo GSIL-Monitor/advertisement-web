@@ -19,6 +19,7 @@ public class Quota {
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private BigDecimal unitPrice;
+	private Integer displayType;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
@@ -151,6 +152,14 @@ public class Quota {
 
 	public void setAdvertisementId(Long advertisementId) {
 		this.advertisementId = advertisementId;
+	}
+
+	public Integer getDisplayType() {
+		return displayType;
+	}
+
+	public void setDisplayType(Integer displayType) {
+		this.displayType = displayType;
 	}
 
 }

@@ -25,4 +25,6 @@ public interface ChannelService {
 	public Channel selectChannel(String key);
 
 	public Map<String, Channel> selectChannelByKeys(List<String> keys);
+
+	public Channel selectChannelByKey(String key);
 }

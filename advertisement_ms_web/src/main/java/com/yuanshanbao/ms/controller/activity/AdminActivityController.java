@@ -22,13 +22,16 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementDisplayType;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStatus;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.model.ChannelAllocateStatus;
+import com.yuanshanbao.dsp.channel.model.ChannelIndependentStatus;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.ConfigService;
@@ -38,6 +41,7 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -62,6 +66,8 @@ public class AdminActivityController extends PaginationController {
 	private static final String PAGE_LIST_GIFT = "advertisement/activity/listGift";
 
 	private static final String PAGE_ALLOCATE_GIFT = "advertisement/activity/allocateActivityGift";
+
+	private static final String PAGE_ALLOCATE__CHANNEL_GIFT = "advertisement/activity/allocateChannelGift";
 
 	private static final String PAGE_CONFIG = "advertisement/activity/configActivity";
 
@@ -121,6 +127,7 @@ public class AdminActivityController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Activity activity, HttpServletRequest request, HttpServletResponse response) {
+		activity.setCombination(0);
 		Object object = activityService.selectActivitys(activity, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
@@ -366,6 +373,7 @@ public class AdminActivityController extends PaginationController {
 		Channel params = new Channel();
 		params.setAllocateType(ChannelAllocateStatus.UNALLOCATED);
 		request.setAttribute("channelList", channelService.selectChannels(params, new PageBounds()));
+		request.setAttribute("independentList", ChannelIndependentStatus.getCodeDescriptionMap().entrySet());
 		return PAGE_CHANNEL_ALLOCATE;
 	}
 
@@ -377,7 +385,8 @@ public class AdminActivityController extends PaginationController {
 		Channel resultChannel = channelService.selectChannel(channel.getChannelId());
 		try {
 			if (resultChannel != null) {
-				resultChannel.setActivityId(resultChannel.getActivityId());
+				resultChannel.setActivityId(channel.getActivityId());
+				resultChannel.setIndependent(channel.getIndependent());
 				resultChannel.setAllocateType(ChannelAllocateStatus.ALLOCATED);
 				channelService.updateChannel(resultChannel);
 			}
@@ -419,11 +428,22 @@ public class AdminActivityController extends PaginationController {
 	public String allocateGiftWindow(String activityId, String channel, HttpServletRequest request,
 			HttpServletResponse response, ModelMap modelMap) {
 		List<Advertisement> list = advertisementService.selectAdvertisement(new Advertisement(), new PageBounds());
+		request.setAttribute("advertisementList", list);
+		setProperty(request, activityId, channel);
+		if (StringUtils.isBlank(channel)) {
+			return PAGE_ALLOCATE_GIFT;
+		} else {
+			return PAGE_ALLOCATE__CHANNEL_GIFT;
+		}
+	}
+
+	private void setProperty(HttpServletRequest request, String activityId, String channel) {
 		request.setAttribute("activityId", activityId);
 		request.setAttribute("channel", channel);
-		request.setAttribute("advertisementList", list);
+		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("statusList", AdvertisementStatus.getCodeDescriptionMap().entrySet());
-		return PAGE_ALLOCATE_GIFT;
+		request.setAttribute("displayList", AdvertisementDisplayType.getCodeDescriptionMap().entrySet());
 	}
 
 	@ResponseBody

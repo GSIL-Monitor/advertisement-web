@@ -10,14 +10,15 @@
       <a href="#" title="${functionTitle}管理" class="tip-bottom"> <i class="icon-book"></i>
         ${functionTitle}管理
       </a>
-      <a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">${functionTitle}管理</a>
+      <a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">${functionTitle}列表</a>
+      <a href="#" class="current">${functionTitle}添加活动</a>
     </div>
     <h1>添加${functionTitle}</h1>
   </div>
   <div class="container-fluid">
     <hr>
     <div class="row-fluid">
-      <form action="${rc.contextPath}/admin/${functionName}/allocateChannel.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
+      <form action="${rc.contextPath}/admin/${functionName}/addActivity.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
         <div class="span12">
           <div class="widget-box">
             <div class="widget-title">
@@ -26,40 +27,27 @@
             </div>
             <div class="widget-content nopadding">
               <table class="table table-bordered table-striped" id="">
+              	<input type="hidden" name="parentId"  value = "${activityId}" style="width:60%;">
                 <tbody>
-					<input type="hidden" name="activityId" style="width:60%;" value="${activityId}">                
                   <tr>
                     <td style="width:20%;">活动名称：</td>
                     <td>
-                      <input type="text" name="" style="width:60%;" value="${activityName}">
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td style="width:20%;">渠道名称：</td>
-                    <td>
-                      	<div style="width:60%;">
-							<select name="channelId" id="channelId" class="selectpicker form-control">
-								<#list channelList as channel>
-									<option value="${channel.channelId}">${channel.name}</option>
-								</#list>
-							</select>
-						</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width:20%;">是否需要独立配置：</td>
-                    <td>
-                      	<div style="width:60%;">
-							<select name="independent" id="independent" class="selectpicker form-control">
-								<#list independentList as independent>
-									<option value="${independent.key}">${independent.value}</option>
+                      <div style="width:60%;">
+							<select name="activityId" id="activityId" class="selectpicker form-control">
+								<#list activityList as activity>
+									<option value="${activity.activityId}">${activity.name}</option>
 								</#list>
 							</select>
 						</div>
                     </td>
                   </tr>
                   
+                  <tr>
+                    <td style="width:20%;">活动排列序号：</td>
+                    <td>
+                    	<input type="text" name="sort" style="width:60%;">
+                    </td>
+                  </tr>
                   <tr>
                     <td>状态：</td>
                     <td>

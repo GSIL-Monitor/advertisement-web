@@ -1,15 +1,15 @@
-package com.yuanshanbao.dsp.core;
+package com.yuanshanbao.dsp.activity.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CommonStatus {
+public class ActivityStatus {
 
 	protected static Map<Integer, String> codeDescriptionMap = new LinkedHashMap<Integer, String>();
 
 	public static final int ONLINE = 1;
 	public static final String ONLINE_DESCRIPTION = "上线";
-	public static final int OFFLINE = -1;
+	public static final int OFFLINE = 0;
 	public static final String OFFLINE_DESCRIPTION = "下线";
 
 	static {

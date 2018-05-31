@@ -111,4 +111,22 @@ public class AdminActivityChannelController extends PaginationController {
 		return result;
 	}
 
+	@ResponseBody
+	@RequestMapping("/delete.do")
+	public Object delete(String range, Long channelId, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			Channel channel = new Channel();
+			channel.setChannelId(channelId);
+			channel.setStatus(CommonStatus.OFFLINE);
+			channelService.updateChannel(channel);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("channel delete function ", e2);
+		}
+		return result;
+	}
 }

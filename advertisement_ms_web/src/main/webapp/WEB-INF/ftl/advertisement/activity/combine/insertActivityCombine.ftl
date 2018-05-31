@@ -17,7 +17,7 @@
   <div class="container-fluid">
     <hr>
     <div class="row-fluid">
-      <form action="${rc.contextPath}/admin/${functionName}/allocateChannel.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
+      <form action="${rc.contextPath}/admin/${functionName}/insert.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
         <div class="span12">
           <div class="widget-box">
             <div class="widget-title">
@@ -27,41 +27,50 @@
             <div class="widget-content nopadding">
               <table class="table table-bordered table-striped" id="">
                 <tbody>
-					<input type="hidden" name="activityId" style="width:60%;" value="${activityId}">                
+               
                   <tr>
                     <td style="width:20%;">活动名称：</td>
                     <td>
-                      <input type="text" name="" style="width:60%;" value="${activityName}">
+                      <input type="text" name="name" style="width:60%;">
                     </td>
                   </tr>
                   
                   <tr>
-                    <td style="width:20%;">渠道名称：</td>
+                    <td style="width:20%;">活动类型：</td>
                     <td>
-                      	<div style="width:60%;">
-							<select name="channelId" id="channelId" class="selectpicker form-control">
-								<#list channelList as channel>
-									<option value="${channel.channelId}">${channel.name}</option>
-								</#list>
-							</select>
-						</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="width:20%;">是否需要独立配置：</td>
-                    <td>
-                      	<div style="width:60%;">
-							<select name="independent" id="independent" class="selectpicker form-control">
-								<#list independentList as independent>
-									<option value="${independent.key}">${independent.value}</option>
-								</#list>
-							</select>
-						</div>
+                      <div style="width:60%;">
+                      <select name="status" class="selectpicker form-control">
+                        <#list statusList as status>
+                        <option value="${status.key}">${status.value}</option>
+                        </#list>
+                      </select>
+                      </div>
                     </td>
                   </tr>
                   
                   <tr>
-                    <td>状态：</td>
+                    <td>key：</td>
+                    <td>
+                      <input type="text" name="key" style="width:60%;">
+                    </td>
+                  </tr>
+                  
+                  <tr>
+                    <td>入口地址：</td>
+                    <td>
+                      <input type="text" name="entranceUrl" style="width:60%;">
+                    </td>
+                  </tr>
+                  
+                  <tr>
+                    <td>bonus：</td>
+                    <td>
+                      <input type="text" name="bonus" style="width:60%;">
+                    </td>
+                  </tr>                                                 
+               
+                  <tr>
+                    <td>活动状态：</td>
                     <td>
                       <div style="width:60%;">
                       <select name="status" class="selectpicker form-control">
