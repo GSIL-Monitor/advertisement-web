@@ -26,13 +26,20 @@ public class RedisConstant {
 	public final static String PREFIX_LOG_HITS = "advertisement_log:hits:";
 
 	public static final String ADVERTISEMENT_CLICK_PV_COUNT = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
-	public static final String ADVERTISEMENT_CHANNEL = "advertisement_channel" + COMMON_REDIS_PREFIX;
 	public static final String UV_COUNT = "uv_stat_count" + COMMON_REDIS_PREFIX;
 	public static final String RESULT_PAGE_CHANNEL = "result_page_channel" + COMMON_REDIS_PREFIX;
 
 	public static final String QUOTA_COUNT = "quota_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_SHOW_COUNT = "advertisement_show_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT = "advertisement_click_count" + COMMON_REDIS_PREFIX;
+
+	public static final String ADVERTISEMENT_CHANNEL = "advertisement_channel" + COMMON_REDIS_PREFIX;
+	public static final String ADVERTISEMENT_CHANNEL_AND_ID = "advertisement_channel_and_id" + COMMON_REDIS_PREFIX;
+
+	public static final String ADVERTISEMENT_SHOW_COUNT_PV = "advertisement_show_count_pv" + COMMON_REDIS_PREFIX;
+	public static final String ADVERTISEMENT_SHOW_COUNT_UV = "advertisement_show_count_uv" + COMMON_REDIS_PREFIX;
+	public static final String ADVERTISEMENT_CLICK_COUNT_PV = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
+	public static final String ADVERTISEMENT_CLICK_COUNT_UV = "advertisement_click_count_uv" + COMMON_REDIS_PREFIX;
 
 	// token过期时间
 	public static int EXPIRE_LOGIN_TOKEN = IniCache.getIniIntValue(IniConstant.TOKEN_CACHE_TIME, 24 * 60 * 60);
@@ -151,5 +158,43 @@ public class RedisConstant {
 	public static String getAdvertisementClickCountKey(Long advertisementId, Long positionId) {
 		return getCachePrefix(ADVERTISEMENT_CLICK_COUNT, DateUtils.format(new Date()) + "_" + advertisementId + "_"
 				+ positionId);
+	}
+
+	// -------------------------------------------------------------------------------------------------------------------------------
+	public static String getAdvertisementShowCountPVKey(String date, Long advertisementId, String channel) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISEMENT_SHOW_COUNT_PV, date + "_" + advertisementId + "_" + channel);
+	}
+
+	public static String getAdvertisementClickCountPVKey(String date, Long advertisementId, String channel) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISEMENT_CLICK_COUNT_PV, date + "_" + advertisementId + "_" + channel);
+	}
+
+	public static String getAdvertisementShowCountUVKey(String date, Long advertisementId, String channel) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISEMENT_SHOW_COUNT_UV, date + "_" + advertisementId + "_" + channel);
+	}
+
+	public static String getAdvertisementClickCountUVKey(String date, Long advertisementId, String channel) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISEMENT_CLICK_COUNT_UV, date + "_" + advertisementId + "_" + channel);
+	}
+
+	// 渠道下广告
+	public static String getAdvertisementChannelAndIdKey() {
+		return getAdvertisementChannelAndIdKey(DateUtils.format(new Date()));
+	}
+
+	public static String getAdvertisementChannelAndIdKey(String date) {
+		return getCachePrefix(ADVERTISEMENT_CHANNEL_AND_ID, date);
 	}
 }

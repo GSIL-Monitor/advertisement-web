@@ -1005,4 +1005,22 @@ public class AdminStatisticsController extends PaginationController {
 		result.put("path", path);
 		return result;
 	}
+
+	@ResponseBody
+	@RequestMapping("/advertisementStatistics")
+	public Object advertisementStatistics(Integer diffDay, String fromDay) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		if (diffDay == null) {
+			diffDay = 1;
+		}
+		if (StringUtils.isNotBlank(fromDay)) {
+			Date from = DateUtils.formatToDate(fromDay, "yyyy-MM-dd");
+			diffDay = DateUtils.getDiffDays(from, new Date());
+		}
+		for (int i = 1; i <= diffDay; i++) {
+			advertisementStatisticsService.runAndInsertAdvertisementStatistics(i);
+		}
+		InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		return resultMap;
+	}
 }

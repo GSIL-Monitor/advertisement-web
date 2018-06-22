@@ -13,9 +13,11 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.quota.dao.QuotaDao;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
@@ -150,4 +152,63 @@ public class QuotaServiceImpl implements QuotaService {
 				advertisementStatistics, new PageBounds());
 		return true;
 	}
+
+	@Override
+	public List<Quota> selectQuotaByKeyFromCache(Long projectId, String activityKey, String channelKey) {
+		List<Quota> resultList = new ArrayList<Quota>();
+		if (projectId == null) {
+			return resultList;
+		}
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
+		List<Quota> quotaList = ConstantsManager.getQuotaList(projectId);
+		if (quotaList == null) {
+			return resultList;
+		}
+		List<Quota> activityQuotaList = getActivityQuota(activity.getActivityId(), quotaList);
+		List<Quota> channelQuotaList = getChannelQuota(activity.getActivityId(), channelKey, quotaList);
+		resultList = dealQuotaList(activityQuotaList, channelQuotaList);
+		return resultList;
+	}
+
+	private List<Quota> dealQuotaList(List<Quota> activityQuotaList, List<Quota> channelQuotaList) {
+		List<Quota> result = new ArrayList<Quota>();
+		Map<Long, Quota> activityMap = new HashMap<Long, Quota>();
+		Map<Long, Quota> channelMap = new HashMap<Long, Quota>();
+		for (Quota quota : activityQuotaList) {
+			activityMap.put(quota.getAdvertisementId(), quota);
+		}
+		for (Quota quota : channelQuotaList) {
+			channelMap.put(quota.getAdvertisementId(), quota);
+		}
+		for (Long advertisementId : activityMap.keySet()) {
+			if (!channelMap.containsKey(advertisementId)) {
+				channelQuotaList.add(activityMap.get(advertisementId));
+			} else {
+				continue;
+			}
+		}
+		result = channelQuotaList;
+		return result;
+	}
+
+	private List<Quota> getChannelQuota(Long activityId, String channelKey, List<Quota> quotaList) {
+		List<Quota> result = new ArrayList<Quota>();
+		for (Quota quota : quotaList) {
+			if (activityId.equals(quota.getActivityId()) && channelKey.equals(quota.getChannel())) {
+				result.add(quota);
+			}
+		}
+		return result;
+	}
+
+	private List<Quota> getActivityQuota(Long activityId, List<Quota> quotaList) {
+		List<Quota> result = new ArrayList<Quota>();
+		for (Quota quota : quotaList) {
+			if (activityId.equals(quota.getActivityId())) {
+				result.add(quota);
+			}
+		}
+		return result;
+	}
+
 }

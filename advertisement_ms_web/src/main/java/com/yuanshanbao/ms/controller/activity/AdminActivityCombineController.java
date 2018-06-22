@@ -19,6 +19,7 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.model.ActivityCombine;
 import com.yuanshanbao.dsp.activity.model.ActivityStatus;
+import com.yuanshanbao.dsp.activity.model.ActivityType;
 import com.yuanshanbao.dsp.activity.service.ActivityCombineService;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
@@ -103,6 +104,8 @@ public class AdminActivityCombineController extends PaginationController {
 	@RequestMapping("/insertWindow.do")
 	public String insertWindow(HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("isSimple", "0");
+		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("typeList", ActivityType.getCodeDescriptionMap().entrySet());
 		return PAGE_INSERT;
 	}
 
@@ -248,7 +251,7 @@ public class AdminActivityCombineController extends PaginationController {
 		result.put("data", list);
 		result.put("draw", request.getParameter("draw"));
 		result.put("recordsTotal", 1000);
-		result.put("recordsFiltered", 1000);
+		result.put("recordsFiltered", 1);
 		return result;
 	}
 

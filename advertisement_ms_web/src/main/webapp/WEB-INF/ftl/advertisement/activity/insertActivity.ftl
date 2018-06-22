@@ -40,8 +40,8 @@
                     <td>
                       <div style="width:60%;">
                       <select name="status" class="selectpicker form-control">
-                        <#list statusList as status>
-                        <option value="${status.key}">${status.value}</option>
+                        <#list typeList as type>
+                        <option value="${type.key}">${type.value}</option>
                         </#list>
                       </select>
                       </div>

@@ -18,7 +18,9 @@ public interface QuotaService {
 	public Quota selectQuota(Long quotaId);
 
 	public Map<Long, Quota> selectQuotaByIds(List<Long> quotaIds);
-	
+
 	public List<Quota> selectQuotaFromCache(Long projectId, Long positionId, List<Long> advertisementIdList);
+
+	public List<Quota> selectQuotaByKeyFromCache(Long projectId, String activityKey, String channelKey);
 
 }

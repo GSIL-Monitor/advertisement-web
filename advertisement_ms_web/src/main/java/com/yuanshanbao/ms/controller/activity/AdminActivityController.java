@@ -20,6 +20,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.activity.model.ActivityType;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementDisplayType;
@@ -136,6 +137,7 @@ public class AdminActivityController extends PaginationController {
 	@RequestMapping("/insertWindow.do")
 	public String insertWindow(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("typeList", ActivityType.getCodeDescriptionMap().entrySet());
 		return PAGE_INSERT;
 	}
 
@@ -145,8 +147,8 @@ public class AdminActivityController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-
 			validateParameters(activity);
+			activity.setCombination(0);
 			activityService.insertActivity(activity);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

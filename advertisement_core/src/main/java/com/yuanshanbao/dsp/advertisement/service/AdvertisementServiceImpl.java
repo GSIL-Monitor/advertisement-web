@@ -7,10 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
@@ -414,6 +417,22 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			return advertismentList;
 		}
 
+		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channelKey);
+
+		for (Quota quota : quotaList) {
+			// TODO 配额判断 待定
+			if (quota.getStartTime() != null) {
+				if (quota.getStartTime().after(new Date())) {
+					advertisementIdMap.remove(quota.getAdvertisementId());
+				}
+			}
+			if (quota.getEndTime() != null) {
+				if (quota.getEndTime().before(new Date())) {
+					advertisementIdMap.remove(quota.getAdvertisementId());
+				}
+			}
+		}
+
 		List<Long> resultAdvertisementIdList = new ArrayList<Long>();
 		Double totalProbability = 0D;
 		for (Probability probability : advertisementIdMap.values()) {
@@ -422,7 +441,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			} else {
 				totalProbability += probability.getProbability();
 			}
-
 		}
 
 		for (Probability probability : advertisementIdMap.values()) {
@@ -440,5 +458,39 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		}
 
 		return advertismentList;
+	}
+
+	// 点击量
+	public void addAdvertisementCount(HttpServletRequest request, String channel, Long id, String position) {
+		String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_CLICK + "_" + channel + "_" + id;
+		String clickValue = (String) request.getSession().getAttribute(sessionKey);
+		if (StringUtils.isBlank(clickValue)) {
+			request.getSession().setAttribute(sessionKey, "true");
+			if (StringUtils.isNotBlank(channel)) {
+				redisCacheService.incr(RedisConstant.getAdvertisementClickCountUVKey(null, id, channel));
+			}
+		}
+		if (StringUtils.isNotBlank(channel)) {
+			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
+			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
+			redisCacheService.incr(RedisConstant.getAdvertisementClickCountPVKey(null, id, channel));
+		}
+	}
+
+	// 曝光量
+	public void addAdvertisementShowCount(HttpServletRequest request, String channel, Long id, String position) {
+		String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_SHOW + "_" + channel + "_" + id;
+		String showValue = (String) request.getSession().getAttribute(sessionKey);
+		if (StringUtils.isBlank(showValue)) {
+			request.getSession().setAttribute(sessionKey, "true");
+			if (StringUtils.isNotBlank(channel)) {
+				redisCacheService.incr(RedisConstant.getAdvertisementShowCountUVKey(null, id, channel));
+			}
+		}
+		if (StringUtils.isNotBlank(channel)) {
+			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
+			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
+			redisCacheService.incr(RedisConstant.getAdvertisementShowCountPVKey(null, id, channel));
+		}
 	}
 }
