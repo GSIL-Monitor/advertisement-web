@@ -34,7 +34,7 @@ public class RedirectJumper extends BaseController {
 				redisCacheService.incr(RedisConstant.getAdvertisementChannelClickCountKey(position, id, channel));
 			}
 			if (ValidateUtil.isNumber(id)) {
-				advertisementService.increaseAdvertisementCount(Long.parseLong(id));
+				// advertisementService.increaseAdvertisementCount(Long.parseLong(id));
 			}
 		}
 		redisCacheService.incr(RedisConstant.getAdvertisementClickPVCountKey(position, id));

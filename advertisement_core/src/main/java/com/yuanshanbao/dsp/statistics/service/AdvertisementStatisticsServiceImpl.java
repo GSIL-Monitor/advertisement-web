@@ -31,6 +31,7 @@ import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.dsp.statistics.dao.AdvertisementStatisticsDao;
@@ -56,6 +57,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 	@Autowired
 	private PositionService positionService;
+
+	@Autowired
+	private ProbabilityService probabilityService;
 
 	@Autowired
 	private RedisService redisService;
@@ -722,70 +726,165 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		}
 	}
 
-	@Override
-	public List<AdvertisementStatistics> selectChannelAdvertisementStatistic(int diffDate, Boolean pv, String channelKey) {
-		String date = DateUtils.format(DateUtils.addDays(new Date(), -diffDate));
-		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();
+	private void addAdvertisementToResultMap(Map<Long, AdvertisementStatistics> resultMap, Long advertisementId,
+			AdvertisementStatistics click) {
+		AdvertisementStatistics exists = resultMap.get(advertisementId);
+		if (exists != null) {
+			exists.addClickCount(click.getClickCount());
+			exists.addShowCount(click.getShowCount());
+		} else {
+			resultMap.put(advertisementId, click);
+		}
+	}
+
+	// @Override
+	// public List<AdvertisementStatistics>
+	// selectChannelAdvertisementStatistic(int diffDate, Boolean pv, String
+	// channelKey) {
+	// String date = DateUtils.format(DateUtils.addDays(new Date(), -diffDate));
+	// List<AdvertisementStatistics> result = new
+	// ArrayList<AdvertisementStatistics>();
+	// Map<String, AdvertisementStatistics> resultMap = new HashMap<String,
+	// AdvertisementStatistics>();
+	// Set<String> channelAndIdList =
+	// redisCacheService.smembers(RedisConstant.getAdvertisementChannelAndIdKey(date));
+	// LoggerUtil.info("[selectChannelAdvertisementStatistic] channelList={}",
+	// channelAndIdList);
+	// Advertisement param = new Advertisement();
+	// param.setStatus(CommonStatus.ONLINE);
+	// List<Advertisement> list =
+	// advertisementService.selectAdvertisement(param, new PageBounds());
+	// // 查找当日数据
+	// if (diffDate == 0) {
+	// for (String channel : channelAndIdList) {
+	// String[] segs = channel.split(":");
+	// if (StringUtils.isNotBlank(channelKey)) {
+	// // 查找单个渠道数据
+	// if (channelKey.equals(segs[1])) {
+	// Advertisement advertisement =
+	// advertisementService.selectAdvertisement(Long.parseLong(segs[0]));
+	// AdvertisementStatistics click = createAdvertisementStatistic(diffDate,
+	// pv, advertisement,
+	// segs[1]);
+	// result.add(click);
+	// }
+	// } else {
+	// // 查询所有渠道数据
+	// AdvertisementStatistics click =
+	// createChannelAdvertisementStatistic(diffDate, pv, segs[1],
+	// Long.parseLong(segs[0]));
+	// addToResultMap(resultMap, segs[1], click);
+	// }
+	// }
+	// }
+	// // 查询历史数据
+	// if (diffDate > 0) {
+	// List<String> channels = new ArrayList<String>();
+	// if (channelKey != null) {
+	// channels.add(channelKey);
+	// } else {
+	// for (String channel : channelAndIdList) {
+	// String[] segs = channel.split(":");
+	// channels.add(segs[1]);
+	// }
+	// }
+	// List<AdvertisementStatistics> resultInDB =
+	// selectAdvertisementStatisticsByChannels(diffDate, pv, channels);
+	// if (StringUtils.isNotBlank(channelKey)) {
+	// result = resultInDB;
+	// } else {
+	// Map<String, AdvertisementStatistics> totalMap = new HashMap<String,
+	// AdvertisementStatistics>();
+	// for (AdvertisementStatistics adStatistics : resultInDB) {
+	// AdvertisementStatistics total = totalMap.get(adStatistics.getChannel());
+	// if (total == null) {
+	// total = new AdvertisementStatistics();
+	// total.setChannel(adStatistics.getChannel());
+	// total.addClickCount(adStatistics.getClickCount());
+	// total.addShowCount(adStatistics.getShowCount());
+	// totalMap.put(adStatistics.getChannel(), total);
+	// continue;
+	// }
+	// total.addClickCount(adStatistics.getClickCount());
+	// total.addShowCount(adStatistics.getShowCount());
+	// }
+	// result.addAll(totalMap.values());
+	// }
+	// }
+	// result.addAll(resultMap.values());
+	// return result;
+	// }
+
+	private void setPv(String date, String channel, List<AdvertisementStatistics> resultList, Long advertisementId) {
+		AdvertisementStatistics adStatistics = new AdvertisementStatistics();
+		adStatistics.setAdvertisementId(advertisementId);
+		adStatistics.setChannel(channel);
+		adStatistics.setDate(date);
+		adStatistics.setType(AdvertisementStatisticsType.UV_DATA);
+		adStatistics.setShowCount(getShowPv(date, channel, advertisementId));
+		adStatistics.setClickCount(getClickPv(date, channel, advertisementId));
+		resultList.add(adStatistics);
+	}
+
+	public List<AdvertisementStatistics> selectChannelAdvertisementStatistic(
+			AdvertisementStatistics advertisementStatistics, int diffDate, Boolean pv, String channelKey) {
+		Probability probability = new Probability();
+		probability.setStatus(CommonStatus.ONLINE);
 		Map<String, AdvertisementStatistics> resultMap = new HashMap<String, AdvertisementStatistics>();
-		Set<String> channelAndIdList = redisCacheService.smembers(RedisConstant.getAdvertisementChannelAndIdKey(date));
-		LoggerUtil.info("[selectChannelAdvertisementStatistic] channelList={}", channelAndIdList);
-		Advertisement param = new Advertisement();
-		param.setStatus(CommonStatus.ONLINE);
-		List<Advertisement> list = advertisementService.selectAdvertisement(param, new PageBounds());
-		// 查找当日数据
+		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();
+		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
+		// 查找当天数据
 		if (diffDate == 0) {
-			for (String channel : channelAndIdList) {
-				String[] segs = channel.split(":");
-				if (StringUtils.isNotBlank(channelKey)) {
-					// 查找单个渠道数据
-					if (channelKey.equals(segs[1])) {
-						Advertisement advertisement = advertisementService.selectAdvertisement(Long.parseLong(segs[0]));
-						AdvertisementStatistics click = createAdvertisementStatistic(diffDate, pv, advertisement,
-								segs[1]);
-						result.add(click);
+			if (StringUtils.isNotBlank(channelKey)) {
+				for (Probability pro : list) {
+					if (channelKey.equals(pro.getChannel())) {
+						AdvertisementStatistics statistic = createAdStatistic(diffDate, pv, pro.getAdvertisementId(),
+								channelKey);
+						result.add(statistic);
 					}
-				} else {
-					// 查询所有渠道数据
-					AdvertisementStatistics click = createChannelAdvertisementStatistic(diffDate, pv, segs[1],
-							Long.parseLong(segs[0]));
-					addToResultMap(resultMap, segs[1], click);
 				}
+			} else {
+				for (Probability pro : list) {
+					AdvertisementStatistics statistic = createChannelAdvertisementStatistic(diffDate, pv,
+							pro.getChannel(), pro.getAdvertisementId());
+					addToResultMap(resultMap, pro.getChannel(), statistic);
+				}
+				result.addAll(resultMap.values());
 			}
 		}
-		// 查询历史数据
 		if (diffDate > 0) {
-			List<String> channels = new ArrayList<String>();
-			if (channelKey != null) {
-				channels.add(channelKey);
-			} else {
-				for (String channel : channelAndIdList) {
-					String[] segs = channel.split(":");
-					channels.add(segs[1]);
-				}
-			}
-			List<AdvertisementStatistics> resultInDB = selectAdvertisementStatisticsByChannels(diffDate, pv, channels);
+			List<AdvertisementStatistics> resultInDB = selectStatistic(advertisementStatistics, pv);
 			if (StringUtils.isNotBlank(channelKey)) {
 				result = resultInDB;
 			} else {
-				Map<String, AdvertisementStatistics> totalMap = new HashMap<String, AdvertisementStatistics>();
-				for (AdvertisementStatistics adStatistics : resultInDB) {
-					AdvertisementStatistics total = totalMap.get(adStatistics.getChannel());
-					if (total == null) {
-						total = new AdvertisementStatistics();
-						total.setChannel(adStatistics.getChannel());
+				for (int i = 0; i < getDays(advertisementStatistics); i++) {
+					Map<String, AdvertisementStatistics> totalMap = new HashMap<String, AdvertisementStatistics>();
+					for (AdvertisementStatistics adStatistics : resultInDB) {
+						AdvertisementStatistics total = totalMap.get(adStatistics.getChannel());
+						if (total == null) {
+							total = new AdvertisementStatistics();
+							total.setDate(DateUtils.addDays(
+									DateUtils.formatToDate(advertisementStatistics.getQueryStartTime(), "yyyy-MM-dd"),
+									i).toString());
+							total.setChannel(adStatistics.getChannel());
+							total.addClickCount(adStatistics.getClickCount());
+							total.addShowCount(adStatistics.getShowCount());
+							totalMap.put(adStatistics.getChannel(), total);
+							continue;
+						}
 						total.addClickCount(adStatistics.getClickCount());
 						total.addShowCount(adStatistics.getShowCount());
-						totalMap.put(adStatistics.getChannel(), total);
-						continue;
 					}
-					total.addClickCount(adStatistics.getClickCount());
-					total.addShowCount(adStatistics.getShowCount());
+					result.addAll(totalMap.values());
 				}
-				result.addAll(totalMap.values());
 			}
 		}
-		result.addAll(resultMap.values());
 		return result;
+	}
+
+	private List<AdvertisementStatistics> selectStatistic(AdvertisementStatistics advertisementStatistics, boolean pv) {
+		advertisementStatistics.setType(pv ? AdvertisementStatisticsType.PV_DATA : AdvertisementStatisticsType.UV_DATA);
+		return advertisementStatisticsDao.selectAdvertisementStatistics(advertisementStatistics, new PageBounds());
 	}
 
 	private AdvertisementStatistics createChannelAdvertisementStatistic(int diffDate, Boolean pv, String channelKey,
@@ -812,14 +911,92 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		return result;
 	}
 
-	private void setPv(String date, String channel, List<AdvertisementStatistics> resultList, Long advertisementId) {
-		AdvertisementStatistics adStatistics = new AdvertisementStatistics();
-		adStatistics.setAdvertisementId(advertisementId);
-		adStatistics.setChannel(channel);
-		adStatistics.setDate(date);
-		adStatistics.setType(AdvertisementStatisticsType.UV_DATA);
-		adStatistics.setShowCount(getShowPv(date, channel, advertisementId));
-		adStatistics.setClickCount(getClickPv(date, channel, advertisementId));
-		resultList.add(adStatistics);
+	public List<AdvertisementStatistics> selectAdStatistic(int diffDate, Boolean pv, Long advertisementId,
+			AdvertisementStatistics advertisementStatistics) {
+		Probability probability = new Probability();
+		probability.setStatus(CommonStatus.ONLINE);
+		Map<Long, AdvertisementStatistics> resultMap = new HashMap<Long, AdvertisementStatistics>();
+		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(probability, new PageBounds());
+		Advertisement param = new Advertisement();
+		param.setStatus(CommonStatus.ONLINE);
+		List<Advertisement> advertisementList = advertisementService.selectAdvertisement(param, new PageBounds());
+		if (diffDate == 0) {
+			if (advertisementId != null) {
+				for (Probability pro : probabilityList) {
+					if (advertisementId.equals(pro.getAdvertisementId())) {
+						AdvertisementStatistics statistic = createChannelAdvertisementStatistic(diffDate, pv,
+								pro.getChannel(), advertisementId);
+						result.add(statistic);
+					}
+				}
+			} else {
+				for (Probability pro : probabilityList) {
+					AdvertisementStatistics statistic = createAdStatistic(diffDate, pv, pro.getAdvertisementId(),
+							pro.getChannel());
+					addAdvertisementToResultMap(resultMap, advertisementId, statistic);
+				}
+			}
+		}
+		if (diffDate > 0) {
+			List<AdvertisementStatistics> resultInDB = selectStatistic(advertisementStatistics, pv);
+			if (advertisementId != null) {
+				for (AdvertisementStatistics adStatistics : resultInDB) {
+					if (advertisementId.equals(adStatistics.getAdvertisementId())) {
+						result = resultInDB;
+					}
+				}
+			} else {
+				for (int i = 0; i < getDays(advertisementStatistics); i++) {
+					Map<Long, AdvertisementStatistics> totalMap = new HashMap<Long, AdvertisementStatistics>();
+					for (AdvertisementStatistics adStatistics : resultInDB) {
+						AdvertisementStatistics total = totalMap.get(adStatistics.getChannel());
+						if (total == null) {
+							total = new AdvertisementStatistics();
+							total.setDate(DateUtils.addDays(
+									DateUtils.formatToDate(advertisementStatistics.getQueryStartTime(), "yyyy-MM-dd"),
+									i).toString());
+							total.setChannel(adStatistics.getChannel());
+							total.addClickCount(adStatistics.getClickCount());
+							total.addShowCount(adStatistics.getShowCount());
+							totalMap.put(adStatistics.getAdvertisementId(), total);
+							continue;
+						}
+						total.addClickCount(adStatistics.getClickCount());
+						total.addShowCount(adStatistics.getShowCount());
+					}
+					result.addAll(totalMap.values());
+				}
+			}
+		}
+		return result;
+	}
+
+	private AdvertisementStatistics createAdStatistic(int diffDate, Boolean pv, Long advertisementId, String channel) {
+		String date = DateUtils.format(DateUtils.addDays(new Date(), -diffDate));
+		AdvertisementStatistics result = new AdvertisementStatistics();
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		if (pv != null && pv) {
+			dataTypeFunction(AdvertisementStatisticsType.PV_DATA, date, channel, resultList, advertisementId);
+		} else {
+			dataTypeFunction(AdvertisementStatisticsType.UV_DATA, date, channel, resultList, advertisementId);
+		}
+		for (AdvertisementStatistics adStatistics : resultList) {
+			if (adStatistics.getAdvertisementId().equals(advertisementId)) {
+				if (StringUtils.isNotBlank(adStatistics.getChannel())) {
+					result.setChannel(adStatistics.getChannel());
+				}
+				result.addClickCount(adStatistics.getClickCount());
+				result.addShowCount(adStatistics.getShowCount());
+			}
+		}
+		result.setTotal(calculateTotal(result));
+		return result;
+	}
+
+	private int getDays(AdvertisementStatistics advertisementStatistics) {
+		Date s = DateUtils.formatToDate(advertisementStatistics.getQueryStartTime(), "yyyy-MM-dd");
+		Date e = DateUtils.formatToDate(advertisementStatistics.getQueryEndTime(), "yyyy-MM-dd");
+		return DateUtils.getDays(s, e);
 	}
 }

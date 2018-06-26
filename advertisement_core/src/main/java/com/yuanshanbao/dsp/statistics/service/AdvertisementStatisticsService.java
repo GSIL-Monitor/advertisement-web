@@ -28,7 +28,8 @@ public interface AdvertisementStatisticsService {
 
 	public List<AdvertisementStatistics> selectAdvertisementStatistic(int diffDate, Boolean pv, Long advertisementId);
 
-	public List<AdvertisementStatistics> selectChannelAdvertisementStatistic(int diffDate, Boolean pv, String channelKey);
+	public List<AdvertisementStatistics> selectChannelAdvertisementStatistic(
+			AdvertisementStatistics advertisementStatistics, int diffDate, Boolean pv, String channelKey);
 
 	public List<SuccessPageClick> selectSuccessPageClicks(int dateDiff, boolean fromDB);
 

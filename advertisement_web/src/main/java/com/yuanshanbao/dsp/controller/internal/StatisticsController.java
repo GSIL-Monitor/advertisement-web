@@ -14,11 +14,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
-import com.yuanshanbao.dsp.common.constant.RedisConstant;
-import com.yuanshanbao.dsp.controller.base.BaseController;
-import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.statistics.model.StaffStatisticsType;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
@@ -26,6 +21,11 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.MD5Util;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.controller.base.BaseController;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.statistics.model.StaffStatisticsType;
 
 @Controller
 @RequestMapping({ "/statistics", "/i/statistics" })
@@ -50,7 +50,7 @@ public class StatisticsController extends BaseController {
 					redisCacheService.incr(RedisConstant.getAdvertisementChannelClickCountKey(position, id, channel));
 				}
 				if (ValidateUtil.isNumber(id)) {
-					advertisementService.increaseAdvertisementCount(Long.parseLong(id));
+					// advertisementService.increaseAdvertisementCount(Long.parseLong(id));
 				}
 			}
 			redisCacheService.incr(RedisConstant.getAdvertisementClickPVCountKey(position, id));

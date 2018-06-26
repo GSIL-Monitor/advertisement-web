@@ -16,6 +16,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
 import com.github.sd4324530.fastweixin.api.response.OauthGetTokenResponse;
+import com.yuanshanbao.common.constant.SessionConstants;
+import com.yuanshanbao.common.exception.BusinessException;
+import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.CookieUtils;
+import com.yuanshanbao.common.util.DataFormat;
+import com.yuanshanbao.common.util.JSPHelper;
+import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.MD5Util;
+import com.yuanshanbao.common.util.RandomUtil;
+import com.yuanshanbao.common.util.StringUtil;
+import com.yuanshanbao.common.util.UploadUtils;
+import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.common.util.VerifyFormatUtil;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -35,19 +48,6 @@ import com.yuanshanbao.dsp.user.service.InviteCodeService;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.dsp.weixin.service.WeixinService;
-import com.yuanshanbao.common.constant.SessionConstants;
-import com.yuanshanbao.common.exception.BusinessException;
-import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.CookieUtils;
-import com.yuanshanbao.common.util.DataFormat;
-import com.yuanshanbao.common.util.JSPHelper;
-import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.common.util.MD5Util;
-import com.yuanshanbao.common.util.RandomUtil;
-import com.yuanshanbao.common.util.StringUtil;
-import com.yuanshanbao.common.util.UploadUtils;
-import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.common.util.VerifyFormatUtil;
 
 @Controller
 @RequestMapping({ "/i/user", "/m/user" })
@@ -381,7 +381,7 @@ public class UserController extends BaseController {
 			if (channel == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			String key = channel.getEncryptKey();
+			String key = null;
 
 			String mobile = request.getParameter("mobile");
 			String password = request.getParameter("password");
