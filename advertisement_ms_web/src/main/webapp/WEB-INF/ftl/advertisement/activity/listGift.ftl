@@ -71,9 +71,14 @@
 		            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
 		        }
 		    }, {
-		    	"data": "${functionId}",
+		    	"data": "probability.probabilityId",
 		        "render": function ( data, type, full, meta ) {
-		        	var deleteUrl = '${rc.contextPath}/admin/${functionName}/delete.do?${functionId}='+data;
+		            return '<a href="${rc.contextPath}/admin/${functionName}/quotaWindow.do?probabilityId='+data+'"  class="btn btn-cyan" target="_blank">限额配置</a>';
+		        }
+		    }, {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
+		        	var deleteUrl = '${rc.contextPath}/admin/${functionName}/deletePro.do?probabilityId='+data.probability.probabilityId;
 		            return '<a href="#" class="btn btn-red" onclick="confirmDelete(\''+deleteUrl+'\');">删除</a>';
 		        }
 		    }];
@@ -169,6 +174,7 @@
 							<th>状态</th>
 							<th>详情</th>
 							<th>修改</th>
+							<th>限额配置</th>
 							<th>删除</th>
 						</tr>
 					</thead>

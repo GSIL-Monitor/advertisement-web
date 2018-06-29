@@ -33,7 +33,7 @@
 		    },  {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/channel/list.do?${functionId}='+data+'"  class="btn btn-green">修改</a>';
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/updateWindow.do?${functionId}='+data+'"  class="btn btn-green">修改</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",

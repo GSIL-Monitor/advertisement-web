@@ -3,7 +3,6 @@ package com.yuanshanbao.dsp.advertiser.model;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
-import com.yuanshanbao.dsp.advertisement.model.AdvertiserStatus;
 
 public class Advertiser {
 
@@ -115,7 +114,8 @@ public class Advertiser {
 	}
 
 	public String getStatusValue() {
-		return AdvertiserStatus.getDescription(status);
+		// return AdvertiserStatus.getDescription(status);
+		return "";
 	}
 
 	public String getBusinessNumber() {

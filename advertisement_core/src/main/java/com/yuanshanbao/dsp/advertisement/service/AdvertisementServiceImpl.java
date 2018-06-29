@@ -360,6 +360,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		}
 	}
 
+	// 查找奖品信息
 	public List<AdvertisementVo> selectGift(String activityId, String channel) {
 		Map<Long, Probability> proMap = new HashMap<Long, Probability>();
 		Map<Long, Quota> quotaMap = new HashMap<Long, Quota>();
@@ -420,7 +421,28 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channelKey);
 
 		for (Quota quota : quotaList) {
-			// TODO 配额判断 待定
+			// TODO 走活动下默认的quota数量判断
+			if (quota.getCount() != null && quota.getCount() > 0) {
+				String countValue = "";
+				if (QuotaType.CPC.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementClickCountPVKey(null,
+							quota.getAdvertisementId(), quota.getChannel()));
+				}
+				if (QuotaType.CPM.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
+							quota.getAdvertisementId(), quota.getChannel()));
+				}
+				if (QuotaType.CPT.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
+							quota.getAdvertisementId(), quota.getChannel()));
+				}
+				if (ValidateUtil.isNumber(countValue)) {
+					Integer currentCount = Integer.parseInt(countValue);
+					if (currentCount > quota.getCount()) {
+						advertisementIdMap.remove(quota.getAdvertisementId());
+					}
+				}
+			}
 			if (quota.getStartTime() != null) {
 				if (quota.getStartTime().after(new Date())) {
 					advertisementIdMap.remove(quota.getAdvertisementId());
@@ -456,12 +478,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 				continue;
 			}
 		}
+		Map<Long, Advertisement> advertisementMap = selectAdvertisementByIds(resultAdvertisementIdList);
+		for (Long advertisementId : resultAdvertisementIdList) {
+			advertismentList.add(advertisementMap.get(advertisementId));
+		}
 
 		return advertismentList;
 	}
 
 	// 点击量
-	public void addAdvertisementCount(HttpServletRequest request, String channel, Long id, String position) {
+	public void addAdvertisementCount(HttpServletRequest request, String activityKey, String channel, Long id,
+			String position) {
 		String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_CLICK + "_" + channel + "_" + id;
 		String clickValue = (String) request.getSession().getAttribute(sessionKey);
 		if (StringUtils.isBlank(clickValue)) {
@@ -478,7 +505,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	}
 
 	// 曝光量
-	public void addAdvertisementShowCount(HttpServletRequest request, String channel, Long id, String position) {
+	public void addAdvertisementShowCount(HttpServletRequest request, String activityKey, String channel, Long id,
+			String position) {
 		String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_SHOW + "_" + channel + "_" + id;
 		String showValue = (String) request.getSession().getAttribute(sessionKey);
 		if (StringUtils.isBlank(showValue)) {
@@ -487,10 +515,26 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 				redisCacheService.incr(RedisConstant.getAdvertisementShowCountUVKey(null, id, channel));
 			}
 		}
+
 		if (StringUtils.isNotBlank(channel)) {
 			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
 			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
 			redisCacheService.incr(RedisConstant.getAdvertisementShowCountPVKey(null, id, channel));
+		}
+	}
+
+	private void recordAdvertisementCount(Long projectId, String activityKey, String channel, boolean isClick) {
+		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channel);
+		for (Quota quota : quotaList) {
+			if (isClick) {
+				if (QuotaType.CPC.equals(quota.getType())) {
+					redisCacheService.incr(RedisConstant.getQuotaCount(quota.getQuotaId()));
+				}
+			} else {
+				if (QuotaType.CPM.equals(quota.getType()) || QuotaType.CPT.equals(quota.getType())) {
+					redisCacheService.incr(RedisConstant.getQuotaCount(quota.getQuotaId()));
+				}
+			}
 		}
 	}
 }

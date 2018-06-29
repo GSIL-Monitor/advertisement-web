@@ -11,6 +11,7 @@
 		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="displayType" column="display_type" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="probability" column="probability" jdbcType="NUMERIC" />
 		<result property="sort" column="sort" jdbcType="NUMERIC" />

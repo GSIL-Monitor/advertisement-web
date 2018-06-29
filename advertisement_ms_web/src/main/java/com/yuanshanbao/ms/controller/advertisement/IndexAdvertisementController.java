@@ -128,4 +128,31 @@ public class IndexAdvertisementController extends BaseController {
 		return resultMap;
 	}
 
+	// 请求广告接口
+	@RequestMapping("/{projectKey}/gift")
+	@ResponseBody
+	public Object gift(HttpServletRequest request, HttpServletResponse response, String activityKey, String channelKey,
+			Instance instance, @PathVariable("projectKey") String projectKey) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			Project project = ConstantsManager.getProjectByKey(projectKey);
+			if (project != null) {
+				List<Advertisement> resultAdList = advertisementService.getGift(project.getProjectId(), activityKey,
+						channelKey, instance);
+				resultMap.put("advertisementList", resultAdList);
+			}
+
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+
+		} catch (BusinessException e) {
+			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+
+		} catch (Exception e) {
+			LoggerUtil.error("[advertisement index]: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+		}
+
+		return resultMap;
+	}
+
 }

@@ -7,20 +7,16 @@
 <script>
 	$(document).ready(function(){
 		dataTableConfig.iDisplayLength = 1000;
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertisementChannel.do?advertisementId=${advertisementId?c}";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertisementStatistic.do?advertisementId=${advertisementId?c}";
 		dataTableConfig.columns = [
 			{
 		    	"data": "channel"	
 	      	}, {
 		    	"data": "total"
 		    }, {
-		    	"data": "welfareCount"
+		    	"data": "clickCount"
 		    }, {
-		    	"data": "bannerCount"
-		    }, {
-		    	"data": "tagsCount"
-		    }, {
-		    	"data": "downloadCount"
+		    	"data": "showCount"
 		    }];
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -30,6 +26,28 @@
 		});
 		$('#pv').change(function(){
 			reload();
+		});
+		$('#queryButton').on('click', function(){
+			var queryStartTime=$('#createTimeStart').val();
+			var queryEndTime=$('#createTimeEnd').val();
+			var pv=$('#pv').val();
+			
+			var params = "isPv=" + pv+"&advertisementId=${advertisementId?c}"+"&";
+			if (isNotEmpty($('#createTimeStart').val())) {
+				params += "queryStartTime=" + encodeURI(encodeURI($('#createTimeStart').val())) + "&";
+			}
+			if (isNotEmpty($('#createTimeEnd').val())) {
+				params += "queryEndTime="+encodeURI(encodeURI($('#createTimeEnd').val())) + "&";
+			}
+			if (isNotEmpty($('#name').val())) {
+				params += "companyName=" +encodeURI(encodeURI($('#name').val())) + "&";
+			}
+			if (isNotEmpty($('#positionName').val())) {
+				params += "positionName=" +encodeURI(encodeURI($('#positionName').val())) + "&";
+			}
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryAdvertisementStatistic.do?" + params;
+			dataTable.ajax.url(newUrl);
+			dataTable.ajax.reload();
 		});
 		function reload() {
 			var date=$('#date').val();
@@ -61,6 +79,13 @@
 									<option value="${date}"<#if date_index == 0>selected</#if>>${date}</option>
 								</#list>
 							</select>
+							<div class="filter-component">
+									<h6>日期：</h6>
+									<@timeRangeSearchBar/>
+							</div>
+							<div class="btn btn-green" id="queryButton">确定</div>
+							<div class="btn btn-white" id="queryReset">重置</div>
+							<div class="btn btn-red" id="downloadButton" style = "float:right">下载</div>	  
 						</div>
 					</div>
 					<div class="widget-content nopadding">
@@ -69,9 +94,8 @@
 								<tr>
 									<td>channel</td>
 									<td>总数</td>
-									<#list positionList as position>
-										<td>${position}</td>
-									</#list>
+									<td>点击量</td>
+									<td>曝光量</td>
 								</tr>
 							</thead>
 							<tbody>

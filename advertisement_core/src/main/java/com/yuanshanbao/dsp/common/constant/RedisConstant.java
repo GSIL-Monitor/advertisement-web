@@ -41,6 +41,15 @@ public class RedisConstant {
 	public static final String ADVERTISEMENT_CLICK_COUNT_PV = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT_UV = "advertisement_click_count_uv" + COMMON_REDIS_PREFIX;
 
+	public static final String ADVERTISEMENT_ACTIVITY_SHOW_COUNT_PV = "advertisement_activity_show_count_pv"
+			+ COMMON_REDIS_PREFIX;
+	public static final String ADVERTISEMENT_ACTIVITY_SHOW_COUNT_UV = "advertisement_activity_show_count_uv"
+			+ COMMON_REDIS_PREFIX;
+	public static final String ADVERTISEMENT_ACTIVITY_CLICK_COUNT_PV = "advertisement_activity_click_count_pv"
+			+ COMMON_REDIS_PREFIX;
+	public static final String ADVERTISEMENT_ACTIVITY_CLICK_COUNT_UV = "advertisement_activity_click_count_uv"
+			+ COMMON_REDIS_PREFIX;
+
 	// token过期时间
 	public static int EXPIRE_LOGIN_TOKEN = IniCache.getIniIntValue(IniConstant.TOKEN_CACHE_TIME, 24 * 60 * 60);
 
@@ -196,5 +205,33 @@ public class RedisConstant {
 
 	public static String getAdvertisementChannelAndIdKey(String date) {
 		return getCachePrefix(ADVERTISEMENT_CHANNEL_AND_ID, date);
+	}
+
+	public static String getAdvertisementActivityClickCountUVKey(String date, Long advertisementId, String activityKey) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISEMENT_ACTIVITY_CLICK_COUNT_UV, date + "_" + advertisementId + "_" + activityKey);
+	}
+
+	public static String getAdvertisementActivityClickCountPVKey(String date, Long advertisementId, String activityKey) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISEMENT_ACTIVITY_CLICK_COUNT_PV, date + "_" + advertisementId + "_" + activityKey);
+	}
+
+	public static String getAdvertisementActivityShowCountUVKey(String date, Long advertisementId, String activityKey) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISEMENT_ACTIVITY_SHOW_COUNT_UV, date + "_" + advertisementId + "_" + activityKey);
+	}
+
+	public static String getAdvertisementActivityShowCountPVKey(String date, Long advertisementId, String activityKey) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISEMENT_ACTIVITY_SHOW_COUNT_PV, date + "_" + advertisementId + "_" + activityKey);
 	}
 }

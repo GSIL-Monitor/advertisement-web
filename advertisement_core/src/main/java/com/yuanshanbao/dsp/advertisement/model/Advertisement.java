@@ -112,7 +112,8 @@ public class Advertisement {
 	}
 
 	public String getStatusValue() {
-		return AdvertisementStatus.getDescription(status);
+		// return AdvertisementStatus.getDescription(status);
+		return "";
 	}
 
 	public String getCreateTimeContent() {
@@ -144,6 +145,7 @@ public class Advertisement {
 	}
 
 	public String getTypeContent() {
-		return AdvertisementType.getDescription(type);
+		// return AdvertisementType.getDescription(type);
+		return "";
 	}
 }

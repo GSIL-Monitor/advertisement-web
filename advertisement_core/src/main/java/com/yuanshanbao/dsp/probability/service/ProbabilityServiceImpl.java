@@ -347,7 +347,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	}
 
 	private boolean isIndependent(Integer independent) {
-		if (independent.equals(0)) {
+		if (independent != null && independent.equals(0)) {
 			return false;
 		} else {
 			return true;

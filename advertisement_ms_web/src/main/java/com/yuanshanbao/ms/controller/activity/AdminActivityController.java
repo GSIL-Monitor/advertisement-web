@@ -45,8 +45,10 @@ import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
+import com.yuanshanbao.paginator.domain.Paginator;
 
 @Controller
 @RequestMapping("/admin/activity")
@@ -68,7 +70,7 @@ public class AdminActivityController extends PaginationController {
 
 	private static final String PAGE_ALLOCATE_GIFT = "advertisement/activity/allocateActivityGift";
 
-	private static final String PAGE_ALLOCATE__CHANNEL_GIFT = "advertisement/activity/allocateChannelGift";
+	private static final String PAGE_ALLOCATE_CHANNEL_GIFT = "advertisement/activity/allocateChannelGift";
 
 	private static final String PAGE_CONFIG = "advertisement/activity/configActivity";
 
@@ -83,6 +85,8 @@ public class AdminActivityController extends PaginationController {
 	private static final String PAGE_CHANNEL_CONFIG = "advertisement/activity/configChannel";
 
 	private static final String PAGE_GIFTS_CHANNEL_CONFIG = "advertisement/activity/configGiftsChannel";
+
+	private static final String PAGE_QUOTA_CONFIG = "advertisement/activity/insertQuota";
 
 	@Autowired
 	private ActivityService activityService;
@@ -419,11 +423,7 @@ public class AdminActivityController extends PaginationController {
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		}
-		result.put("data", list);
-		result.put("draw", request.getParameter("draw"));
-		result.put("recordsTotal", 1000);
-		result.put("recordsFiltered", 1000);
-		return result;
+		return setPageInfo(request, response, new PageList<Object>(list, new Paginator()));
 	}
 
 	@RequestMapping("/allocateGiftWindow.do")
@@ -435,7 +435,7 @@ public class AdminActivityController extends PaginationController {
 		if (StringUtils.isBlank(channel)) {
 			return PAGE_ALLOCATE_GIFT;
 		} else {
-			return PAGE_ALLOCATE__CHANNEL_GIFT;
+			return PAGE_ALLOCATE_CHANNEL_GIFT;
 		}
 	}
 
@@ -457,10 +457,63 @@ public class AdminActivityController extends PaginationController {
 			probability.setProjectId(getProjectId(request));
 			quota.setProjectId(getProjectId(request));
 			probabilityService.insertProbability(probability);
-			quotaService.insertQuota(quota);
+			// quotaService.insertQuota(quota);
+			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("probability insert function - reload error", e2);
+		}
+		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping("/deletePro.do")
+	public Object deletePro(Long probabilityId, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		try {
+			if (probabilityId == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Probability probability = new Probability();
+			probability.setProbabilityId(probabilityId);
+			probability.setStatus(CommonStatus.OFFLINE);
+			probabilityService.updateProbability(probability);
+
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		}
+
+		return result;
+	}
+
+	@RequestMapping("/quotaWindow.do")
+	public String quotaWindow(Long probabilityId, HttpServletRequest request, HttpServletResponse response) {
+		Probability probability = probabilityService.selectProbability(probabilityId);
+		request.setAttribute("activityId", probability.getActivityId());
+		request.setAttribute("channel", probability.getChannel());
+		request.setAttribute("advertisementId", probability.getAdvertisementId());
+		return PAGE_QUOTA_CONFIG;
+	}
+
+	@ResponseBody
+	@RequestMapping("/insertQuota.do")
+	public Object insertQuota(Quota quota, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			quota.setProjectId(getProjectId(request));
+			quota.setStatus(CommonStatus.ONLINE);
+			quotaService.insertQuota(quota);
+			AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("probability insert function - reload error", e2);
 		}
 		return result;
 	}
