@@ -62,7 +62,10 @@ public class SysSessionFilter extends HttpServlet implements Filter {
 			Cookie sessionCookie = new Cookie(sessionId, sid);
 			sessionCookie.setMaxAge(-1);
 			if (this.cookieDomain != null && this.cookieDomain.length() > 0) {
-				sessionCookie.setDomain(this.cookieDomain);
+				String[] segs = this.cookieDomain.split(",");
+				for (String seg : segs) {
+					sessionCookie.setDomain(seg);
+				}
 			}
 			sessionCookie.setPath(this.cookiePath);
 			response.addCookie(sessionCookie);
