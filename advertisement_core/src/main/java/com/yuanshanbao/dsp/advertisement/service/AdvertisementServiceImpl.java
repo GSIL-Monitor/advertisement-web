@@ -495,12 +495,16 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			request.getSession().setAttribute(sessionKey, "true");
 			if (StringUtils.isNotBlank(channel)) {
 				redisCacheService.incr(RedisConstant.getAdvertisementClickCountUVKey(null, id, channel));
+			} else {
+				redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountUVKey(null, id, channel));
 			}
 		}
 		if (StringUtils.isNotBlank(channel)) {
 			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
 			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
 			redisCacheService.incr(RedisConstant.getAdvertisementClickCountPVKey(null, id, channel));
+		} else {
+			redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountPVKey(null, id, channel));
 		}
 	}
 
@@ -513,6 +517,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			request.getSession().setAttribute(sessionKey, "true");
 			if (StringUtils.isNotBlank(channel)) {
 				redisCacheService.incr(RedisConstant.getAdvertisementShowCountUVKey(null, id, channel));
+			} else {
+				redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountUVKey(null, id, activityKey));
 			}
 		}
 
@@ -520,6 +526,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
 			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
 			redisCacheService.incr(RedisConstant.getAdvertisementShowCountPVKey(null, id, channel));
+		} else {
+			redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountPVKey(null, id, activityKey));
 		}
 	}
 
