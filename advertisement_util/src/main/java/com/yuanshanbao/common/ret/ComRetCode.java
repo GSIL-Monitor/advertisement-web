@@ -12,7 +12,7 @@ public class ComRetCode {
 	public static final String RET_DESC = "retDesc";
 	public static final String RET_FIELD = "retField";
 	public static final String RET = "ret";
-	
+
 	public static final String PAGINTOR = "paginator";
 	public static final String PAGINTOR_ITEM_LIST = "pageItemList";
 
@@ -22,7 +22,6 @@ public class ComRetCode {
 	public static final int SUCCESS = 200;
 	public static final String SUCCESS_DESC = "操作成功";
 
-	
 	/** #20 通用错误 **/
 
 	/* 201请不要重复提交请求 */
@@ -44,7 +43,6 @@ public class ComRetCode {
 	/* 204网络异常，请稍后再试！ */
 	public static final int FAIL_DB = 204;
 	public static final String FAIL_DB_DESC = "网络异常，请稍后再试！";
-
 
 	/** #21 登录相关错误 **/
 
@@ -88,7 +86,6 @@ public class ComRetCode {
 	public static final int WEIXIN_LOGIN_FAIL = 220;
 	public static final String WEIXIN_LOGIN_FAIL_DESC = "微信登录失败。";
 
-
 	/** #26 流程错误 **/
 
 	/* 261手机验证已超时，请重新验证 */
@@ -107,7 +104,6 @@ public class ComRetCode {
 	public static final int BROKER_AUDITING = 264;
 	public static final String BROKER_AUDITING_DESC = "资质审核中，暂时无法修改信息";
 
-
 	/** #30 通用格式错误 **/
 
 	/* 301请求参数错误，请稍后重试 */
@@ -117,7 +113,6 @@ public class ComRetCode {
 	/* 302IP校验失败 */
 	public static final int IP_NOT_ALLOW = 302;
 	public static final String IP_NOT_ALLOW_DESC = "IP校验失败";
-
 
 	/** #31 输入格式错误 **/
 
@@ -181,7 +176,6 @@ public class ComRetCode {
 	public static final int EMAIL_VERIFY_ERROR = 321;
 	public static final String EMAIL_VERIFY_ERROR_DESC = "邮件验证链接已过期";
 
-
 	/** #40 贷款产品相关错误 **/
 
 	/* 419产品不存在 */
@@ -216,7 +210,6 @@ public class ComRetCode {
 	public static final int MARKETING_SMS_NOT_VERIFY_ERROR = 404;
 	public static final String MARKETING_SMS_NOT_VERIFY_ERROR_DESC = "无符合营销手机号";
 
-
 	/** #80 次数限制错误 **/
 
 	/* 501您获取短信验证码次数过多，请明天再试 */
@@ -231,8 +224,14 @@ public class ComRetCode {
 	public static final int PWD_LOGIN_FAIL_TIME_LIMIT_OVER = 503;
 	public static final String PWD_LOGIN_FAIL_TIME_LIMIT_OVER_DESC = "您输入密码错误次数过多，请明天再试";
 
+	/* 801抽奖机会已用完 */
+	public static final int GAME_NO_PRIZE_ERROR = 801;
+	public static final String GAME_NO_PRIZE_ERROR_DESC = "抽奖机会已用完";
 
-	
+	/* 802请联系管理员配置不校验手机号 */
+	public static final int CONFIG_NO_SMS_FORMAT_ERROR = 802;
+	public static final String CONFIG_NO_SMS_FORMAT_ERROR_DESC = "请联系管理员配置不校验手机号";
+
 	public static Map<Integer, String> retCodeMap = new LinkedHashMap<Integer, String>();
 
 	static {

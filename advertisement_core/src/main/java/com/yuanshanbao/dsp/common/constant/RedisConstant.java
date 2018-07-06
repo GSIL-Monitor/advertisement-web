@@ -49,6 +49,7 @@ public class RedisConstant {
 			+ COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_ACTIVITY_CLICK_COUNT_UV = "advertisement_activity_click_count_uv"
 			+ COMMON_REDIS_PREFIX;
+	private static final String REQUEST_COUNT = "request_stat_count" + COMMON_REDIS_PREFIX;
 
 	// token过期时间
 	public static int EXPIRE_LOGIN_TOKEN = IniCache.getIniIntValue(IniConstant.TOKEN_CACHE_TIME, 24 * 60 * 60);
@@ -233,5 +234,13 @@ public class RedisConstant {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(ADVERTISEMENT_ACTIVITY_SHOW_COUNT_PV, date + "_" + advertisementId + "_" + activityKey);
+	}
+
+	public static String getRequestCountKey(String channel) {
+		return getRequestCountKey(DateUtils.format(new Date()), channel);
+	}
+
+	private static String getRequestCountKey(String date, String channel) {
+		return getCachePrefix(REQUEST_COUNT, date + "_" + channel);
 	}
 }

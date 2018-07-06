@@ -28,6 +28,11 @@
 					return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"	class="btn btn-blue" target="_blank">策略</a>';
 			}
 		}, {
+			"data": "key",
+			"render": function ( data, type, full, meta ) {
+					return '<a href="${rc.contextPath}/admin/${functionName}/channel/config/insertWindow.do?activityId=${activityId}&channel='+data+'" class="btn btn-blue" target="_blank">配置管理</a>';
+			}
+		}, {
 			"data": "${functionId}",
 			"render": function ( data, type, full, meta ) {
 					return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"	class="btn btn-blue" target="_blank">编辑</a>';
@@ -94,6 +99,7 @@
 								<th>状态</th>
 								<th>查看奖品</th>
 								<th>投放策略</th>
+								<th>配置管理</th>
 								<th>操作</th>
 								<th>删除</th>
 							</tr>

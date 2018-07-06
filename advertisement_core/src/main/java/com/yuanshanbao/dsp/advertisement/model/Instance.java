@@ -14,6 +14,9 @@ public class Instance {
 	private String province;
 	private String city;
 
+	private String channel;
+	private Long activityId;
+
 	public String getUserId() {
 		return userId;
 	}
@@ -108,5 +111,21 @@ public class Instance {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
 	}
 }

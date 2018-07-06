@@ -24,8 +24,10 @@ import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserStatus;
 import com.yuanshanbao.dsp.user.service.UserService;
@@ -56,6 +58,9 @@ public class BaseController {
 
 	@Autowired
 	protected AppService appService;
+
+	@Autowired
+	protected ProjectService projectService;
 
 	public Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -302,6 +307,10 @@ public class BaseController {
 			template = template.replace(TEMPLATE_VARIABLE_PROVINCE, province);
 		}
 		return template;
+	}
+
+	protected Long getProjectId(HttpServletRequest request) {
+		return ConstantsManager.getProjectId(projectService, request);
 	}
 
 }

@@ -13,6 +13,7 @@ import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
+import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.config.model.Config;
 import com.yuanshanbao.dsp.config.model.Function;
@@ -125,8 +126,72 @@ public class ConfigManager implements ConfigConstants {
 		}
 	}
 
+	public static void setConfigMap(Map<String, Object> resultMap, Long activityId, String channel) {
+		Instance instance = new Instance();
+		instance.setActivityId(activityId);
+		instance.setChannel(channel);
+		setConfigMap(resultMap, instance);
+	}
+
+	public static void setConfigMap(Map<String, Object> resultMap, Instance instance) {
+		Map<String, String> configMap = getConfigMap(instance.getActivityId(), instance.getChannel(), null, null);
+		// setAdvertisementConfig(configMap, instance);
+		resultMap.putAll(configMap);
+		List<KeyValuePair> allConfigs = new ArrayList<KeyValuePair>();
+		for (Entry<String, String> entry : configMap.entrySet()) {
+			allConfigs.add(new KeyValuePair(entry.getKey(), entry.getValue()));
+		}
+		resultMap.put(ALL_CONFIG_IN_PAGE, allConfigs);
+	}
+
 	public static Channel getChannel(String key) {
 		return channelMap.get(key);
+	}
+
+	public static String getConfigValue(Long activityId, String channel, String functionKey) {
+		return getConfigValue(activityId, channel, null, null, functionKey);
+	}
+
+	public static String getConfigValue(Long activityId, String channel, Long merchantId, Long insuranceId,
+			String functionKey) {
+		Function function = functionMap.get(functionKey);
+		if (function == null) {
+			return "false";
+		}
+		String result = function.getDefaultAction();
+		for (Config config : configList) {
+			if (config.isMatch(activityId, channel, merchantId, insuranceId, function.getFunctionId())) {
+				result = config.getAction();
+			}
+		}
+		return result;
+	}
+
+	public static void setConfigMap(Map<String, Object> resultMap, Long activityId, String channel, Long merchantId,
+			Long insuranceId) {
+		Map<String, String> configMap = getConfigMap(activityId, channel, merchantId, insuranceId);
+		// setAdvertisementConfig(configMap, null);
+		resultMap.putAll(configMap);
+		List<KeyValuePair> allConfigs = new ArrayList<KeyValuePair>();
+		for (Entry<String, String> entry : configMap.entrySet()) {
+			allConfigs.add(new KeyValuePair(entry.getKey(), entry.getValue()));
+		}
+		resultMap.put(ALL_CONFIG_IN_PAGE, allConfigs);
+	}
+
+	public static Map<String, String> getConfigMap(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		Map<String, String> configMap = new LinkedHashMap<String, String>();
+		for (Config config : configList) {
+			if (config.isMatchWithoutFunction(activityId, channel, merchantId, insuranceId)) {
+				configMap.put(config.getFunctionKey(), config.getAction());
+			}
+		}
+		for (Function function : functionList) {
+			if (configMap.get(function.getKey()) == null) {
+				configMap.put(function.getKey(), function.getDefaultAction());
+			}
+		}
+		return configMap;
 	}
 
 	public static void setConfigMap(Map<String, Object> resultMap, Long activityId, String channel, String appKey) {

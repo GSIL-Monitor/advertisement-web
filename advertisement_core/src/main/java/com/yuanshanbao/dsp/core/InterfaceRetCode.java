@@ -25,7 +25,7 @@ public class InterfaceRetCode {
 		String desc = getAppRetDesc(key);
 		if (desc == null)
 			desc = "This value has no definition.";
-		resultMap.put(ComRetCode.RET_CODE, key);
+		resultMap.put(ComRetCode.RET_CODE, String.valueOf(key));
 		resultMap.put(ComRetCode.RET_DESC, desc);
 	}
 

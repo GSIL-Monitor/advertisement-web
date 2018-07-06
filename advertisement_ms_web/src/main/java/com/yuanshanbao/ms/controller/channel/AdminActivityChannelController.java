@@ -19,9 +19,14 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.config.model.Config;
+import com.yuanshanbao.dsp.config.model.ConfigCategory;
+import com.yuanshanbao.dsp.config.model.Function;
+import com.yuanshanbao.dsp.config.service.ConfigService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -36,8 +41,13 @@ public class AdminActivityChannelController extends PaginationController {
 
 	private static final String PAGE_VIEW = "advertisement/channel/viewChannel";
 
+	private static final String PAGE_CONFIG_INSERT = "advertisement/channel/config/insertConfig";
+
 	@Autowired
 	private ChannelService channelService;
+
+	@Autowired
+	private ConfigService configService;
 
 	@RequestMapping("/list.do")
 	public String list(String activityId, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
@@ -128,5 +138,50 @@ public class AdminActivityChannelController extends PaginationController {
 			LoggerUtil.error("channel delete function ", e2);
 		}
 		return result;
+	}
+
+	@RequestMapping("/config/insertWindow.do")
+	public String insertWindow(HttpServletRequest request, Long activityId, String channel,
+			HttpServletResponse response, ModelMap modelMap) {
+		Map<Integer, ConfigCategory> map = configService.getConfigCategoryList(activityId, channel);
+		request.setAttribute("configCategoryList", map.values());
+		request.setAttribute("activityId", activityId.toString());
+		request.setAttribute("channel", channel);
+		return PAGE_CONFIG_INSERT;
+	}
+
+	@ResponseBody
+	@RequestMapping("/config/insert.do")
+	public Object insert(HttpServletRequest request, Function function, String channel, Long activityId,
+			HttpServletResponse response, ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if (function == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			configService.updateActivityConfig(request, activityId, channel);
+			Config config = new Config();
+			config.setStatus(CommonStatus.ONLINE);
+			List<Config> configsList = configService.selectConfig(config, new PageBounds());
+			// ConfigManager.refreshConfig(null, null, null, configsList, null,
+			// null);
+			AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("error :", e2);
+		}
+
+		return result;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@ResponseBody
+	@RequestMapping("/config/query.do")
+	public Object query(String range, Config config, HttpServletRequest request, HttpServletResponse response) {
+		Object object = configService.selectConfig(config, getPageBounds(range, request));
+		PageList pageList = (PageList) object;
+		return setPageInfo(request, response, pageList);
 	}
 }

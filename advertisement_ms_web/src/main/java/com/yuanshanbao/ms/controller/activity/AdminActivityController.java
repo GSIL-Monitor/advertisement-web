@@ -34,6 +34,8 @@ import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.model.ChannelAllocateStatus;
 import com.yuanshanbao.dsp.channel.model.ChannelIndependentStatus;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.config.model.Config;
+import com.yuanshanbao.dsp.config.model.ConfigCategory;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.ConfigService;
 import com.yuanshanbao.dsp.config.service.FunctionService;
@@ -514,6 +516,44 @@ public class AdminActivityController extends PaginationController {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
 			LoggerUtil.error("probability insert function - reload error", e2);
+		}
+		return result;
+	}
+
+	@RequestMapping("/configWindow.do")
+	public String configWindow(Long activityId, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+
+		Map<Integer, ConfigCategory> map = configService.getConfigCategoryList(activityId, null);
+		request.setAttribute("configCategoryList", map.values());
+		request.setAttribute("activityId", activityId.toString());
+		return PAGE_CONFIG;
+	}
+
+	@ResponseBody
+	@RequestMapping("/config.do")
+	public Object config(Long activityId, Function function, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if (function == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+
+			configService.updateActivityConfig(request, activityId, null);
+
+			Config config = new Config();
+			config.setStatus(CommonStatus.ONLINE);
+			List<Config> configsList = configService.selectConfig(config, new PageBounds());
+			// ConfigManager.refreshConfig(null, null, null, configsList, null,
+			// null);
+			AdminServerController.refreshConfirm();
+
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			LoggerUtil.error("", e);
 		}
 		return result;
 	}

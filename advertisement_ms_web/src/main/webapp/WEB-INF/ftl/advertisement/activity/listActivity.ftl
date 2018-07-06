@@ -31,6 +31,11 @@
 		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/listChannel.do?activityId='+data.activityId+'"  class="btn btn-green">渠道列表</a>';
 		        }
 		    },  {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/configWindow.do?activityId='+data.activityId+'"  class="btn btn-green">配置管理</a>';
+		        }
+		    },  {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
 		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/updateWindow.do?${functionId}='+data+'"  class="btn btn-green">修改</a>';
@@ -40,8 +45,6 @@
 		        "render": function ( data, type, full, meta ) {
 		            return '<a target="_blank" href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue">删除</a>';
 		        }
-		  
-		   
 		    }];
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -84,6 +87,7 @@
 									<th>状态</th>
 									<th>活动奖品列表</th>
 									<th>渠道列表</th>
+									<th>配置管理</th>
 									<th>修改</th>
 									<th>删除</th>									
 								</tr>

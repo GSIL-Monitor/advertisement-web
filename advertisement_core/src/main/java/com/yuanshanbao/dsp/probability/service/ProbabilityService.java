@@ -26,7 +26,8 @@ public interface ProbabilityService {
 
 	public Map<Long, Probability> selectProbabilitys(List<Long> probabilityIdList);
 
-	public List<Probability> selectProbabilitys(HttpServletRequest request, String activityKey, String channel);
+	public List<Probability> selectProbabilitys(HttpServletRequest request, Long projectId, String activityKey,
+			String channel);
 
 	public Probability pickPrize(HttpServletRequest request, String activityKey, String channel,
 			List<Long> pickedPrizeIdList);
@@ -35,4 +36,7 @@ public interface ProbabilityService {
 
 	public List<Probability> selectProbabilityByKeyFromCache(Long projectId, String activityKey, String channelKey,
 			List<Long> advertisementIdList);
+
+	public Probability pickPrize(HttpServletRequest request, Long projectId, String activityKey, String channel,
+			List<Long> pickedAdvertisementIdList);
 }
