@@ -233,15 +233,15 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 				String countValue = "";
 				if (QuotaType.CPC.equals(quota.getType())) {
 					countValue = redisCacheService.get(RedisConstant.getAdvertisementClickCountPVKey(null,
-							quota.getAdvertisementId(), quota.getChannel()));
+							quota.getAdvertisementId() + "", quota.getChannel()));
 				}
 				if (QuotaType.CPM.equals(quota.getType())) {
 					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
-							quota.getAdvertisementId(), quota.getChannel()));
+							quota.getAdvertisementId() + "", quota.getChannel()));
 				}
 				if (QuotaType.CPT.equals(quota.getType())) {
 					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
-							quota.getAdvertisementId(), quota.getChannel()));
+							quota.getAdvertisementId() + "", quota.getChannel()));
 				}
 				if (ValidateUtil.isNumber(countValue)) {
 					Integer currentCount = Integer.parseInt(countValue);

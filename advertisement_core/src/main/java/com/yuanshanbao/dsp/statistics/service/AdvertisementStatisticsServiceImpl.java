@@ -601,7 +601,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private Integer getShowUv(String date, String channel, Long advertisementId) {
 		String key = null;
 		if (StringUtils.isNotBlank(channel)) {
-			key = RedisConstant.getAdvertisementShowCountUVKey(date, advertisementId, channel);
+			key = RedisConstant.getAdvertisementShowCountUVKey(date, advertisementId + "", channel);
 		}
 		return getCount(key);
 	}
@@ -609,7 +609,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private Integer getClickUv(String date, String channel, Long advertisementId) {
 		String key = null;
 		if (StringUtils.isNotBlank(channel)) {
-			key = RedisConstant.getAdvertisementClickCountUVKey(date, advertisementId, channel);
+			key = RedisConstant.getAdvertisementClickCountUVKey(date, advertisementId + "", channel);
 		}
 		return getCount(key);
 	}
@@ -617,7 +617,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private Integer getClickPv(String date, String channel, Long advertisementId) {
 		String key = null;
 		if (StringUtils.isNotBlank(channel)) {
-			key = RedisConstant.getAdvertisementClickCountPVKey(date, advertisementId, channel);
+			key = RedisConstant.getAdvertisementClickCountPVKey(date, advertisementId + "", channel);
 		}
 		return getCount(key);
 	}
@@ -625,7 +625,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private Integer getShowPv(String date, String channel, Long advertisementId) {
 		String key = null;
 		if (StringUtils.isNotBlank(channel)) {
-			key = RedisConstant.getAdvertisementShowCountPVKey(date, advertisementId, channel);
+			key = RedisConstant.getAdvertisementShowCountPVKey(date, advertisementId + "", channel);
 		}
 		return getCount(key);
 	}
@@ -694,6 +694,10 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 				}
 			} else {
 				for (Probability pro : list) {
+					if (pro.getChannel() != null && pro.getChannel().equals("qudaos")) {
+
+						System.err.println(pro.getAdvertisementId());
+					}
 					AdvertisementStatistics statistic = createChannelAdvertisementStatistic(diffDate, pv,
 							pro.getChannel(), pro.getAdvertisementId());
 					addToResultMap(resultMap, pro.getChannel(), statistic);

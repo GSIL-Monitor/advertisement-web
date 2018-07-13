@@ -11,7 +11,7 @@ public interface ActivityCombineService {
 
 	public List<ActivityCombine> selectActivityCombine(ActivityCombine activityCombine, PageBounds pageBounds);
 
-	public ActivityCombine selectActivity(Long activityId);
+	public ActivityCombine selectActivityCombine(Long activityId);
 
 	public void insertActivityCombine(ActivityCombine activityCombine);
 

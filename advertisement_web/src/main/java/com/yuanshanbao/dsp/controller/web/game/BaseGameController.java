@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.controller.web.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,9 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.activity.model.ActivityCombine;
 import com.yuanshanbao.dsp.activity.model.LuckUser;
+import com.yuanshanbao.dsp.activity.service.ActivityCombineService;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
@@ -34,6 +37,7 @@ import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.prize.service.PrizeService;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 public class BaseGameController extends BaseController {
 
@@ -59,8 +63,14 @@ public class BaseGameController extends BaseController {
 	@Autowired
 	protected AdvertisementService advertisementService;
 
+	@Autowired
+	protected ActivityCombineService activityCombineService;
+
 	protected void setIndex(HttpServletRequest request, Map<String, Object> modelMap, String activityKey,
-			String channel, String[] prizeName, double[] probabilityRandom) {
+			String channel, String[] prizeName, double[] probabilityRandom, String parentKey) {
+		if (StringUtils.isNotBlank(parentKey)) {
+			activityKey = parentKey;
+		}
 		request.getSession().setAttribute(activityKey + SessionConstants.SESSION_USER_FROM, channel);
 		List<Long> prizeIdList = parsePickedPrize(request, activityKey, true);
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
@@ -69,16 +79,20 @@ public class BaseGameController extends BaseController {
 		if (activity != null) {
 			ConfigManager.setConfigMap(modelMap, activity.getActivityId(), channel);
 		}
-		int configChance = probabilityList.size();
-		// 获取配置的抽奖次数
-		if (activity != null && activity.getActivityId() != null) {
-			configChance = Math.min(ConfigWrapper.getPickChance(activity.getActivityId(), channel, null, null),
-					configChance);
-		}
-		int chance = configChance - prizeIdList.size();
-		chance = 1;
-		if (chance < 0) {
-			chance = 0;
+		int chance;
+		if (StringUtils.isBlank(parentKey)) {
+			int configChance = probabilityList.size();
+			// 获取配置的抽奖次数
+			if (activity != null && activity.getActivityId() != null) {
+				configChance = Math.min(ConfigWrapper.getPickChance(activity.getActivityId(), channel, null, null),
+						configChance);
+			}
+			chance = configChance - prizeIdList.size();
+			if (chance < 0) {
+				chance = 0;
+			}
+		} else {
+			chance = 1;
 		}
 		modelMap.put("chance", chance);
 		modelMap.put("uvCountChannel", channel);
@@ -90,9 +104,15 @@ public class BaseGameController extends BaseController {
 	}
 
 	protected void pickPrizeAndSetResult(HttpServletRequest request, HttpServletResponse response,
-			Map<String, Object> resultMap, String activityKey) {
+			Map<String, Object> resultMap, String activityKey, String parentKey) {
 		resultMap.put("myPrizeList", getMyPrizeList(request, activityKey));
+		if (StringUtils.isNotBlank(parentKey)) {
+			activityKey = parentKey;
+		}
 		Advertisement advertisement = pickPrize(request, response, resultMap, activityKey);
+		if (StringUtils.isNotBlank(parentKey)) {
+			setNextActivity(resultMap, activityKey, parentKey);
+		}
 		if (advertisement == null) {
 			setGameJumpUrl(request, resultMap, activityKey, false);
 			throw new BusinessException(ComRetCode.GAME_NO_PRIZE_ERROR);
@@ -102,25 +122,26 @@ public class BaseGameController extends BaseController {
 	}
 
 	protected Advertisement pickPrize(HttpServletRequest request, HttpServletResponse response,
-			Map<String, Object> resultMap, String key) {
+			Map<String, Object> resultMap, String activityKey) {
 		// TODO Auto-generated method stub
-		String channel = (String) request.getSession().getAttribute(key + SessionConstants.SESSION_USER_FROM);
-		List<Long> pickedPrizeIdList = parsePickedPrize(request, key, true);
-		Activity activity = activityService.selectActivity(key);
+		String channel = (String) request.getSession().getAttribute(activityKey + SessionConstants.SESSION_USER_FROM);
+		List<Long> pickedPrizeIdList = parsePickedPrize(request, activityKey, true);
+		Activity activity = activityService.selectActivity(activityKey);
 		if (activity != null && activity.getActivityId() != null) {
 			int picked = pickedPrizeIdList.size();
 			if (picked >= ConfigWrapper.getPickChance(activity.getActivityId(), channel, null, null)) {
-				setGameJumpUrl(request, resultMap, key, false);
+				setGameJumpUrl(request, resultMap, activityKey, false);
 				throw new BusinessException(ComRetCode.GAME_NO_PRIZE_ERROR);
 			}
 		}
-		Probability probability = probabilityService.pickPrize(request, getProjectId(request), key, channel,
+		Probability probability = probabilityService.pickPrize(request, getProjectId(request), activityKey, channel,
 				pickedPrizeIdList);
 		Advertisement advertisement = null;
 		if (probability != null) {
 			pickedPrizeIdList.add(probability.getAdvertisementId());
-			setPickedPrizeCookie(request, response, key, pickedPrizeIdList);
+			setPickedPrizeCookie(request, response, activityKey, pickedPrizeIdList);
 			advertisement = ConfigManager.getAdvertisement(probability.getAdvertisementId() + "");
+			advertisement.addChannelToLink(channel);
 		}
 		return advertisement;
 	}
@@ -240,6 +261,23 @@ public class BaseGameController extends BaseController {
 			boolean isSelfJump) {
 		String channel = request.getParameter("channel");
 		Activity activity = activityService.selectActivity(activityKey);
+		// if (checkCombination(activity)) {
+		// // 若是活动组合
+		// ActivityCombine activityCombine =
+		// activityCombineService.selectActivityCombine(activity.getActivityId());
+		// ActivityCombine params = new ActivityCombine();
+		// params.setParentId(activityCombine.getParentId());
+		// List<ActivityCombine> list =
+		// activityCombineService.selectActivityCombine(params, new
+		// PageBounds());
+		// for (ActivityCombine combine : list) {
+		// if (combine.getSort().equals(activityCombine.getSort() + 1)) {
+		// return combine.getActivity().getEntranceUrl();
+		// }
+		// }
+		// activity =
+		// activityService.selectActivity(activityCombine.getParentId());
+		// }
 		String gameJump = ConfigManager.getConfigValue(activity.getActivityId(), channel, null, null,
 				ConfigConstants.GAME_RESULT_JUMP);
 		if (StringUtils.isNotBlank(gameJump)) {
@@ -259,6 +297,18 @@ public class BaseGameController extends BaseController {
 			}
 		}
 		return null;
+	}
+
+	private boolean checkCombination(Activity activity) {
+		Integer combination = activity.getCombination();
+		if (combination != null) {
+			if (combination.equals("0")) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Long getRandomActivityId(HttpServletRequest request, String[] ids, boolean isSelfJump) {
@@ -363,5 +413,58 @@ public class BaseGameController extends BaseController {
 			chance = 0;
 		}
 		resultMap.put("chance", chance);
+	}
+
+	protected void setCombineIndex(HttpServletRequest request, Map<String, Object> modelMap, String activityKey,
+			String channel, String[] prizeName, double[] probabilityRandom) {
+		request.getSession().setAttribute(activityKey + SessionConstants.SESSION_USER_FROM, channel);
+		List<Long> prizeIdList = parsePickedPrize(request, activityKey, true);
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
+				activityKey, channel);
+		Activity activity = activityService.selectActivity(activityKey);
+		ActivityCombine params = new ActivityCombine();
+		params.setParentId(activity.getActivityId());
+		List<ActivityCombine> list = activityCombineService.selectActivityCombine(params, new PageBounds());
+		ActivityCombine activityCombine = getSortActivity(list);
+		if (activityCombine != null) {
+			// 活动页面进行跳转
+			Activity resultActivity = activityService.selectActivity(activityCombine.getActivityId());
+			modelMap.put("jumpUrl", resultActivity.getEntranceUrl());
+		}
+	}
+
+	private ActivityCombine getSortActivity(List<ActivityCombine> list) {
+		for (ActivityCombine activityCombine : list) {
+			if (activityCombine.getSort() != null & activityCombine.getSort().equals(1)) {
+				return activityCombine;
+			}
+		}
+		return null;
+	}
+
+	private void setNextActivity(Map<String, Object> resultMap, String activityKey, String parentKey) {
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
+		Activity parentActivity = ConfigManager.getActivityByKey(parentKey);
+		ActivityCombine params = new ActivityCombine();
+		params.setParentId(parentActivity.getActivityId());
+		List<ActivityCombine> combineList = activityCombineService.selectActivityCombine(params, new PageBounds());
+		ActivityCombine activityCombine = getNextActivityCombine(activity, combineList);
+		if (activityCombine != null) {
+			Activity nextActivity = ConfigManager.getActivityById(activityCombine.getActivityId());
+			resultMap.put("nextUrl", nextActivity.getEntranceUrl());
+		}
+	}
+
+	private ActivityCombine getNextActivityCombine(Activity activity, List<ActivityCombine> combineList) {
+		int index = 0;
+		Map<Integer, ActivityCombine> map = new HashMap<Integer, ActivityCombine>();
+		for (ActivityCombine combine : combineList) {
+			if (activity.getActivityId().equals(combine.getActivityId())) {
+				index = combine.getSort();
+			}
+			map.put(combine.getSort(), combine);
+		}
+		ActivityCombine nextActivityCombine = map.get(index + 1);
+		return nextActivityCombine;
 	}
 }

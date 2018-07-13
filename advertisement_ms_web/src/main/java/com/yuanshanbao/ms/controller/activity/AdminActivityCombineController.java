@@ -289,4 +289,9 @@ public class AdminActivityCombineController extends PaginationController {
 		}
 		return result;
 	}
+
+	public static void main(String[] args) {
+		String a = "2018.07.07 00:00:15,984 INFO  cn.millertech.common.util.LoggerUtil 40 access - sessionID=0059e191-ea25-4c9c-ae40-6e97c8537a3d--474247392863432696-25409063539943763, sid=0059e191-ea25-4c9c-ae40-6e97c8537a3d--474247392863432696-25409063539943763, pid=null, userId=24189574, mobile=13910952788, ip=106.37.36.4, url=http://www.yuanshanbx.com/m/activity/zh/result/commit.html?name=于海宁&question1=您孩子的年龄&answer1=10岁&resultKey=dada, referer=https://www.yuanshanbx.com/m/activity/common/success.html?gorderId=21993163&gorderKey=Pt0gnBMKX2anCoakyKVJ4A%3D%3D%0D%0A, userAgent=Mozilla/5.0 (Linux; Android 7.0; SM-G9550 Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/044109 Mobile Safari/537.36 MicroMessenger/6.6.6.1300(0x26060638) NetType/3G Language/zh_CN, xff=null";
+		System.err.println(a.substring(a.indexOf("sid=") + 4, a.indexOf(", pid")));
+	}
 }

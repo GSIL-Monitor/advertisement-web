@@ -128,8 +128,16 @@ public class ActivityCombineServiceImpl implements ActivityCombineService {
 	// }
 
 	@Override
-	public ActivityCombine selectActivity(Long activityId) {
-		// TODO Auto-generated method stub
+	public ActivityCombine selectActivityCombine(Long activityId) {
+		ActivityCombine activityCombine = new ActivityCombine();
+		if (activityId == null) {
+			return null;
+		}
+		activityCombine.setActivityId(activityId);
+		List<ActivityCombine> list = selectActivityCombine(activityCombine, new PageBounds());
+		if (list.size() > 0) {
+			return list.get(0);
+		}
 		return null;
 	}
 

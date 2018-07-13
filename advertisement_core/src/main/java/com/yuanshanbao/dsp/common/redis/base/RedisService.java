@@ -38,7 +38,7 @@ public interface RedisService {
 	<T, S> T hessian2HGet(String key, S field);
 
 	<S, T> Map<S, T> hessian2HGetAll(String key);
-	
+
 	public Long increBy(String key, int increaseCount);
 
 	Long incr(String key);
@@ -90,6 +90,8 @@ public interface RedisService {
 	Set<String> smembers(String key);
 
 	Long sadd(String key, String value);
-	
+
 	List<String> mgetWithEnv(String[] keys);
+
+	Double increByFloat(String key, float increaseCount);
 }

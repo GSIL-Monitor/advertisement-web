@@ -69,8 +69,7 @@ public class RedisServiceImpl implements RedisService {
 			Set docs = getJedis().zrangeByScore(keyBytes, min, max);
 
 			for (Object valueBytes : docs) {
-				resultList.add((T) SerializeUtil
-						.hessian2Deserialize((byte[]) valueBytes));
+				resultList.add((T) SerializeUtil.hessian2Deserialize((byte[]) valueBytes));
 			}
 			return (T) resultList;
 		} catch (Exception e) {
@@ -81,19 +80,16 @@ public class RedisServiceImpl implements RedisService {
 
 	@Override
 	@JedisWay
-	public <T> T hessian2ZRangeByScoreGet(String key, Long min, Long max,
-			int offset, int limit) {
+	public <T> T hessian2ZRangeByScoreGet(String key, Long min, Long max, int offset, int limit) {
 		try {
 			key = CommonUtil.getCacheKey(key);
 			List<T> resultList = new ArrayList<>();
 			byte[] keyBytes = key.getBytes(RedisConstant.REDIS_DEFAULT_CHARSET);
 
-			Set docs = getJedis().zrangeByScore(keyBytes, min, max, offset,
-					limit);
+			Set docs = getJedis().zrangeByScore(keyBytes, min, max, offset, limit);
 
 			for (Object valueBytes : docs) {
-				resultList.add((T) SerializeUtil
-						.hessian2Deserialize((byte[]) valueBytes));
+				resultList.add((T) SerializeUtil.hessian2Deserialize((byte[]) valueBytes));
 			}
 			return (T) resultList;
 		} catch (Exception e) {
@@ -113,21 +109,18 @@ public class RedisServiceImpl implements RedisService {
 			Set docs = getJedis().zrevrangeByScore(keyBytes, min, max);
 
 			for (Object valueBytes : docs) {
-				resultList.add((T) SerializeUtil
-						.hessian2Deserialize((byte[]) valueBytes));
+				resultList.add((T) SerializeUtil.hessian2Deserialize((byte[]) valueBytes));
 			}
 			return (T) resultList;
 		} catch (Exception e) {
-			LoggerUtil
-					.error("Error hessian2ZRevRangeByScoreGet, key:" + key, e);
+			LoggerUtil.error("Error hessian2ZRevRangeByScoreGet, key:" + key, e);
 			return null;
 		}
 	}
 
 	@Override
 	@JedisWay
-	public <T> T hessian2ZRevRangeByScoreGet(String key, Long min, Long max,
-			int x, int y) {
+	public <T> T hessian2ZRevRangeByScoreGet(String key, Long min, Long max, int x, int y) {
 		try {
 			key = CommonUtil.getCacheKey(key);
 			List<T> resultList = new ArrayList<>();
@@ -136,13 +129,11 @@ public class RedisServiceImpl implements RedisService {
 			Set docs = getJedis().zrevrangeByScore(keyBytes, min, max, x, y);
 
 			for (Object valueBytes : docs) {
-				resultList.add((T) SerializeUtil
-						.hessian2Deserialize((byte[]) valueBytes));
+				resultList.add((T) SerializeUtil.hessian2Deserialize((byte[]) valueBytes));
 			}
 			return (T) resultList;
 		} catch (Exception e) {
-			LoggerUtil
-					.error("Error hessian2ZRevRangeByScoreGet, key:" + key, e);
+			LoggerUtil.error("Error hessian2ZRevRangeByScoreGet, key:" + key, e);
 			return null;
 		}
 	}
@@ -168,8 +159,7 @@ public class RedisServiceImpl implements RedisService {
 			key = CommonUtil.getCacheKey(key);
 			byte[] keyBytes = key.getBytes(RedisConstant.REDIS_DEFAULT_CHARSET);
 			byte[] valueBytes = SerializeUtil.hessian2Serialize(value);
-			Boolean result = RedisConstant.REDIS_DEFAULT_OK
-					.equalsIgnoreCase(getJedis().set(keyBytes, valueBytes));
+			Boolean result = RedisConstant.REDIS_DEFAULT_OK.equalsIgnoreCase(getJedis().set(keyBytes, valueBytes));
 			return result;
 		} catch (Exception e) {
 			LoggerUtil.error("Error hessian2Set, key:" + key, e);
@@ -200,9 +190,8 @@ public class RedisServiceImpl implements RedisService {
 			key = CommonUtil.getCacheKey(key);
 			byte[] keyBytes = key.getBytes(RedisConstant.REDIS_DEFAULT_CHARSET);
 			byte[] valueBytes = SerializeUtil.hessian2Serialize(value);
-			Boolean result = RedisConstant.REDIS_DEFAULT_OK
-					.equalsIgnoreCase(getJedis().setex(keyBytes, seconds,
-							valueBytes));
+			Boolean result = RedisConstant.REDIS_DEFAULT_OK.equalsIgnoreCase(getJedis().setex(keyBytes, seconds,
+					valueBytes));
 			return result;
 		} catch (Exception e) {
 			LoggerUtil.error("Error hessian2SetEx, key:" + key, e);
@@ -255,8 +244,7 @@ public class RedisServiceImpl implements RedisService {
 				byte[] valueBytes = SerializeUtil.hessian2Serialize(entryOb);
 				valueMap.put(fieldBytes, valueBytes);
 			}
-			Boolean result = RedisConstant.REDIS_DEFAULT_OK
-					.equalsIgnoreCase(getJedis().hmset(keyBytes, valueMap));
+			Boolean result = RedisConstant.REDIS_DEFAULT_OK.equalsIgnoreCase(getJedis().hmset(keyBytes, valueMap));
 			return result;
 		} catch (Exception e) {
 			LoggerUtil.error("Error hessian2Hmset, key:" + key, e);
@@ -326,8 +314,20 @@ public class RedisServiceImpl implements RedisService {
 			Long result = getJedis().incrBy(key, increaseCount);
 			return result == null ? 0L : result;
 		} catch (Exception e) {
-			LoggerUtil.error("Error incrBy, key:" + key + " increaseCount:"
-					+ increaseCount, e);
+			LoggerUtil.error("Error incrBy, key:" + key + " increaseCount:" + increaseCount, e);
+			return null;
+		}
+	}
+
+	@Override
+	@JedisWay
+	public Double increByFloat(String key, float increaseCount) {
+		try {
+			key = CommonUtil.getCacheKey(key);
+			double result = getJedis().incrByFloat(key, increaseCount);
+			return result;
+		} catch (Exception e) {
+			LoggerUtil.error("Error incrByFloat, key:" + key + " increaseCount:" + increaseCount, e);
 			return null;
 		}
 	}
@@ -338,8 +338,7 @@ public class RedisServiceImpl implements RedisService {
 		try {
 			key = CommonUtil.getCacheKey(key);
 			byte[] keyBytes = key.getBytes(RedisConstant.REDIS_DEFAULT_CHARSET);
-			byte[] fieldBytes = field
-					.getBytes(RedisConstant.REDIS_DEFAULT_CHARSET);
+			byte[] fieldBytes = field.getBytes(RedisConstant.REDIS_DEFAULT_CHARSET);
 			Long result = 0L;
 			if (getJedis().exists(keyBytes)) {
 				result = getJedis().hdel(keyBytes, fieldBytes);
@@ -473,8 +472,7 @@ public class RedisServiceImpl implements RedisService {
 		try {
 			key = CommonUtil.getCacheKey(key);
 			byte[] keyBytes = key.getBytes(RedisConstant.REDIS_DEFAULT_CHARSET);
-			Boolean result = RedisConstant.REDIS_DEFAULT_OK
-					.equalsIgnoreCase(getJedis().ltrim(keyBytes, start, end));
+			Boolean result = RedisConstant.REDIS_DEFAULT_OK.equalsIgnoreCase(getJedis().ltrim(keyBytes, start, end));
 			return result;
 		} catch (Exception e) {
 			LoggerUtil.error("Error hessian2LTrim, key:" + key, e);
@@ -577,8 +575,7 @@ public class RedisServiceImpl implements RedisService {
 	public Boolean set(String key, int seconds, String value) {
 		try {
 			key = CommonUtil.getCacheKey(key);
-			Boolean result = RedisConstant.REDIS_DEFAULT_OK
-					.equalsIgnoreCase(getJedis().setex(key, seconds, value));
+			Boolean result = RedisConstant.REDIS_DEFAULT_OK.equalsIgnoreCase(getJedis().setex(key, seconds, value));
 			return result;
 		} catch (Exception e) {
 			LoggerUtil.error("Error hessian2SetEx, key:" + key, e);
@@ -643,7 +640,7 @@ public class RedisServiceImpl implements RedisService {
 			return 0L;
 		}
 	}
-	
+
 	@Override
 	public Long sadd(String key, String value) {
 		if (StringUtils.isBlank(key)) {
@@ -672,7 +669,7 @@ public class RedisServiceImpl implements RedisService {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public Set<String> smembers(String key) {
 		if (StringUtils.isBlank(key))

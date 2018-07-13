@@ -7,13 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
@@ -426,15 +423,15 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 				String countValue = "";
 				if (QuotaType.CPC.equals(quota.getType())) {
 					countValue = redisCacheService.get(RedisConstant.getAdvertisementClickCountPVKey(null,
-							quota.getAdvertisementId(), quota.getChannel()));
+							quota.getAdvertisementId() + "", quota.getChannel()));
 				}
 				if (QuotaType.CPM.equals(quota.getType())) {
 					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
-							quota.getAdvertisementId(), quota.getChannel()));
+							quota.getAdvertisementId() + "", quota.getChannel()));
 				}
 				if (QuotaType.CPT.equals(quota.getType())) {
 					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
-							quota.getAdvertisementId(), quota.getChannel()));
+							quota.getAdvertisementId() + "", quota.getChannel()));
 				}
 				if (ValidateUtil.isNumber(countValue)) {
 					Integer currentCount = Integer.parseInt(countValue);
@@ -486,50 +483,68 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		return advertismentList;
 	}
 
-	// 点击量
-	public void addAdvertisementCount(HttpServletRequest request, String activityKey, String channel, Long id,
-			String position) {
-		String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_CLICK + "_" + channel + "_" + id;
-		String clickValue = (String) request.getSession().getAttribute(sessionKey);
-		if (StringUtils.isBlank(clickValue)) {
-			request.getSession().setAttribute(sessionKey, "true");
-			if (StringUtils.isNotBlank(channel)) {
-				redisCacheService.incr(RedisConstant.getAdvertisementClickCountUVKey(null, id, channel));
-			} else {
-				redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountUVKey(null, id, channel));
-			}
-		}
-		if (StringUtils.isNotBlank(channel)) {
-			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
-			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
-			redisCacheService.incr(RedisConstant.getAdvertisementClickCountPVKey(null, id, channel));
-		} else {
-			redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountPVKey(null, id, channel));
-		}
-	}
-
-	// 曝光量
-	public void addAdvertisementShowCount(HttpServletRequest request, String activityKey, String channel, Long id,
-			String position) {
-		String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_SHOW + "_" + channel + "_" + id;
-		String showValue = (String) request.getSession().getAttribute(sessionKey);
-		if (StringUtils.isBlank(showValue)) {
-			request.getSession().setAttribute(sessionKey, "true");
-			if (StringUtils.isNotBlank(channel)) {
-				redisCacheService.incr(RedisConstant.getAdvertisementShowCountUVKey(null, id, channel));
-			} else {
-				redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountUVKey(null, id, activityKey));
-			}
-		}
-
-		if (StringUtils.isNotBlank(channel)) {
-			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
-			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
-			redisCacheService.incr(RedisConstant.getAdvertisementShowCountPVKey(null, id, channel));
-		} else {
-			redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountPVKey(null, id, activityKey));
-		}
-	}
+	// // 点击量
+	// public void addAdvertisementCount(HttpServletRequest request, String
+	// activityKey, String channel, Long id,
+	// String position) {
+	// String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_CLICK + "_" +
+	// channel + "_" + id;
+	// String clickValue = (String)
+	// request.getSession().getAttribute(sessionKey);
+	// if (StringUtils.isBlank(clickValue)) {
+	// request.getSession().setAttribute(sessionKey, "true");
+	// if (StringUtils.isNotBlank(channel)) {
+	// redisCacheService.incr(RedisConstant.getAdvertisementClickCountUVKey(null,
+	// id, channel));
+	// } else {
+	// redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountUVKey(null,
+	// id, channel));
+	// }
+	// }
+	// if (StringUtils.isNotBlank(channel)) {
+	// request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM,
+	// channel);
+	// redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(),
+	// id + ":" + channel);
+	// redisCacheService.incr(RedisConstant.getAdvertisementClickCountPVKey(null,
+	// id, channel));
+	// } else {
+	// redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountPVKey(null,
+	// id, channel));
+	// }
+	// }
+	//
+	// // 曝光量
+	// public void addAdvertisementShowCount(HttpServletRequest request, String
+	// activityKey, String channel, Long id,
+	// String position) {
+	// String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_SHOW + "_" +
+	// channel + "_" + id;
+	// String showValue = (String)
+	// request.getSession().getAttribute(sessionKey);
+	// if (StringUtils.isBlank(showValue)) {
+	// request.getSession().setAttribute(sessionKey, "true");
+	// if (StringUtils.isNotBlank(channel)) {
+	// redisCacheService.incr(RedisConstant.getAdvertisementShowCountUVKey(null,
+	// id, channel));
+	// } else {
+	// redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountUVKey(null,
+	// id, activityKey));
+	// }
+	// }
+	//
+	// if (StringUtils.isNotBlank(channel)) {
+	// request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM,
+	// channel);
+	// redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(),
+	// id + ":" + channel);
+	// redisCacheService.incr(RedisConstant.getAdvertisementShowCountPVKey(null,
+	// id, channel));
+	// } else {
+	// redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountPVKey(null,
+	// id, activityKey));
+	// }
+	// }
 
 	private void recordAdvertisementCount(Long projectId, String activityKey, String channel, boolean isClick) {
 		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channel);

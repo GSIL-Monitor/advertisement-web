@@ -37,10 +37,11 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 
 	@ResponseBody
 	@RequestMapping("/index")
-	public Object index(HttpServletRequest request, HttpServletResponse response, String activityKey, String channel) {
+	public Object index(HttpServletRequest request, HttpServletResponse response, String activityKey, String channel,
+			String parentKey) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			setIndex(request, resultMap, activityKey, channel, null, null);
+			setIndex(request, resultMap, activityKey, channel, null, null, parentKey);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -53,10 +54,10 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 
 	@ResponseBody
 	@RequestMapping("/luck")
-	public Object luck(HttpServletRequest request, HttpServletResponse response, String activityKey) {
+	public Object luck(HttpServletRequest request, HttpServletResponse response, String activityKey, String parentKey) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			pickPrizeAndSetResult(request, response, resultMap, activityKey);
+			pickPrizeAndSetResult(request, response, resultMap, activityKey, parentKey);
 			// resultMap.put("position", POSITION);
 			resultMap.put("angle", positionAngles[5 - 1]);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

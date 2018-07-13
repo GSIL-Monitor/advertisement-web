@@ -29,6 +29,9 @@ public class RedisConstant {
 	public static final String UV_COUNT = "uv_stat_count" + COMMON_REDIS_PREFIX;
 	public static final String RESULT_PAGE_CHANNEL = "result_page_channel" + COMMON_REDIS_PREFIX;
 
+	public static final String ADVERTISER_BALANCE_COUNT = "advertiser_balance_count" + COMMON_REDIS_PREFIX;
+	private static final String ADVERTISER_LAST_BALANCE_COUNT = "advertiser_last_balance_count" + COMMON_REDIS_PREFIX;;
+
 	public static final String QUOTA_COUNT = "quota_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_SHOW_COUNT = "advertisement_show_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT = "advertisement_click_count" + COMMON_REDIS_PREFIX;
@@ -171,28 +174,28 @@ public class RedisConstant {
 	}
 
 	// -------------------------------------------------------------------------------------------------------------------------------
-	public static String getAdvertisementShowCountPVKey(String date, Long advertisementId, String channel) {
+	public static String getAdvertisementShowCountPVKey(String date, String advertisementId, String channel) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(ADVERTISEMENT_SHOW_COUNT_PV, date + "_" + advertisementId + "_" + channel);
 	}
 
-	public static String getAdvertisementClickCountPVKey(String date, Long advertisementId, String channel) {
+	public static String getAdvertisementClickCountPVKey(String date, String advertisementId, String channel) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(ADVERTISEMENT_CLICK_COUNT_PV, date + "_" + advertisementId + "_" + channel);
 	}
 
-	public static String getAdvertisementShowCountUVKey(String date, Long advertisementId, String channel) {
+	public static String getAdvertisementShowCountUVKey(String date, String advertisementId, String channel) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(ADVERTISEMENT_SHOW_COUNT_UV, date + "_" + advertisementId + "_" + channel);
 	}
 
-	public static String getAdvertisementClickCountUVKey(String date, Long advertisementId, String channel) {
+	public static String getAdvertisementClickCountUVKey(String date, String advertisementId, String channel) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
@@ -208,28 +211,28 @@ public class RedisConstant {
 		return getCachePrefix(ADVERTISEMENT_CHANNEL_AND_ID, date);
 	}
 
-	public static String getAdvertisementActivityClickCountUVKey(String date, Long advertisementId, String activityKey) {
+	public static String getAdvertisementActivityClickCountUVKey(String date, String advertisementId, String activityKey) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(ADVERTISEMENT_ACTIVITY_CLICK_COUNT_UV, date + "_" + advertisementId + "_" + activityKey);
 	}
 
-	public static String getAdvertisementActivityClickCountPVKey(String date, Long advertisementId, String activityKey) {
+	public static String getAdvertisementActivityClickCountPVKey(String date, String advertisementId, String activityKey) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(ADVERTISEMENT_ACTIVITY_CLICK_COUNT_PV, date + "_" + advertisementId + "_" + activityKey);
 	}
 
-	public static String getAdvertisementActivityShowCountUVKey(String date, Long advertisementId, String activityKey) {
+	public static String getAdvertisementActivityShowCountUVKey(String date, String advertisementId, String activityKey) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(ADVERTISEMENT_ACTIVITY_SHOW_COUNT_UV, date + "_" + advertisementId + "_" + activityKey);
 	}
 
-	public static String getAdvertisementActivityShowCountPVKey(String date, Long advertisementId, String activityKey) {
+	public static String getAdvertisementActivityShowCountPVKey(String date, String advertisementId, String activityKey) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
@@ -242,5 +245,19 @@ public class RedisConstant {
 
 	private static String getRequestCountKey(String date, String channel) {
 		return getCachePrefix(REQUEST_COUNT, date + "_" + channel);
+	}
+
+	public static String getAdvertiserBalanceCountKey(String date, Long advertiserId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISER_BALANCE_COUNT, date + "_" + advertiserId);
+	}
+
+	public static String getAdvertiserLastBalanceCountKey(String date, Long advertiserId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISER_LAST_BALANCE_COUNT, date + "_" + advertiserId);
 	}
 }

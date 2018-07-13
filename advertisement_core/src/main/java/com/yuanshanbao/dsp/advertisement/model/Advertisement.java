@@ -148,4 +148,15 @@ public class Advertisement {
 		// return AdvertisementType.getDescription(type);
 		return "";
 	}
+
+	public void addChannelToLink(String channel) {
+		if (channel == null) {
+			channel = "";
+		}
+		if (link.contains("?")) {
+			link += "&channel=" + channel;
+		} else {
+			link += "?channel=" + channel;
+		}
+	}
 }

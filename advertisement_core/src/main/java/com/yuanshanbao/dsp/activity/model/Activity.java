@@ -114,4 +114,14 @@ public class Activity {
 		this.combination = combination;
 	}
 
+	public String addCombineUrl(String parentKey) {
+		String addKey = "activityKey=" + key + "&parentKey=" + parentKey;
+		if (entranceUrl.contains("?")) {
+			entranceUrl += "&" + addKey;
+		} else {
+			entranceUrl += "?" + addKey;
+		}
+		return entranceUrl;
+	}
+
 }
