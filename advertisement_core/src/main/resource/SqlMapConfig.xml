@@ -59,6 +59,7 @@
         <typeAlias type="com.yuanshanbao.dsp.prize.model.Prize" alias="Prize"/>
         <typeAlias type="com.yuanshanbao.dsp.activity.model.ActivityCombine" alias="ActivityCombine"/>
         <typeAlias type="com.yuanshanbao.dsp.bill.model.Bill" alias="Bill"/>
+        <typeAlias type="com.yuanshanbao.dsp.channel.model.ChannelPromotionInfo" alias="ChannelPromotionInfo"/>
     </typeAliases>
 
     <mappers>
@@ -109,5 +110,6 @@
         <mapper resource="mybatis/prize/PrizeDaoImpl.xml"/>
         <mapper resource="mybatis/activity/ActivityCombineDaoImpl.xml"/>
         <mapper resource="mybatis/bill/BillDaoImpl.xml"/>
+        <mapper resource="mybatis/channel/ChannelPromotionInfoDaoImpl.xml"/>
     </mappers>
 </configuration>
