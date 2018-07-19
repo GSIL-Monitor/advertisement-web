@@ -3,6 +3,9 @@ package com.yuanshanbao.dsp.controller.base;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +20,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.MD5Util;
 import com.yuanshanbao.common.util.RequestUtil;
 import com.yuanshanbao.common.validator.util.ValidatorModel;
 import com.yuanshanbao.common.validator.util.ValidatorUtils;
@@ -26,12 +30,19 @@ import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.common.model.SmsToken;
+import com.yuanshanbao.dsp.common.model.SmsTokenList;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.model.vo.ProductVo;
+import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
+import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserStatus;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
+import com.yuanshanbao.paginator.domain.PageList;
 
 public class BaseController {
 
@@ -61,6 +72,9 @@ public class BaseController {
 
 	@Autowired
 	protected ProjectService projectService;
+
+	@Autowired
+	private ProductService productService;
 
 	public Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -313,4 +327,81 @@ public class BaseController {
 		return ConstantsManager.getProjectId(projectService, request);
 	}
 
+	protected void setSmsToken(HttpServletRequest request, Map<String, Object> map) {
+		String prefix = "";
+		List<SmsTokenList> list = generateRandomSmsTokenList();
+		for (SmsTokenList tokenList : list) {
+			int result = 0;
+			for (SmsToken token : tokenList.getList()) {
+				if (token.isEnable()) {
+					if (token.getOperation().equals("+")) {
+						result += token.getValue();
+					} else {
+						result -= token.getValue();
+					}
+				}
+			}
+			if (tokenList.isEnable()) {
+				prefix += result + "";
+			}
+		}
+		map.put("smsId", MD5Util.get(CommonUtil.getRandomID()));
+
+		String randomID = MD5Util.get(CommonUtil.getRandomID());
+		map.put("smsToken", randomID);
+		map.put("smsTokenList", list);
+		request.getSession().setAttribute(SessionConstants.SMS_TOKEN, randomID + prefix);
+		request.getSession().setAttribute(SessionConstants.TOKEN_TIME, System.currentTimeMillis());
+	}
+
+	private List<SmsTokenList> generateRandomSmsTokenList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	protected PageList<ProductVo> convertVo(HttpServletRequest request, List<Product> productList, PageBounds pageBounds) {
+		PageList<ProductVo> voList = new PageList<ProductVo>();
+		int index = 0;
+		for (Product param : productList) {
+			// if (isApprovalEdition(request, param)) {
+			// param.setApplyInterface(null);
+			// }
+			param.setProductCount(productService.getProductCount(param.getProductId()));
+			ProductVo vo = new ProductVo(param);
+			index++;
+			if (pageBounds.getPage() == 1) {
+				switch (index) {
+				case 1:
+					setRecommentTagsVo(vo, "top1", TOP1);
+					break;
+				case 2:
+					setRecommentTagsVo(vo, "top2", TOP2);
+					break;
+				case 3:
+					setRecommentTagsVo(vo, "top3", TOP3);
+					break;
+				default:
+					break;
+				}
+				;
+
+			}
+			voList.add(vo);
+		}
+		return voList;
+	}
+
+	private void setRecommentTagsVo(ProductVo vo, String name, String imageUrl) {
+		List<TagsVo> tagsList = vo.getRecommendTagsList();
+		TagsVo tags = new TagsVo();
+		tags.setName(name);
+		tags.setImage(imageUrl);
+		if (tagsList == null || tagsList.size() == 0) {
+			tagsList = new ArrayList<TagsVo>();
+			tagsList.add(tags);
+		} else {
+			tagsList.add(0, tags);
+		}
+		vo.setRecommendTagsList(tagsList);
+	}
 }

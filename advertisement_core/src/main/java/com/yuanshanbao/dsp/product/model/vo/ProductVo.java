@@ -15,6 +15,10 @@ public class ProductVo {
 	private String imageUrl;
 	private String smallImageUrl;
 	private List<TagsVo> featureTagsList;
+	/**
+	 * 产品推荐标签
+	 */
+	private List<TagsVo> recommendTagsList;
 
 	public ProductVo(Product product) {
 		if (product == null) {
@@ -92,6 +96,14 @@ public class ProductVo {
 
 	public void setFeatureTagsList(List<TagsVo> featureTagsList) {
 		this.featureTagsList = featureTagsList;
+	}
+
+	public List<TagsVo> getRecommendTagsList() {
+		return recommendTagsList;
+	}
+
+	public void setRecommendTagsList(List<TagsVo> recommendTagsList) {
+		this.recommendTagsList = recommendTagsList;
 	}
 
 }

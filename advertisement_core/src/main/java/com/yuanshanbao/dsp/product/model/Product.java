@@ -26,7 +26,9 @@ public class Product {
 	private Long productId;
 
 	private Long merchantId;
-	
+
+	private Long activityId;
+
 	private String productKey;
 
 	private String name;
@@ -51,11 +53,15 @@ public class Product {
 
 	private String advantage;
 
+	private String applyInterface;
+
 	private String guide;
 
 	private Integer type;
 
 	private Integer sort;
+
+	private Long productCount;
 
 	private Integer positiveRate;
 
@@ -83,7 +89,7 @@ public class Product {
 	public Long getMerchantId() {
 		return merchantId;
 	}
-	
+
 	public String getProductKey() {
 		return productKey;
 	}
@@ -297,6 +303,30 @@ public class Product {
 			result.add(vo);
 		}
 		return result;
+	}
+
+	public String getApplyInterface() {
+		return applyInterface;
+	}
+
+	public void setApplyInterface(String applyInterface) {
+		this.applyInterface = applyInterface;
+	}
+
+	public Long getProductCount() {
+		return productCount;
+	}
+
+	public void setProductCount(Long productCount) {
+		this.productCount = productCount;
+	}
+
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
 	}
 
 }
