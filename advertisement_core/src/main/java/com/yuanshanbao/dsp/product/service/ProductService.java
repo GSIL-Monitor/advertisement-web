@@ -3,8 +3,8 @@ package com.yuanshanbao.dsp.product.service;
 import java.util.List;
 import java.util.Map;
 
-import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface ProductService {
 
@@ -21,5 +21,9 @@ public interface ProductService {
 	public void insertOrUpdateProduct(Product product);
 
 	public Map<Long, Product> selectProductByIds(List<Long> productIdList);
+
+	public void increaseProductCount(Long productId);
+
+	public Long getProductCount(Long productId);
 
 }
