@@ -3,7 +3,10 @@ package com.yuanshanbao.dsp.product.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface ProductService {
@@ -25,5 +28,7 @@ public interface ProductService {
 	public void increaseProductCount(Long productId);
 
 	public Long getProductCount(Long productId);
+
+	public String getApplyInterface(Product product, User user, HttpServletRequest request);
 
 }

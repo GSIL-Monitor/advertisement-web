@@ -7,11 +7,13 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.common.util.VerifyIdcard;
 import com.yuanshanbao.dsp.channel.model.ChannelProcedure;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.location.model.Location;
+import com.yuanshanbao.dsp.location.model.LocationType;
 
 /**
  * 
@@ -24,6 +26,7 @@ public class Information {
 	private Long informationId;
 	private Long projectId;
 	private Long activityId;
+	private Long merchantId;
 	private String userId;
 	private String mobile;
 	private String name;
@@ -41,9 +44,25 @@ public class Information {
 	private Long marriage;
 	private Long hasChild;
 	private String channel;
+	private String ip;
+
+	private Integer type;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+
+	/**
+	 * 数据库查询字段
+	 */
+	private String createTimeStart;
+
+	private String createTimeEnd;
+
+	/**
+	 * 分享人手机号
+	 */
+	private String shareMobile;
+	private String shareActivityId;
 
 	private List<ChannelProcedure> procedureList;
 
@@ -315,5 +334,80 @@ public class Information {
 			return result + cityLocation.getName();
 		}
 		return result;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getCreateTimeStart() {
+		return createTimeStart;
+	}
+
+	public void setCreateTimeStart(String createTimeStart) {
+		this.createTimeStart = createTimeStart;
+	}
+
+	public String getCreateTimeEnd() {
+		return createTimeEnd;
+	}
+
+	public void setCreateTimeEnd(String createTimeEnd) {
+		this.createTimeEnd = createTimeEnd;
+	}
+
+	public String getShareMobile() {
+		return shareMobile;
+	}
+
+	public void setShareMobile(String shareMobile) {
+		this.shareMobile = shareMobile;
+	}
+
+	public String getShareActivityId() {
+		return shareActivityId;
+	}
+
+	public void setShareActivityId(String shareActivityId) {
+		this.shareActivityId = shareActivityId;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public Long getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(Long merchantId) {
+		this.merchantId = merchantId;
+	}
+
+	public void setLocation(Location location) {
+		try {
+			if (location != null) {
+				if (location.getType() == LocationType.DISTRICT) {
+					location = location.getParent();
+				}
+				if (location != null && location.getType() == LocationType.CITY) {
+					this.city = location.getCode();
+					location = location.getParent();
+				}
+				if (location != null && location.getType() == LocationType.PROVINCE) {
+					this.province = location.getCode();
+				}
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("", e);
+		}
 	}
 }

@@ -18,6 +18,8 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.location.service.MobileLocationService;
 import com.yuanshanbao.dsp.quota.dao.QuotaDao;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
@@ -29,6 +31,9 @@ public class QuotaServiceImpl implements QuotaService {
 
 	@Autowired
 	private QuotaDao quotaDao;
+
+	@Autowired
+	private MobileLocationService mobileLocationService;
 
 	@Autowired
 	private RedisService redisService;
@@ -209,6 +214,12 @@ public class QuotaServiceImpl implements QuotaService {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public Quota pickGoodsForInformation(Long activityId, Information information) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

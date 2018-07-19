@@ -6,12 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.apply.model.Apply;
+import com.yuanshanbao.dsp.apply.model.ApplyStatus;
+import com.yuanshanbao.dsp.apply.model.ApplyUserStatus;
+import com.yuanshanbao.dsp.apply.service.ApplyService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.IniBean;
@@ -19,6 +25,7 @@ import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.product.dao.ProductDao;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -33,6 +40,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private MerchantService merchantService;
+
+	@Autowired
+	private ApplyService applyService;
 
 	@Autowired
 	private RedisService redisCacheService;
@@ -159,6 +169,28 @@ public class ProductServiceImpl implements ProductService {
 			redisCacheService.set(key, count + "");
 		}
 		return count;
+	}
+
+	@Override
+	public String getApplyInterface(Product product, User user, HttpServletRequest request) {
+		Apply apply = new Apply();
+		apply.setProductId(product.getProductId());
+		apply.setUserId(user.getUserId());
+		List<Apply> applies = applyService.selectApplys(apply, new PageBounds());
+		if (applies.size() > 0) {
+			apply = applies.get(0);
+			if (apply.getUserStatus() != null && (apply.getUserStatus().equals(ApplyUserStatus.BLACK))) {
+				return null;
+			}
+		} else {
+			applyService.insertOrUpdateApply(user, product.getProductId(), ApplyStatus.APPLING);
+		}
+		// PreProductHandler handler = getPreHandle(product, user, request);
+		// if (handler != null &&
+		// StringUtils.isNotBlank(handler.getApplyInterface())) {
+		// return handler.getApplyInterface();
+		// }
+		return product.getApplyInterface();
 	}
 
 }

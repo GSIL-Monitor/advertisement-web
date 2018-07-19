@@ -28,4 +28,9 @@ public class ConfigWrapper extends ConfigManager {
 		}
 		return null;
 	}
+
+	public static boolean hasVerifyCode(Long activityId, String channel) {
+		return ConfigConstants.TRUE.equals(ConfigManager.getConfigValue(activityId, channel,
+				ConfigConstants.HAS_VERIFY_CODE));
+	}
 }

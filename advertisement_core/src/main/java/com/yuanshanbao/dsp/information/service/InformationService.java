@@ -24,4 +24,6 @@ public interface InformationService {
 
 	public Information selectInformationByUserId(String userId);
 
+	public void checkExist(Information information);
+
 }

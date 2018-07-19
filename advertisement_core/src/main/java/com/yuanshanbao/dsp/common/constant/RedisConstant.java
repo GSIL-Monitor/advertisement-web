@@ -260,4 +260,14 @@ public class RedisConstant {
 		}
 		return getCachePrefix(ADVERTISER_LAST_BALANCE_COUNT, date + "_" + advertiserId);
 	}
+
+	public static String getApplyShowCountKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static String getProductShowCountKey(String string) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

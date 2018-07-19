@@ -16,7 +16,6 @@ import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.MD5Util;
-import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.dsp.app.dao.AppDao;
 import com.yuanshanbao.dsp.app.model.AppInfo;
 import com.yuanshanbao.dsp.channel.model.Channel;
@@ -26,6 +25,7 @@ import com.yuanshanbao.dsp.channel.service.ChannelPromotionInfoService;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.core.IniBean;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
 public class AppServiceImpl implements AppService {
@@ -50,14 +50,11 @@ public class AppServiceImpl implements AppService {
 	public void generateAppId(AppInfo appInfo) {
 		String key = getPrivateKey();
 		String keySource = CommonUtil.getRandomID();
-		keySource += CommonConstant.COMMON_COLON_STR + appInfo.getSystemName()
-				+ appInfo.getProductVersion();
+		keySource += CommonConstant.COMMON_COLON_STR + appInfo.getSystemName() + appInfo.getProductVersion();
 		keySource += CommonConstant.COMMON_COLON_STR
-				+ (StringUtils.isNotBlank(appInfo.getAppKey()) ? appInfo
-						.getAppKey() : "");
+				+ (StringUtils.isNotBlank(appInfo.getAppKey()) ? appInfo.getAppKey() : "");
 		keySource += CommonConstant.COMMON_COLON_STR
-				+ (StringUtils.isNotBlank(appInfo.getSourceChannel()) ? appInfo
-						.getSourceChannel() : "");
+				+ (StringUtils.isNotBlank(appInfo.getSourceChannel()) ? appInfo.getSourceChannel() : "");
 		try {
 			String appId = AES.encrypt(keySource, key);
 			appInfo.setAppId(appId);
@@ -86,8 +83,7 @@ public class AppServiceImpl implements AppService {
 		}
 		ChannelPromotionInfo promotionInfo = new ChannelPromotionInfo();
 		if (appInfo.getUniqueId().equals(restrictedIdfa)) {
-			LoggerUtil.order("未授权的IDFA或者IMEI, appInfo={}",
-					JacksonUtil.obj2json(appInfo));
+			LoggerUtil.order("未授权的IDFA或者IMEI, appInfo={}", JacksonUtil.obj2json(appInfo));
 			return false;
 		}
 
@@ -98,8 +94,8 @@ public class AppServiceImpl implements AppService {
 		} else {
 			throw new BusinessException();
 		}
-		List<ChannelPromotionInfo> list = promotionInfoService
-				.selectChannelPromotionInfos(promotionInfo, new PageBounds());
+		List<ChannelPromotionInfo> list = promotionInfoService.selectChannelPromotionInfos(promotionInfo,
+				new PageBounds());
 		if (list.size() > 0) {
 			promotionInfo = list.get(0);
 		} else {
@@ -109,13 +105,11 @@ public class AppServiceImpl implements AppService {
 			promotionInfo.setDeviceType(appInfo.getDeviceType());
 			promotionInfo.setSystemName(appInfo.getSystemName());
 			promotionInfo.setSystemVersion(appInfo.getSystemVersion());
-			list = promotionInfoService.selectChannelPromotionInfos(
-					promotionInfo, new PageBounds());
+			list = promotionInfoService.selectChannelPromotionInfos(promotionInfo, new PageBounds());
 			if (list.size() > 0) {
 				promotionInfo = list.get(0);
 			} else {
-				LoggerUtil.order("未找到匹配的promotionInfo, appInfo={}",
-						JacksonUtil.obj2json(appInfo));
+				LoggerUtil.order("未找到匹配的promotionInfo, appInfo={}", JacksonUtil.obj2json(appInfo));
 				return false;
 			}
 		}
@@ -128,26 +122,22 @@ public class AppServiceImpl implements AppService {
 				bonus = 1D;
 			}
 			boolean withhold = Math.random() < bonus;
-			if (channel != null
-					&& promotionInfo.getStatus() != null
-					&& promotionInfo.getStatus().equals(
-							PromotionStatus.INACTIVE)) {
+			if (channel != null && promotionInfo.getStatus() != null
+					&& promotionInfo.getStatus().equals(PromotionStatus.INACTIVE)) {
 				if (withhold) {
-					LoggerUtil.order("开始激活反馈, appInfo={}",
-							JacksonUtil.obj2json(appInfo));
-					String deliverOrderUrl = promotionInfo.getChannelObject()
-							.getDeliverOrderUrl();
+					LoggerUtil.order("开始激活反馈, appInfo={}", JacksonUtil.obj2json(appInfo));
+					String deliverOrderUrl = promotionInfo.getChannelObject().getDeliverOrderUrl();
 					if (StringUtils.isNotBlank(deliverOrderUrl)) {
-//						IDeliverNotify notify = (IDeliverNotify) Class.forName(
-//								deliverOrderUrl).newInstance();
-//						result = notify.sendActive(promotionInfo);
+						// IDeliverNotify notify = (IDeliverNotify)
+						// Class.forName(
+						// deliverOrderUrl).newInstance();
+						// result = notify.sendActive(promotionInfo);
 						result = true;
 					} else {
 						result = false;
 					}
 					if (result) {
-						LoggerUtil.order("成功激活反馈, result={},appInfo={}",
-								result, JacksonUtil.obj2json(appInfo));
+						LoggerUtil.order("成功激活反馈, result={},appInfo={}", result, JacksonUtil.obj2json(appInfo));
 					} else {
 						gorderResult = false;
 					}
@@ -155,8 +145,7 @@ public class AppServiceImpl implements AppService {
 						// 更新promotionInfo状态为已发送
 						promotionInfo.setStatus(PromotionStatus.CALLBACK);
 					} else {
-						promotionInfo
-								.setStatus(PromotionStatus.CALLBACK_FAILED);
+						promotionInfo.setStatus(PromotionStatus.CALLBACK_FAILED);
 					}
 				} else {
 					promotionInfo.setStatus(PromotionStatus.WITHHOLD);
@@ -223,8 +212,7 @@ public class AppServiceImpl implements AppService {
 			if (StringUtils.isBlank(keySource)) {
 				return null;
 			}
-			String[] segs = keySource.split(CommonConstant.COMMON_ESCAPE_STR
-					+ CommonConstant.COMMON_COLON_STR);
+			String[] segs = keySource.split(CommonConstant.COMMON_ESCAPE_STR + CommonConstant.COMMON_COLON_STR);
 			if (segs.length > 1) {
 				return segs[1];
 			}
@@ -244,8 +232,7 @@ public class AppServiceImpl implements AppService {
 			if (StringUtils.isBlank(keySource)) {
 				return null;
 			}
-			String[] segs = keySource.split(CommonConstant.COMMON_ESCAPE_STR
-					+ CommonConstant.COMMON_COLON_STR);
+			String[] segs = keySource.split(CommonConstant.COMMON_ESCAPE_STR + CommonConstant.COMMON_COLON_STR);
 			if (segs.length > 2) {
 				return segs[2];
 			}
@@ -265,8 +252,7 @@ public class AppServiceImpl implements AppService {
 			if (StringUtils.isBlank(keySource)) {
 				return null;
 			}
-			String[] segs = keySource.split(CommonConstant.COMMON_ESCAPE_STR
-					+ CommonConstant.COMMON_COLON_STR);
+			String[] segs = keySource.split(CommonConstant.COMMON_ESCAPE_STR + CommonConstant.COMMON_COLON_STR);
 			if (segs.length > 3) {
 				return segs[3];
 			}
@@ -291,13 +277,11 @@ public class AppServiceImpl implements AppService {
 		 * System.out.println(result);
 		 */
 		String appId = "E30CD99EE8D8CE5B9C6057EDCE7C34602DB0E923967716ED6D9F2F8C70CFE0FB0461677A3C8C32D781B52043C592B9FFA4FCA2513D102B5BB4D7AF1127C40816EC5F33C12CC6D0C7D9106BFD74CE30E5DC89599762DA5D317D76EC751F90A719EEC995B6A09566CA83CCECD01DDB8FE0";
-		String keySource = AES.decrypt(appId,
-				"e4503d4d8b8033a20ad88471819de38f");
+		String keySource = AES.decrypt(appId, "e4503d4d8b8033a20ad88471819de38f");
 		System.out.println(keySource);
 		if (StringUtils.isBlank(keySource)) {
 		}
-		String[] segs = keySource.split(CommonConstant.COMMON_ESCAPE_STR
-				+ CommonConstant.COMMON_COLON_STR);
+		String[] segs = keySource.split(CommonConstant.COMMON_ESCAPE_STR + CommonConstant.COMMON_COLON_STR);
 		if (segs.length > 2) {
 			System.out.println(segs[3]);
 		}
