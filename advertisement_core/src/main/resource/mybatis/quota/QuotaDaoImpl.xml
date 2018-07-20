@@ -12,6 +12,7 @@
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="stock" column="stock" jdbcType="NUMERIC" />
 		<result property="count" column="count" jdbcType="NUMERIC" />
 		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
 		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
@@ -141,4 +142,13 @@
 		quota_id=#{quotaId}
 	</delete>
 
+	<update id="lockStock" parameterType="map">
+		update tb_quota
+		set
+		stock = stock - #{count, jdbcType=INTEGER}
+		where
+		quota_id = #{quotaId, jdbcType=INTEGER} and
+		stock >= #{count, jdbcType=INTEGER}
+		and status = 1
+	</update>
 </mapper>

@@ -19,11 +19,15 @@ import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.limitation.service.LimitationService;
+import com.yuanshanbao.dsp.location.model.Location;
 import com.yuanshanbao.dsp.location.service.MobileLocationService;
+import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.quota.dao.QuotaDao;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.service.AdvertisementStatisticsService;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -34,6 +38,9 @@ public class QuotaServiceImpl implements QuotaService {
 
 	@Autowired
 	private MobileLocationService mobileLocationService;
+
+	@Autowired
+	private LimitationService limitationService;
 
 	@Autowired
 	private RedisService redisService;
@@ -222,4 +229,36 @@ public class QuotaServiceImpl implements QuotaService {
 		return null;
 	}
 
+	@Override
+	public Quota pickProductForApply(User user, Product product) {
+		Quota params = new Quota();
+		params.setProductId(product.getProductId());
+		List<Quota> list = selectQuota(params, new PageBounds());
+		if (list.size() <= 0) {
+			return null;
+		}
+		Quota quota = list.get(0);
+		dealQuotaStock(quota);
+		Location location = mobileLocationService.queryMobileLocation(user.getMobile());
+		quota.setLocation(location);
+		try {
+			boolean result = limitationService.lockStock(quota);
+			if (result) {
+				return quota;
+			}
+		} catch (BusinessException e) {
+			// 锁库存失败
+		}
+		return null;
+	}
+
+	private void dealQuotaStock(Quota quota) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("quotaId", quota.getQuotaId());
+		parameters.put("count", 1);
+		int result = quotaDao.lockStock(parameters);
+		if (result <= 0) {
+			throw new BusinessException(ComRetCode.ORDER_LOCK_STOCK_FAIL_ERROR);
+		}
+	}
 }

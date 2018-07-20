@@ -78,6 +78,10 @@ public class Product {
 	private Timestamp updateTime;
 
 	private Merchant merchant;
+	/**
+	 * 查询排序条件
+	 */
+	private Integer sortCondition;
 
 	// ~ Get and Set Methods
 	// =================================================================================
@@ -327,6 +331,14 @@ public class Product {
 
 	public void setActivityId(Long activityId) {
 		this.activityId = activityId;
+	}
+
+	public Integer getSortCondition() {
+		return sortCondition;
+	}
+
+	public void setSortCondition(Integer sortCondition) {
+		this.sortCondition = sortCondition;
 	}
 
 }

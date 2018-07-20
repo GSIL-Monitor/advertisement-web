@@ -49,13 +49,13 @@ public class ConfigManager implements ConfigConstants {
 	protected static List<Advertisement> advertisementList = new ArrayList<Advertisement>();
 
 	protected static Map<Long, AdvertisementCategory> advertisementCategoryMap = new LinkedHashMap<Long, AdvertisementCategory>();
-	
-	protected static Map<Long, ProductCategory> productCategoryMap = new LinkedHashMap<Long, ProductCategory>();
 
+	protected static Map<Long, ProductCategory> productCategoryMap = new LinkedHashMap<Long, ProductCategory>();
 
 	public static void refreshConfig(List<Channel> channels, List<Activity> activitys, List<Merchant> merchants,
 			List<Page> pages, List<Function> functions, List<Config> configs, List<Advertisement> advertisements,
-			List<AdvertisementStrategy> advertisementStrategies, List<AdvertisementCategory> advertisementCategories, List<ProductCategory> productCategorys) {
+			List<AdvertisementStrategy> advertisementStrategies, List<AdvertisementCategory> advertisementCategories,
+			List<ProductCategory> productCategorys) {
 		Map<String, Channel> tempChannelMap = new LinkedHashMap<String, Channel>();
 		if (channels != null) {
 			for (Channel channel : channels) {
@@ -125,7 +125,7 @@ public class ConfigManager implements ConfigConstants {
 			}
 			advertisementCategoryMap = tempAdvertisementCategoryMap;
 		}
-		
+
 		Map<Long, ProductCategory> tempProductCategoryMap = new LinkedHashMap<Long, ProductCategory>();
 		if (productCategorys != null) {
 			for (ProductCategory category : productCategorys) {
@@ -133,8 +133,6 @@ public class ConfigManager implements ConfigConstants {
 			}
 			productCategoryMap = tempProductCategoryMap;
 		}
-		
-		
 
 		if (configs != null) {
 			configList = configs;
@@ -314,8 +312,7 @@ public class ConfigManager implements ConfigConstants {
 		}
 		return advertisementList;
 	}
-	
-	
+
 	/**
 	 * ids获取产品List
 	 */
@@ -375,6 +372,10 @@ public class ConfigManager implements ConfigConstants {
 
 	public static List<AdvertisementStrategy> getAdvertisementStrategy(String advertisementId) {
 		return advertisementStrategyMap.get(advertisementId);
+	}
+
+	public static ProductCategory getProductCategory(Long id) {
+		return productCategoryMap.get(id);
 	}
 
 }

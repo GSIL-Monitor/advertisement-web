@@ -206,6 +206,14 @@ public class ComRetCode {
 	public static final int APP_PUSH_EXPIRETIME_NOT_EXIST_ERROR = 405;
 	public static final String APP_PUSH_EXPIRETIME_NOT_EXIST_ERROR_DESC = "请您填写正确的过期时间";
 
+	/* 407锁库存失败 */
+	public static final int ORDER_LOCK_STOCK_FAIL_ = 407;
+	public static final String ORDER_LOCK_STOCK_FAIL_ERROR = "锁库存失败";
+
+	/* 408你不符合领取该产品的资格 */
+	public static final int ORDER_DELIVER_ = 408;
+	public static final String ORDER_DELIVER_ERROR = "你不符合领取该产品的资格";
+
 	/* 404无符合营销手机号 */
 	public static final int MARKETING_SMS_NOT_VERIFY_ERROR = 404;
 	public static final String MARKETING_SMS_NOT_VERIFY_ERROR_DESC = "无符合营销手机号";

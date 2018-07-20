@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface QuotaService {
@@ -25,4 +27,6 @@ public interface QuotaService {
 	public List<Quota> selectQuotaByKeyFromCache(Long projectId, String activityKey, String channelKey);
 
 	public Quota pickGoodsForInformation(Long activityId, Information information);
+
+	public Quota pickProductForApply(User user, Product product);
 }

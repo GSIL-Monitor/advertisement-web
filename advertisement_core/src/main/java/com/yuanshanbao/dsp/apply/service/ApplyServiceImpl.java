@@ -159,7 +159,7 @@ public class ApplyServiceImpl implements ApplyService {
 		apply.setUserId(user.getUserId());
 		List<Apply> list = selectApplys(apply, new PageBounds());
 		if (list != null && list.size() <= 0) {
-			addInformation(user, product);
+			// addInformation(user, product);
 			apply.setStatus(applyStatus);
 			insertApply(apply);
 		} else if (applyStatus > list.get(0).getStatus()) {
@@ -215,15 +215,13 @@ public class ApplyServiceImpl implements ApplyService {
 	public void applyProduct(User user, Long productId, Integer status) {
 		Product product = productService.selectProduct(productId);
 		if (product == null) {
-			throw new BusinessException();
+			throw new BusinessException(ComRetCode.PRODUCT_NOT_EXIST_ERROR);
 		}
-		// 减库存
-		Quota params = new Quota();
-		List<Quota> list = quotaService.selectQuota(params, new PageBounds());
-		if (list.size() > 0) {
-			Quota quota = list.get(0);
+		// 查找库存
+		Quota quota = quotaService.pickProductForApply(user, product);
+		if (quota == null) {
+			throw new BusinessException(ComRetCode.ORDER_DELIVER_ERROR);
 		}
-
+		insertOrUpdateApply(user, productId, status);
 	}
-
 }
