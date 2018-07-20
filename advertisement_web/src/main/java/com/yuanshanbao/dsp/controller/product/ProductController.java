@@ -102,7 +102,6 @@ public class ProductController extends BaseController {
 			} else if (category.getType().equals(TagsSearchType.FEATURE)) {
 				product.setFeatureTags(category.getValue());
 			}
-			product.setFeatureTags(category.getValue());
 		}
 		if (product.getSortCondition() != null) {
 			String orderString = ConstantsManager.getTags(product.getSortCondition().longValue()).getValue();

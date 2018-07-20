@@ -4,15 +4,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TagsSearchType {
-	protected static Map<Long, String> codeDescriptionMap = new LinkedHashMap<Long, String>();
+	protected static Map<Integer, String> codeDescriptionMap = new LinkedHashMap<Integer, String>();
 
-	public static final long NORMAL = 1;
+	public static final Integer NORMAL = 1;
 	public static final String NORMAL_DESCRIPTION = "常规";
-	public static final long FEATURE = 2;
+	public static final Integer FEATURE = 2;
 	public static final String FEATURE_DESCRIPTION = "产品特征";
-	public static final long CREDIT = 4;
+	public static final Integer CREDIT = 4;
 	public static final String CREDIT_DESCRIPTION = "信用证明";
-	public static final long REPAYMENT = 20;
+	public static final Integer REPAYMENT = 20;
 	public static final String REPAYMENT_DESCRIPTION = "还款方式";
 
 	static {
@@ -30,7 +30,7 @@ public class TagsSearchType {
 		return codeDescriptionMap.get(code);
 	}
 
-	public static Map<Long, String> getCodeDescriptionMap() {
+	public static Map<Integer, String> getCodeDescriptionMap() {
 		return codeDescriptionMap;
 	}
 }

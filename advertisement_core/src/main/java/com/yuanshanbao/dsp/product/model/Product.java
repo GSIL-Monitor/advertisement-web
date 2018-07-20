@@ -82,6 +82,8 @@ public class Product {
 	 * 查询排序条件
 	 */
 	private Integer sortCondition;
+	private List<Long> authorize;
+	private List<Long> feature;
 
 	// ~ Get and Set Methods
 	// =================================================================================
@@ -339,6 +341,34 @@ public class Product {
 
 	public void setSortCondition(Integer sortCondition) {
 		this.sortCondition = sortCondition;
+	}
+
+	public List<Long> getAuthorize() {
+		if (StringUtils.isNotBlank(authorizeTags)) {
+			String[] ids = authorizeTags.split(",");
+			if (ids == null || ids.length == 0) {
+				return null;
+			}
+			for (String id : ids) {
+				authorize = new ArrayList<Long>();
+				authorize.add(Long.parseLong(id));
+			}
+		}
+		return authorize;
+	}
+
+	public List<Long> getFeature() {
+		if (StringUtils.isNotBlank(featureTags)) {
+			String[] ids = featureTags.split(",");
+			if (ids == null || ids.length == 0) {
+				return null;
+			}
+			for (String id : ids) {
+				feature = new ArrayList<Long>();
+				feature.add(Long.parseLong(id));
+			}
+		}
+		return feature;
 	}
 
 }
