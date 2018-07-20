@@ -1,6 +1,8 @@
 package com.yuanshanbao.dsp.controller.index;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +17,13 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.model.ProductCategory;
 import com.yuanshanbao.dsp.product.model.ProductType;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
@@ -54,6 +58,19 @@ public class IndexController extends BaseController {
 					formatPageBounds(pageBounds));
 			PageList<ProductVo> voList = convertVo(request, productList, pageBounds);
 			voList.setPaginator(productList.getPaginator());
+			//productCategary
+			String channel = appService.getAppChannel(request.getParameter("appId"));
+			String appKey = getAppKey(request);
+			Long activityId = null;
+			if (activity != null) {
+				activityId = activity.getActivityId();
+			}
+			List<ProductCategory> productCategorys = new ArrayList<ProductCategory>();
+			String ids = ConfigManager.getConfigValue(activityId, channel, appKey,
+					ConfigConstants.PRODUCT_CATEGORY_INDEX_CONFIG);
+			productCategorys = ConfigManager.getProductCategoryList(ids);
+			
+			resultMap.put("productCategorys", productCategorys);
 			resultMap.put("productList", voList);
 			resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

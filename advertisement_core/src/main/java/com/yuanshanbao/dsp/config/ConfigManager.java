@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory;
@@ -20,6 +21,7 @@ import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.model.KeyValuePair;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.page.model.Page;
+import com.yuanshanbao.dsp.product.model.ProductCategory;
 
 @Service
 public class ConfigManager implements ConfigConstants {
@@ -47,10 +49,13 @@ public class ConfigManager implements ConfigConstants {
 	protected static List<Advertisement> advertisementList = new ArrayList<Advertisement>();
 
 	protected static Map<Long, AdvertisementCategory> advertisementCategoryMap = new LinkedHashMap<Long, AdvertisementCategory>();
+	
+	protected static Map<Long, ProductCategory> productCategoryMap = new LinkedHashMap<Long, ProductCategory>();
+
 
 	public static void refreshConfig(List<Channel> channels, List<Activity> activitys, List<Merchant> merchants,
 			List<Page> pages, List<Function> functions, List<Config> configs, List<Advertisement> advertisements,
-			List<AdvertisementStrategy> advertisementStrategies, List<AdvertisementCategory> advertisementCategories) {
+			List<AdvertisementStrategy> advertisementStrategies, List<AdvertisementCategory> advertisementCategories, List<ProductCategory> productCategorys) {
 		Map<String, Channel> tempChannelMap = new LinkedHashMap<String, Channel>();
 		if (channels != null) {
 			for (Channel channel : channels) {
@@ -120,6 +125,16 @@ public class ConfigManager implements ConfigConstants {
 			}
 			advertisementCategoryMap = tempAdvertisementCategoryMap;
 		}
+		
+		Map<Long, ProductCategory> tempProductCategoryMap = new LinkedHashMap<Long, ProductCategory>();
+		if (productCategorys != null) {
+			for (ProductCategory category : productCategorys) {
+				tempProductCategoryMap.put(category.getProductCategoryId(), category);
+			}
+			productCategoryMap = tempProductCategoryMap;
+		}
+		
+		
 
 		if (configs != null) {
 			configList = configs;
@@ -298,6 +313,28 @@ public class ConfigManager implements ConfigConstants {
 			}
 		}
 		return advertisementList;
+	}
+	
+	
+	/**
+	 * ids获取产品List
+	 */
+	public static List<ProductCategory> getProductCategoryList(String ids) {
+		List<ProductCategory> productCategoryList = new ArrayList<ProductCategory>();
+		if (StringUtils.isBlank(ids)) {
+			return productCategoryList;
+		}
+		for (String id : ids.split(",")) {
+			if (!ValidateUtil.isNumber(id)) {
+				continue;
+			}
+			ProductCategory productCategory = productCategoryMap.get(Long.parseLong(id));
+			if (productCategory == null) {
+				continue;
+			}
+			productCategoryList.add(productCategory);
+		}
+		return productCategoryList;
 	}
 
 	public static Advertisement getAdvertisement(String id) {
