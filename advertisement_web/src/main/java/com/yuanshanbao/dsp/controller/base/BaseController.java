@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,13 @@ import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.MD5Util;
 import com.yuanshanbao.common.util.RequestUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.common.validator.util.ValidatorModel;
 import com.yuanshanbao.common.validator.util.ValidatorUtils;
+import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementPosition;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementShowType;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.app.service.AppService;
@@ -33,6 +39,8 @@ import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.model.SmsToken;
 import com.yuanshanbao.dsp.common.model.SmsTokenList;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.config.ConfigConstants;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
@@ -297,6 +305,55 @@ public class BaseController {
 			}
 		}
 		return false;
+	}
+	
+	protected void setAdvertisement(Integer client, Map<String, Object> resultMap, String channel, String appKey,
+			Long activityId, String position) {
+		List<AdvertisementVo> bannerList = setAdvertisementLink(position, AdvertisementPosition.BANNER, channel,
+				appKey, activityId, client);
+		List<AdvertisementVo> connerList = setAdvertisementLink(position, AdvertisementPosition.CONNER, channel,
+				appKey, activityId, client);
+		List<AdvertisementVo> popupList = setAdvertisementLink(position, AdvertisementPosition.POPUP, channel, appKey,
+				activityId, client);
+		resultMap.put("bannerList", bannerList);
+		if (popupList != null && popupList.size() > 0) {
+			AdvertisementVo popupAd = popupList.get(0);
+			resultMap.put("popupAd", popupAd);
+		}
+		if (connerList != null && connerList.size() > 0) {
+			AdvertisementVo connerAd = connerList.get(0);
+			resultMap.put("connerAd", connerAd);
+		}
+	}
+
+	protected List<AdvertisementVo> setAdvertisementLink(String config, String position, String channel, String appKey,
+			Long activityId, Integer client) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		ConfigManager.setConfigMap(resultMap, activityId, channel, appKey);
+		String constant = config + AdvertisementPosition.getConfig(position);
+		List<Advertisement> list = ConfigManager.getAdvertisementList((String) resultMap.get(constant), activityId,
+				channel);
+		List<AdvertisementVo> resultList = new ArrayList<AdvertisementVo>();
+		for (Advertisement advertisement : list) {
+			String link = "";
+			if (client == null || Advertisement.IS_IOS == client || Advertisement.IS_ANDROID == client) {
+				link = advertisement.getAppLink(position, channel);
+			} else {
+				link = advertisement.getJumperLink(position, channel);
+			}
+			advertisement.setLink(link);
+			advertisement.setCount(advertisementService.getAdvertisementCount(advertisement.getAdvertisementId()));
+			if (advertisement.getShowType() != null) {
+				advertisement.setPosition(constant);
+				String cycleTime = (String) resultMap.get(ConfigConstants.ADVERTISEMENT_CYCLE_TIME_CONFIG);
+				if (ValidateUtil.isNumber(cycleTime)
+						&& advertisement.getShowType().equals(AdvertisementShowType.PERIOD)) {
+					advertisement.setCycleTime(Long.parseLong(cycleTime));
+				}
+			}
+			resultList.add(new AdvertisementVo(advertisement));
+		}
+		return resultList;
 	}
 
 	private String formatAmount(Integer amount) {

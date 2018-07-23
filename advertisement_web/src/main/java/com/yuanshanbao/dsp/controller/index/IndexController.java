@@ -17,6 +17,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementPosition;
 import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
@@ -73,6 +74,7 @@ public class IndexController extends BaseController {
 			resultMap.put("productCategorys", productCategorys);
 			resultMap.put("productList", voList);
 			resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
+			setAdvertisement(client, resultMap, channel, appKey, activityId, AdvertisementPosition.ADVERTISEMENT_INDEX);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

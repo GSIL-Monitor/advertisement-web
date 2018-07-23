@@ -2,10 +2,30 @@ package com.yuanshanbao.dsp.advertisement.model;
 
 import java.sql.Timestamp;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.PropertyUtil;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 
 public class Advertisement {
+	
+	public static final String JUMPER_URL = "/i/common";
+	public static final String APP_URL_PREFIX = "ruidai://";
+	public static final String HOST = PropertyUtil.getProperty("loan.host");
+	
+	public static final String WAP_CONTENT_KEY = "wap";
+	public static final String APP_CONTENT_KEY = "app";
+	
+	public static final int IS_ANDROID = 0;
+	public static final int IS_IOS = 1;
+	public static final int IS_WAP = 4;
+
+	private String appUrl;
+	private Integer showType;
+	private Long cycleTime;
+	private Long count;
+	private String position;
 
 	private Long advertisementId;
 	private Long projectId;
@@ -158,5 +178,56 @@ public class Advertisement {
 		} else {
 			link += "?channel=" + channel;
 		}
+	}
+	
+	public String getJumperLink(String position, String channel) {
+		String link = JUMPER_URL + "?position=" + position + "&id=" + advertisementId;
+		if (StringUtils.isNotBlank(channel)) {
+			link = link + "&channel=" + channel;
+		}
+		return link;
+	}
+
+	public String getAppLink(String position, String channel) {
+		if (appUrl == null || !appUrl.contains(APP_URL_PREFIX)) {
+			return HOST + getJumperLink(position, channel);
+		}
+		String link = appUrl + "&position=" + position + "&adStat=true&id=" + advertisementId;
+		if (StringUtils.isNotBlank(channel)) {
+			link = link + "&channel=" + channel;
+		}
+		return link;
+	}
+
+	public Long getCount() {
+		return count;
+	}
+
+	public void setCount(Long count) {
+		this.count = count;
+	}
+
+	public Long getCycleTime() {
+		return cycleTime;
+	}
+
+	public void setCycleTime(Long cycleTime) {
+		this.cycleTime = cycleTime;
+	}
+
+	public Integer getShowType() {
+		return showType;
+	}
+
+	public void setShowType(Integer showType) {
+		this.showType = showType;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
 	}
 }
