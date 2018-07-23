@@ -6,31 +6,20 @@
 
 	<resultMap id="productMap" type="Product">
 		<id property="productId" column="product_id" jdbcType="NUMERIC" />
-		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
-		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
-		<result property="productKey" column="product_key" jdbcType="VARCHAR" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="title" column="title" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
-		<result property="smallImageUrl" column="small_image_url"
-			jdbcType="VARCHAR" />
-		<result property="workOrderImageUrl" column="work_order_image_url"
-			jdbcType="VARCHAR" />
 		<result property="featureTags" column="feature_tags" jdbcType="VARCHAR" />
-		<result property="recommendTags" column="recommend_tags"
-			jdbcType="VARCHAR" />
-		<result property="authorizeTags" column="authorize_tags"
-			jdbcType="VARCHAR" />
+		<result property="recommendTags" column="recommend_tags" jdbcType="VARCHAR" />
+		<result property="authorizeTags" column="authorize_tags" jdbcType="VARCHAR" />
 		<result property="requirements" column="requirements" jdbcType="VARCHAR" />
 		<result property="applyFlow" column="apply_flow" jdbcType="VARCHAR" />
 		<result property="advantage" column="advantage" jdbcType="VARCHAR" />
 		<result property="guide" column="guide" jdbcType="VARCHAR" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="sort" column="sort" jdbcType="NUMERIC" />
-		<result property="positiveRate" column="positive_rate"
-			jdbcType="NUMERIC" />
-		<result property="category" column="category" jdbcType="NUMERIC" />
+		<result property="positiveRate" column="positive_rate" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -46,15 +35,6 @@
 				<if test="productId != null">
 					product_id= #{productId} and
 				</if>
-				<if test="activityId != null">
-					activity_id= #{activityId} and
-				</if>
-				<if test="productKey != null">
-					product_key= #{productKey} and
-				</if>
-				<if test="merchantId != null">
-					merchant_id= #{merchantId} and
-				</if>
 				<if test="name != null">
 					name= #{name} and
 				</if>
@@ -66,9 +46,6 @@
 				</if>
 				<if test="imageUrl != null">
 					image_url= #{imageUrl} and
-				</if>
-				<if test="featureTags != null">
-					feature_tags= #{featureTags} and
 				</if>
 				<if test="recommendTags != null">
 					recommend_tags= #{recommendTags} and
@@ -100,6 +77,18 @@
 				<if test="status != null">
 					status= #{status} and
 				</if>
+				<if test="authorize != null">
+					<foreach item="id" collection="authorize">
+						authorize_tags LIKE
+						CONCAT('%',#{id},'%') and
+					</foreach>
+				</if>
+				<if test="feature != null">
+					<foreach item="id" collection="feature">
+						feature_tags LIKE
+						CONCAT('%',#{id},'%') and
+					</foreach>
+				</if>
 			</trim>
 			and status != -1
 		</where>
@@ -114,23 +103,16 @@
 			product_id in
 			<foreach item="id" collection="list" open="(" separator=","
 				close=")">
-				#{id}
+				 #{id}
 			</foreach>
 		</where>
 	</select>
 
 	<insert id="insertProduct" parameterType="Product">
 		insert into
-		tb_product( merchant_id, product_key, name, title, description,
-		image_url, small_image_url, work_order_image_url, feature_tags,
-		recommend_tags, authorize_tags, requirements, apply_flow, advantage,
-		guide, type, sort, positive_rate, status, create_time, update_time )
+		tb_product( name, title, description, image_url, feature_tags, recommend_tags, authorize_tags, requirements, apply_flow, advantage, guide, type, sort, positive_rate, status, create_time, update_time )
 		values
-		( #{merchantId}, #{productKey}, #{name}, #{title}, #{description}, #{imageUrl},
-		#{smallImageUrl}, #{workOrderImageUrl}, #{featureTags},
-		#{recommendTags}, #{authorizeTags}, #{requirements}, #{applyFlow},
-		#{advantage}, #{guide}, #{type}, #{sort}, #{positiveRate}, #{status},
-		sysdate(), sysdate() )
+		( #{name}, #{title}, #{description}, #{imageUrl}, #{featureTags}, #{recommendTags}, #{authorizeTags}, #{requirements}, #{applyFlow}, #{advantage}, #{guide}, #{type}, #{sort}, #{positiveRate}, #{status}, sysdate(), sysdate() )
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="productId">
 			SELECT LAST_INSERT_ID()
@@ -141,12 +123,6 @@
 		update tb_product
 		<set>
 			<trim suffixOverrides=",">
-				<if test="merchantId != null">
-					merchant_id= #{merchantId},
-				</if>
-				<if test="productKey != null">
-					product_key= #{productKey},
-				</if>
 				<if test="name != null">
 					name= #{name},
 				</if>
@@ -158,12 +134,6 @@
 				</if>
 				<if test="imageUrl != null">
 					image_url= #{imageUrl},
-				</if>
-				<if test="workOrderImageUrl != null">
-					work_order_image_url= #{workOrderImageUrl},
-				</if>
-				<if test="smallImageUrl != null">
-					small_image_url= #{smallImageUrl},
 				</if>
 				<if test="featureTags != null">
 					feature_tags= #{featureTags},
