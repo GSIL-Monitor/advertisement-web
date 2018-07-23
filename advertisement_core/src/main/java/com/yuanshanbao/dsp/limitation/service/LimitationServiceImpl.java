@@ -131,7 +131,6 @@ public class LimitationServiceImpl implements LimitationService {
 		return map;
 	}
 
-	@Transactional
 	@Override
 	public boolean lockStock(Quota quota) {
 		Limitation limitation = new Limitation();

@@ -15,14 +15,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.ms.controller.base.PaginationController;
-import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.paginator.domain.PageList;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.service.ProductService;
+import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
+import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.paginator.domain.PageBounds;
+import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
 @RequestMapping("/admin/product")
@@ -38,6 +41,9 @@ public class AdminProductController extends PaginationController {
 
 	@Autowired
 	private ProductService productService;
+
+	@Autowired
+	private QuotaService quotaService;
 
 	@Autowired
 	private MerchantService merchantService;
@@ -61,17 +67,21 @@ public class AdminProductController extends PaginationController {
 	@RequestMapping("/insertWindow.do")
 	public String insertWindow(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("merchantList", merchantService.selectMerchants(new Merchant(), new PageBounds()));
 		return PAGE_INSERT;
 	}
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(Product product, HttpServletRequest request, HttpServletResponse response) {
+	public Object insert(Product product, Quota quota, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
 			validateParameters(product);
 			productService.insertProduct(product);
+			quota.setMerchantId(product.getMerchantId());
+			quota.setProductId(product.getProductId());
+			quotaService.insertQuota(quota);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

@@ -84,11 +84,11 @@
 
 	<insert id="insertQuota" parameterType="Quota">
 		insert into
-		tb_quota(project_id, activity_id, position_id, channel, advertisement_id, type, 
-		count, start_time, end_time, unit_price, status, create_time, update_time)
+		tb_quota(project_id, activity_id, product_id,position_id, channel, advertisement_id, type, 
+		count,stock, start_time, end_time, unit_price, status, create_time, update_time)
 		values
-		(#{projectId}, #{activityId}, #{positionId}, #{channel}, #{advertisementId}, #{type}, 
-		#{count}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
+		(#{projectId}, #{activityId}, #{productId}, #{positionId}, #{channel}, #{advertisementId}, #{type}, 
+		#{count},#{stock}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="quotaId">
 			SELECT LAST_INSERT_ID()

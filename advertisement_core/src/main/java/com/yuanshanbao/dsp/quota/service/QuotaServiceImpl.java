@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
@@ -229,6 +230,7 @@ public class QuotaServiceImpl implements QuotaService {
 		return null;
 	}
 
+	@Transactional
 	@Override
 	public Quota pickProductForApply(User user, Product product) {
 		Quota params = new Quota();
@@ -239,8 +241,7 @@ public class QuotaServiceImpl implements QuotaService {
 		}
 		Quota quota = list.get(0);
 		dealQuotaStock(quota);
-		String m = "18660116507";
-		Location location = mobileLocationService.queryMobileLocation(m);
+		Location location = mobileLocationService.queryMobileLocation(user.getMobile());
 		quota.setLocation(location);
 		try {
 			boolean result = limitationService.lockStock(quota);
@@ -253,7 +254,7 @@ public class QuotaServiceImpl implements QuotaService {
 		return null;
 	}
 
-	private void dealQuotaStock(Quota quota) {
+	public void dealQuotaStock(Quota quota) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("quotaId", quota.getQuotaId());
 		parameters.put("count", 1);

@@ -118,9 +118,9 @@
 
 	<insert id="insertProduct" parameterType="Product">
 		insert into
-		tb_product( name, title, description, image_url, feature_tags, recommend_tags, authorize_tags, requirements, apply_flow, advantage, guide, type, sort, positive_rate, status, create_time, update_time )
+		tb_product( name, title,activity_id,merchant_id, description, image_url, feature_tags, recommend_tags, authorize_tags, requirements, apply_flow, advantage, guide, type, sort, positive_rate, status, create_time, update_time )
 		values
-		( #{name}, #{title}, #{description}, #{imageUrl}, #{featureTags}, #{recommendTags}, #{authorizeTags}, #{requirements}, #{applyFlow}, #{advantage}, #{guide}, #{type}, #{sort}, #{positiveRate}, #{status}, sysdate(), sysdate() )
+		( #{name}, #{title},#{activityId},#{merchantId}, #{description}, #{imageUrl}, #{featureTags}, #{recommendTags}, #{authorizeTags}, #{requirements}, #{applyFlow}, #{advantage}, #{guide}, #{type}, #{sort}, #{positiveRate}, #{status}, sysdate(), sysdate() )
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="productId">
 			SELECT LAST_INSERT_ID()

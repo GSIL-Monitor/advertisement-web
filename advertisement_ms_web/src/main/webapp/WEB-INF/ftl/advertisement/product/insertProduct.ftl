@@ -27,7 +27,19 @@
               <table class="table table-bordered table-striped" id="">
                 <tbody>
                   <tr>
-                    <td width="20%">名称：</td>
+                    <td>商家名称：</td>
+                    <td>
+                      <div style="width:60%;">
+                      <select name="merchantId" class="selectpicker form-control">
+                        <#list merchantList as merchant>
+                        	<option value="${merchant.merchantId}">${merchant.name}</option>
+                        </#list>
+                      </select>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="20%">商品名称：</td>
                     <td width="80%">
                       <input type="text" name="name" style="width:60%;"></td>
                   </tr>           
@@ -47,7 +59,12 @@
                       <input type="file" name="image" style="width:90%;">
                     </td>
                   </tr>
-          
+          		  <tr>
+                    <td>库存：</td>
+                    <td>
+                      <input type="text" name="stock" style="width:90%;">
+                    </td>
+                  </tr>
                   <tr>
                     <td>状态：</td>
                     <td>
