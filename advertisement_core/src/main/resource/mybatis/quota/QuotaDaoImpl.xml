@@ -8,6 +8,8 @@
 		<id property="quotaId" column="quota_id" jdbcType="NUMERIC" />
 		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
 		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
@@ -38,8 +40,11 @@
 				<if test="activityId != null">
 					activity_id = #{activityId} and
 				</if>
-				<if test="activityId != null">
-					activity_id = #{activityId} and
+				<if test="productId != null">
+					product_id = #{productId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id = #{merchantId} and
 				</if>
 				<if test="positionId != null">
 					position_id = #{positionId} and

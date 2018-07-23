@@ -239,7 +239,8 @@ public class QuotaServiceImpl implements QuotaService {
 		}
 		Quota quota = list.get(0);
 		dealQuotaStock(quota);
-		Location location = mobileLocationService.queryMobileLocation(user.getMobile());
+		String m = "18660116507";
+		Location location = mobileLocationService.queryMobileLocation(m);
 		quota.setLocation(location);
 		try {
 			boolean result = limitationService.lockStock(quota);

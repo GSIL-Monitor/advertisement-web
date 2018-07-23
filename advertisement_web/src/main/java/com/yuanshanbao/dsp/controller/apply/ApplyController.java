@@ -92,14 +92,14 @@ public class ApplyController extends BaseController {
 		try {
 			User user = userService.selectUserByToken(token);
 			if (user == null) {
-				throw new BusinessException(ComRetCode.NOT_LOGIN);
+				// throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
 			if (status == null) {
 				status = ApplyStatus.APPLING;
 			}
 			setShowCount(request, productId);
 			applyService.applyProduct(user, productId, status);
-			applyService.insertOrUpdateApply(user, productId, status);
+			// applyService.insertOrUpdateApply(user, productId, status);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

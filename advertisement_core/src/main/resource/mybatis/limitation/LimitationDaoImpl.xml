@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="limitation">
+
+	<resultMap id="limitationMap" type="Limitation">
+		<id property="limitationId" column="limitation_id" jdbcType="NUMERIC" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="locationCode" column="location_code" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="quota" column="quota" jdbcType="NUMERIC" />
+		<result property="stock" column="stock" jdbcType="NUMERIC" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<select id="selectInsuranceIdsByLimitation" parameterType="Limitation" resultType="Long">
+		select
+		distinct(t.insurance_id) from
+		tb_limitation t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="limitationId != null">
+					limitation_id=#{limitationId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId} and
+				</if>
+				<if test="productId != null">
+					product_id=#{productId} and
+				</if>
+				<if test="channel != null">
+					channel=#{channel} and
+				</if>
+				<if test="locationCode != null">
+					location_code=#{locationCode} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="description != null">
+					description=#{description} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+		</where>
+		group by insurance_id order by create_time desc 
+	</select>
+	
+	<!-- sql -->
+	<select id="selectAllLimitation" parameterType="Limitation" resultMap="limitationMap">
+		select
+		* from
+		tb_limitation t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="limitationId != null">
+					limitation_id=#{limitationId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId} and
+				</if>
+				<if test="insuranceId != null">
+					insurance_id=#{insuranceId} and
+				</if>
+				<if test="channel != null">
+					channel=#{channel} and
+				</if>
+				<if test="locationCode != null">
+					location_code=#{locationCode} and
+				</if>
+				<if test="description != null">
+					description=#{description} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectLimitation" parameterType="Limitation" resultMap="limitationMap">
+		select
+		* from
+		tb_limitation t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="limitationId != null">
+					limitation_id=#{limitationId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId} and
+				</if>
+				<if test="insuranceId != null">
+					insurance_id=#{insuranceId} and
+				</if>
+				<if test="channel != null">
+					channel=#{channel} and
+				</if>
+				<if test="locationCode != null">
+					location_code=#{locationCode} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectLimitationByIds" parameterType="List" resultMap="limitationMap">
+		select
+		* from
+		tb_limitation t
+		<where>
+			limitation_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertLimitation" parameterType="Limitation">
+		insert into
+		tb_limitation(merchant_id, insurance_id, channel, location_code, type, quota, stock,   
+			description, status, create_time, update_time)
+		values
+		(#{merchantId}, #{insuranceId}, #{channel}, #{locationCode}, #{type}, #{quota}, #{stock},
+		 #{description}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="limitationId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateLimitation" parameterType="Limitation">
+		update tb_limitation
+		<set>
+			<trim suffixOverrides=",">
+				<if test="merchantId != null">
+					merchant_id=#{merchantId},
+				</if>
+				<if test="insuranceId != null">
+					insurance_id=#{insuranceId},
+				</if>
+				<if test="channel != null">
+					channel=#{channel},
+				</if>
+				<if test="locationCode != null">
+					location_code=#{locationCode},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="quota != null">
+					quota=#{quota},
+				</if>
+				<if test="stock != null">
+					stock=#{stock},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			limitation_id=#{limitationId}
+		</where>
+	</update>
+	
+	<update id="lockStock" parameterType="map">
+		update tb_limitation
+		set
+		stock = stock - #{count, jdbcType=INTEGER}
+		where
+		limitation_id = #{limitationId, jdbcType=INTEGER} and
+		stock >= #{count, jdbcType=INTEGER}
+		and status = 1
+	</update>
+	
+	<update id="restoreStock" parameterType="map">
+		update tb_limitation
+		set
+		stock = stock + #{count, jdbcType=INTEGER}
+		where
+		limitation_id = #{limitationId, jdbcType=INTEGER} 
+		and status = 1
+	</update>
+
+	<delete id="deleteLimitation" parameterType="long">
+		delete from tb_limitation
+		where
+		limitation_id=#{limitationId}
+	</delete>
+
+</mapper>
