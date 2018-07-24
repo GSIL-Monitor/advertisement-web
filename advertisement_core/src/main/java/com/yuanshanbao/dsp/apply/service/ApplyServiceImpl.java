@@ -14,6 +14,7 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.apply.dao.ApplyDao;
 import com.yuanshanbao.dsp.apply.model.Apply;
+import com.yuanshanbao.dsp.apply.model.ApplyStatus;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -21,6 +22,7 @@ import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.information.model.Information;
 import com.yuanshanbao.dsp.information.service.InformationService;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
@@ -223,5 +225,18 @@ public class ApplyServiceImpl implements ApplyService {
 			throw new BusinessException(ComRetCode.ORDER_DELIVER_ERROR);
 		}
 		insertOrUpdateApply(user, productId, status);
+	}
+
+	@Override
+	public void checkExist(User user, ProductVo vo) {
+		Apply apply = new Apply();
+		apply.setUserId(user.getUserId());
+		apply.setProductId(vo.getProductId());
+		List<Apply> list = selectApplys(apply, new PageBounds());
+		if (list.size() > 0) {
+			vo.setStatus(ApplyStatus.APPLIED);
+		} else {
+			vo.setStatus(ApplyStatus.NOT);
+		}
 	}
 }

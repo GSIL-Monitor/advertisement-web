@@ -14,6 +14,7 @@ public class ProductVo {
 	private String workOrderImageUrl;
 	private String imageUrl;
 	private String smallImageUrl;
+	private Integer status;
 	private List<TagsVo> featureTagsList;
 	/**
 	 * 产品推荐标签
@@ -104,6 +105,14 @@ public class ProductVo {
 
 	public void setRecommendTagsList(List<TagsVo> recommendTagsList) {
 		this.recommendTagsList = recommendTagsList;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

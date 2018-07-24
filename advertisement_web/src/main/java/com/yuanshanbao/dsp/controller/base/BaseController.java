@@ -33,6 +33,7 @@ import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.app.service.AppService;
+import com.yuanshanbao.dsp.apply.service.ApplyService;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
@@ -80,6 +81,9 @@ public class BaseController {
 
 	@Autowired
 	protected ProjectService projectService;
+
+	@Autowired
+	protected ApplyService applyService;
 
 	@Autowired
 	private ProductService productService;
@@ -306,7 +310,7 @@ public class BaseController {
 		}
 		return false;
 	}
-	
+
 	protected void setAdvertisement(Integer client, Map<String, Object> resultMap, String channel, String appKey,
 			Long activityId, String position) {
 		List<AdvertisementVo> bannerList = setAdvertisementLink(position, AdvertisementPosition.BANNER, channel,
@@ -416,8 +420,13 @@ public class BaseController {
 		return null;
 	}
 
-	protected PageList<ProductVo> convertVo(HttpServletRequest request, List<Product> productList, PageBounds pageBounds) {
+	protected PageList<ProductVo> convertVo(HttpServletRequest request, List<Product> productList, String token,
+			PageBounds pageBounds) {
 		PageList<ProductVo> voList = new PageList<ProductVo>();
+		User user = null;
+		if (StringUtils.isNotEmpty(token)) {
+			user = userService.selectUserByToken(token);
+		}
 		int index = 0;
 		for (Product param : productList) {
 			// if (isApprovalEdition(request, param)) {
@@ -440,8 +449,9 @@ public class BaseController {
 				default:
 					break;
 				}
-				;
-
+			}
+			if (user != null) {
+				applyService.checkExist(user, vo);
 			}
 			voList.add(vo);
 		}

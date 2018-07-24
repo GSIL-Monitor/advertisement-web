@@ -44,7 +44,7 @@ public class IndexController extends BaseController {
 	@RequestMapping("/home")
 	@ResponseBody
 	public Object index(HttpServletRequest request, HttpServletResponse response, String activityKey, Product product,
-			PageBounds pageBounds, Integer client) {
+			PageBounds pageBounds, String token, Integer client) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Activity activity = ConfigManager.getActivityByKey(EDUCATION_APP);
@@ -57,9 +57,9 @@ public class IndexController extends BaseController {
 			product.setStatus(CommonStatus.ONLINE);
 			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 					formatPageBounds(pageBounds));
-			PageList<ProductVo> voList = convertVo(request, productList, pageBounds);
+			PageList<ProductVo> voList = convertVo(request, productList, token, pageBounds);
 			voList.setPaginator(productList.getPaginator());
-			//productCategary
+			// productCategary
 			String channel = appService.getAppChannel(request.getParameter("appId"));
 			String appKey = getAppKey(request);
 			Long activityId = null;
@@ -70,7 +70,7 @@ public class IndexController extends BaseController {
 			String ids = ConfigManager.getConfigValue(activityId, channel, appKey,
 					ConfigConstants.PRODUCT_CATEGORY_INDEX_CONFIG);
 			productCategorys = ConfigManager.getProductCategoryList(ids);
-			
+
 			resultMap.put("productCategorys", productCategorys);
 			resultMap.put("productList", voList);
 			resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
