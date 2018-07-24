@@ -61,6 +61,7 @@
         <typeAlias type="com.yuanshanbao.dsp.bill.model.Bill" alias="Bill"/>
         <typeAlias type="com.yuanshanbao.dsp.channel.model.ChannelPromotionInfo" alias="ChannelPromotionInfo"/>
         <typeAlias type="com.yuanshanbao.dsp.limitation.model.Limitation" alias="Limitation"/>
+        <typeAlias type="com.yuanshanbao.dsp.apply.model.Apply" alias="Apply"/>
     </typeAliases>
 
     <mappers>
@@ -113,5 +114,6 @@
         <mapper resource="mybatis/bill/BillDaoImpl.xml"/>
         <mapper resource="mybatis/channel/ChannelPromotionInfoDaoImpl.xml"/>
         <mapper resource="mybatis/limitation/LimitationDaoImpl.xml"/>
+        <mapper resource="mybatis/apply/ApplyDaoImpl.xml"/>
     </mappers>
 </configuration>
