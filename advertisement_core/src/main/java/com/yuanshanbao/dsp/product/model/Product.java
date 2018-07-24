@@ -47,6 +47,10 @@ public class Product {
 
 	private String authorizeTags;
 
+	private Integer minAge;
+
+	private Integer maxAge;
+
 	private String requirements;
 
 	private String applyFlow;
@@ -158,6 +162,22 @@ public class Product {
 
 	public void setRecommendTags(String recommendTags) {
 		this.recommendTags = recommendTags;
+	}
+
+	public Integer getMinAge() {
+		return minAge;
+	}
+
+	public void setMinAge(Integer minAge) {
+		this.minAge = minAge;
+	}
+
+	public Integer getMaxAge() {
+		return maxAge;
+	}
+
+	public void setMaxAge(Integer maxAge) {
+		this.maxAge = maxAge;
 	}
 
 	public String getAuthorizeTags() {
