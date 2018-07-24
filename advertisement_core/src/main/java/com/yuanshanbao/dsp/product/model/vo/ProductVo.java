@@ -14,6 +14,9 @@ public class ProductVo {
 	private String workOrderImageUrl;
 	private String imageUrl;
 	private String smallImageUrl;
+	private Integer minAge;
+	private Integer maxAge;
+
 	private List<TagsVo> featureTagsList;
 	/**
 	 * 产品推荐标签
@@ -32,6 +35,8 @@ public class ProductVo {
 		this.smallImageUrl = product.getSmallImageUrl();
 		this.workOrderImageUrl = product.getWorkOrderImageUrl();
 		this.featureTagsList = product.getFetureTags();
+		this.minAge = product.getMinAge();
+		this.maxAge = product.getMaxAge();
 	}
 
 	public Long getProductId() {
@@ -104,6 +109,22 @@ public class ProductVo {
 
 	public void setRecommendTagsList(List<TagsVo> recommendTagsList) {
 		this.recommendTagsList = recommendTagsList;
+	}
+
+	public Integer getMaxAge() {
+		return maxAge;
+	}
+
+	public void setMaxAge(Integer maxAge) {
+		this.maxAge = maxAge;
+	}
+
+	public Integer getMinAge() {
+		return minAge;
+	}
+
+	public void setMinAge(Integer minAge) {
+		this.minAge = minAge;
 	}
 
 }
