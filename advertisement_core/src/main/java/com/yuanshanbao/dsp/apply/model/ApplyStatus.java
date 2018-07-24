@@ -8,6 +8,8 @@ public class ApplyStatus {
 	protected static Map<Integer, String> codeDescriptionMap = new LinkedHashMap<Integer, String>();
 	protected static Map<Integer, Long> tagMap = new LinkedHashMap<Integer, Long>();
 
+	public static final int NOT = -1;
+	public static final String NOT_DESCRIPTION = "未申请";
 	public static final int VIEW = 0;
 	public static final String VIEW_DESCRIPTION = "已查看";
 	public static final int APPLING = 1;
@@ -44,6 +46,7 @@ public class ApplyStatus {
 	}
 
 	public static void initCodeDescriptionMap() {
+		codeDescriptionMap.put(NOT, NOT_DESCRIPTION);
 		codeDescriptionMap.put(VIEW, VIEW_DESCRIPTION);
 		codeDescriptionMap.put(APPLING, APPLING_DESCRIPTION);
 		codeDescriptionMap.put(APPLIED, APPLIED_DESCRIPTION);

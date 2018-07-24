@@ -14,9 +14,13 @@ public class ProductVo {
 	private String workOrderImageUrl;
 	private String imageUrl;
 	private String smallImageUrl;
+<<<<<<< HEAD
 	private Integer minAge;
 	private Integer maxAge;
 
+=======
+	private Integer status;
+>>>>>>> 50e90ea7e6b8e83e484b80f9ad4434d002c15a38
 	private List<TagsVo> featureTagsList;
 	/**
 	 * 产品推荐标签
@@ -111,6 +115,7 @@ public class ProductVo {
 		this.recommendTagsList = recommendTagsList;
 	}
 
+<<<<<<< HEAD
 	public Integer getMaxAge() {
 		return maxAge;
 	}
@@ -125,6 +130,14 @@ public class ProductVo {
 
 	public void setMinAge(Integer minAge) {
 		this.minAge = minAge;
+=======
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+>>>>>>> 50e90ea7e6b8e83e484b80f9ad4434d002c15a38
 	}
 
 }

@@ -63,7 +63,7 @@ public class ProductController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/list")
 	public Object list(HttpServletRequest request, Product product, PageBounds pageBounds, Long categoryId,
-			HttpServletResponse response, ModelMap modelMap) {
+			String token, HttpServletResponse response, ModelMap modelMap) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			Activity activity = ConfigManager.getActivityByKey(EDUCATION_APP);
@@ -76,7 +76,7 @@ public class ProductController extends BaseController {
 			// isApprovalEdition(request, product);
 			PageList<Product> productList = null;
 			productList = setProductProperty(product, categoryId, pageBounds);
-			PageList<ProductVo> voList = convertVo(request, productList, formatPageBounds(pageBounds));
+			PageList<ProductVo> voList = convertVo(request, productList, token, formatPageBounds(pageBounds));
 			voList.setPaginator(productList.getPaginator());
 			resultMap.put("productList", voList);
 			resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
