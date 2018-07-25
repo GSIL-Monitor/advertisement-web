@@ -133,13 +133,13 @@ public class ProductController extends BaseController {
 			pipeline.sync();
 			for (int i = 0; i < list.size(); i++) {
 				Product p = productList.get(i);
-				p.setProductCount(Long.parseLong(list.get(i).get()));
+				p.setApplyCount(Long.parseLong(list.get(i).get()));
 				resultList.add(productList.get(i));
 			}
 			Collections.sort(resultList, new Comparator<Product>() {
 				@Override
 				public int compare(Product b, Product a) {
-					return a.getProductCount().compareTo(b.getProductCount());
+					return a.getApplyCount().compareTo(b.getApplyCount());
 				}
 			});
 			return getPageList(resultList, pageBounds);
@@ -183,7 +183,7 @@ public class ProductController extends BaseController {
 			if (product == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			product.setProductCount(productService.getProductCount(product.getProductId()));
+			product.setApplyCount(productService.getApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
