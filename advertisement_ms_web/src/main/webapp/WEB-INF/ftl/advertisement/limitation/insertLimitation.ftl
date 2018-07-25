@@ -26,58 +26,81 @@
             <div class="widget-content nopadding">
               <table class="table table-bordered table-striped" id="">
                 <tbody>
+                  
+                  
                   <tr>
-                    <td>商家名称：</td>
+                    <td style="width:20%;">商家：</td>
                     <td>
                       <div style="width:60%;">
-                      <select name="merchantId" class="selectpicker form-control">
-                        <#list merchantList as merchant>
-                        	<option value="${merchant.merchantId}">${merchant.name}</option>
+                      <select name="merchantId" class="selectpicker form-control" data-live-search="true">                       
+                        <#list merchantList as list>
+                        <option value="${list.merchantId?c}">${list.name}</option>
                         </#list>
                       </select>
                       </div>
                     </td>
                   </tr>
-                  <tr>
-                    <td>所属活动：</td>
+                  
+                 <tr>
+                    <td>保险名称：</td>
                     <td>
                       <div style="width:60%;">
-                      <select name="activityId" class="selectpicker form-control">
-                        <#list activityList as activity>
-                        	<option value="${activity.activityId}">${activity.name}</option>
+                      <select name="insuranceId" class="selectpicker form-control" data-live-search="true">
+                        <option value="" selected>默认(空)</option>
+                        <#list insuranceList as list>
+                        <option value="${list.insuranceId?c}">${list.fullName}【保险id:${list.insuranceId}】【公司:${list.merchant.name}】【供应商:${list.description}】</option>
                         </#list>
                       </select>
                       </div>
                     </td>
                   </tr>
+                  
                   <tr>
-                    <td width="20%">商品名称：</td>
-                    <td width="80%">
-                      <input type="text" name="name" style="width:60%;"></td>
-                  </tr>           
-                  <tr>
-                    <td>公司网址：</td>
+                    <td>类型：</td>
                     <td>
-                      <input type="text" name="companyUrl" style="width:60%;"></td>
+                      <div style="width:60%;">
+                      <select name="type" class="selectpicker form-control" data-live-search="true">
+                        <#list typeList as list>
+                        <option value="${list.key}">${list.value}</option>
+                        </#list>
+                      </select>
+                      </div>
+                    </td>
+                  </tr> 
+                  
+                  <tr>
+                    <td>channel：</td>
+                    <td>
+                      <input type="text" name="channel" style="width:60%;"></td>
                   </tr>
+                  
+                 <tr>
+               	    <td rowspan="2">省市（locationCode）：</td>
+                    <td>
+                      <input type="text" name="locationCode" style="width:60%;"></td>
+                  </tr>
+                  
                    <tr>
-                    <td>描述（选填）：</td>
-                    <td>
-                      <input type="text" name="description" style="width:60%;"></td>
+                  	<td style="color:#FF6347;">请填写数字，非中文省会名称</td>
                   </tr>
+                     
                   <tr>
-                    <td>logo：</td>
+                    <td rowspan="2">quota：</td>
                     <td>
-                      <input type="file" name="image" style="width:90%;">
-                    </td>
+                      <input type="text" name="quota" style="width:60%;"></td>
                   </tr>
-          		  <tr>
+                  
+                  <tr>
+                  	<td style="color:#FF6347;">请填写数字</td>
+                  </tr>
+                  
+                 <tr>
                     <td>库存：</td>
                     <td>
-                      <input type="text" name="stock" style="width:90%;">
-                    </td>
+                      <input type="text" name="stock" style="width:60%;"></td>
                   </tr>
-                  <tr>
+                  
+                 <tr>
                     <td>状态：</td>
                     <td>
                       <div style="width:60%;">
@@ -91,7 +114,7 @@
                   </tr>
                   <tr>
                     <td colspan="4" style="text-align:center">
-                      <input type="submit" name="" value="提交" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();"></td>
+                      <input type="submit" name="" value="提交" class=" btn btn-success" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();"></td>
                   </tr>
                 </tbody>
               </table>

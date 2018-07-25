@@ -25,7 +25,6 @@ import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
-import com.yuanshanbao.dsp.product.model.ProductType;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -53,7 +52,6 @@ public class IndexController extends BaseController {
 			}
 			// 产品列表
 			product.setActivityId(activity.getActivityId());
-			product.setType(ProductType.ONLINE);
 			product.setStatus(CommonStatus.ONLINE);
 			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 					formatPageBounds(pageBounds));

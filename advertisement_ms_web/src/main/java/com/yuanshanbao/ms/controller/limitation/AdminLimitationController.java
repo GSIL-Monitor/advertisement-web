@@ -31,13 +31,13 @@ import com.yuanshanbao.paginator.domain.PageList;
 @RequestMapping("/admin/limitation")
 public class AdminLimitationController extends PaginationController {
 
-	private static final String PAGE_LIST = "insurance/limitation/listLimitation";
+	private static final String PAGE_LIST = "advertisement/limitation/listLimitation";
 
-	private static final String PAGE_INSERT = "insurance/limitation/insertLimitation";
+	private static final String PAGE_INSERT = "advertisement/limitation/insertLimitation";
 
-	private static final String PAGE_UPDATE = "insurance/limitation/updateLimitation";
+	private static final String PAGE_UPDATE = "advertisement/limitation/updateLimitation";
 
-	private static final String PAGE_VIEW = "insurance/limitation/viewLimitation";
+	private static final String PAGE_VIEW = "advertisement/limitation/viewLimitation";
 
 	@Autowired
 	private LimitationService limitationService;

@@ -118,7 +118,7 @@ public class AdminAdvertisementController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			if (image != null && !image.isEmpty()) {
-				advertisement.setImageUrl(UploadUtils.uploadFile(image, "file/game"));
+				advertisement.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
 			}
 			validateParameters(advertisement);
 			String quotaType = request.getParameter("quotaType");

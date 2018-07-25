@@ -195,7 +195,8 @@ public class UserServiceImpl implements UserService {
 		}
 		User user = cacheService.hessian2Get(cacheKey);
 		if (StringUtils.isNotBlank(param.getUserId()) || StringUtils.isNotBlank(param.getMobile())) {
-			user = setBaseInfo(userDao.selectUser(param));
+			// user = setBaseInfo(userDao.selectUser(param));
+			user = userDao.selectUser(param);
 		} else if (StringUtils.isNotBlank(param.getWeixinId())) {
 			IndexUser indexUser = indexUserService.selectIndexUser(param.getWeixinId());
 			if (indexUser != null) {
