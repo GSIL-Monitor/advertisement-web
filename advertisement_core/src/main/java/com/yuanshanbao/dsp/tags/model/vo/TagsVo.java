@@ -12,6 +12,7 @@ public class TagsVo {
 	private String description;
 	private String bigImage;
 	private String image;
+	private Integer showType;
 	private boolean hasSelected;
 
 	public TagsVo(Tags exist) {
@@ -22,6 +23,7 @@ public class TagsVo {
 		this.name = exist.getName();
 		this.value = exist.getValue();
 		this.description = exist.getDescription();
+		this.setShowType(exist.getShowType());
 		this.bigImage = exist.getBigImage();
 		this.image = exist.getImage();
 	}
@@ -107,5 +109,13 @@ public class TagsVo {
 			}
 		}
 		return null;
+	}
+
+	public Integer getShowType() {
+		return showType;
+	}
+
+	public void setShowType(Integer showType) {
+		this.showType = showType;
 	}
 }

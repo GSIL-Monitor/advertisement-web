@@ -13,6 +13,7 @@
 		<result property="bigImage" column="big_image" jdbcType="VARCHAR" />
 		<result property="image" column="image" jdbcType="VARCHAR" />
 		<result property="showOrder" column="show_order" jdbcType="NUMERIC" />
+		<result property="showType" column="show_type" jdbcType="NUMERIC" />
 		<result property="searchType" column="search_type" jdbcType="NUMERIC" />
 		<result property="score" column="score" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />

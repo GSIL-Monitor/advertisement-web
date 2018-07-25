@@ -20,6 +20,7 @@ public class Tags {
 	private String bigImage;
 	private String image;
 	private Integer showOrder;
+	private Integer showType;
 	private Long searchType;
 	private Integer score;
 	private Integer status;
@@ -179,5 +180,13 @@ public class Tags {
 			}
 		}
 		return null;
+	}
+
+	public Integer getShowType() {
+		return showType;
+	}
+
+	public void setShowType(Integer showType) {
+		this.showType = showType;
 	}
 }
