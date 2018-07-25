@@ -214,6 +214,10 @@ public class ComRetCode {
 	public static final int ORDER_DELIVER_ = 408;
 	public static final String ORDER_DELIVER_ERROR = "你不符合领取该产品的资格";
 
+	/* 409您的基本信息不完全或不存在 */
+	public static final int INFORMATION_NOT_ = 409;
+	public static final String INFORMATION_NOT_COMPLETE = "您的基本信息不完全";
+
 	/* 404无符合营销手机号 */
 	public static final int MARKETING_SMS_NOT_VERIFY_ERROR = 404;
 	public static final String MARKETING_SMS_NOT_VERIFY_ERROR_DESC = "无符合营销手机号";

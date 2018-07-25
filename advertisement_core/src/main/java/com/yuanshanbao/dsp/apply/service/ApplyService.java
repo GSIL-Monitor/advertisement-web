@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.yuanshanbao.dsp.apply.model.Apply;
+import com.yuanshanbao.dsp.information.model.Information;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -32,7 +33,7 @@ public interface ApplyService {
 
 	public void increaseApplyCount();
 
-	public void applyProduct(User user, Long productId, Integer status);
+	public void applyProduct(User user, Long productId, Information information, Integer status);
 
 	public void checkExist(User user, ProductVo vo);
 

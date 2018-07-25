@@ -157,7 +157,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Long getProductCount(Long productId) {
+	public Long getApplyCount(Long productId) {
 		String key = RedisConstant.getProductShowCountKey(productId + "");
 		String str = (String) redisCacheService.get(key);
 		long count = 0;

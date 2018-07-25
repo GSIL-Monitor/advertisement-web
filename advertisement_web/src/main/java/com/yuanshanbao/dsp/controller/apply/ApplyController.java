@@ -26,6 +26,7 @@ import com.yuanshanbao.dsp.apply.model.ApplyVo;
 import com.yuanshanbao.dsp.apply.service.ApplyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.information.model.Information;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.user.model.User;
@@ -80,14 +81,14 @@ public class ApplyController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/view")
 	public Object view(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, Long productId,
-			String token) {
-		return commit(request, response, modelMap, token, productId, ApplyStatus.VIEW);
+			String token, Information information) {
+		return commit(request, response, modelMap, token, information, productId, ApplyStatus.VIEW);
 	}
 
 	@ResponseBody
 	@RequestMapping("/commit")
 	public Object commit(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, String token,
-			Long productId, Integer status) {
+			Information information, Long productId, Integer status) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			User user = userService.selectUserByToken(token);
@@ -98,7 +99,7 @@ public class ApplyController extends BaseController {
 				status = ApplyStatus.APPLING;
 			}
 			setShowCount(request, productId);
-			applyService.applyProduct(user, productId, status);
+			applyService.applyProduct(user, productId, information, status);
 			// applyService.insertOrUpdateApply(user, productId, status);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

@@ -27,7 +27,7 @@ public interface ProductService {
 
 	public void increaseProductCount(Long productId);
 
-	public Long getProductCount(Long productId);
+	public Long getApplyCount(Long productId);
 
 	public String getApplyInterface(Product product, User user, HttpServletRequest request);
 

@@ -65,7 +65,7 @@ public class Product {
 
 	private Integer sort;
 
-	private Long productCount;
+	private Long applyCount;
 
 	private Integer positiveRate;
 
@@ -329,14 +329,6 @@ public class Product {
 		this.applyInterface = applyInterface;
 	}
 
-	public Long getProductCount() {
-		return productCount;
-	}
-
-	public void setProductCount(Long productCount) {
-		this.productCount = productCount;
-	}
-
 	public Long getActivityId() {
 		return activityId;
 	}
@@ -379,6 +371,14 @@ public class Product {
 			}
 		}
 		return feature;
+	}
+
+	public Long getApplyCount() {
+		return applyCount;
+	}
+
+	public void setApplyCount(Long applyCount) {
+		this.applyCount = applyCount;
 	}
 
 }

@@ -22,7 +22,7 @@ public class ProductVo {
 	private Integer minAge;
 	private Integer maxAge;
 	private Integer status;
-	private Long productCount;
+	private Long applyCount;
 	private List<TagsVo> featureTagsList;
 	/**
 	 * 产品推荐标签
@@ -41,7 +41,7 @@ public class ProductVo {
 		this.smallImageUrl = product.getSmallImageUrl();
 		this.featureTagsList = product.getFetureTags();
 		this.recommendTagsList = getRecommendTagsList(product.getRecommendTags());
-		this.productCount = product.getProductCount();
+		this.setApplyCount(product.getApplyCount());
 		this.minAge = product.getMinAge();
 		this.maxAge = product.getMaxAge();
 	}
@@ -157,11 +157,11 @@ public class ProductVo {
 		return result;
 	}
 
-	public Long getProductCount() {
-		return productCount;
+	public Long getApplyCount() {
+		return applyCount;
 	}
 
-	public void setProductCount(Long productCount) {
-		this.productCount = productCount;
+	public void setApplyCount(Long applyCount) {
+		this.applyCount = applyCount;
 	}
 }

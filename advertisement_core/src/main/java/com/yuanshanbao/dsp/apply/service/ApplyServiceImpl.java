@@ -214,11 +214,12 @@ public class ApplyServiceImpl implements ApplyService {
 	}
 
 	@Override
-	public void applyProduct(User user, Long productId, Integer status) {
+	public void applyProduct(User user, Long productId, Information information, Integer status) {
 		Product product = productService.selectProduct(productId);
 		if (product == null) {
 			throw new BusinessException(ComRetCode.PRODUCT_NOT_EXIST_ERROR);
 		}
+		checkInformationExist(user, information);
 		// 查找库存
 		Quota quota = quotaService.pickProductForApply(user, product);
 		if (quota == null) {
@@ -238,5 +239,19 @@ public class ApplyServiceImpl implements ApplyService {
 		} else {
 			vo.setStatus(ApplyStatus.NOT);
 		}
+	}
+
+	private void checkInformationExist(User user, Information information) {
+		Information params = new Information();
+		params.setUserId(user.getUserId());
+		List<Information> list = informationService.selectInformations(params, new PageBounds());
+		if (list.size() > 0) {
+			information.setInformationId(list.get(0).getInformationId());
+		}
+		information.setUserId(user.getUserId());
+		if (StringUtils.isEmpty(information.getName()) || StringUtils.isEmpty(information.getAge() + "")) {
+			throw new BusinessException(ComRetCode.INFORMATION_NOT_COMPLETE);
+		}
+		informationService.insertOrUpdateInformation(information);
 	}
 }

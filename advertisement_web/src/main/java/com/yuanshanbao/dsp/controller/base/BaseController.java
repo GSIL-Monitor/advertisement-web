@@ -34,7 +34,6 @@ import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.apply.service.ApplyService;
-import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.model.SmsToken;
@@ -299,17 +298,6 @@ public class BaseController {
 		return "xingdai";
 	}
 
-	private boolean isContains(String iniStr, String str, String appKey) {
-		String[] inis = iniStr.split(CommonConstant.COMMA_SPLIT_STR);
-		for (String ini : inis) {
-			String[] iniStrings = ini.split(CommonConstant.COMMON_SPLIT_STR);
-			if (iniStrings[0].equals(appKey) && iniStrings[1].equals(str)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	protected void setAdvertisement(Integer client, Map<String, Object> resultMap, String channel, String appKey,
 			Long activityId, String position) {
 		List<AdvertisementVo> bannerList = setAdvertisementLink(position, AdvertisementPosition.BANNER, channel,
@@ -357,13 +345,6 @@ public class BaseController {
 			resultList.add(new AdvertisementVo(advertisement));
 		}
 		return resultList;
-	}
-
-	private String formatAmount(Integer amount) {
-		if (amount >= 10000 && amount % 10000 == 0) {
-			return (amount / 10000) + "万元";
-		}
-		return amount >= 10000 ? (amount.doubleValue() / 10000) + "万元" : amount + "元";
 	}
 
 	public String format(String template, String name, String advertisementAmount) {
@@ -431,7 +412,7 @@ public class BaseController {
 			// if (isApprovalEdition(request, param)) {
 			// param.setApplyInterface(null);
 			// }
-			param.setProductCount(productService.getProductCount(param.getProductId()));
+			param.setApplyCount(productService.getApplyCount(param.getProductId()));
 			ProductVo vo = new ProductVo(param);
 			index++;
 			if (pageBounds.getPage() == 1) {
