@@ -75,8 +75,6 @@ public class Product {
 
 	private Integer status;
 
-	private Integer BindStatus;
-
 	private Timestamp createTime;
 
 	private Timestamp updateTime;
@@ -266,14 +264,6 @@ public class Product {
 
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
-	}
-
-	public Integer getBindStatus() {
-		return BindStatus;
-	}
-
-	public void setBindStatus(Integer bindStatus) {
-		BindStatus = bindStatus;
 	}
 
 	public Integer getCategory() {

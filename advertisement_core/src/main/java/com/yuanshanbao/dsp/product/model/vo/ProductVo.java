@@ -1,8 +1,14 @@
 package com.yuanshanbao.dsp.product.model.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
 
 public class ProductVo {
@@ -11,7 +17,6 @@ public class ProductVo {
 	private String name;
 	private String title;
 	private String description;
-	private String workOrderImageUrl;
 	private String imageUrl;
 	private String smallImageUrl;
 	private Integer minAge;
@@ -34,8 +39,8 @@ public class ProductVo {
 		this.description = product.getDescription();
 		this.imageUrl = product.getImageUrl();
 		this.smallImageUrl = product.getSmallImageUrl();
-		this.workOrderImageUrl = product.getWorkOrderImageUrl();
 		this.featureTagsList = product.getFetureTags();
+		this.recommendTagsList = getRecommendTagsList(product.getRecommendTags());
 		this.productCount = product.getProductCount();
 		this.minAge = product.getMinAge();
 		this.maxAge = product.getMaxAge();
@@ -89,14 +94,6 @@ public class ProductVo {
 		this.smallImageUrl = smallImageUrl;
 	}
 
-	public String getWorkOrderImageUrl() {
-		return workOrderImageUrl;
-	}
-
-	public void setWorkOrderImageUrl(String workOrderImageUrl) {
-		this.workOrderImageUrl = workOrderImageUrl;
-	}
-
 	public List<TagsVo> getFeatureTagsList() {
 		return featureTagsList;
 	}
@@ -137,4 +134,34 @@ public class ProductVo {
 		this.status = status;
 	}
 
+	private List<TagsVo> getRecommendTagsList(String recommendTags) {
+		if (StringUtils.isBlank(recommendTags)) {
+			return null;
+		}
+		String[] ids = recommendTags.split(",");
+		if (ids == null || ids.length == 0) {
+			return null;
+		}
+		List<TagsVo> result = new ArrayList<TagsVo>();
+		for (String element : ids) {
+			if (!ValidateUtil.isNumber(element)) {
+				continue;
+			}
+			Tags exist = ConstantsManager.getTags(Long.valueOf(element));
+			if (exist == null) {
+				continue;
+			}
+			TagsVo vo = new TagsVo(exist);
+			result.add(vo);
+		}
+		return result;
+	}
+
+	public Long getProductCount() {
+		return productCount;
+	}
+
+	public void setProductCount(Long productCount) {
+		this.productCount = productCount;
+	}
 }

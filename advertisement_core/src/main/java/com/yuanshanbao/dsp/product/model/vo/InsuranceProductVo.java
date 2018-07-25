@@ -58,7 +58,7 @@ public class InsuranceProductVo {
 		this.status = product.getStatus();
 		this.productIncludeUrl = getProductIncludeUrl(product.getProductIncludeUrl());
 		this.detailUrl = getDetailUrl();
-		this.bindTags = getBindTags(product.getBindStatus());
+		this.bindTags = getBindTags();
 		this.recommendTagsList = getRecommendTagsList(product.getRecommendTags());
 	}
 

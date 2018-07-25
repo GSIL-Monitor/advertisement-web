@@ -46,7 +46,6 @@ import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
-import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserStatus;
 import com.yuanshanbao.dsp.user.service.UserService;
@@ -459,16 +458,16 @@ public class BaseController {
 	}
 
 	private void setRecommentTagsVo(ProductVo vo, String name, String imageUrl) {
-		List<TagsVo> tagsList = vo.getRecommendTagsList();
-		TagsVo tags = new TagsVo();
-		tags.setName(name);
-		tags.setImage(imageUrl);
-		if (tagsList == null || tagsList.size() == 0) {
-			tagsList = new ArrayList<TagsVo>();
-			tagsList.add(tags);
-		} else {
-			tagsList.add(0, tags);
-		}
-		vo.setRecommendTagsList(tagsList);
+		// List<TagsVo> tagsList = vo.getRecommendTagsList();
+		// TagsVo tags = new TagsVo();
+		// tags.setName(name);
+		// tags.setImage(imageUrl);
+		// if (tagsList == null || tagsList.size() == 0) {
+		// tagsList = new ArrayList<TagsVo>();
+		// tagsList.add(tags);
+		// } else {
+		// tagsList.add(0, tags);
+		// }
+		// vo.setRecommendTagsList(tagsList);
 	}
 }
