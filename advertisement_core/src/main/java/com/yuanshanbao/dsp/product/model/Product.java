@@ -87,6 +87,8 @@ public class Product {
 	private List<Long> authorize;
 	private List<Long> feature;
 
+	private Integer queryAge;
+
 	// ~ Get and Set Methods
 	// =================================================================================
 
@@ -379,6 +381,14 @@ public class Product {
 
 	public void setApplyCount(Long applyCount) {
 		this.applyCount = applyCount;
+	}
+
+	public Integer getQueryAge() {
+		return queryAge;
+	}
+
+	public void setQueryAge(Integer queryAge) {
+		this.queryAge = queryAge;
 	}
 
 }

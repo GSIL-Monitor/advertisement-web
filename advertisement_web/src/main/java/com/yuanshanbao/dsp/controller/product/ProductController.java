@@ -40,7 +40,6 @@ import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
-import com.yuanshanbao.dsp.product.model.ProductType;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.tags.model.TagsSearchType;
@@ -72,7 +71,6 @@ public class ProductController extends BaseController {
 			}
 			product.setActivityId(activity.getActivityId());
 			product.setStatus(CommonStatus.ONLINE);
-			product.setType(ProductType.ONLINE);
 			// isApprovalEdition(request, product);
 			PageList<Product> productList = null;
 			productList = setProductProperty(product, categoryId, pageBounds);

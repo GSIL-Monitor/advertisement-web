@@ -99,6 +99,9 @@
 						CONCAT('%',#{id},'%') and
 					</foreach>
 				</if>
+				<if test="queryAge != null">
+					min_age &lt;=#{queryAge} and max_age &gt;=#{queryAge} and
+				</if>
 			</trim>
 			and status != -1
 		</where>
