@@ -56,7 +56,7 @@ public class FeedbackController extends BaseController {
 		User user = getSessionUser(request);
 		try {
 			if (user != null) {
-				feedback.setUserId(user.getUserId());
+				feedback.setUserId(user.getUserId() + "");
 			}
 			feedback.setStatus(CommonStatus.ONLINE);
 			feedbackService.insertFeedback(feedback);

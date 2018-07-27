@@ -13,7 +13,7 @@ public interface ApplyService {
 
 	public List<Apply> selectApplys(Apply apply, PageBounds pageBounds);
 
-	public Apply selectApply(String applyId);
+	public Apply selectApply(Long applyId);
 
 	public void insertApply(Apply apply);
 
@@ -23,7 +23,7 @@ public interface ApplyService {
 
 	public void insertOrUpdateApply(Apply apply);
 
-	public Map<String, Apply> selectApplyByIds(List<String> applyIdList);
+	public Map<Long, Apply> selectApplyByIds(List<Long> applyIdList);
 
 	public List<Apply> selectUserApplys(Apply apply, PageBounds pageBounds);
 
@@ -36,5 +36,7 @@ public interface ApplyService {
 	public void applyProduct(User user, Long productId, Information information, Integer status);
 
 	public void checkExist(User user, ProductVo vo);
+
+	public Long getProductApplyCount(Long productId);
 
 }

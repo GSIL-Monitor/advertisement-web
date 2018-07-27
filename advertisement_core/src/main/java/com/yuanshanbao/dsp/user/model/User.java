@@ -12,7 +12,7 @@ public class User implements Serializable {
 
 	private static final long serialVersionUID = 4165445835251317169L;
 
-	private String userId;
+	private Long userId;
 	private String mobile;
 	private String weixinId;
 	private String username;
@@ -25,14 +25,6 @@ public class User implements Serializable {
 	private Timestamp updateTime;
 
 	private BaseInfo baseInfo;
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 
 	public String getWeixinId() {
 		return weixinId;
@@ -157,5 +149,13 @@ public class User implements Serializable {
 	public void setUserType(Integer userType) {
 		this.userType = userType;
 	}
-	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 }

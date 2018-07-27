@@ -78,6 +78,10 @@
 		(#{applyId},
 		#{userId}, #{merchantId},#{informationId}, #{productId},
 		#{status},#{userStatus}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="applyId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 	</insert>
 
 	<update id="updateApply" parameterType="Apply">

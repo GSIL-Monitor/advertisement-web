@@ -10,7 +10,7 @@ public class ApplyVo {
 	/**
 	 * 申请ID，分表
 	 */
-	private String applyId;
+	private Long applyId;
 	/**
 	 * 商品名称
 	 */
@@ -20,7 +20,7 @@ public class ApplyVo {
 	 */
 	private String productLogo;
 	private Long productId;
-	private String userId;
+	private Long userId;
 	private String repayDaysStr;
 	private String loanAmountStr;
 	private String applyTimeStr;
@@ -29,8 +29,8 @@ public class ApplyVo {
 
 	public ApplyVo(Apply apply) {
 		ProductVo vo = new ProductVo(apply.getProduct());
-		this.applyId = apply.getApplyId();
-		this.userId = apply.getUserId();
+		this.setApplyId(apply.getApplyId());
+		this.setUserId(apply.getUserId());
 		this.productId = apply.getProductId();
 		this.productName = vo.getName();
 		// this.productLogo = vo.getProductLogo();
@@ -45,14 +45,6 @@ public class ApplyVo {
 
 	public ApplyVo() {
 		super();
-	}
-
-	public String getApplyId() {
-		return applyId;
-	}
-
-	public void setApplyId(String applyId) {
-		this.applyId = applyId;
 	}
 
 	public String getProductName() {
@@ -103,20 +95,28 @@ public class ApplyVo {
 		this.productId = productId;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
 	public TagsVo getStatusTags() {
 		return statusTags;
 	}
 
 	public void setStatusTags(TagsVo statusTags) {
 		this.statusTags = statusTags;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Long getApplyId() {
+		return applyId;
+	}
+
+	public void setApplyId(Long applyId) {
+		this.applyId = applyId;
 	}
 
 }

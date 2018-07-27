@@ -188,7 +188,7 @@ public class UserController extends BaseController {
 					String password = RandomUtil.generateNumberString(8);
 					generateUser(user, password, inviteCode);
 				}
-				loginToken = tokenService.generateLoginToken(appId, user.getUserId(), userIp);
+				loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "", userIp);
 				if (loginToken == null) {
 					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.LOGIN_FAIL);
 					return resultMap;
@@ -238,7 +238,7 @@ public class UserController extends BaseController {
 				user = userService.insertBaseInfoFromWeixin(request, user, userInfo);
 				register = true;
 			}
-			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId(),
+			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "",
 					JSPHelper.getRemoteAddr(request));
 			loginToken.setRegister(register);
 			loginToken.setUser(user);
@@ -270,7 +270,7 @@ public class UserController extends BaseController {
 				setSession(request, token, user);
 			}
 			if (user != null) {
-				String tempToken = tokenService.generateTempToken(appId, user.getUserId());
+				String tempToken = tokenService.generateTempToken(appId, user.getUserId() + "");
 				resultMap.put("tempToken", tempToken);
 			} else {
 				resultMap.put("tempToken", "");
@@ -346,7 +346,7 @@ public class UserController extends BaseController {
 				user.setRegisterFrom(registerFrom);
 				user.setStatus(UserStatus.NORMAL);
 				generateUser(user, password, inviteCode);
-				LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId(), userIp);
+				LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "", userIp);
 				user = userService.selectUserById(user.getUserId());
 				loginToken.setUser(user);
 				setSession(request, loginToken.getToken(), user);
@@ -444,14 +444,14 @@ public class UserController extends BaseController {
 			user.setInviteType(invite.getInviteType());
 		}
 		userService.insertOrUpdateUser(user);
-		user.setPassword(MD5Util.encryptPassword(password, user.getUserId()));
+		user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 		userService.updateUser(user);
 
 		BaseInfo baseInfo = new BaseInfo();
-		baseInfo.setUserId(user.getUserId());
+		baseInfo.setUserId(user.getUserId() + "");
 		baseInfo.setName(DataFormat.hiddenMobile(user.getMobile()));
 		baseInfo.setStatus(CommonStatus.ONLINE);
-		userService.insertOrUpdateBaseInfo(baseInfo);
+		// userService.insertOrUpdateBaseInfo(baseInfo);
 		user.setBaseInfo(baseInfo);
 	}
 
@@ -474,7 +474,7 @@ public class UserController extends BaseController {
 				}
 				smsCodeService.validateSmsCode(mobile, smsCode, "", userIp);
 				User user = userService.selectUserByMobile(mobile);
-				user.setPassword(MD5Util.encryptPassword(password, user.getUserId()));
+				user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 				userService.updateUser(user);
 				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 				return resultMap;
@@ -505,7 +505,7 @@ public class UserController extends BaseController {
 				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.WRONG_PASSOWRD);
 				return resultMap;
 			}
-			user.setPassword(MD5Util.encryptPassword(password, user.getUserId()));
+			user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 			userService.updateUser(user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 			return resultMap;
@@ -536,7 +536,7 @@ public class UserController extends BaseController {
 			String originalPath = user.getAvatar();
 			String path = UploadUtils.uploadFile(file, UploadUtils.FTP_AVATAR);
 			BaseInfo baseInfo = new BaseInfo();
-			baseInfo.setUserId(user.getUserId());
+			baseInfo.setUserId(user.getUserId() + "");
 			baseInfo.setAvatar(path);
 			userService.insertOrUpdateBaseInfo(baseInfo);
 
@@ -568,7 +568,7 @@ public class UserController extends BaseController {
 				throw new BusinessException(ComRetCode.TOKEN_INVALID);
 			}
 			baseInfo.setMobile(user.getMobile());
-			baseInfo.setUserId(user.getUserId());
+			baseInfo.setUserId(user.getUserId() + "");
 			userService.insertOrUpdateBaseInfo(baseInfo);
 			User currentUser = userService.selectUserById(user.getUserId());
 			resultMap.put("user", new UserVo(currentUser));

@@ -38,7 +38,7 @@ public class InformationServiceImpl implements InformationService {
 
 	@Override
 	public List<Information> selectInformations(Information information, PageBounds pageBounds) {
-		return setProperties(informationDao.selectInformations(information, pageBounds));
+		return informationDao.selectInformations(information, pageBounds);
 	}
 
 	private List<Information> setProperties(List<Information> informationList) {
@@ -129,7 +129,7 @@ public class InformationServiceImpl implements InformationService {
 	}
 
 	@Override
-	public Information selectInformationByUserId(String userId) {
+	public Information selectInformationByUserId(Long userId) {
 		Information information = new Information();
 		information.setUserId(userId);
 		List<Information> list = selectInformations(information, new PageBounds());

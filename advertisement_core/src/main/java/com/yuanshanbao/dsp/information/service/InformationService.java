@@ -22,7 +22,7 @@ public interface InformationService {
 
 	public Map<Long, Information> selectInformationByIds(List<Long> informationIdList);
 
-	public Information selectInformationByUserId(String userId);
+	public Information selectInformationByUserId(Long userId);
 
 	public void checkExist(Information information);
 

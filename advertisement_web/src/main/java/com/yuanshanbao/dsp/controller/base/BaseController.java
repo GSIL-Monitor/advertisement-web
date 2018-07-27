@@ -412,7 +412,7 @@ public class BaseController {
 			// if (isApprovalEdition(request, param)) {
 			// param.setApplyInterface(null);
 			// }
-			param.setApplyCount(productService.getApplyCount(param.getProductId()));
+			param.setApplyCount(applyService.getProductApplyCount(param.getProductId()));
 			ProductVo vo = new ProductVo(param);
 			index++;
 			if (pageBounds.getPage() == 1) {

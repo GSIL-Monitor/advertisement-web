@@ -43,6 +43,7 @@ public class RedisConstant {
 	public static final String ADVERTISEMENT_SHOW_COUNT_UV = "advertisement_show_count_uv" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT_PV = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT_UV = "advertisement_click_count_uv" + COMMON_REDIS_PREFIX;
+	private static final String PRODUCT_APPLY_COUNT = "product_apply_count" + COMMON_REDIS_PREFIX;;
 
 	public static final String ADVERTISEMENT_ACTIVITY_SHOW_COUNT_PV = "advertisement_activity_show_count_pv"
 			+ COMMON_REDIS_PREFIX;
@@ -266,8 +267,12 @@ public class RedisConstant {
 		return null;
 	}
 
-	public static String getProductShowCountKey(String string) {
+	public static String getProductShowCountKey(String productId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public static String getProductApplyCountKey(Long productId) {
+		return getCachePrefix(PRODUCT_APPLY_COUNT, productId + "");
 	}
 }

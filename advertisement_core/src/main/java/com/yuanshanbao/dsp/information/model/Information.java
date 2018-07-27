@@ -27,7 +27,7 @@ public class Information {
 	private Long projectId;
 	private Long activityId;
 	private Long merchantId;
-	private String userId;
+	private Long userId;
 	private String mobile;
 	private String name;
 	private Long gender;
@@ -41,6 +41,7 @@ public class Information {
 	private String province;
 	private String city;
 	private Integer salary;
+	private Integer age;
 	private Long marriage;
 	private Long hasChild;
 	private String channel;
@@ -94,14 +95,6 @@ public class Information {
 		this.activityId = activityId;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
 	public String getMobile() {
 		return mobile;
 	}
@@ -151,13 +144,13 @@ public class Information {
 		return birthday;
 	}
 
-	public int getAge() {
-		Timestamp birthday = getBirthday();
-		if (birthday != null) {
-			return DateUtils.calculateAge(birthday);
-		}
-		return 0;
-	}
+	// public int getAge() {
+	// Timestamp birthday = getBirthday();
+	// if (birthday != null) {
+	// return DateUtils.calculateAge(birthday);
+	// }
+	// return 0;
+	// }
 
 	public void setBirthdayValue(String birthdayValue) {
 		if (StringUtils.isNotBlank(birthdayValue)) {
@@ -409,5 +402,21 @@ public class Information {
 		} catch (Exception e) {
 			LoggerUtil.error("", e);
 		}
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 }

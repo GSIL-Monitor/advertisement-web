@@ -32,7 +32,7 @@ public class ApplyDaoImpl extends BaseDaoImpl implements ApplyDao {
 	}
 
 	@Override
-	public List<Apply> selectApplys(List<String> applyIdList) {
+	public List<Apply> selectApplys(List<Long> applyIdList) {
 		if (applyIdList == null || applyIdList.size() == 0) {
 			return new ArrayList<Apply>();
 		}

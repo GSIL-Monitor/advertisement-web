@@ -17,5 +17,5 @@ public interface ApplyDao {
 
 	public int updateApply(Apply apply);
 
-	public List<Apply> selectApplys(List<String> applyIdList);
+	public List<Apply> selectApplys(List<Long> applyIdList);
 }

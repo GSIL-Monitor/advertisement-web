@@ -41,6 +41,8 @@ public class Product {
 
 	private String smallImageUrl;
 
+	private String bigImageUrl;
+
 	private String featureTags;
 
 	private String recommendTags;
@@ -389,6 +391,14 @@ public class Product {
 
 	public void setQueryAge(Integer queryAge) {
 		this.queryAge = queryAge;
+	}
+
+	public String getBigImageUrl() {
+		return bigImageUrl;
+	}
+
+	public void setBigImageUrl(String bigImageUrl) {
+		this.bigImageUrl = bigImageUrl;
 	}
 
 }

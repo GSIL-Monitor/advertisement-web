@@ -20,9 +20,6 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.ms.controller.base.PaginationController;
-import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.paginator.domain.PageList;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.IniBean;
@@ -32,6 +29,9 @@ import com.yuanshanbao.dsp.push.model.AppPush;
 import com.yuanshanbao.dsp.push.service.AppPushService;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.service.UserService;
+import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.paginator.domain.PageBounds;
+import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
 @RequestMapping("/admin/appPush")
@@ -103,7 +103,7 @@ public class AdminAppPushController extends PaginationController {
 			if (user == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			appPush.setUserId(user.getUserId());
+			appPush.setUserId(user.getUserId() + "");
 		}
 	}
 

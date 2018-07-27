@@ -9,7 +9,7 @@ import com.yuanshanbao.dsp.tags.model.Tags;
 public class ExtendInfo {
 
 	private Long extendInfoId;
-	private String userId;
+	private Long userId;
 	private Long informationId;
 	private Long fieldId;
 	/**
@@ -38,14 +38,6 @@ public class ExtendInfo {
 
 	public void setExtendInfoId(Long extendInfoId) {
 		this.extendInfoId = extendInfoId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public Long getInformationId() {
@@ -152,6 +144,14 @@ public class ExtendInfo {
 
 	public void setInformationField(InformationField informationField) {
 		this.informationField = informationField;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 }

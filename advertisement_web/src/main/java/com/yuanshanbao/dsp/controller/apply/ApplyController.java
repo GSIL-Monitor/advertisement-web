@@ -98,9 +98,8 @@ public class ApplyController extends BaseController {
 			if (status == null) {
 				status = ApplyStatus.APPLING;
 			}
-			setShowCount(request, productId);
+			// setShowCount(request, productId);
 			applyService.applyProduct(user, productId, information, status);
-			// applyService.insertOrUpdateApply(user, productId, status);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

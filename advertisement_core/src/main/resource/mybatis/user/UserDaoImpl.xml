@@ -92,6 +92,10 @@
 		values
 		(#{userId}, #{mobile}, #{weixinId}, #{password}, #{inviteType},
 		#{registerFrom}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="userId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 	</insert>
 
 	<insert id="insertUserWithCreateTime" parameterType="User">

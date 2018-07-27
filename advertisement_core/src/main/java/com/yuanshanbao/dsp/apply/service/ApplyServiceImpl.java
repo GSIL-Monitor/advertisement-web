@@ -73,7 +73,7 @@ public class ApplyServiceImpl implements ApplyService {
 	}
 
 	@Override
-	public Apply selectApply(String applyId) {
+	public Apply selectApply(Long applyId) {
 		Apply apply = new Apply();
 		if (applyId == null) {
 			return null;
@@ -90,9 +90,6 @@ public class ApplyServiceImpl implements ApplyService {
 	public void insertApply(Apply apply) {
 		int result = -1;
 
-		if (StringUtils.isNotBlank(apply.getUserId())) {
-			apply.setApplyId(applyIdService.generateApplyId(apply.getUserId()));
-		}
 		result = applyDao.insertApply(apply);
 
 		if (result < 0) {
@@ -137,8 +134,8 @@ public class ApplyServiceImpl implements ApplyService {
 	}
 
 	@Override
-	public Map<String, Apply> selectApplyByIds(List<String> applyIdList) {
-		Map<String, Apply> map = new HashMap<String, Apply>();
+	public Map<Long, Apply> selectApplyByIds(List<Long> applyIdList) {
+		Map<Long, Apply> map = new HashMap<Long, Apply>();
 		if (applyIdList == null || applyIdList.size() == 0) {
 			return map;
 		}
@@ -169,6 +166,32 @@ public class ApplyServiceImpl implements ApplyService {
 			apply.setStatus(applyStatus);
 			updateApply(apply);
 		}
+		increaseProductApplyCount(product);
+	}
+
+	@Override
+	public Long getProductApplyCount(Long productId) {
+		String key = RedisConstant.getProductApplyCountKey(productId);
+		String str = (String) redisCacheService.get(key);
+		long count = 0;
+		if (ValidateUtil.isNumber(str)) {
+			count = Long.parseLong(str);
+		}
+		if (count == 0) {
+			count = (long) IniBean.getIniIntegerValue(INI_INITIAL_COUNT + productId, 357625);
+			redisCacheService.set(key, count + "");
+		}
+		return count;
+	}
+
+	private void increaseProductApplyCount(Product product) {
+		int increaseCount = 1;
+		String min = IniBean.getIniValue(INI_NAME_MIN, "1");
+		String max = IniBean.getIniValue(INI_NAME_MAX, "9");
+		double increaseMin = Double.parseDouble(min);
+		double increaseMax = Double.parseDouble(max);
+		increaseCount = (int) (Math.random() * (increaseMax - increaseMin + 1) + increaseMin);
+		redisCacheService.increBy(RedisConstant.getProductApplyCountKey(product.getProductId()), increaseCount);
 	}
 
 	@Override
@@ -249,6 +272,7 @@ public class ApplyServiceImpl implements ApplyService {
 			information.setInformationId(list.get(0).getInformationId());
 		}
 		information.setUserId(user.getUserId());
+		information.setStatus(CommonStatus.ONLINE);
 		if (StringUtils.isEmpty(information.getName()) || StringUtils.isEmpty(information.getAge() + "")) {
 			throw new BusinessException(ComRetCode.INFORMATION_NOT_COMPLETE);
 		}

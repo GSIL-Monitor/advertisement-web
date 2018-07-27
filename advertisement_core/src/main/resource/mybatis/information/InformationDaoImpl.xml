@@ -8,7 +8,7 @@
 		<id property="informationId" column="information_id" jdbcType="NUMERIC" />
 		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
-		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="userId" column="user_id" jdbcType="NUMERIC" />
 		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="gender" column="gender" jdbcType="NUMERIC" />
@@ -22,6 +22,7 @@
 		<result property="city" column="city" jdbcType="VARCHAR" />
 		<result property="position" column="position" jdbcType="NUMERIC" />
 		<result property="salary" column="salary" jdbcType="NUMERIC" />
+		<result property="age" column="age" jdbcType="NUMERIC" />
 		<result property="marriage" column="marriage" jdbcType="NUMERIC" />
 		<result property="hasChild" column="has_child" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
@@ -138,7 +139,7 @@
 		insert into
 		tb_information( project_id, activity_id, user_id, mobile, name, gender,
 		identity_card, birthday, email, education, location, address, province, city,
-		position, salary, marriage, has_child, channel,
+		position, salary,age, marriage, has_child, channel,
 		status, create_time,
 		update_time )
 		values
@@ -147,7 +148,7 @@
 		#{gender}, #{identityCard}, #{birthday}, #{email},
 		#{education},
 		#{location}, #{address}, #{province}, #{city},#{position}, #{salary},
-		#{marriage},
+		#{age},#{marriage},
 		#{hasChild}, #{channel},#{status},
 		sysdate(), sysdate() )
 		<selectKey resultType="java.lang.Long" order="AFTER"
@@ -207,6 +208,9 @@
 				</if>
 				<if test="salary != null">
 					salary= #{salary},
+				</if>
+				<if test="age != null">
+					age= #{age},
 				</if>
 				<if test="marriage != null">
 					marriage= #{marriage},

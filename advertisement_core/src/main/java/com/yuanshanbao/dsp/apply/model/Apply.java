@@ -8,13 +8,13 @@ import com.yuanshanbao.dsp.product.model.Product;
 public class Apply {
 
 	/**
-	 * 申请ID，分表
+	 * 申请ID
 	 */
-	private String applyId;
+	private Long applyId;
 	/**
-	 * 用户ID，分表
+	 * 用户ID
 	 */
-	private String userId;
+	private Long userId;
 	/**
 	 * 商家ID
 	 */
@@ -54,22 +54,6 @@ public class Apply {
 
 	public void setProduct(Product product) {
 		this.product = product;
-	}
-
-	public String getApplyId() {
-		return applyId;
-	}
-
-	public void setApplyId(String applyId) {
-		this.applyId = applyId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public Long getMerchantId() {
@@ -134,6 +118,22 @@ public class Apply {
 
 	public void setInformationId(Long informationId) {
 		this.informationId = informationId;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Long getApplyId() {
+		return applyId;
+	}
+
+	public void setApplyId(Long applyId) {
+		this.applyId = applyId;
 	}
 
 }

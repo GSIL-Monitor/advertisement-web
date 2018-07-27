@@ -19,6 +19,7 @@ public class ProductVo {
 	private String description;
 	private String imageUrl;
 	private String smallImageUrl;
+	private String bigImageUrl;
 	private Integer minAge;
 	private Integer maxAge;
 	private Integer status;
@@ -39,6 +40,7 @@ public class ProductVo {
 		this.description = product.getDescription();
 		this.imageUrl = product.getImageUrl();
 		this.smallImageUrl = product.getSmallImageUrl();
+		this.bigImageUrl = product.getBigImageUrl();
 		this.featureTagsList = product.getFetureTags();
 		this.recommendTagsList = getRecommendTagsList(product.getRecommendTags());
 		this.setApplyCount(product.getApplyCount());
@@ -163,5 +165,13 @@ public class ProductVo {
 
 	public void setApplyCount(Long applyCount) {
 		this.applyCount = applyCount;
+	}
+
+	public String getBigImageUrl() {
+		return bigImageUrl;
+	}
+
+	public void setBigImageUrl(String bigImageUrl) {
+		this.bigImageUrl = bigImageUrl;
 	}
 }
