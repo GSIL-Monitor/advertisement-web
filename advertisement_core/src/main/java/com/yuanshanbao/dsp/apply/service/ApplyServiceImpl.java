@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.JacksonUtil;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.apply.dao.ApplyDao;
 import com.yuanshanbao.dsp.apply.model.Apply;
@@ -147,7 +149,7 @@ public class ApplyServiceImpl implements ApplyService {
 	}
 
 	@Override
-	public void insertOrUpdateApply(User user, Long productId, Integer applyStatus) {
+	public void insertOrUpdateApply(User user, Long productId) {
 		Product product = productService.selectProduct(productId);
 		if (product == null) {
 			throw new BusinessException(ComRetCode.WRONG_PARAMETER);
@@ -156,14 +158,13 @@ public class ApplyServiceImpl implements ApplyService {
 		apply.setMerchantId(product.getMerchantId());
 		apply.setProductId(product.getProductId());
 		apply.setUserId(user.getUserId());
+		apply.setStatus(ApplyStatus.APPLIED);
 		List<Apply> list = selectApplys(apply, new PageBounds());
-		if (list != null && list.size() <= 0) {
-			// addInformation(user, product);
-			apply.setStatus(applyStatus);
+		if (list.size() == 0) {
 			insertApply(apply);
-		} else if (applyStatus > list.get(0).getStatus()) {
-			apply = list.get(0);
-			apply.setStatus(applyStatus);
+		} else {
+			Apply app = list.get(0);
+			apply.setApplyId(app.getApplyId());
 			updateApply(apply);
 		}
 		increaseProductApplyCount(product);
@@ -225,30 +226,23 @@ public class ApplyServiceImpl implements ApplyService {
 		redisCacheService.increBy(RedisConstant.getApplyShowCountKey(), increaseCount);
 	}
 
-	private void addInformation(User user, Product product) {
-		Information information = new Information();
-		information.setMobile(user.getMobile());
-		Quota quota = quotaService.pickGoodsForInformation(product.getActivityId(), information);
-		information.setActivityId(product.getActivityId());
-		information.setName(user.getName());
-		information.setUserId(user.getUserId());
-		information.setMerchantId(product.getMerchantId());
-		information.setStatus(CommonStatus.ONLINE);
-	}
-
 	@Override
-	public void applyProduct(User user, Long productId, Information information, Integer status) {
-		Product product = productService.selectProduct(productId);
-		if (product == null) {
-			throw new BusinessException(ComRetCode.PRODUCT_NOT_EXIST_ERROR);
+	public void applyProduct(User user, Long productId, Information information) {
+		completeInformation(user, information);
+		if (StringUtils.isNotBlank(productId + "")) {
+			checkInformationExist(user);
+			Product product = productService.selectProduct(productId);
+			if (product == null) {
+				throw new BusinessException(ComRetCode.PRODUCT_NOT_EXIST_ERROR);
+			}
+			// 查找库存
+			Quota quota = quotaService.pickProductForApply(user, product);
+			if (quota == null) {
+				throw new BusinessException(ComRetCode.ORDER_DELIVER_ERROR);
+			}
+			LoggerUtil.info("获取配额成功, 配合信息={}, 商品信息={}", JacksonUtil.obj2json(quota), JacksonUtil.obj2json(product));
+			insertOrUpdateApply(user, productId);
 		}
-		checkInformationExist(user, information);
-		// 查找库存
-		Quota quota = quotaService.pickProductForApply(user, product);
-		if (quota == null) {
-			throw new BusinessException(ComRetCode.ORDER_DELIVER_ERROR);
-		}
-		insertOrUpdateApply(user, productId, status);
 	}
 
 	@Override
@@ -264,7 +258,7 @@ public class ApplyServiceImpl implements ApplyService {
 		}
 	}
 
-	private void checkInformationExist(User user, Information information) {
+	private void completeInformation(User user, Information information) {
 		Information params = new Information();
 		params.setUserId(user.getUserId());
 		List<Information> list = informationService.selectInformations(params, new PageBounds());
@@ -273,9 +267,15 @@ public class ApplyServiceImpl implements ApplyService {
 		}
 		information.setUserId(user.getUserId());
 		information.setStatus(CommonStatus.ONLINE);
-		if (StringUtils.isEmpty(information.getName()) || StringUtils.isEmpty(information.getAge() + "")) {
+		informationService.insertOrUpdateInformation(information);
+	}
+
+	private void checkInformationExist(User user) {
+		Information params = new Information();
+		params.setUserId(user.getUserId());
+		List<Information> list = informationService.selectInformations(params, new PageBounds());
+		if (list.size() < 0) {
 			throw new BusinessException(ComRetCode.INFORMATION_NOT_COMPLETE);
 		}
-		informationService.insertOrUpdateInformation(information);
 	}
 }

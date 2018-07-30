@@ -21,7 +21,6 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.NumberUtil;
 import com.yuanshanbao.dsp.apply.model.Apply;
-import com.yuanshanbao.dsp.apply.model.ApplyStatus;
 import com.yuanshanbao.dsp.apply.model.ApplyVo;
 import com.yuanshanbao.dsp.apply.service.ApplyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
@@ -82,29 +81,26 @@ public class ApplyController extends BaseController {
 	@RequestMapping("/view")
 	public Object view(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, Long productId,
 			String token, Information information) {
-		return commit(request, response, modelMap, token, information, productId, ApplyStatus.VIEW);
+		return commit(request, response, modelMap, token, information, productId);
 	}
 
 	@ResponseBody
 	@RequestMapping("/commit")
 	public Object commit(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, String token,
-			Information information, Long productId, Integer status) {
+			Information information, Long productId) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			User user = userService.selectUserByToken(token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
-			if (status == null) {
-				status = ApplyStatus.APPLING;
-			}
 			// setShowCount(request, productId);
-			applyService.applyProduct(user, productId, information, status);
+			applyService.applyProduct(user, productId, information);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
-			LoggerUtil.error("[commitApply error] productId=" + productId + ", status=" + status + "]", e);
+			LoggerUtil.error("[commitApply error] productId=" + productId + "]", e);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;

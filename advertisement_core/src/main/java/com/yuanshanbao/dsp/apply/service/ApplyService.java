@@ -27,13 +27,13 @@ public interface ApplyService {
 
 	public List<Apply> selectUserApplys(Apply apply, PageBounds pageBounds);
 
-	public void insertOrUpdateApply(User user, Long productId, Integer applyStatus);
+	public void insertOrUpdateApply(User user, Long productId);
 
 	public Long getApplyCount();
 
 	public void increaseApplyCount();
 
-	public void applyProduct(User user, Long productId, Information information, Integer status);
+	public void applyProduct(User user, Long productId, Information information);
 
 	public void checkExist(User user, ProductVo vo);
 

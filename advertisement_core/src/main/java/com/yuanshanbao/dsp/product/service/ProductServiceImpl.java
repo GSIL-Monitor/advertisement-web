@@ -15,7 +15,6 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.apply.model.Apply;
-import com.yuanshanbao.dsp.apply.model.ApplyStatus;
 import com.yuanshanbao.dsp.apply.model.ApplyUserStatus;
 import com.yuanshanbao.dsp.apply.service.ApplyService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
@@ -183,7 +182,8 @@ public class ProductServiceImpl implements ProductService {
 				return null;
 			}
 		} else {
-			applyService.insertOrUpdateApply(user, product.getProductId(), ApplyStatus.APPLING);
+			// applyService.insertOrUpdateApply(user, product.getProductId(),
+			// ApplyStatus.APPLING);
 		}
 		// PreProductHandler handler = getPreHandle(product, user, request);
 		// if (handler != null &&
