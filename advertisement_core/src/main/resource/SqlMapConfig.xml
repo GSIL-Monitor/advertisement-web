@@ -19,6 +19,7 @@
         <typeAlias type="com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics" alias="AdvertisementStatistics"/>
         
         <typeAlias type="com.yuanshanbao.dsp.app.model.AppInfo" alias="AppInfo"/>
+        <typeAlias type="com.yuanshanbao.dsp.push.model.AppPush" alias="AppPush"/>
         <typeAlias type="com.yuanshanbao.dsp.advertisement.model.Advertisement" alias="Advertisement"/>
         <typeAlias type="com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy" alias="AdvertisementStrategy"/>
         <typeAlias type="com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory" alias="AdvertisementCategory"/>
@@ -115,5 +116,6 @@
         <mapper resource="mybatis/channel/ChannelPromotionInfoDaoImpl.xml"/>
         <mapper resource="mybatis/limitation/LimitationDaoImpl.xml"/>
         <mapper resource="mybatis/apply/ApplyDaoImpl.xml"/>
+        <mapper resource="mybatis/push/AppPushDaoImpl.xml"/>
     </mappers>
 </configuration>

@@ -37,13 +37,13 @@ import com.yuanshanbao.paginator.domain.PageList;
 @RequestMapping("/admin/appPush")
 public class AdminAppPushController extends PaginationController {
 
-	private static final String PAGE_LIST = "loan/push/listAppPush";
+	private static final String PAGE_LIST = "advertisement/push/listAppPush";
 
-	private static final String PAGE_INSERT = "loan/push/insertAppPush";
+	private static final String PAGE_INSERT = "advertisement/push/insertAppPush";
 
-	private static final String PAGE_UPDATE = "loan/push/updateAppPush";
+	private static final String PAGE_UPDATE = "advertisement/push/updateAppPush";
 
-	private static final String PAGE_VIEW = "loan/push/viewAppPush";
+	private static final String PAGE_VIEW = "advertisement/push/viewAppPush";
 
 	public static final String TEST_APPPUSH_KEY = "test_app_push";
 

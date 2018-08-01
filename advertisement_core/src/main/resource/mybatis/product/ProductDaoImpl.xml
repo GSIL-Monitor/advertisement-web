@@ -13,6 +13,7 @@
 		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
 		<result property="bigImageUrl" column="big_image_url" jdbcType="VARCHAR" />
+		<result property="detailImageUrl" column="detail_image_url" jdbcType="VARCHAR" />
 		<result property="featureTags" column="feature_tags" jdbcType="VARCHAR" />
 		<result property="recommendTags" column="recommend_tags" jdbcType="VARCHAR" />
 		<result property="detailTags" column="detail_tags" jdbcType="VARCHAR" />

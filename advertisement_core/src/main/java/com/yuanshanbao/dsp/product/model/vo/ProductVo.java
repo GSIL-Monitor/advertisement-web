@@ -19,6 +19,7 @@ public class ProductVo {
 	private String description;
 	private String imageUrl;
 	private String smallImageUrl;
+	private String detailImageUrl;
 	private String bigImageUrl;
 	private String schoolTime;
 	private String brandFeature;
@@ -46,6 +47,7 @@ public class ProductVo {
 		this.imageUrl = product.getImageUrl();
 		this.smallImageUrl = product.getSmallImageUrl();
 		this.bigImageUrl = product.getBigImageUrl();
+		this.detailImageUrl = product.getDetailImageUrl();
 		this.featureTagsList = product.getFetureTags();
 		this.recommendTagsList = getRecommendTagsList(product.getRecommendTags());
 		this.detailTagsList = getRecommendTagsList(product.getDetailTags());
@@ -236,5 +238,13 @@ public class ProductVo {
 
 	public void setTotalAmount(Integer totalAmount) {
 		this.totalAmount = totalAmount;
+	}
+
+	public String getDetailImageUrl() {
+		return detailImageUrl;
+	}
+
+	public void setDetailImageUrl(String detailImageUrl) {
+		this.detailImageUrl = detailImageUrl;
 	}
 }

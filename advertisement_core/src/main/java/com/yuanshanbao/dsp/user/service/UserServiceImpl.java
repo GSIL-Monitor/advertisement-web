@@ -365,7 +365,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User selectUserById(String userId) {
-		if (userId == null) {
+		if (userId == null || StringUtils.isEmpty(userId)) {
 			return null;
 		}
 		User user = new User();

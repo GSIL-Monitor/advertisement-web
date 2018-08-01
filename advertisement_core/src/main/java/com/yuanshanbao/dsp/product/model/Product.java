@@ -43,6 +43,8 @@ public class Product {
 
 	private String bigImageUrl;
 
+	private String detailImageUrl;
+
 	private String featureTags;
 
 	private String recommendTags;
@@ -449,6 +451,14 @@ public class Product {
 
 	public void setTotalAmount(Integer totalAmount) {
 		this.totalAmount = totalAmount;
+	}
+
+	public String getDetailImageUrl() {
+		return detailImageUrl;
+	}
+
+	public void setDetailImageUrl(String detailImageUrl) {
+		this.detailImageUrl = detailImageUrl;
 	}
 
 }

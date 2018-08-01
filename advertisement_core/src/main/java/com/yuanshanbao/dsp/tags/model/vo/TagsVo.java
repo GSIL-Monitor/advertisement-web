@@ -14,7 +14,7 @@ public class TagsVo {
 	private String image;
 	private Integer showType;
 	private Integer times;
-	private Integer amoumt;
+	private Integer amount;
 	private boolean hasSelected;
 
 	public TagsVo(Tags exist) {
@@ -26,7 +26,7 @@ public class TagsVo {
 		this.value = exist.getValue();
 		this.description = exist.getDescription();
 		this.times = exist.getTimes();
-		this.amoumt = exist.getAmount();
+		this.amount = exist.getAmount();
 		this.setShowType(exist.getShowType());
 		this.bigImage = exist.getBigImage();
 		this.image = exist.getImage();
@@ -131,11 +131,12 @@ public class TagsVo {
 		this.times = times;
 	}
 
-	public Integer getAmoumt() {
-		return amoumt;
+	public Integer getAmount() {
+		return amount;
 	}
 
-	public void setAmoumt(Integer amoumt) {
-		this.amoumt = amoumt;
+	public void setAmount(Integer amount) {
+		this.amount = amount;
 	}
+
 }

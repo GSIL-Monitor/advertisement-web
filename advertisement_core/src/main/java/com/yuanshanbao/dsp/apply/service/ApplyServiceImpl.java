@@ -267,7 +267,9 @@ public class ApplyServiceImpl implements ApplyService {
 		}
 		information.setUserId(user.getUserId());
 		information.setStatus(CommonStatus.ONLINE);
-		informationService.insertOrUpdateInformation(information);
+		if (StringUtils.isNotEmpty(information.getName()) || StringUtils.isNotEmpty(information.getAge() + "")) {
+			informationService.insertOrUpdateInformation(information);
+		}
 	}
 
 	private void checkInformationExist(User user) {
@@ -275,6 +277,10 @@ public class ApplyServiceImpl implements ApplyService {
 		params.setUserId(user.getUserId());
 		List<Information> list = informationService.selectInformations(params, new PageBounds());
 		if (list.size() < 0) {
+			throw new BusinessException(ComRetCode.INFORMATION_NOT_COMPLETE);
+		}
+		Information information = list.get(0);
+		if (StringUtils.isEmpty(information.getAge() + "") || StringUtils.isEmpty(information.getName())) {
 			throw new BusinessException(ComRetCode.INFORMATION_NOT_COMPLETE);
 		}
 	}
