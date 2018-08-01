@@ -192,7 +192,7 @@ public class ProductController extends BaseController {
 			if (product == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			product.setApplyCount(productService.getApplyCount(product.getProductId()));
+			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
 			checkApplyStatus(token, vo);
 			// if (isApprovalEdition(request, product)) {
