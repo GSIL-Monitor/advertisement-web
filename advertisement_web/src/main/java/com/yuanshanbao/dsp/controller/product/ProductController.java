@@ -43,6 +43,7 @@ import com.yuanshanbao.dsp.product.model.ProductCategory;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.tags.model.TagsSearchType;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.Order;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
@@ -180,7 +181,8 @@ public class ProductController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/detail")
-	public Object detail(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, Long productId) {
+	public Object detail(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap, Long productId,
+			String token) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if (productId == null) {
@@ -192,6 +194,7 @@ public class ProductController extends BaseController {
 			}
 			product.setApplyCount(productService.getApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
+			checkApplyStatus(token, vo);
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
 			// }
@@ -328,5 +331,14 @@ public class ProductController extends BaseController {
 	 * InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS); } return
 	 * resultMap; }
 	 */
-
+	private void checkApplyStatus(String token, ProductVo vo) {
+		User user = null;
+		if (StringUtils.isNotEmpty(token)) {
+			user = userService.selectUserByToken(token);
+		}
+		if (user != null) {
+			applyService.checkExist(user, vo);
+		}
+		applyService.checkExist(user, vo);
+	}
 }
