@@ -166,4 +166,10 @@ public class InformationServiceImpl implements InformationService {
 			}
 		}
 	}
+
+	@Override
+	public void tryDeliver(Information information, boolean b, boolean c) {
+		// TODO Auto-generated method stub
+
+	}
 }

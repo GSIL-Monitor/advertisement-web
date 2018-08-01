@@ -54,6 +54,7 @@ public class RedisConstant {
 	public static final String ADVERTISEMENT_ACTIVITY_CLICK_COUNT_UV = "advertisement_activity_click_count_uv"
 			+ COMMON_REDIS_PREFIX;
 	private static final String REQUEST_COUNT = "request_stat_count" + COMMON_REDIS_PREFIX;
+	private static final String AGENT_NOTIFY_HANDLER_KEY = "agent_notify_handler_key" + COMMON_REDIS_PREFIX;
 
 	// token过期时间
 	public static int EXPIRE_LOGIN_TOKEN = IniCache.getIniIntValue(IniConstant.TOKEN_CACHE_TIME, 24 * 60 * 60);
@@ -274,5 +275,9 @@ public class RedisConstant {
 
 	public static String getProductApplyCountKey(Long productId) {
 		return getCachePrefix(PRODUCT_APPLY_COUNT, productId + "");
+	}
+
+	public static String getAgentNotifyHandlerKey(String mobile) {
+		return getCachePrefix(AGENT_NOTIFY_HANDLER_KEY, mobile);
 	}
 }

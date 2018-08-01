@@ -26,4 +26,6 @@ public interface InformationService {
 
 	public void checkExist(Information information);
 
+	public void tryDeliver(Information information, boolean b, boolean c);
+
 }

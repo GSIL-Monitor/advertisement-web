@@ -47,7 +47,17 @@ public class Product {
 
 	private String recommendTags;
 
+	private String detailTags;
+
+	private String detailImageTags;
+
 	private String authorizeTags;
+
+	private String schoolTime;
+
+	private String brandFeature;
+
+	private Integer totalAmount;
 
 	private Integer minAge;
 
@@ -399,6 +409,46 @@ public class Product {
 
 	public void setBigImageUrl(String bigImageUrl) {
 		this.bigImageUrl = bigImageUrl;
+	}
+
+	public String getDetailTags() {
+		return detailTags;
+	}
+
+	public void setDetailTags(String detailTags) {
+		this.detailTags = detailTags;
+	}
+
+	public String getDetailImageTags() {
+		return detailImageTags;
+	}
+
+	public void setDetailImageTags(String detailImageTags) {
+		this.detailImageTags = detailImageTags;
+	}
+
+	public String getSchoolTime() {
+		return schoolTime;
+	}
+
+	public void setSchoolTime(String schoolTime) {
+		this.schoolTime = schoolTime;
+	}
+
+	public String getBrandFeature() {
+		return brandFeature;
+	}
+
+	public void setBrandFeature(String brandFeature) {
+		this.brandFeature = brandFeature;
+	}
+
+	public Integer getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(Integer totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
 }

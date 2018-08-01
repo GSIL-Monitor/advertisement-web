@@ -111,7 +111,16 @@ public class ProductController extends BaseController {
 		} else {
 			pageBounds.setOrders(Order.formString("sort.asc"));
 		}
-		productList = (PageList<Product>) productService.selectProducts(product, formatPageBounds(pageBounds));
+
+		List<Product> list = productService.selectProducts(product, formatPageBounds(pageBounds));
+		if (StringUtils.isNotBlank(product.getQueryAge() + "")) {
+			if (list.size() > 1) {
+				for (int i = 0; i < list.size(); i++) {
+					list.remove(i);
+				}
+			}
+		}
+		productList = (PageList<Product>) list;
 		return productList;
 	}
 

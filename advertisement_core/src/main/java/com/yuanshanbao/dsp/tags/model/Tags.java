@@ -22,6 +22,8 @@ public class Tags {
 	private Integer showOrder;
 	private Integer showType;
 	private Long searchType;
+	private Integer times;
+	private Integer amount;
 	private Integer score;
 	private Integer status;
 	private Timestamp createTime;
@@ -188,5 +190,21 @@ public class Tags {
 
 	public void setShowType(Integer showType) {
 		this.showType = showType;
+	}
+
+	public Integer getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Integer amount) {
+		this.amount = amount;
+	}
+
+	public Integer getTimes() {
+		return times;
+	}
+
+	public void setTimes(Integer times) {
+		this.times = times;
 	}
 }

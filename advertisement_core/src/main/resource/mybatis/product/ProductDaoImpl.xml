@@ -15,7 +15,12 @@
 		<result property="bigImageUrl" column="big_image_url" jdbcType="VARCHAR" />
 		<result property="featureTags" column="feature_tags" jdbcType="VARCHAR" />
 		<result property="recommendTags" column="recommend_tags" jdbcType="VARCHAR" />
+		<result property="detailTags" column="detail_tags" jdbcType="VARCHAR" />
+		<result property="detailImageTags" column="detail_image_tags" jdbcType="VARCHAR" />
 		<result property="authorizeTags" column="authorize_tags" jdbcType="VARCHAR" />
+		<result property="schoolTime" column="school_time" jdbcType="VARCHAR" />
+		<result property="brandFeature" column="brand_feature" jdbcType="VARCHAR" />
+		<result property="totalAmount" column="total_amount" jdbcType="NUMERIC" />
 		<result property="minAge" column="min_age" jdbcType="NUMERIC" />
 		<result property="maxAge" column="max_age" jdbcType="NUMERIC" />
 		<result property="requirements" column="requirements" jdbcType="VARCHAR" />

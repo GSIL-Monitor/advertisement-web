@@ -16,6 +16,8 @@
 		<result property="showType" column="show_type" jdbcType="NUMERIC" />
 		<result property="searchType" column="search_type" jdbcType="NUMERIC" />
 		<result property="score" column="score" jdbcType="NUMERIC" />
+		<result property="times" column="times" jdbcType="NUMERIC" />
+		<result property="amount" column="amount" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />

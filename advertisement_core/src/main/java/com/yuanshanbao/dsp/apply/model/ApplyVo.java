@@ -21,6 +21,7 @@ public class ApplyVo {
 	private String productLogo;
 	private Long productId;
 	private Long userId;
+	private String description;
 	private String repayDaysStr;
 	private String loanAmountStr;
 	private String applyTimeStr;
@@ -33,6 +34,8 @@ public class ApplyVo {
 		this.setUserId(apply.getUserId());
 		this.productId = apply.getProductId();
 		this.productName = vo.getName();
+		this.description = vo.getDescription();
+		this.productLogo = vo.getImageUrl();
 		// this.productLogo = vo.getProductLogo();
 		// this.repayDaysStr = vo.getRepayDays();
 		// this.loanAmountStr = vo.getLoanAmount();
@@ -117,6 +120,14 @@ public class ApplyVo {
 
 	public void setApplyId(Long applyId) {
 		this.applyId = applyId;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

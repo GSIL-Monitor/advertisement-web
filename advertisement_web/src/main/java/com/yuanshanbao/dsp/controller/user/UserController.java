@@ -534,11 +534,9 @@ public class UserController extends BaseController {
 				throw new BusinessException(ComRetCode.UPLOAD_AVATAR_ERROR);
 			}
 			String originalPath = user.getAvatar();
-			String path = UploadUtils.uploadFile(file, UploadUtils.FTP_AVATAR);
-			BaseInfo baseInfo = new BaseInfo();
-			baseInfo.setUserId(user.getUserId() + "");
-			baseInfo.setAvatar(path);
-			userService.insertOrUpdateBaseInfo(baseInfo);
+			String path = UploadUtils.uploadFile(file, "test/img");
+			user.setAvatar(path);
+			userService.insertOrUpdateUser(user);
 
 			UploadUtils.deleteFile(originalPath);
 			resultMap.put("avatarUrl", path);
@@ -560,16 +558,16 @@ public class UserController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/commitInfo")
-	public Object commitBaseInfo(HttpServletRequest request, String token, BaseInfo baseInfo) {
+	public Object commitBaseInfo(HttpServletRequest request, String token, User userInfo) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			User user = tokenService.verifyLoginToken(token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.TOKEN_INVALID);
 			}
-			baseInfo.setMobile(user.getMobile());
-			baseInfo.setUserId(user.getUserId() + "");
-			userService.insertOrUpdateBaseInfo(baseInfo);
+			userInfo.setMobile(user.getMobile());
+			userInfo.setUserId(user.getUserId());
+			userService.insertOrUpdateUser(userInfo);
 			User currentUser = userService.selectUserById(user.getUserId());
 			resultMap.put("user", new UserVo(currentUser));
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

@@ -18,6 +18,8 @@ public class User implements Serializable {
 	private String username;
 	private String password;
 	private String registerFrom;
+	private String name;
+	private String avatar;
 	private Integer inviteType;
 	private Integer status;
 	private Integer userType;
@@ -107,10 +109,7 @@ public class User implements Serializable {
 	}
 
 	public String getName() {
-		if (baseInfo != null && StringUtils.isNotBlank(baseInfo.getName())) {
-			return baseInfo.getName();
-		}
-		return null;
+		return name;
 	}
 
 	public String getDisplayName() {
@@ -129,10 +128,7 @@ public class User implements Serializable {
 	}
 
 	public String getAvatar() {
-		if (baseInfo != null) {
-			return baseInfo.getAvatar();
-		}
-		return null;
+		return avatar;
 	}
 
 	public Long getGender() {
@@ -156,6 +152,14 @@ public class User implements Serializable {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 }

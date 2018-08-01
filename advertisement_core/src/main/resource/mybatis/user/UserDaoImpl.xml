@@ -9,6 +9,8 @@
 		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
 		<result property="weixinId" column="weixin_id" jdbcType="VARCHAR" />
 		<result property="password" column="password" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="avatar" column="avatar" jdbcType="VARCHAR" />
 		<result property="inviteType" column="invite_type" jdbcType="NUMERIC" />
 		<result property="registerFrom" column="register_from" jdbcType="NUMERIC" />
 		<result property="userType" column="user_type" jdbcType="NUMERIC" />
@@ -88,10 +90,12 @@
 	<insert id="insertUser" parameterType="User">
 		insert into
 		tb_user_info(user_id, mobile, weixin_id, password,
-		invite_type, register_from, status, create_time,update_time)
+		name,avatar,invite_type, register_from, status, 
+		create_time,update_time)
 		values
-		(#{userId}, #{mobile}, #{weixinId}, #{password}, #{inviteType},
-		#{registerFrom}, #{status}, sysdate(), sysdate())
+		(#{userId}, #{mobile}, #{weixinId}, #{password},#{name},
+		#{avatar}, #{inviteType},#{registerFrom}, #{status}, 
+		sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="userId">
 			SELECT LAST_INSERT_ID()
@@ -122,6 +126,12 @@
 				</if>
 				<if test="password != null">
 					password=#{password},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="avatar != null">
+					avatar=#{avatar},
 				</if>
 				<if test="inviteType != null">
 					invite_type=#{inviteType},

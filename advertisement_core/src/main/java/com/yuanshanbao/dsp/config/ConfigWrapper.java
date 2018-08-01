@@ -33,4 +33,42 @@ public class ConfigWrapper extends ConfigManager {
 		return ConfigConstants.TRUE.equals(ConfigManager.getConfigValue(activityId, channel,
 				ConfigConstants.HAS_VERIFY_CODE));
 	}
+
+	public static boolean isSurveyIndex(Long activityId, String channel) {
+		return ConfigConstants.INDEX.equals(ConfigManager.getConfigValue(activityId, channel,
+				ConfigConstants.SURVEY_POSITION));
+	}
+
+	public static int getSurveyCount(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		int result = 0;
+		String value = ConfigManager.getConfigValue(activityId, channel, merchantId, null, SURVEY_COUNT);
+		if (ValidateUtil.isNumber(value)) {
+			result = Integer.parseInt(value);
+		}
+		return result;
+	}
+
+	public static Object isSurveyPopup(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		return ConfigConstants.POPUP.equals(ConfigManager.getConfigValue(activityId, channel, merchantId, insuranceId,
+				ConfigConstants.SURVEY_POSITION));
+	}
+
+	public static String getThirdStatCodeConfig(Long activityId, String channel) {
+		return ConfigManager.getConfigValue(activityId, channel, ConfigConstants.THIRD_STAT_CODE_CONFIG);
+	}
+
+	public static boolean noIdentityCard(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		return ConfigConstants.NO.equals(ConfigManager.getConfigValue(activityId, channel, merchantId, insuranceId,
+				ConfigConstants.HAS_IDENTITY_CARD));
+	}
+
+	public static boolean hasIdentityCard(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		return ConfigConstants.TRUE.equals(ConfigManager.getConfigValue(activityId, channel, merchantId, insuranceId,
+				ConfigConstants.HAS_IDENTITY_CARD));
+	}
+
+	public static boolean isEmailOption(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		return ConfigConstants.TRUE.equals(ConfigManager.getConfigValue(activityId, channel, merchantId, insuranceId,
+				ConfigConstants.EMAIL_OPTION));
+	}
 }

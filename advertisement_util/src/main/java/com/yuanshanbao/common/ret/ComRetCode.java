@@ -176,6 +176,10 @@ public class ComRetCode {
 	public static final int EMAIL_VERIFY_ERROR = 321;
 	public static final String EMAIL_VERIFY_ERROR_DESC = "邮件验证链接已过期";
 
+	/* 323活动不存在 */
+	public static final int ACTIVITY_NOT_EXIST_ERROR = 323;
+	public static final String ACTIVITY_NOT_EXIST_ERROR_DESC = "活动不存在";
+
 	/** #40 贷款产品相关错误 **/
 
 	/* 419产品不存在 */
@@ -210,13 +214,13 @@ public class ComRetCode {
 	public static final int ORDER_LOCK_STOCK_FAIL_ = 407;
 	public static final String ORDER_LOCK_STOCK_FAIL_ERROR = "锁库存失败";
 
-	/* 408你不符合领取该产品的资格 */
-	public static final int ORDER_DELIVER_ = 408;
-	public static final String ORDER_DELIVER_ERROR = "你不符合领取该产品的资格";
+	/* 410你不符合领取该产品的资格 */
+	public static final int ORDER_DELIVER_ERROR = 410;
+	public static final String ORDER_DELIVER_ERROR_DESC = "你不符合领取该产品的资格";
 
-	/* 409您的基本信息不完全或不存在 */
-	public static final int INFORMATION_NOT_ = 409;
-	public static final String INFORMATION_NOT_COMPLETE = "您的基本信息不完全";
+	/* 411您的基本信息不完全 */
+	public static final int INFORMATION_NOT_COMPLETE = 411;
+	public static final String INFORMATION_NOT_COMPLETE_DESC = "您的基本信息不完全";
 
 	/* 404无符合营销手机号 */
 	public static final int MARKETING_SMS_NOT_VERIFY_ERROR = 404;

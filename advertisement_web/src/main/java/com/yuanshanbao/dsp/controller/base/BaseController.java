@@ -65,6 +65,8 @@ public class BaseController {
 	private static String TEMPLATE_VARIABLE_AMOUNT = "<advertisementAmount>";
 	private static String TEMPLATE_VARIABLE_PROVINCE = "<province>";
 
+	public static final String MOBILE_ENCRYPT_KEY = "aadecfe68c1c06a7";
+
 	@Autowired
 	protected RedisService redisCacheService;
 

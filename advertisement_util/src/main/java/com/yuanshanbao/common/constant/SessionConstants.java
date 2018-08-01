@@ -41,5 +41,9 @@ public class SessionConstants {
 	public static final String SESSION_PRODUCT_APPLY_CLICK = "session_product_apply_click";
 	public static final String SESSION_GAME_PRIZE = "session_prize";
 	public static final String SESSION_GAME_REQUEST_COUNT = "session_game_request_count";
+	public static final String SESSION_PAGE_KEY = "session_page_key";
+	public static final String SESSION_THIRD_STAT_CODE_CONFIG = "session_third_stat_code";
+	public static final String SESSION_INFORMATION = "session_insurant";
+	public static final String SESSION_GORDER_ID = "session_gorder_id";
 
 }

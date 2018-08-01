@@ -96,6 +96,9 @@ public class ApplyController extends BaseController {
 			}
 			// setShowCount(request, productId);
 			applyService.applyProduct(user, productId, information);
+			if (StringUtils.isNotBlank(productId + "")) {
+				resultMap.put("productId", productId);
+			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

@@ -20,8 +20,11 @@ public class ProductVo {
 	private String imageUrl;
 	private String smallImageUrl;
 	private String bigImageUrl;
+	private String schoolTime;
+	private String brandFeature;
 	private Integer minAge;
 	private Integer maxAge;
+	private Integer totalAmount;
 	private Integer status;
 	private Long applyCount;
 	private List<TagsVo> featureTagsList;
@@ -29,6 +32,8 @@ public class ProductVo {
 	 * 产品推荐标签
 	 */
 	private List<TagsVo> recommendTagsList;
+	private List<TagsVo> detailTagsList;
+	private List<TagsVo> detailImageTagsList;
 
 	public ProductVo(Product product) {
 		if (product == null) {
@@ -43,9 +48,15 @@ public class ProductVo {
 		this.bigImageUrl = product.getBigImageUrl();
 		this.featureTagsList = product.getFetureTags();
 		this.recommendTagsList = getRecommendTagsList(product.getRecommendTags());
+		this.detailTagsList = getRecommendTagsList(product.getDetailTags());
+		this.detailImageTagsList = getRecommendTagsList(product.getDetailImageTags());
+		this.detailImageTagsList = getRecommendTagsList(product.getDetailImageTags());
 		this.setApplyCount(product.getApplyCount());
 		this.minAge = product.getMinAge();
 		this.maxAge = product.getMaxAge();
+		this.totalAmount = product.getTotalAmount();
+		this.schoolTime = getDivideDetail(product.getSchoolTime());
+		this.brandFeature = getDivideDetail(product.getBrandFeature());
 	}
 
 	public Long getProductId() {
@@ -173,5 +184,57 @@ public class ProductVo {
 
 	public void setBigImageUrl(String bigImageUrl) {
 		this.bigImageUrl = bigImageUrl;
+	}
+
+	public List<TagsVo> getDetailTagsList() {
+		return detailTagsList;
+	}
+
+	public void setDetailTagsList(List<TagsVo> detailTagsList) {
+		this.detailTagsList = detailTagsList;
+	}
+
+	public List<TagsVo> getDetailImageTagsList() {
+		return detailImageTagsList;
+	}
+
+	public void setDetailImageTagsList(List<TagsVo> detailImageTagsList) {
+		this.detailImageTagsList = detailImageTagsList;
+	}
+
+	public String getSchoolTime() {
+		return schoolTime;
+	}
+
+	public void setSchoolTime(String schoolTime) {
+		this.schoolTime = schoolTime;
+	}
+
+	public String getBrandFeature() {
+		return brandFeature;
+	}
+
+	public void setBrandFeature(String brandFeature) {
+		this.brandFeature = brandFeature;
+	}
+
+	private String getDivideDetail(String value) {
+		if (StringUtils.isEmpty(value)) {
+			return "";
+		}
+		String[] args = value.split(",");
+		StringBuffer sb = new StringBuffer();
+		for (String s : args) {
+			sb.append(s + "\r\n");
+		}
+		return sb.toString();
+	}
+
+	public Integer getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(Integer totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 }
