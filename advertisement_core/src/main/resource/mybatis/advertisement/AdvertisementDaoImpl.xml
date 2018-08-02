@@ -11,6 +11,7 @@
 		<result property="title" column="title" jdbcType="VARCHAR" />
 		<result property="subTitle" column="sub_title" jdbcType="VARCHAR" />
 		<result property="link" column="link" jdbcType="VARCHAR" />
+		<result property="appUrl" column="app_url" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
 		<result property="bigImageUrl" column="big_image_url" jdbcType="VARCHAR" />
@@ -82,11 +83,11 @@
 	<insert id="insertAdvertisement" parameterType="Advertisement">
 		insert into
 		tb_advertisement(project_id, advertiser_id, title, sub_title,
-		link, description,image_url, big_image_url, 
+		link,app_url, description,image_url, big_image_url, 
 		status, type,create_time, update_time)
 		values
 		(#{projectId}, #{advertiserId}, #{title}, #{subTitle},
-		#{link}, #{description}, #{imageUrl}, #{bigImageUrl}, 
+		#{link},#{appUrl}, #{description}, #{imageUrl}, #{bigImageUrl}, 
 		#{status}, #{type}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertisementId">

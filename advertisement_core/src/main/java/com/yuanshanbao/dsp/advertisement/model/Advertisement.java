@@ -9,14 +9,14 @@ import com.yuanshanbao.common.util.PropertyUtil;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 
 public class Advertisement {
-	
+
 	public static final String JUMPER_URL = "/i/common";
-	public static final String APP_URL_PREFIX = "ruidai://";
+	public static final String APP_URL_PREFIX = "xiaoketang://";
 	public static final String HOST = PropertyUtil.getProperty("loan.host");
-	
+
 	public static final String WAP_CONTENT_KEY = "wap";
 	public static final String APP_CONTENT_KEY = "app";
-	
+
 	public static final int IS_ANDROID = 0;
 	public static final int IS_IOS = 1;
 	public static final int IS_WAP = 4;
@@ -179,7 +179,7 @@ public class Advertisement {
 			link += "?channel=" + channel;
 		}
 	}
-	
+
 	public String getJumperLink(String position, String channel) {
 		String link = JUMPER_URL + "?position=" + position + "&id=" + advertisementId;
 		if (StringUtils.isNotBlank(channel)) {

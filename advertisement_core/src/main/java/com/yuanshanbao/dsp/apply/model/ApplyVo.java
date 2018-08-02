@@ -25,6 +25,7 @@ public class ApplyVo {
 	private String repayDaysStr;
 	private String loanAmountStr;
 	private String applyTimeStr;
+	private String title;
 
 	private TagsVo statusTags;
 
@@ -33,6 +34,7 @@ public class ApplyVo {
 		this.setApplyId(apply.getApplyId());
 		this.setUserId(apply.getUserId());
 		this.productId = apply.getProductId();
+		this.title = vo.getTitle();
 		this.productName = vo.getName();
 		this.description = vo.getDescription();
 		this.productLogo = vo.getImageUrl();
@@ -128,6 +130,14 @@ public class ApplyVo {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

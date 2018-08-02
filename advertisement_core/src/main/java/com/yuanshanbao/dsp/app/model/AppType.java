@@ -19,6 +19,11 @@ public class AppType {
 	public static final String RUIDAI_SHORT = "r";
 	public static final String RUIDAI_DESCRIPTION = "瑞贷";
 
+	public static final String XIAOKETANG = "xiaoketang";
+	public static final Long XIAOKETANG_ID = 3L;
+	public static final String XIAOKETANG_SHORT = "x";
+	public static final String XIAOKETANG_DESCRIPTION = "小课堂";
+
 	static {
 		initCodeDescriptionMap();
 		initKeyMap();
@@ -27,14 +32,17 @@ public class AppType {
 	public static void initCodeDescriptionMap() {
 		codeDescriptionMap.put(XINGDAI, XINGDAI_DESCRIPTION);
 		codeDescriptionMap.put(RUIDAI, RUIDAI_DESCRIPTION);
+		codeDescriptionMap.put(XIAOKETANG, XIAOKETANG_DESCRIPTION);
 
 		descriptionMap.put(XINGDAI_ID, XINGDAI_DESCRIPTION);
 		descriptionMap.put(RUIDAI_ID, RUIDAI_DESCRIPTION);
+		descriptionMap.put(XIAOKETANG_ID, RUIDAI_DESCRIPTION);
 	}
 
 	public static void initKeyMap() {
 		keyMap.put(XINGDAI_ID, XINGDAI);
 		keyMap.put(RUIDAI_ID, RUIDAI);
+		keyMap.put(XIAOKETANG_ID, XIAOKETANG);
 	}
 
 	public static String getDescription(String code) {
