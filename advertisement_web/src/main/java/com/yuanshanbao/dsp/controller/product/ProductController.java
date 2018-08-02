@@ -339,6 +339,5 @@ public class ProductController extends BaseController {
 		if (user != null) {
 			applyService.checkExist(user, vo);
 		}
-		applyService.checkExist(user, vo);
 	}
 }
