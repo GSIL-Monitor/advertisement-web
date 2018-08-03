@@ -6,7 +6,7 @@ public class SessionConstants {
 
 	public static final String SESSION_PROJECT_ID = "session_project_id";
 	public static final String SESSION_PROJECT_KEY = "session_project_key";
-	
+
 	public static final String SESSION_ACCOUNT = "session_account";
 
 	public static final String SESSION_WEIXIN = "session_weixin";
@@ -31,10 +31,19 @@ public class SessionConstants {
 	public static final String SESSION_ACTIVITY_INVITE_FROM = "session_activity_invite_from";
 
 	public static final String SESSION_ACTIVITY_TICKET_TYPE = "session_activity_ticket_type";
-	
+
 	public static final String SESSION_ADVERTISEMENT_CLICK = "session_advertisement_click";
-	
+
+	public static final String SESSION_ADVERTISEMENT_SHOW = "session_advertisement_show";
+
 	public static final String SESSION_PRODUCT_DETAIL_CLICK = "session_product_detail_click";
-	
+
 	public static final String SESSION_PRODUCT_APPLY_CLICK = "session_product_apply_click";
+	public static final String SESSION_GAME_PRIZE = "session_prize";
+	public static final String SESSION_GAME_REQUEST_COUNT = "session_game_request_count";
+	public static final String SESSION_PAGE_KEY = "session_page_key";
+	public static final String SESSION_THIRD_STAT_CODE_CONFIG = "session_third_stat_code";
+	public static final String SESSION_INFORMATION = "session_insurant";
+	public static final String SESSION_GORDER_ID = "session_gorder_id";
+
 }

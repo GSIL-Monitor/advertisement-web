@@ -20,21 +20,37 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.activity.model.ActivityType;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementDisplayType;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementStatus;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.channel.model.ChannelAllocateStatus;
+import com.yuanshanbao.dsp.channel.model.ChannelIndependentStatus;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.config.model.Config;
+import com.yuanshanbao.dsp.config.model.ConfigCategory;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.ConfigService;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.model.QuotaType;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
+import com.yuanshanbao.paginator.domain.Paginator;
 
 @Controller
 @RequestMapping("/admin/activity")
@@ -47,6 +63,16 @@ public class AdminActivityController extends PaginationController {
 	private static final String PAGE_UPDATE = "advertisement/activity/updateActivity";
 
 	private static final String PAGE_VIEW = "advertisement/activity/viewActivity";
+
+	private static final String PAGE_CHANNEL_LIST = "advertisement/activity/listChannelOfActivity";
+
+	private static final String PAGE_CHANNEL_ALLOCATE = "advertisement/activity/addChannelOfActivity";
+
+	private static final String PAGE_LIST_GIFT = "advertisement/activity/listGift";
+
+	private static final String PAGE_ALLOCATE_GIFT = "advertisement/activity/allocateActivityGift";
+
+	private static final String PAGE_ALLOCATE_CHANNEL_GIFT = "advertisement/activity/allocateChannelGift";
 
 	private static final String PAGE_CONFIG = "advertisement/activity/configActivity";
 
@@ -61,6 +87,8 @@ public class AdminActivityController extends PaginationController {
 	private static final String PAGE_CHANNEL_CONFIG = "advertisement/activity/configChannel";
 
 	private static final String PAGE_GIFTS_CHANNEL_CONFIG = "advertisement/activity/configGiftsChannel";
+
+	private static final String PAGE_QUOTA_CONFIG = "advertisement/activity/insertQuota";
 
 	@Autowired
 	private ActivityService activityService;
@@ -83,22 +111,30 @@ public class AdminActivityController extends PaginationController {
 	@Autowired
 	private ChannelService channelService;
 
+	@Autowired
+	private ProbabilityService probabilityService;
+
+	@Autowired
+	private QuotaService quotaService;
+
 	@RequestMapping("/list.do")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("isSimple", "0");
 		return PAGE_LIST;
 	}
 
-	@RequestMapping("/giftList.do")
-	public String simpleList(HttpServletRequest request, HttpServletResponse response) {
-		request.setAttribute("isSimple", "1");
-		return PAGE_LIST;
-	}
+	// @RequestMapping("/giftList.do")
+	// public String simpleList(HttpServletRequest request, HttpServletResponse
+	// response) {
+	// request.setAttribute("isSimple", "1");
+	// return PAGE_LIST;
+	// }
 
 	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Activity activity, HttpServletRequest request, HttpServletResponse response) {
+		activity.setCombination(0);
 		Object object = activityService.selectActivitys(activity, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
@@ -107,6 +143,7 @@ public class AdminActivityController extends PaginationController {
 	@RequestMapping("/insertWindow.do")
 	public String insertWindow(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("typeList", ActivityType.getCodeDescriptionMap().entrySet());
 		return PAGE_INSERT;
 	}
 
@@ -116,8 +153,8 @@ public class AdminActivityController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-
 			validateParameters(activity);
+			activity.setCombination(0);
 			activityService.insertActivity(activity);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -189,8 +226,6 @@ public class AdminActivityController extends PaginationController {
 		request.setAttribute("itemEdit", activity);
 		return PAGE_VIEW;
 	}
-
-	
 
 	// @RequestMapping("/adConfigWindow.do")
 	// public String adConfig(Long activityId, HttpServletRequest request,
@@ -328,4 +363,198 @@ public class AdminActivityController extends PaginationController {
 		return result;
 	}
 
+	@RequestMapping("/listChannel.do")
+	public String listChannel(String activityId, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		request.setAttribute("activityId", activityId);
+		return PAGE_CHANNEL_LIST;
+	}
+
+	@RequestMapping("/allocateChannelWindow.do")
+	public String allocationChannelWindow(String activityId, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		Activity activity = activityService.selectActivity(Long.valueOf(activityId));
+		if (activity != null) {
+			request.setAttribute("activityName", activity.getName());
+			request.setAttribute("activityId", activity.getActivityId());
+		}
+		Channel params = new Channel();
+		params.setAllocateType(ChannelAllocateStatus.UNALLOCATED);
+		request.setAttribute("channelList", channelService.selectChannels(params, new PageBounds()));
+		request.setAttribute("independentList", ChannelIndependentStatus.getCodeDescriptionMap().entrySet());
+		return PAGE_CHANNEL_ALLOCATE;
+	}
+
+	@ResponseBody
+	@RequestMapping("/allocateChannel.do")
+	public Object allocationChannel(Channel channel, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Channel resultChannel = channelService.selectChannel(channel.getChannelId());
+		try {
+			if (resultChannel != null) {
+				resultChannel.setActivityId(channel.getActivityId());
+				resultChannel.setIndependent(channel.getIndependent());
+				resultChannel.setAllocateType(ChannelAllocateStatus.ALLOCATED);
+				channelService.updateChannel(resultChannel);
+			}
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		}
+		return result;
+	}
+
+	@RequestMapping("/giftList.do")
+	public String giftList(String activityId, String channel, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		request.setAttribute("activityId", activityId);
+		request.setAttribute("channel", channel);
+		return PAGE_LIST_GIFT;
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryGift.do")
+	public Object queryGift(String activityId, String channel, HttpServletRequest request,
+			HttpServletResponse response, ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<AdvertisementVo> list = new ArrayList<AdvertisementVo>();
+		try {
+			list = advertisementService.selectGift(activityId, channel);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		}
+		return setPageInfo(request, response, new PageList<Object>(list, new Paginator()));
+	}
+
+	@RequestMapping("/allocateGiftWindow.do")
+	public String allocateGiftWindow(String activityId, String channel, HttpServletRequest request,
+			HttpServletResponse response, ModelMap modelMap) {
+		List<Advertisement> list = advertisementService.selectAdvertisement(new Advertisement(), new PageBounds());
+		request.setAttribute("advertisementList", list);
+		setProperty(request, activityId, channel);
+		if (StringUtils.isBlank(channel)) {
+			return PAGE_ALLOCATE_GIFT;
+		} else {
+			return PAGE_ALLOCATE_CHANNEL_GIFT;
+		}
+	}
+
+	private void setProperty(HttpServletRequest request, String activityId, String channel) {
+		request.setAttribute("activityId", activityId);
+		request.setAttribute("channel", channel);
+		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("statusList", AdvertisementStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("displayList", AdvertisementDisplayType.getCodeDescriptionMap().entrySet());
+	}
+
+	@ResponseBody
+	@RequestMapping("/allocateGift.do")
+	public Object allocateGift(Probability probability, Quota quota, HttpServletRequest request,
+			HttpServletResponse response, ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			probability.setProjectId(getProjectId(request));
+			quota.setProjectId(getProjectId(request));
+			probabilityService.insertProbability(probability);
+			// quotaService.insertQuota(quota);
+			AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("probability insert function - reload error", e2);
+		}
+		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping("/deletePro.do")
+	public Object deletePro(Long probabilityId, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		try {
+			if (probabilityId == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Probability probability = new Probability();
+			probability.setProbabilityId(probabilityId);
+			probability.setStatus(CommonStatus.OFFLINE);
+			probabilityService.updateProbability(probability);
+
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		}
+
+		return result;
+	}
+
+	@RequestMapping("/quotaWindow.do")
+	public String quotaWindow(Long probabilityId, HttpServletRequest request, HttpServletResponse response) {
+		Probability probability = probabilityService.selectProbability(probabilityId);
+		request.setAttribute("activityId", probability.getActivityId());
+		request.setAttribute("channel", probability.getChannel());
+		request.setAttribute("advertisementId", probability.getAdvertisementId());
+		return PAGE_QUOTA_CONFIG;
+	}
+
+	@ResponseBody
+	@RequestMapping("/insertQuota.do")
+	public Object insertQuota(Quota quota, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			quota.setProjectId(getProjectId(request));
+			quota.setStatus(CommonStatus.ONLINE);
+			quotaService.insertQuota(quota);
+			AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("probability insert function - reload error", e2);
+		}
+		return result;
+	}
+
+	@RequestMapping("/configWindow.do")
+	public String configWindow(Long activityId, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+
+		Map<Integer, ConfigCategory> map = configService.getConfigCategoryList(activityId, null);
+		request.setAttribute("configCategoryList", map.values());
+		request.setAttribute("activityId", activityId.toString());
+		return PAGE_CONFIG;
+	}
+
+	@ResponseBody
+	@RequestMapping("/config.do")
+	public Object config(Long activityId, Function function, HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if (function == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+
+			configService.updateActivityConfig(request, activityId, null);
+
+			Config config = new Config();
+			config.setStatus(CommonStatus.ONLINE);
+			List<Config> configsList = configService.selectConfig(config, new PageBounds());
+			// ConfigManager.refreshConfig(null, null, null, configsList, null,
+			// null);
+			AdminServerController.refreshConfirm();
+
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			LoggerUtil.error("", e);
+		}
+		return result;
+	}
 }

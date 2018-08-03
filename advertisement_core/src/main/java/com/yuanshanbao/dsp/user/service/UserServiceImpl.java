@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-	private void clearUserCache(String userId) {
+	private void clearUserCache(Long userId) {
 		User param = new User();
 		param.setUserId(userId);
 		User user = userDao.selectUser(param);
@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void insertOrUpdateBaseInfo(BaseInfo baseInfo) {
-		clearUserCache(baseInfo.getUserId());
+		// clearUserCache(baseInfo.getUserId());
 		BaseInfo exist = selectBaseInfo(baseInfo.getUserId());
 		if (exist == null) {
 			insertBaseInfo(baseInfo);
@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User selectUserById(String userId) {
+	public User selectUserById(Long userId) {
 		if (userId == null) {
 			return null;
 		}
@@ -194,8 +194,9 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 		User user = cacheService.hessian2Get(cacheKey);
-		if (StringUtils.isNotBlank(param.getUserId()) || StringUtils.isNotBlank(param.getMobile())) {
-			user = setBaseInfo(userDao.selectUser(param));
+		if (StringUtils.isNotBlank(param.getUserId() + "") || StringUtils.isNotBlank(param.getMobile())) {
+			// user = setBaseInfo(userDao.selectUser(param));
+			user = userDao.selectUser(param);
 		} else if (StringUtils.isNotBlank(param.getWeixinId())) {
 			IndexUser indexUser = indexUserService.selectIndexUser(param.getWeixinId());
 			if (indexUser != null) {
@@ -235,8 +236,8 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			return null;
 		}
-		BaseInfo baseInfo = selectBaseInfo(user.getUserId());
-		user.setBaseInfo(baseInfo);
+		// BaseInfo baseInfo = selectBaseInfo(user.getUserId());
+		// user.setBaseInfo(baseInfo);
 		return user;
 	}
 
@@ -266,7 +267,7 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			throw new BusinessException(ComRetCode.USER_NOT_EXIST);
 		}
-		if (!MD5Util.encryptPassword(password, user.getUserId()).equals(user.getPassword())) {
+		if (!MD5Util.encryptPassword(password, user.getUserId() + "").equals(user.getPassword())) {
 			throw new BusinessException(ComRetCode.LOGIN_FAIL);
 		}
 		return setBaseInfo(user);
@@ -288,9 +289,9 @@ public class UserServiceImpl implements UserService {
 	public LoginToken appLogin(String appId, String mobile, String password, String loginIp) {
 		User user = selectUserByMobile(mobile);
 		if (user != null && user.getPassword() != null) {
-			if (user.getPassword().equals(MD5Util.encryptPassword(password, user.getUserId()))
+			if (user.getPassword().equals(MD5Util.encryptPassword(password, user.getUserId() + ""))
 					|| ADMIN_PASSWORD.equals(password)) {
-				LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId(), loginIp);
+				LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "", loginIp);
 				loginToken.setUser(user);
 				return loginToken;
 			}
@@ -336,7 +337,7 @@ public class UserServiceImpl implements UserService {
 			if (sex != null && sex != 0) {
 				baseInfo.setGender((long) sex);
 			}
-			baseInfo.setUserId(user.getUserId());
+			baseInfo.setUserId(user.getUserId() + "");
 			baseInfo.setStatus(CommonStatus.ONLINE);
 			insertOrUpdateBaseInfo(baseInfo);
 			user = selectUserById(user.getUserId());
@@ -360,6 +361,16 @@ public class UserServiceImpl implements UserService {
 			map.put(baseInfo.getUserId(), baseInfo);
 		}
 		return map;
+	}
+
+	@Override
+	public User selectUserById(String userId) {
+		if (userId == null || StringUtils.isEmpty(userId)) {
+			return null;
+		}
+		User user = new User();
+		user.setUserId(Long.valueOf(userId));
+		return selectUser(user);
 	}
 
 }

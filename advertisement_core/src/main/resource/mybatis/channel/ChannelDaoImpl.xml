@@ -6,24 +6,21 @@
 
 	<resultMap id="channelMap" type="Channel">
 		<id property="channelId" column="channel_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
 		<result property="key" column="key" jdbcType="VARCHAR" />
-		<result property="appId" column="app_id" jdbcType="NUMERIC" />
-		<result property="type" column="type" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="activityDescription" column="activity_description" jdbcType="VARCHAR" />
 		<result property="mark" column="mark" jdbcType="VARCHAR" />
 		<result property="bonus" column="bonus" jdbcType="NUMERIC" />
-		<result property="unitPrice" column="unit_price" jdbcType="NUMERIC" />
 		<result property="showType" column="show_type" jdbcType="NUMERIC" />
 		<result property="showFields" column="show_fields" jdbcType="VARCHAR" />
 		<result property="notifyHandler" column="notify_handler"
 			jdbcType="VARCHAR" />
-		<result property="encryptKey" column="encrypt_key" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="NUMERIC" />
-		<result property="androidDownloadUrl" column="android_download_url" jdbcType="VARCHAR" />
-		<result property="iosDownloadUrl" column="ios_download_url" jdbcType="VARCHAR" />
-		<result property="deliverOrderUrl" column="deliver_order_url" jdbcType="VARCHAR" />
+		<result property="allocateType" column="allocate_type" jdbcType="NUMERIC" />
+		<result property="independent" column="independent" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -39,20 +36,20 @@
 				<if test="channelId != null">
 					channel_id=#{channelId} and
 				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId} and
+				</if>
 				<if test="name != null">
 					name like CONCAT(CONCAT('%', #{name}),'%') and
 				</if>
 				<if test="key != null">
 					`key`=#{key} and
 				</if>
-				<if test="appId != null">
-					app_id=#{appId} and
+				<if test="allocateType != null">
+					allocate_type = #{allocateType} and
 				</if>
-				<if test="androidDownloadUrl != null">
-					android_download_url=#{androidDownloadUrl} and
-				</if>
-				<if test="iosDownloadUrl != null">
-					ios_download_url=#{iosDownloadUrl} and
+				<if test="independent != null">
+					independent = #{independent} and
 				</if>
 				<if test="status != null">
 					status = #{status} and
@@ -91,18 +88,16 @@
 
 	<insert id="insertChannel" parameterType="Channel">
 		insert into
-		tb_channel(`key`, app_id, type, name, description, activity_description,
-		mark, bonus,
-		unit_price, show_type, show_fields, notify_handler,
-		encrypt_key, image_url, ios_download_url, android_download_url,
+		tb_channel(`key`,  type, name, description,
+		mark, bonus,show_type, show_fields, notify_handler,
+		 image_url, allocate_type,independent,
 		status, create_time, update_time)
 		values
-		(#{key}, #{appId}, #{type}, #{name},
-		#{description}, #{activityDescription}, #{mark},
-		#{bonus},
-		#{unitPrice}, #{showType}, #{showFields},
-		#{notifyHandler},
-		#{encryptKey}, #{imageUrl}, #{iosDownloadUrl}, #{androidDownloadUrl}, #{status},
+		(#{key},  #{type}, #{name},
+		#{description}, #{mark},
+		#{bonus}, #{showType}, #{showFields},
+		#{notifyHandler},#{imageUrl},
+		#{allocateType}, #{independent},#{status},
 		sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="channelId">
@@ -116,6 +111,9 @@
 			<trim suffixOverrides=",">
 				<if test="key != null">
 					`key`=#{key},
+				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId},
 				</if>
 				<if test="type != null">
 					type=#{type},
@@ -150,17 +148,14 @@
 				<if test="notifyHandler != null">
 					notify_handler=#{notifyHandler},
 				</if>
-				<if test="encryptKey != null">
-					encrypt_key=#{encryptKey},
-				</if>
 				<if test="imageUrl != null">
 					image_url=#{imageUrl},
 				</if>
-				<if test="androidDownloadUrl != null">
-					android_download_url=#{androidDownloadUrl},
+				<if test="allocateType != null">
+					allocate_type=#{allocateType},
 				</if>
-				<if test="iosDownloadUrl != null">
-					ios_download_url=#{iosDownloadUrl},
+				<if test="independent != null">
+					independent=#{independent},
 				</if>
 				<if test="status != null">
 					status=#{status},

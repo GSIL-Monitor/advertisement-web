@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 public class Feedback {
 
 	private Long feedbackId;
-	private String userId;
+	private Long userId;
 	private String mobile;
 	private String name;
 	private String email;
@@ -24,14 +24,6 @@ public class Feedback {
 
 	public void setFeedbackId(Long feedbackId) {
 		this.feedbackId = feedbackId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public String getMobile() {
@@ -88,6 +80,14 @@ public class Feedback {
 
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 }

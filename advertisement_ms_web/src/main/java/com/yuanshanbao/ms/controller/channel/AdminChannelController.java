@@ -285,7 +285,7 @@ public class AdminChannelController extends PaginationController {
 			Config config = new Config();
 			config.setStatus(CommonStatus.ONLINE);
 			List<Config> configsList = configService.selectConfig(config, new PageBounds());
-			ConfigManager.refreshConfig(null, null, null, null, null, configsList, null, null, null);
+			ConfigManager.refreshConfig(null, null, null, null, null, configsList, null, null, null, null);
 			AdminServerController.refreshConfirm();
 
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);

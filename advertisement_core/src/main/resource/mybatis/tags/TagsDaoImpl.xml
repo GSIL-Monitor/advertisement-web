@@ -13,8 +13,11 @@
 		<result property="bigImage" column="big_image" jdbcType="VARCHAR" />
 		<result property="image" column="image" jdbcType="VARCHAR" />
 		<result property="showOrder" column="show_order" jdbcType="NUMERIC" />
+		<result property="showType" column="show_type" jdbcType="NUMERIC" />
 		<result property="searchType" column="search_type" jdbcType="NUMERIC" />
 		<result property="score" column="score" jdbcType="NUMERIC" />
+		<result property="times" column="times" jdbcType="NUMERIC" />
+		<result property="amount" column="amount" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -64,10 +67,10 @@
 	<insert id="insertTags" parameterType="Tags">
 		insert into
 		tb_tags(parent_id, type, name, value, description, big_image, image,
-		show_order, search_type, score, status, create_time,update_time)
+		times,amount,show_order, search_type, score, status, create_time,update_time)
 		values
 		(#{parentId}, #{type}, #{name}, #{value}, #{description}, #{bigImage},
-		#{image}, #{showOrder}, #{searchType}, #{score}, #{status}, sysdate(),
+		#{image},#{times},#{amount}, #{showOrder}, #{searchType}, #{score}, #{status}, sysdate(),
 		sysdate())
 	</insert>
 

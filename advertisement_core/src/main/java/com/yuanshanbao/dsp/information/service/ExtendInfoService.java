@@ -3,10 +3,10 @@ package com.yuanshanbao.dsp.information.service;
 import java.util.List;
 import java.util.Map;
 
-import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.dsp.information.model.ExtendInfo;
 import com.yuanshanbao.dsp.information.model.Information;
 import com.yuanshanbao.dsp.page.model.Page;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface ExtendInfoService {
 
@@ -24,7 +24,7 @@ public interface ExtendInfoService {
 
 	public void saveExtendInfo(Map<String, String> parameterMap, Information information, Page page);
 
-	public Map<String, String> getExtendInfoMap(String userId, Long informationId);
+	public Map<String, String> getExtendInfoMap(Long userId, Long informationId);
 
 	public Map<Long, List<ExtendInfo>> selectExtendInfoByInformationIds(List<Long> informationIds);
 

@@ -36,10 +36,6 @@
                     <td>${itemEdit.businessNumber}</td>
                   </tr>
                   <tr>
-                    <td>营业执照照片：</td>
-                    <td>${itemEdit.businessPicture}</td>
-                  </tr>
-                  <tr>
                     <td>公司地址：</td>
                     <td>${itemEdit.address}</td>
                   </tr>

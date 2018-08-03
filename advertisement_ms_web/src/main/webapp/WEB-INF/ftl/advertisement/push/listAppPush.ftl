@@ -19,7 +19,7 @@
 		        	if(data.userId == null || data.userId==""){
 		        		return '全部用户';
 		        	}else{	
-		            	return '【'+data.userId+'】'+data.user.mobile;
+		            	return '【'+data.userId+'】';
 		            }
 		        }
 		    }, {

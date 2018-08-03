@@ -13,30 +13,38 @@
 		    }, {
 		    	"data": "key"
 		    }, {
-		     	"data": "entranceUrl"
-		    }, {
-		    	"data": "bonus"
-		    }, {
-		    	"data": "statusValue"
+		    	"data": "typeValue"
 		    }, {
 		    	"data": "createTimeContent"
-		    	 }, {
+		    }, {
+		     	"data": "entranceUrl"
+		    }, {
+		    	"data": "statusValue"
+		    },  {
 		    	"data": null,
 		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/banner/list.do?activityId='+data.activityId+'"  class="btn btn-green">Banner配置</a>';
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/giftList.do?activityId='+data.activityId+'"  class="btn btn-green">活动奖品列表</a>';
+		        }
+		    },  {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/listChannel.do?activityId='+data.activityId+'"  class="btn btn-green">渠道列表</a>';
+		        }
+		    },  {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/configWindow.do?activityId='+data.activityId+'"  class="btn btn-green">配置管理</a>';
+		        }
+		    },  {
+		    	"data": "${functionId}",
+		        "render": function ( data, type, full, meta ) {
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/updateWindow.do?${functionId}='+data+'"  class="btn btn-green">修改</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/channel/list.do?${functionId}='+data+'"  class="btn btn-green">渠道配置</a>';
+		            return '<a target="_blank" href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue">删除</a>';
 		        }
-		    }, {
-		    	"data": "${functionId}",
-		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue">修改活动</a>';
-		        }
-		  
-		   
 		    }];
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -73,13 +81,15 @@
 									<th>ID</th>
 									<th>活动名称</th>
 									<th>key</th>
+									<th>活动类型</th>
+									<th>创建时间</th> 
 									<th>入口地址</th>
-									<th>bonus</th>
 									<th>状态</th>
-									<th>创建时间</th>
-									<th>Banner配置</th>
-									<th>渠道配置</th>
-									<th>活动修改</th>									
+									<th>活动奖品列表</th>
+									<th>渠道列表</th>
+									<th>配置管理</th>
+									<th>修改</th>
+									<th>删除</th>									
 								</tr>
 							</thead>
 							<tbody>

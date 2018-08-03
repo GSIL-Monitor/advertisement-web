@@ -65,6 +65,10 @@ public class AdminAdvertisementController extends PaginationController {
 
 	@RequestMapping("/list.do")
 	public String list(Long advertiserId, HttpServletRequest request, HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertiserId = advertiser.getAdvertiserId();
+		}
 		request.setAttribute("advertiserId", advertiserId);
 		setProperty(request, getProjectId(request), advertiserId);
 		return PAGE_LIST;
@@ -75,6 +79,10 @@ public class AdminAdvertisementController extends PaginationController {
 	@RequestMapping("/query.do")
 	public Object query(String range, Advertisement advertisement, HttpServletRequest request,
 			HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertisement.setAdvertiserId(advertiser.getAdvertiserId());
+		}
 		Object object = advertisementService.selectAdvertisement(advertisement, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
@@ -108,12 +116,10 @@ public class AdminAdvertisementController extends PaginationController {
 	public Object insert(HttpServletRequest request, HttpServletResponse response, Advertisement advertisement,
 			Probability probability, Quota quota, MultipartFile image) {
 		Map<String, Object> result = new HashMap<String, Object>();
-
 		try {
 			if (image != null && !image.isEmpty()) {
-				advertisement.setImageUrl(UploadUtils.uploadFile(image, "file/game"));
+				advertisement.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
 			}
-
 			validateParameters(advertisement);
 			String quotaType = request.getParameter("quotaType");
 			advertisement.setProjectId(getProjectId(request));

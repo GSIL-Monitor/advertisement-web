@@ -12,12 +12,14 @@ public class User implements Serializable {
 
 	private static final long serialVersionUID = 4165445835251317169L;
 
-	private String userId;
+	private Long userId;
 	private String mobile;
 	private String weixinId;
 	private String username;
 	private String password;
 	private String registerFrom;
+	private String name;
+	private String avatar;
 	private Integer inviteType;
 	private Integer status;
 	private Integer userType;
@@ -25,14 +27,6 @@ public class User implements Serializable {
 	private Timestamp updateTime;
 
 	private BaseInfo baseInfo;
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 
 	public String getWeixinId() {
 		return weixinId;
@@ -115,10 +109,7 @@ public class User implements Serializable {
 	}
 
 	public String getName() {
-		if (baseInfo != null && StringUtils.isNotBlank(baseInfo.getName())) {
-			return baseInfo.getName();
-		}
-		return null;
+		return name;
 	}
 
 	public String getDisplayName() {
@@ -137,10 +128,7 @@ public class User implements Serializable {
 	}
 
 	public String getAvatar() {
-		if (baseInfo != null) {
-			return baseInfo.getAvatar();
-		}
-		return null;
+		return avatar;
 	}
 
 	public Long getGender() {
@@ -157,5 +145,21 @@ public class User implements Serializable {
 	public void setUserType(Integer userType) {
 		this.userType = userType;
 	}
-	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
 }

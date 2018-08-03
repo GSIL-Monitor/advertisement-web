@@ -758,4 +758,21 @@ public class CommonUtil {
 		}
 	}
 
+	public static String replaceIlegalChannelName(String from) {
+		try {
+			if (StringUtils.isNotBlank(from) && from.indexOf("?") >= 0) {
+				String oldChannel = from;
+				int index = from.indexOf("?");
+				if (index >= 0) {
+					from = from.substring(0, index);
+					LoggerUtil.info("[replace channel] oldChannel:{}, replacChannel:{}", oldChannel, from);
+				}
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("[replace channel error. pls check channel]", e);
+			return from;
+		}
+		return from;
+	}
+
 }

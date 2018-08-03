@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bill">
+
+	<resultMap id="billMap" type="Bill">
+		<id property="billId" column="bill_id" jdbcType="NUMERIC" />
+		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
+		<result property="amount" column="amount" jdbcType="NUMERIC" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectBill" parameterType="Bill"
+		resultMap="billMap">
+		select
+		* from
+		tb_bills
+		<where>
+			<trim suffixOverrides="and">
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="queryStartTime != null">
+					 date &gt;= #{queryStartTime} and
+				</if>
+				<if test="queryEndTime != null">
+					 date &lt;= #{queryEndTime} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+
+	<insert id="insertBill" parameterType="Bill">
+		insert into
+		tb_bills(advertiser_id,amount,description, type,status, create_time, update_time)
+		values
+		(#{advertiserId},#{amount}, #{description}, #{type},#{status},
+		 sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="billId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateBill" parameterType="Bill">
+		update tb_bills
+		<set>
+			<trim suffixOverrides=",">
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			advertiser_id=#{advertiserId}
+		</where>
+	</update>
+
+	<delete id="deleteAdvertiser" parameterType="long">
+		delete from
+		tb_bills
+		where
+		bill_id=#{billId}
+	</delete>
+
+</mapper>

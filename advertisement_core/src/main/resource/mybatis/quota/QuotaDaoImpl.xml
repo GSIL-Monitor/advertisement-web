@@ -8,10 +8,13 @@
 		<id property="quotaId" column="quota_id" jdbcType="NUMERIC" />
 		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
 		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="stock" column="stock" jdbcType="NUMERIC" />
 		<result property="count" column="count" jdbcType="NUMERIC" />
 		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
 		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
@@ -36,6 +39,12 @@
 				</if>
 				<if test="activityId != null">
 					activity_id = #{activityId} and
+				</if>
+				<if test="productId != null">
+					product_id = #{productId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id = #{merchantId} and
 				</if>
 				<if test="positionId != null">
 					position_id = #{positionId} and
@@ -75,11 +84,11 @@
 
 	<insert id="insertQuota" parameterType="Quota">
 		insert into
-		tb_quota(project_id, activity_id, position_id, channel, advertisement_id, type, 
-		count, start_time, end_time, unit_price, status, create_time, update_time)
+		tb_quota(project_id, activity_id, product_id,position_id, channel, advertisement_id, type, 
+		count,stock, start_time, end_time, unit_price, status, create_time, update_time)
 		values
-		(#{projectId}, #{activityId}, #{positionId}, #{channel}, #{advertisementId}, #{type}, 
-		#{count}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
+		(#{projectId}, #{activityId}, #{productId}, #{positionId}, #{channel}, #{advertisementId}, #{type}, 
+		#{count},#{stock}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="quotaId">
 			SELECT LAST_INSERT_ID()
@@ -138,4 +147,13 @@
 		quota_id=#{quotaId}
 	</delete>
 
+	<update id="lockStock" parameterType="map">
+		update tb_quota
+		set
+		stock = stock - #{count, jdbcType=INTEGER}
+		where
+		quota_id = #{quotaId, jdbcType=INTEGER} and
+		stock >= #{count, jdbcType=INTEGER}
+		and status = 1
+	</update>
 </mapper>

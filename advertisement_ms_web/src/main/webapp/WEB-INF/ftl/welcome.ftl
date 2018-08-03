@@ -81,7 +81,7 @@ $(document).ready(function(){
         <div class="row-fluid">
             <div class="widget-box">
                 <div class="widget-title">
-                    <h5>今日新发数据</h5>
+                    <div class="widget-subtitle">数据统计 <span>数据统计包含代理商旗下所有广告计划</span></div>
                     <div class="filter-box">
 						<div class="btn-group">
 	            			<div class="filter-component">

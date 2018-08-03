@@ -9,7 +9,10 @@ import com.yuanshanbao.dsp.tags.model.Tags;
 public class ExtendInfo {
 
 	private Long extendInfoId;
-	private String userId;
+	private Long activityId;
+	private Long merchantId;
+	private String channel;
+	private Long userId;
 	private Long informationId;
 	private Long fieldId;
 	/**
@@ -32,20 +35,27 @@ public class ExtendInfo {
 	private Information information;
 	private InformationField informationField;
 
+	public ExtendInfo() {
+		super();
+	}
+
+	public ExtendInfo(Long activityId, String channel, Long merchantId, Long informationId, String question,
+			String answer) {
+		super();
+		this.informationId = informationId;
+		this.setActivityId(activityId);
+		this.setMerchantId(merchantId);
+		this.setChannel(channel);
+		this.key = question;
+		this.value = answer;
+	}
+
 	public Long getExtendInfoId() {
 		return extendInfoId;
 	}
 
 	public void setExtendInfoId(Long extendInfoId) {
 		this.extendInfoId = extendInfoId;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public Long getInformationId() {
@@ -152,6 +162,38 @@ public class ExtendInfo {
 
 	public void setInformationField(InformationField informationField) {
 		this.informationField = informationField;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
+	}
+
+	public Long getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(Long merchantId) {
+		this.merchantId = merchantId;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
 	}
 
 }

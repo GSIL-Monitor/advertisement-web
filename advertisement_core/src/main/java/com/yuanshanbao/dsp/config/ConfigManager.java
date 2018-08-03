@@ -9,16 +9,19 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
+import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.config.model.Config;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.model.KeyValuePair;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.page.model.Page;
+import com.yuanshanbao.dsp.product.model.ProductCategory;
 
 @Service
 public class ConfigManager implements ConfigConstants {
@@ -47,9 +50,12 @@ public class ConfigManager implements ConfigConstants {
 
 	protected static Map<Long, AdvertisementCategory> advertisementCategoryMap = new LinkedHashMap<Long, AdvertisementCategory>();
 
+	protected static Map<Long, ProductCategory> productCategoryMap = new LinkedHashMap<Long, ProductCategory>();
+
 	public static void refreshConfig(List<Channel> channels, List<Activity> activitys, List<Merchant> merchants,
 			List<Page> pages, List<Function> functions, List<Config> configs, List<Advertisement> advertisements,
-			List<AdvertisementStrategy> advertisementStrategies, List<AdvertisementCategory> advertisementCategories) {
+			List<AdvertisementStrategy> advertisementStrategies, List<AdvertisementCategory> advertisementCategories,
+			List<ProductCategory> productCategorys) {
 		Map<String, Channel> tempChannelMap = new LinkedHashMap<String, Channel>();
 		if (channels != null) {
 			for (Channel channel : channels) {
@@ -120,13 +126,85 @@ public class ConfigManager implements ConfigConstants {
 			advertisementCategoryMap = tempAdvertisementCategoryMap;
 		}
 
+		Map<Long, ProductCategory> tempProductCategoryMap = new LinkedHashMap<Long, ProductCategory>();
+		if (productCategorys != null) {
+			for (ProductCategory category : productCategorys) {
+				tempProductCategoryMap.put(category.getProductCategoryId(), category);
+			}
+			productCategoryMap = tempProductCategoryMap;
+		}
+
 		if (configs != null) {
 			configList = configs;
 		}
 	}
 
+	public static void setConfigMap(Map<String, Object> resultMap, Long activityId, String channel) {
+		Instance instance = new Instance();
+		instance.setActivityId(activityId);
+		instance.setChannel(channel);
+		setConfigMap(resultMap, instance);
+	}
+
+	public static void setConfigMap(Map<String, Object> resultMap, Instance instance) {
+		Map<String, String> configMap = getConfigMap(instance.getActivityId(), instance.getChannel(), null, null);
+		// setAdvertisementConfig(configMap, instance);
+		resultMap.putAll(configMap);
+		List<KeyValuePair> allConfigs = new ArrayList<KeyValuePair>();
+		for (Entry<String, String> entry : configMap.entrySet()) {
+			allConfigs.add(new KeyValuePair(entry.getKey(), entry.getValue()));
+		}
+		resultMap.put(ALL_CONFIG_IN_PAGE, allConfigs);
+	}
+
 	public static Channel getChannel(String key) {
 		return channelMap.get(key);
+	}
+
+	public static String getConfigValue(Long activityId, String channel, String functionKey) {
+		return getConfigValue(activityId, channel, null, null, functionKey);
+	}
+
+	public static String getConfigValue(Long activityId, String channel, Long merchantId, Long insuranceId,
+			String functionKey) {
+		Function function = functionMap.get(functionKey);
+		if (function == null) {
+			return "false";
+		}
+		String result = function.getDefaultAction();
+		for (Config config : configList) {
+			if (config.isMatch(activityId, channel, merchantId, insuranceId, function.getFunctionId())) {
+				result = config.getAction();
+			}
+		}
+		return result;
+	}
+
+	public static void setConfigMap(Map<String, Object> resultMap, Long activityId, String channel, Long merchantId,
+			Long insuranceId) {
+		Map<String, String> configMap = getConfigMap(activityId, channel, merchantId, insuranceId);
+		// setAdvertisementConfig(configMap, null);
+		resultMap.putAll(configMap);
+		List<KeyValuePair> allConfigs = new ArrayList<KeyValuePair>();
+		for (Entry<String, String> entry : configMap.entrySet()) {
+			allConfigs.add(new KeyValuePair(entry.getKey(), entry.getValue()));
+		}
+		resultMap.put(ALL_CONFIG_IN_PAGE, allConfigs);
+	}
+
+	public static Map<String, String> getConfigMap(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		Map<String, String> configMap = new LinkedHashMap<String, String>();
+		for (Config config : configList) {
+			if (config.isMatchWithoutFunction(activityId, channel, merchantId, insuranceId)) {
+				configMap.put(config.getFunctionKey(), config.getAction());
+			}
+		}
+		for (Function function : functionList) {
+			if (configMap.get(function.getKey()) == null) {
+				configMap.put(function.getKey(), function.getDefaultAction());
+			}
+		}
+		return configMap;
 	}
 
 	public static void setConfigMap(Map<String, Object> resultMap, Long activityId, String channel, String appKey) {
@@ -235,6 +313,27 @@ public class ConfigManager implements ConfigConstants {
 		return advertisementList;
 	}
 
+	/**
+	 * ids获取产品List
+	 */
+	public static List<ProductCategory> getProductCategoryList(String ids) {
+		List<ProductCategory> productCategoryList = new ArrayList<ProductCategory>();
+		if (StringUtils.isBlank(ids)) {
+			return productCategoryList;
+		}
+		for (String id : ids.split(",")) {
+			if (!ValidateUtil.isNumber(id)) {
+				continue;
+			}
+			ProductCategory productCategory = productCategoryMap.get(Long.parseLong(id));
+			if (productCategory == null) {
+				continue;
+			}
+			productCategoryList.add(productCategory);
+		}
+		return productCategoryList;
+	}
+
 	public static Advertisement getAdvertisement(String id) {
 		return advertisementMap.get(id);
 	}
@@ -273,6 +372,10 @@ public class ConfigManager implements ConfigConstants {
 
 	public static List<AdvertisementStrategy> getAdvertisementStrategy(String advertisementId) {
 		return advertisementStrategyMap.get(advertisementId);
+	}
+
+	public static ProductCategory getProductCategory(Long id) {
+		return productCategoryMap.get(id);
 	}
 
 }

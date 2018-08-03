@@ -12,6 +12,7 @@ public class Probability {
 	private Long probabilityId;
 	private Long projectId;
 	private Long activityId;
+	private Long advertiserId;
 	private Long positionId;
 	private String channel;
 	private Long advertisementId;
@@ -19,6 +20,7 @@ public class Probability {
 	private Integer sort;
 	private Timestamp startTime;
 	private Timestamp endTime;
+	private Integer displayType;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
@@ -160,5 +162,21 @@ public class Probability {
 
 	public void setChannelObject(Channel channelObject) {
 		this.channelObject = channelObject;
+	}
+
+	public Long getAdvertiserId() {
+		return advertiserId;
+	}
+
+	public void setAdvertiserId(Long advertiserId) {
+		this.advertiserId = advertiserId;
+	}
+
+	public Integer getDisplayType() {
+		return displayType;
+	}
+
+	public void setDisplayType(Integer displayType) {
+		this.displayType = displayType;
 	}
 }

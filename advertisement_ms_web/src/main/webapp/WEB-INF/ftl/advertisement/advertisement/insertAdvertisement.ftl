@@ -27,7 +27,7 @@
 										<td style="width:20%;">广告主：</td>
 										<td>
 										<#if advertiser??>
-											${advertiser.description}
+											${advertiser.companyName}
 											<input type="hidden" name="advertiserId" value="${advertiser.advertiserId}" />
 										<#else>
 											<div style="width:60%;">

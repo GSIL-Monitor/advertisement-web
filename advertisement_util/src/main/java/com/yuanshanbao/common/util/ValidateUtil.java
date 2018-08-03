@@ -671,5 +671,7 @@ public class ValidateUtil {
 	public static void main(String[] args) {
 		String s = "1、985或211院校研究生；2、17年毕业生；3、要求全职实习。邮箱：。4.请投递";
 		System.out.println(containsEmail(s));
+		String a = "0.64";
+		System.err.println(isPositiveFloat(a));
 	}
 }

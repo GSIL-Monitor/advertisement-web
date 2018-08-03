@@ -26,7 +26,9 @@ public class Product {
 	private Long productId;
 
 	private Long merchantId;
-	
+
+	private Long activityId;
+
 	private String productKey;
 
 	private String name;
@@ -39,11 +41,29 @@ public class Product {
 
 	private String smallImageUrl;
 
+	private String bigImageUrl;
+
+	private String detailImageUrl;
+
 	private String featureTags;
 
 	private String recommendTags;
 
+	private String detailTags;
+
+	private String detailImageTags;
+
 	private String authorizeTags;
+
+	private String schoolTime;
+
+	private String brandFeature;
+
+	private Integer totalAmount;
+
+	private Integer minAge;
+
+	private Integer maxAge;
 
 	private String requirements;
 
@@ -51,11 +71,15 @@ public class Product {
 
 	private String advantage;
 
+	private String applyInterface;
+
 	private String guide;
 
 	private Integer type;
 
 	private Integer sort;
+
+	private Long applyCount;
 
 	private Integer positiveRate;
 
@@ -65,13 +89,19 @@ public class Product {
 
 	private Integer status;
 
-	private Integer BindStatus;
-
 	private Timestamp createTime;
 
 	private Timestamp updateTime;
 
 	private Merchant merchant;
+	/**
+	 * 查询排序条件
+	 */
+	private Integer sortCondition;
+	private List<Long> authorize;
+	private List<Long> feature;
+
+	private Integer queryAge;
 
 	// ~ Get and Set Methods
 	// =================================================================================
@@ -83,7 +113,7 @@ public class Product {
 	public Long getMerchantId() {
 		return merchantId;
 	}
-	
+
 	public String getProductKey() {
 		return productKey;
 	}
@@ -146,6 +176,22 @@ public class Product {
 
 	public void setRecommendTags(String recommendTags) {
 		this.recommendTags = recommendTags;
+	}
+
+	public Integer getMinAge() {
+		return minAge;
+	}
+
+	public void setMinAge(Integer minAge) {
+		this.minAge = minAge;
+	}
+
+	public Integer getMaxAge() {
+		return maxAge;
+	}
+
+	public void setMaxAge(Integer maxAge) {
+		this.maxAge = maxAge;
 	}
 
 	public String getAuthorizeTags() {
@@ -236,14 +282,6 @@ public class Product {
 		this.updateTime = updateTime;
 	}
 
-	public Integer getBindStatus() {
-		return BindStatus;
-	}
-
-	public void setBindStatus(Integer bindStatus) {
-		BindStatus = bindStatus;
-	}
-
 	public Integer getCategory() {
 		return category;
 	}
@@ -297,6 +335,130 @@ public class Product {
 			result.add(vo);
 		}
 		return result;
+	}
+
+	public String getApplyInterface() {
+		return applyInterface;
+	}
+
+	public void setApplyInterface(String applyInterface) {
+		this.applyInterface = applyInterface;
+	}
+
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
+	}
+
+	public Integer getSortCondition() {
+		return sortCondition;
+	}
+
+	public void setSortCondition(Integer sortCondition) {
+		this.sortCondition = sortCondition;
+	}
+
+	public List<Long> getAuthorize() {
+		if (StringUtils.isNotBlank(authorizeTags)) {
+			String[] ids = authorizeTags.split(",");
+			if (ids == null || ids.length == 0) {
+				return null;
+			}
+			for (String id : ids) {
+				authorize = new ArrayList<Long>();
+				authorize.add(Long.parseLong(id));
+			}
+		}
+		return authorize;
+	}
+
+	public List<Long> getFeature() {
+		if (StringUtils.isNotBlank(featureTags)) {
+			String[] ids = featureTags.split(",");
+			if (ids == null || ids.length == 0) {
+				return null;
+			}
+			for (String id : ids) {
+				feature = new ArrayList<Long>();
+				feature.add(Long.parseLong(id));
+			}
+		}
+		return feature;
+	}
+
+	public Long getApplyCount() {
+		return applyCount;
+	}
+
+	public void setApplyCount(Long applyCount) {
+		this.applyCount = applyCount;
+	}
+
+	public Integer getQueryAge() {
+		return queryAge;
+	}
+
+	public void setQueryAge(Integer queryAge) {
+		this.queryAge = queryAge;
+	}
+
+	public String getBigImageUrl() {
+		return bigImageUrl;
+	}
+
+	public void setBigImageUrl(String bigImageUrl) {
+		this.bigImageUrl = bigImageUrl;
+	}
+
+	public String getDetailTags() {
+		return detailTags;
+	}
+
+	public void setDetailTags(String detailTags) {
+		this.detailTags = detailTags;
+	}
+
+	public String getDetailImageTags() {
+		return detailImageTags;
+	}
+
+	public void setDetailImageTags(String detailImageTags) {
+		this.detailImageTags = detailImageTags;
+	}
+
+	public String getSchoolTime() {
+		return schoolTime;
+	}
+
+	public void setSchoolTime(String schoolTime) {
+		this.schoolTime = schoolTime;
+	}
+
+	public String getBrandFeature() {
+		return brandFeature;
+	}
+
+	public void setBrandFeature(String brandFeature) {
+		this.brandFeature = brandFeature;
+	}
+
+	public Integer getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(Integer totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public String getDetailImageUrl() {
+		return detailImageUrl;
+	}
+
+	public void setDetailImageUrl(String detailImageUrl) {
+		this.detailImageUrl = detailImageUrl;
 	}
 
 }

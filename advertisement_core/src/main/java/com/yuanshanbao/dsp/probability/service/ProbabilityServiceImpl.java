@@ -2,8 +2,11 @@ package com.yuanshanbao.dsp.probability.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,22 +18,24 @@ import org.springframework.stereotype.Service;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
-import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementDisplayType;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
-import com.yuanshanbao.dsp.location.model.Location;
 import com.yuanshanbao.dsp.location.service.IpLocationService;
 import com.yuanshanbao.dsp.probability.dao.ProbabilityDao;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.model.QuotaType;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -53,6 +58,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 
 	@Autowired
 	private RedisService redisCacheService;
+
+	@Autowired
+	private QuotaService quotaService;
 
 	@Override
 	public List<Probability> selectProbabilitys(Probability probability, PageBounds pageBounds) {
@@ -152,7 +160,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	@Override
 	public Probability pickPrize(HttpServletRequest request, String activityKey, String channel,
 			List<Long> pickedAdvertisementIdList) {
-		List<Probability> list = selectProbabilitys(request, activityKey, channel);
+		List<Probability> list = selectProbabilitys(request, null, activityKey, channel);
 		List<Probability> unpickedList = new ArrayList<Probability>();
 		for (Probability probability : list) {
 			boolean isPicked = false;
@@ -170,61 +178,101 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	}
 
 	@Override
-	public List<Probability> selectProbabilitys(HttpServletRequest request, String activityKey, String channel) {
+	public Probability pickPrize(HttpServletRequest request, Long projectId, String activityKey, String channel,
+			List<Long> pickedAdvertisementIdList) {
+		List<Probability> list = selectProbabilityByKeyFromCache(projectId, activityKey, channel, null);
+		List<Probability> unpickedList = new ArrayList<Probability>();
+		for (Probability probability : list) {
+			boolean isPicked = false;
+			for (Long advertisementId : pickedAdvertisementIdList) {
+				if (advertisementId.equals(probability.getAdvertisementId())) {
+					isPicked = true;
+					break;
+				}
+			}
+			if (!isPicked) {
+				unpickedList.add(probability);
+			}
+		}
+		return pickGift(unpickedList);
+	}
+
+	@Override
+	public List<Probability> selectProbabilitys(HttpServletRequest request, Long projectId, String activityKey,
+			String channel) {
+		List<Probability> resultList = new ArrayList<Probability>();
 		Activity activity = ConfigManager.getActivityByKey(activityKey);
 		if (activity == null) {
 			LoggerUtil.info("未找到对应活动,activitykey={}", activityKey);
 			throw new BusinessException();
 		}
-		Probability param = new Probability();
-		param.setActivityId(activity.getActivityId());
-		param.setChannel(channel);
-		List<Probability> list = selectProbabilitys(param, new PageBounds());
-		if (list == null || list.size() == 0) {
-			list = new ArrayList<Probability>();
-			param.setChannel(null);
-			list = selectProbabilitys(param, new PageBounds());
+		List<Probability> probabilityList = selectProbabilityByKeyFromCache(projectId, activityKey, channel, null);
+		Map<Long, Probability> advertisementIdMap = new LinkedHashMap<Long, Probability>();
+		for (Probability probability : probabilityList) {
+			if (probability.getStartTime() != null) {
+				if (probability.getStartTime().after(new Date())) {
+					continue;
+				}
+			}
+			if (probability.getEndTime() != null) {
+				if (probability.getEndTime().before(new Date())) {
+					continue;
+				}
+			}
+			advertisementIdMap.put(probability.getAdvertisementId(), probability);
 		}
-		List<Probability> resultList = new ArrayList<Probability>();
-		for (Probability prob : list) {
-			if (prob.getAdvertisementId() != null) {
-				List<AdvertisementStrategy> advertisementStrategyList = ConfigManager.getAdvertisementStrategy(prob
-						.getAdvertisementId() + "");
-				if (advertisementStrategyList != null) {
-					boolean strategyPass = true;
-					for (AdvertisementStrategy advertisementStrategy : advertisementStrategyList) {
-						if (advertisementStrategy.getType().equals(AdvertisementStrategyType.REGION)) {
-							Location location = ipLocationService.queryIpLocation(JSPHelper.getRemoteAddr(request));
-							Location configLocation = ConstantsManager.getLocationByCode(advertisementStrategy
-									.getValue());
-							if (location != null && configLocation != null
-									&& !configLocation.contains(location.getCode())) {
-								strategyPass = false;
-								break;
-							}
-						}
-					}
-					if (!strategyPass) {
-						continue;
-					}
-				}
-			}
-			if (param.getChannel() == null) {
-				if (StringUtils.isBlank(prob.getChannel())) {
-					resultList.add(prob);
-				}
-			} else if (param.getChannel().equals(prob.getChannel())) {
-				resultList.add(prob);
-			}
+		if (advertisementIdMap.size() == 0) {
+			return resultList;
+		}
 
+		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channel);
+
+		for (Quota quota : quotaList) {
+			// TODO 走活动下默认的quota数量判断
+			if (quota.getCount() != null && quota.getCount() > 0) {
+				String countValue = "";
+				if (QuotaType.CPC.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementClickCountPVKey(null,
+							quota.getAdvertisementId() + "", quota.getChannel()));
+				}
+				if (QuotaType.CPM.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
+							quota.getAdvertisementId() + "", quota.getChannel()));
+				}
+				if (QuotaType.CPT.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
+							quota.getAdvertisementId() + "", quota.getChannel()));
+				}
+				if (ValidateUtil.isNumber(countValue)) {
+					Integer currentCount = Integer.parseInt(countValue);
+					if (currentCount > quota.getCount()) {
+						advertisementIdMap.remove(quota.getAdvertisementId());
+					}
+				}
+			}
+			if (quota.getStartTime() != null) {
+				if (quota.getStartTime().after(new Date())) {
+					advertisementIdMap.remove(quota.getAdvertisementId());
+				}
+			}
+			if (quota.getEndTime() != null) {
+				if (quota.getEndTime().before(new Date())) {
+					advertisementIdMap.remove(quota.getAdvertisementId());
+				}
+			}
 		}
+		resultList.addAll(advertisementIdMap.values());
 		return resultList;
 	}
 
 	private Probability pickGift(List<Probability> probabilityList) {
 		double total = 0;
 		for (Probability pro : probabilityList) {
-			total += pro.getProbability();
+			if (pro.getProbability() == null) {
+				continue;
+			} else {
+				total += pro.getProbability();
+			}
 		}
 		double value = Math.random() * total;
 		double current = 0;
@@ -276,4 +324,111 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return resultList;
 	}
 
+	@Override
+	public List<Probability> selectProbabilityByKeyFromCache(Long projectId, String activityKey, String channelKey,
+			List<Long> advertisementIdList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		List<Probability> activityProList = new ArrayList<Probability>();
+		List<Probability> channelProList = new ArrayList<Probability>();
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
+		Channel channel = ConfigManager.getChannel(channelKey);
+		if (channel == null) {
+			LoggerUtil.info("未找到对应渠道,channelKey={}", channelKey);
+			throw new BusinessException();
+		}
+		if (activity == null) {
+			LoggerUtil.info("未找到对应活动,activitykey={}", activityKey);
+			throw new BusinessException();
+		}
+		if (projectId == null) {
+			return resultList;
+		}
+		List<Probability> probabilityList = ConstantsManager.getProbabilityList(projectId);
+		if (probabilityList == null) {
+			return resultList;
+		}
+		if (isCombination(activity.getCombination())) {
+			resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey, probabilityList);
+		} else {
+			if (isIndependent(channel.getIndependent())) {
+				resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
+						probabilityList);
+			} else {
+				activityProList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
+				channelProList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
+						probabilityList);
+				resultList = dealProbabilityConfig(activityProList, channelProList);
+			}
+		}
+		return resultList;
+	}
+
+	private List<Probability> selectProbabilityByActivityId(Long activityId, List<Probability> probabilityList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		for (Probability probability : probabilityList) {
+			if (activityId.equals(probability.getActivityId()) && probability.getChannel() == null) {
+				resultList.add(probability);
+			}
+		}
+		return resultList;
+	}
+
+	private List<Probability> selectProbabilityByChannelAndActivityKey(Long activityId, String channelKey,
+			List<Probability> probabilityList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		for (Probability probability : probabilityList) {
+			if (activityId.equals(probability.getActivityId()) && channelKey.equals(probability.getChannel())) {
+				resultList.add(probability);
+			}
+		}
+		return resultList;
+	}
+
+	private boolean isCombination(Integer combination) {
+		if (combination.equals(0)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private boolean isIndependent(Integer independent) {
+		if (independent != null && independent.equals(0)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private List<Probability> dealProbabilityConfig(List<Probability> activityProList, List<Probability> channelProList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		for (Probability probability : channelProList) {
+			activityProList = dealDisplayType(probability, activityProList);
+		}
+		resultList = activityProList;
+		return resultList;
+	}
+
+	private List<Probability> dealDisplayType(Probability probability, List<Probability> activityProList) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		if (probability.getDisplayType().equals(AdvertisementDisplayType.ADD)) {
+			activityProList.add(probability);
+		} else {
+			ListIterator<Probability> it = activityProList.listIterator();
+			while (it.hasNext()) {
+				Probability pro = it.next();
+				if (probability.getAdvertisementId().equals(pro.getAdvertisementId())) {
+					if (probability.getDisplayType().equals(AdvertisementDisplayType.COVER)) {
+						it.remove();
+						it.set(probability);
+					}
+					if (probability.getDisplayType().equals(AdvertisementDisplayType.DELETE)) {
+						it.remove();
+					}
+				}
+			}
+		}
+		resultList = activityProList;
+		return resultList;
+	}
 }

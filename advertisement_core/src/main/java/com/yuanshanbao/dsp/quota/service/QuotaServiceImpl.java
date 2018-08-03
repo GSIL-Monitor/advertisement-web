@@ -8,18 +8,27 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.limitation.service.LimitationService;
+import com.yuanshanbao.dsp.location.model.Location;
+import com.yuanshanbao.dsp.location.service.MobileLocationService;
+import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.quota.dao.QuotaDao;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.service.AdvertisementStatisticsService;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -27,6 +36,12 @@ public class QuotaServiceImpl implements QuotaService {
 
 	@Autowired
 	private QuotaDao quotaDao;
+
+	@Autowired
+	private MobileLocationService mobileLocationService;
+
+	@Autowired
+	private LimitationService limitationService;
 
 	@Autowired
 	private RedisService redisService;
@@ -149,5 +164,103 @@ public class QuotaServiceImpl implements QuotaService {
 		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistics(
 				advertisementStatistics, new PageBounds());
 		return true;
+	}
+
+	@Override
+	public List<Quota> selectQuotaByKeyFromCache(Long projectId, String activityKey, String channelKey) {
+		List<Quota> resultList = new ArrayList<Quota>();
+		if (projectId == null) {
+			return resultList;
+		}
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
+		List<Quota> quotaList = ConstantsManager.getQuotaList(projectId);
+		if (quotaList == null) {
+			return resultList;
+		}
+		List<Quota> activityQuotaList = getActivityQuota(activity.getActivityId(), quotaList);
+		List<Quota> channelQuotaList = getChannelQuota(activity.getActivityId(), channelKey, quotaList);
+		resultList = dealQuotaList(activityQuotaList, channelQuotaList);
+		return resultList;
+	}
+
+	private List<Quota> dealQuotaList(List<Quota> activityQuotaList, List<Quota> channelQuotaList) {
+		List<Quota> result = new ArrayList<Quota>();
+		Map<Long, Quota> activityMap = new HashMap<Long, Quota>();
+		Map<Long, Quota> channelMap = new HashMap<Long, Quota>();
+		for (Quota quota : activityQuotaList) {
+			activityMap.put(quota.getAdvertisementId(), quota);
+		}
+		for (Quota quota : channelQuotaList) {
+			channelMap.put(quota.getAdvertisementId(), quota);
+		}
+		for (Long advertisementId : activityMap.keySet()) {
+			if (!channelMap.containsKey(advertisementId)) {
+				channelQuotaList.add(activityMap.get(advertisementId));
+			} else {
+				continue;
+			}
+		}
+		result = channelQuotaList;
+		return result;
+	}
+
+	private List<Quota> getChannelQuota(Long activityId, String channelKey, List<Quota> quotaList) {
+		List<Quota> result = new ArrayList<Quota>();
+		for (Quota quota : quotaList) {
+			if (activityId.equals(quota.getActivityId()) && channelKey.equals(quota.getChannel())) {
+				result.add(quota);
+			}
+		}
+		return result;
+	}
+
+	private List<Quota> getActivityQuota(Long activityId, List<Quota> quotaList) {
+		List<Quota> result = new ArrayList<Quota>();
+		for (Quota quota : quotaList) {
+			if (activityId.equals(quota.getActivityId())) {
+				result.add(quota);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Quota pickGoodsForInformation(Long activityId, Information information) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Transactional
+	@Override
+	public Quota pickProductForApply(User user, Product product) {
+		Quota params = new Quota();
+		params.setProductId(product.getProductId());
+		List<Quota> list = selectQuota(params, new PageBounds());
+		if (list.size() <= 0) {
+			return null;
+		}
+		Quota quota = list.get(0);
+		dealQuotaStock(quota);
+		Location location = mobileLocationService.queryMobileLocation(user.getMobile());
+		quota.setLocation(location);
+		try {
+			boolean result = limitationService.lockStock(quota);
+			if (result) {
+				return quota;
+			}
+		} catch (BusinessException e) {
+			// 锁库存失败
+		}
+		return null;
+	}
+
+	public void dealQuotaStock(Quota quota) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("quotaId", quota.getQuotaId());
+		parameters.put("count", 1);
+		int result = quotaDao.lockStock(parameters);
+		if (result <= 0) {
+			throw new BusinessException(ComRetCode.ORDER_LOCK_STOCK_FAIL_ERROR);
+		}
 	}
 }

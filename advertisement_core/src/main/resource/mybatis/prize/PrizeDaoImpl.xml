@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="prize">
+
+	<resultMap id="prizeMap" type="Prize">
+		<id property="prizeId" column="prize_id" jdbcType="NUMERIC" />
+		<result property="advertisementId" column="advertisement_id"
+			jdbcType="NUMERIC" />
+		<result property="key" column="key" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="smallImageUrl" column="small_image_url"
+			jdbcType="VARCHAR" />
+		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
+		<result property="link" column="link" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectPrize" parameterType="Prize" resultMap="prizeMap">
+		select
+		* from
+		tb_prize t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="prizeId != null">
+					prize_id=#{prizeId} and
+				</if>
+				<if test="advertisementId != null">
+					advertisement_id=#{advertisementId} and
+				</if>
+				<if test="key != null">
+					`key` = #{key} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectPrizeByIds" parameterType="List" resultMap="prizeMap">
+		select
+		* from
+		tb_prize t
+		<where>
+			prize_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertPrize" parameterType="Prize">
+		insert into
+		tb_prize(advertisement_id, `key`, name, title, description,
+		small_image_url, image_url, link,
+		status, create_time, update_time)
+		values
+		(#{advertisementId},#{key}, #{name}, #{title}, #{description},
+		#{smallImageUrl}, #{imageUrl}, #{link},
+		#{status}, sysdate(),
+		sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="prizeId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updatePrize" parameterType="Prize">
+		update tb_prize
+		<set>
+			<trim suffixOverrides=",">
+				<if test="key != null">
+					`key`=#{key},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="title != null">
+					title=#{title},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="smallImageUrl != null">
+					small_image_url=#{smallImageUrl},
+				</if>
+				<if test="imageUrl != null">
+					image_url=#{imageUrl},
+				</if>
+				<if test="link != null">
+					link=#{link},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			prize_id=#{prizeId} or advertisement_id=#{advertisementId}
+		</where>
+	</update>
+
+	<delete id="deletePrize" parameterType="long">
+		delete from tb_prize
+		where
+		prize_id=#{prizeId}
+	</delete>
+	
+	<!-- 查找保险奖品 -->
+	<select id="selectInsurancePrize" parameterType="Prize" resultMap="prizeMap">
+		select
+		* from
+		tb_prize t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="prizeId != null">
+					prize_id=#{prizeId} and
+				</if>
+				<if test="key != null">
+					`key` = #{key} and
+				</if>
+				<if test="name != null">
+					name = #{name} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1 and advertisement_id is null
+		</where>
+		order by create_time desc
+	</select>
+
+</mapper>

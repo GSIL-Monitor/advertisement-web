@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.config.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -18,9 +19,12 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.dao.ConfigDao;
 import com.yuanshanbao.dsp.config.model.Config;
@@ -297,6 +301,133 @@ public class ConfigServiceImpl implements ConfigService {
 			}
 		}
 		return getConfigValueMap;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Map<Integer, ConfigCategory> getConfigCategoryList(Long activityId, String channel) {
+		// 获取function表 key， defaultAction参数。
+		Map<String, String> map = ConfigManager.getConfigMap(activityId, channel, null, null);
+
+		List<String> keys = new ArrayList<String>();
+		Iterator i = map.entrySet().iterator();
+		// 获取function表所以的key
+		while (i.hasNext()) {// 只遍历一次,速度快
+			Entry entry = (Entry) i.next();
+			keys.add((String) entry.getKey());
+		}
+		// for (Entry<String, String> entry : map.entrySet()) {
+		//
+		// }
+
+		Map<String, Function> functionMap = functionService.selectFunctionByKeys(keys);
+		for (String key : keys) {
+			Function function = functionMap.get(key);
+			String action = map.get(key);
+			if (action == null) {
+				action = "";
+			}
+			function.setDefaultAction(action);
+		}
+		// 获取key的function map
+		List<Function> functionList = new ArrayList<Function>();
+		// map中value转换为list
+		functionList.addAll(functionMap.values());
+		// 重新排序。按照category从低到高顺序，若category相同则判断functionId
+		Collections.sort(functionList, new Comparator<Function>() {
+
+			@Override
+			public int compare(Function o1, Function o2) {
+				if (o1.getCategory() > o2.getCategory()) {
+					return 1;
+				} else if (o1.getCategory() < o2.getCategory()) {
+					return -1;
+				} else {
+					return (int) (o1.getFunctionId() - o2.getFunctionId());
+				}
+			}
+		});
+
+		// 新增category类，类包含 按类型排序后的数据，即 category ，该类型的function list
+		//
+		Map<Integer, ConfigCategory> categoryMap = new LinkedHashMap<Integer, ConfigCategory>();
+		for (Function function : functionList) {
+			ConfigCategory categoryList = categoryMap.get(function.getCategory());
+			if (categoryList == null) {
+				categoryList = new ConfigCategory();
+				categoryMap.put(function.getCategory(), categoryList);
+			}
+			categoryList.setConfigCategory(function.getCategory());
+			categoryList.getFunctionList().add(function);
+		}
+		return categoryMap;
+	}
+
+	@Override
+	public void updateActivityConfig(HttpServletRequest request, Long activityId, String channel) {
+		// 获取function表 key， defaultAction参数。
+		Map<String, String> map = ConfigManager.getConfigMap(activityId, channel, null, null);
+
+		List<String> keys = new ArrayList<String>();
+		Iterator i = map.entrySet().iterator();
+		String date = DateUtils.format(new Date());
+		// 获取function表所以的key
+		while (i.hasNext()) {
+			Entry entry = (Entry) i.next();
+			keys.add((String) entry.getKey());
+		}
+		// 获取key的function map
+		Map<String, Function> functionMap = functionService.selectFunctionByKeys(keys);
+		// 校验验证手机号是否是无
+		checkMobileVerfiy(functionMap, keys, request, map);
+		for (String key : keys) {
+			// 取出function中key对应的value；
+			String params = request.getParameter(key); // key对应的value
+			// value比较不相等，意味著更改
+			if (StringUtils.isBlank(params) && map.get(key) == null) {
+				continue;
+			}
+			if (!params.equals(map.get(key))) {
+				Config config = new Config();
+				config.setActivityId(activityId);
+				config.setFunctionId(functionMap.get(key).getFunctionId());
+				config.setStatus(CommonStatus.ONLINE);
+				config.setChannel(channel);
+				List<Config> configList = selectConfig(config, new PageBounds());
+				for (Config exist : configList) {
+					if (exist.getChannel() == null) {
+						if (config.getChannel() == null) {
+							config = exist;
+						}
+					} else if (exist.getChannel().equals(config.getChannel())) {
+						config = exist;
+					}
+				}
+				LoggerUtil
+						.info("[activity_config] date={}, activityId={}, channel={}, functionId={}, value={}, replaceValue={}",
+								date, activityId, channel, config.getFunctionId(), map.get(key), params);
+				config.setAction(params);
+				insertOrUpdateConfig(config);
+			}
+		}
+	}
+
+	private void checkMobileVerfiy(Map<String, Function> functionMap, List<String> keys, HttpServletRequest request,
+			Map<String, String> map) {
+		for (String key : keys) {
+			// 取出function中key对应的value；
+			String params = request.getParameter(key); // key对应的value
+			if (!ConfigConstants.HAS_VERIFY_CODE.equals(key)) {
+				continue;
+			}
+			// value比较不相等，意味著更改
+			if (StringUtils.isBlank(params) && map.get(key) == null) {
+				continue;
+			}
+			if (!params.equals(map.get(key)) && "false".equals(params)) {
+				throw new BusinessException(ComRetCode.CONFIG_NO_SMS_FORMAT_ERROR);
+			}
+		}
 	}
 
 }

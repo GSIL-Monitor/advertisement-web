@@ -6,26 +6,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.paginator.domain.PageBounds;
+import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.apply.model.Apply;
+import com.yuanshanbao.dsp.apply.model.ApplyUserStatus;
+import com.yuanshanbao.dsp.apply.service.ApplyService;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.product.dao.ProductDao;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+
+	private static final String INI_INCREASE_RANGE = "product_count_increase_";
+
+	private static final String INI_INITIAL_RANGE = "product_count_initial_";
 
 	@Autowired
 	private ProductDao productDao;
 
 	@Autowired
 	private MerchantService merchantService;
+
+	@Autowired
+	private ApplyService applyService;
 
 	@Autowired
 	private RedisService redisCacheService;
@@ -119,6 +135,62 @@ public class ProductServiceImpl implements ProductService {
 			map.put(product.getProductId(), product);
 		}
 		return map;
+	}
+
+	public void increaseProductCount(Long productId) {
+		int increaseCount = 1;
+		increaseCount = getRandomFromRange(IniBean.getIniValue(INI_INCREASE_RANGE + productId, "1,3"));
+		redisCacheService.increBy(RedisConstant.getProductShowCountKey(productId + ""), increaseCount);
+
+	}
+
+	private Integer getRandomFromRange(String numRange) {
+		int random = 0;
+		String[] s = numRange.split(",");
+		if (s.length == 2) {
+			double min = Double.parseDouble(s[0]);
+			double max = Double.parseDouble(s[1]);
+			random = (int) (Math.random() * (max - min + 1) + min);
+		}
+		return random;
+	}
+
+	@Override
+	public Long getApplyCount(Long productId) {
+		String key = RedisConstant.getProductShowCountKey(productId + "");
+		String str = (String) redisCacheService.get(key);
+		long count = 0;
+		if (ValidateUtil.isNumber(str)) {
+			count = Long.parseLong(str);
+		}
+		if (count == 0) {
+			count = (long) getRandomFromRange(IniBean.getIniValue(INI_INITIAL_RANGE + productId, "3000,5000"));
+			redisCacheService.set(key, count + "");
+		}
+		return count;
+	}
+
+	@Override
+	public String getApplyInterface(Product product, User user, HttpServletRequest request) {
+		Apply apply = new Apply();
+		apply.setProductId(product.getProductId());
+		apply.setUserId(user.getUserId());
+		List<Apply> applies = applyService.selectApplys(apply, new PageBounds());
+		if (applies.size() > 0) {
+			apply = applies.get(0);
+			if (apply.getUserStatus() != null && (apply.getUserStatus().equals(ApplyUserStatus.BLACK))) {
+				return null;
+			}
+		} else {
+			// applyService.insertOrUpdateApply(user, product.getProductId(),
+			// ApplyStatus.APPLING);
+		}
+		// PreProductHandler handler = getPreHandle(product, user, request);
+		// if (handler != null &&
+		// StringUtils.isNotBlank(handler.getApplyInterface())) {
+		// return handler.getApplyInterface();
+		// }
+		return product.getApplyInterface();
 	}
 
 }

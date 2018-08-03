@@ -5,7 +5,7 @@
 <@sideBar />
 <script>
 $(document).ready(function(){
-	dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?appId=${appId}";
+	dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?activityId=${activityId}";
 	dataTableConfig.columns = [{
       		"data": "${functionId}"
     	}, {

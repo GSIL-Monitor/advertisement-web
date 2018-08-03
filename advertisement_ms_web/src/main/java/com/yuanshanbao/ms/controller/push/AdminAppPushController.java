@@ -20,9 +20,6 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.ms.controller.base.PaginationController;
-import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.paginator.domain.PageList;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.IniBean;
@@ -32,18 +29,21 @@ import com.yuanshanbao.dsp.push.model.AppPush;
 import com.yuanshanbao.dsp.push.service.AppPushService;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.service.UserService;
+import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.paginator.domain.PageBounds;
+import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
 @RequestMapping("/admin/appPush")
 public class AdminAppPushController extends PaginationController {
 
-	private static final String PAGE_LIST = "loan/push/listAppPush";
+	private static final String PAGE_LIST = "advertisement/push/listAppPush";
 
-	private static final String PAGE_INSERT = "loan/push/insertAppPush";
+	private static final String PAGE_INSERT = "advertisement/push/insertAppPush";
 
-	private static final String PAGE_UPDATE = "loan/push/updateAppPush";
+	private static final String PAGE_UPDATE = "advertisement/push/updateAppPush";
 
-	private static final String PAGE_VIEW = "loan/push/viewAppPush";
+	private static final String PAGE_VIEW = "advertisement/push/viewAppPush";
 
 	public static final String TEST_APPPUSH_KEY = "test_app_push";
 
@@ -103,7 +103,7 @@ public class AdminAppPushController extends PaginationController {
 			if (user == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			appPush.setUserId(user.getUserId());
+			appPush.setUserId(user.getUserId() + "");
 		}
 	}
 

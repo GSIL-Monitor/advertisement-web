@@ -59,8 +59,8 @@ public class AppDownloadController extends BaseController {
 		}
 		String iosDownloadUrl = null, androidDownloadUrl = null;
 		if (c != null) {
-			iosDownloadUrl = c.getIosDownloadUrl();
-			androidDownloadUrl = c.getAndroidDownloadUrl();
+			// iosDownloadUrl = c.getIosDownloadUrl();
+			// androidDownloadUrl = c.getAndroidDownloadUrl();
 		}
 		String url;
 		if (RequestUtil.isFromIOS(request)) {

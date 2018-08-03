@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.location.model.Location;
 
 public class Quota {
 
@@ -12,16 +13,22 @@ public class Quota {
 	private Long projectId;
 	private Long activityId;
 	private Long positionId;
+	private Long productId;
+	private Long merchantId;
 	private String channel;
 	private Long advertisementId;
 	private Integer type;
 	private Integer count;
+	private Integer stock;
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private BigDecimal unitPrice;
+	private Integer displayType;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+
+	private Location location;
 
 	private List<Long> advertisementIdList;
 
@@ -151,6 +158,46 @@ public class Quota {
 
 	public void setAdvertisementId(Long advertisementId) {
 		this.advertisementId = advertisementId;
+	}
+
+	public Integer getDisplayType() {
+		return displayType;
+	}
+
+	public void setDisplayType(Integer displayType) {
+		this.displayType = displayType;
+	}
+
+	public Integer getStock() {
+		return stock;
+	}
+
+	public void setStock(Integer stock) {
+		this.stock = stock;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	public Long getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(Long merchantId) {
+		this.merchantId = merchantId;
 	}
 
 }

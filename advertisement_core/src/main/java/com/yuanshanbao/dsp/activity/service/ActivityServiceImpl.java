@@ -13,6 +13,9 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.dsp.activity.dao.ActivityDao;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.information.service.InformationService;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
@@ -24,6 +27,9 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private InformationService informationService;
 
 	@Override
 	public List<Activity> selectActivitys(Activity activity, PageBounds pageBounds) {
@@ -111,6 +117,7 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 		Activity param = new Activity();
 		param.setKey(key);
+
 		List<Activity> list = selectActivitys(param, new PageBounds());
 		for (Activity activity : list) {
 			if (key.equals(activity.getKey())) {
@@ -120,4 +127,24 @@ public class ActivityServiceImpl implements ActivityService {
 		return null;
 	}
 
+	@Override
+	public Information applyActivityForInformation(User user, Information information, Activity activity) {
+		// if (activity == null) {
+		// throw new
+		// BusinessException(ComRetCode.FREE_INSURANCE_NOT_EXIST_ERROR);
+		// }
+		// if (information == null) {
+		// throw new BusinessException(ComRetCode.INSURANT_NOT_EXIST_ERROR);
+		// }
+		// Quota quota =
+		// quotaService.pickGoodsForInformation(activity.getActivityId(),
+		// information);
+		// if (quota == null) {
+		// informationService.insertInformation(information);
+		// throw new BusinessException(ComRetCode.ORDER_DELIVER_ERROR);
+		// }
+		// applyForInformation(information, activity, quota);
+		// return information;
+		return null;
+	}
 }

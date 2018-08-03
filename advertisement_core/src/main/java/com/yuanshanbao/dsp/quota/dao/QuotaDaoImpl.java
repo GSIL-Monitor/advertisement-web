@@ -2,11 +2,12 @@ package com.yuanshanbao.dsp.quota.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.base.dao.BaseDaoImpl;
+import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Repository
@@ -39,6 +40,11 @@ public class QuotaDaoImpl extends BaseDaoImpl implements QuotaDao {
 		}
 
 		return getSqlSession().selectList("quota.selectQuotaByIds", quotaIds);
+	}
+
+	@Override
+	public int lockStock(Map<String, Object> parameters) {
+		return getSqlSession().update("quota.lockStock", parameters);
 	}
 
 }

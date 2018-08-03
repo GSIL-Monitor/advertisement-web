@@ -14,9 +14,11 @@ public class Activity {
 	private Long activityId;
 	private String name;
 	private String key;
+	private Integer type;
 	private String entranceUrl;
 	private String imageUrl;
 	private Integer status;
+	private Integer combination;
 	private Timestamp createTime;
 	private Timestamp updateTime;
 
@@ -90,6 +92,36 @@ public class Activity {
 
 	public String getCreateTimeContent() {
 		return DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss");
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getTypeValue() {
+		return ActivityType.getDescription(type);
+	}
+
+	public Integer getCombination() {
+		return combination;
+	}
+
+	public void setCombination(Integer combination) {
+		this.combination = combination;
+	}
+
+	public String addCombineUrl(String parentKey) {
+		String addKey = "activityKey=" + key + "&parentKey=" + parentKey;
+		if (entranceUrl.contains("?")) {
+			entranceUrl += "&" + addKey;
+		} else {
+			entranceUrl += "?" + addKey;
+		}
+		return entranceUrl;
 	}
 
 }

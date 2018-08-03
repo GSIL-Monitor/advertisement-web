@@ -19,6 +19,7 @@
         <typeAlias type="com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics" alias="AdvertisementStatistics"/>
         
         <typeAlias type="com.yuanshanbao.dsp.app.model.AppInfo" alias="AppInfo"/>
+        <typeAlias type="com.yuanshanbao.dsp.push.model.AppPush" alias="AppPush"/>
         <typeAlias type="com.yuanshanbao.dsp.advertisement.model.Advertisement" alias="Advertisement"/>
         <typeAlias type="com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy" alias="AdvertisementStrategy"/>
         <typeAlias type="com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory" alias="AdvertisementCategory"/>
@@ -56,6 +57,12 @@
         <typeAlias type="com.yuanshanbao.dsp.product.model.ProductBind" alias="ProductBind"/>
         
         <typeAlias type="com.yuanshanbao.dsp.information.model.FieldConstrains" alias="FieldConstrains"/>
+        <typeAlias type="com.yuanshanbao.dsp.prize.model.Prize" alias="Prize"/>
+        <typeAlias type="com.yuanshanbao.dsp.activity.model.ActivityCombine" alias="ActivityCombine"/>
+        <typeAlias type="com.yuanshanbao.dsp.bill.model.Bill" alias="Bill"/>
+        <typeAlias type="com.yuanshanbao.dsp.channel.model.ChannelPromotionInfo" alias="ChannelPromotionInfo"/>
+        <typeAlias type="com.yuanshanbao.dsp.limitation.model.Limitation" alias="Limitation"/>
+        <typeAlias type="com.yuanshanbao.dsp.apply.model.Apply" alias="Apply"/>
     </typeAliases>
 
     <mappers>
@@ -103,5 +110,12 @@
         <mapper resource="mybatis/position/PositionDaoImpl.xml"/>
         <mapper resource="mybatis/probability/ProbabilityDaoImpl.xml"/>
         <mapper resource="mybatis/quota/QuotaDaoImpl.xml"/>
+        <mapper resource="mybatis/prize/PrizeDaoImpl.xml"/>
+        <mapper resource="mybatis/activity/ActivityCombineDaoImpl.xml"/>
+        <mapper resource="mybatis/bill/BillDaoImpl.xml"/>
+        <mapper resource="mybatis/channel/ChannelPromotionInfoDaoImpl.xml"/>
+        <mapper resource="mybatis/limitation/LimitationDaoImpl.xml"/>
+        <mapper resource="mybatis/apply/ApplyDaoImpl.xml"/>
+        <mapper resource="mybatis/push/AppPushDaoImpl.xml"/>
     </mappers>
 </configuration>

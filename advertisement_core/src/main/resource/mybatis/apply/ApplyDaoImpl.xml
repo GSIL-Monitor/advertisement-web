@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="apply">
+
+	<resultMap id="applyMap" type="Apply">
+		<id property="applyId" column="apply_id" jdbcType="VARCHAR" />
+		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="informationId" column="information_id" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="userStatus" column="user_status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectApply" parameterType="Apply" resultMap="applyMap">
+		select
+		* from
+		tb_apply t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="applyId != null">
+					apply_id=#{applyId} and
+				</if>
+				<if test="userId != null">
+					user_id=#{userId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId} and
+				</if>
+				<if test="informationId != null">
+					information_id=#{informationId} and
+				</if>
+				<if test="productId != null">
+					product_id=#{productId} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+				<if test="userStatus != null">
+					user_status = #{userStatus} and
+				</if>
+				<if test="statusList != null">
+					status in
+					<foreach item="status" collection="statusList" open="("
+						separator="," close=")">
+						#{status}
+					</foreach>
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectApplyByIds" parameterType="List" resultMap="applyMap">
+		select
+		* from
+		tb_apply t
+		<where>
+			apply_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertApply" parameterType="Apply">
+		insert into
+		tb_apply(apply_id, user_id, merchant_id, information_id, product_id,
+		status,user_status, create_time, update_time)
+		values
+		(#{applyId},
+		#{userId}, #{merchantId},#{informationId}, #{productId},
+		#{status},#{userStatus}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="applyId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateApply" parameterType="Apply">
+		update tb_apply
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id=#{userId},
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId},
+				</if>
+				<if test="informationId != null">
+					information_id=#{informationId},
+				</if>
+				<if test="productId != null">
+					product_id=#{productId},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				<if test="userStatus != null">
+					user_status=#{userStatus},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			apply_id=#{applyId}
+		</where>
+	</update>
+
+	<delete id="deleteApply" parameterType="long">
+		delete from tb_apply
+		where
+		apply_id=#{applyId}
+	</delete>
+
+	<!-- 用户申请列表，status > 1 -->
+	<select id="selectUserApply" parameterType="Apply" resultMap="applyMap">
+		select
+		* from
+		tb_apply t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="applyId != null">
+					apply_id=#{applyId} and
+				</if>
+				<if test="userId != null">
+					user_id=#{userId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId} and
+				</if>
+				<if test="informationId != null">
+					information_id=#{informationId} and
+				</if>
+				<if test="productId != null">
+					product_id=#{productId} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+				<if test="userStatus != null">
+					user_status = #{userStatus} and
+				</if>
+				<if test="statusList != null">
+					status in
+					<foreach item="status" collection="statusList" open="("
+						separator="," close=")">
+						#{status}
+					</foreach>
+				</if>
+			</trim>
+			and status &gt; 1
+		</where>
+		order by create_time desc
+	</select>
+
+</mapper>

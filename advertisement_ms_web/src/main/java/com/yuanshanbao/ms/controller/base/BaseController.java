@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -11,6 +12,7 @@ import com.yuanshanbao.common.constant.SystemConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.RequestUtil;
 import com.yuanshanbao.common.validator.util.ValidatorModel;
 import com.yuanshanbao.common.validator.util.ValidatorUtils;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
@@ -118,5 +120,56 @@ public class BaseController {
 			return advertiserList.get(0);
 		}
 		return null;
+	}
+
+	protected String redirect(String url) {
+		if (!url.contains(".")) {
+			url = url + ".html";
+		}
+		return "redirect:" + url;
+	}
+
+	protected String getFtlPath(HttpServletRequest request, String ftl) {
+		setHost(request);
+		if (isMobile(request)) {
+			return "/wap" + ftl;
+		}
+		return "/web" + ftl;
+	}
+
+	protected boolean isMobile(HttpServletRequest request) {
+		if (RequestUtil.isFromWeixin(request)) {
+			request.setAttribute("isFromWeixin", "true");
+		}
+		if (CommonUtil.isMobile(request)) {
+			request.setAttribute("isMobilePage", "true");
+			return true;
+		}
+		return false;
+	}
+
+	private void setHost(HttpServletRequest request) {
+		try {
+			String host = request.getHeader("Host");
+			if (StringUtils.isNotBlank(host) && host.contains("yuanshanbao")) {
+				request.setAttribute("isYuanshanbao", "true");
+			} else if (StringUtils.isNotBlank(host) && host.contains("dachuanbao")) {
+				request.setAttribute("isDachuanbao", "true");
+			} else if (StringUtils.isNotBlank(host) && host.contains("yuanshanbx.com")) {
+				request.setAttribute("isYuanshanbx", "true");
+			} else if (StringUtils.isNotBlank(host) && host.contains("huhabao.com")) {
+				request.setAttribute("isHuhabao", "true");
+			} else if (StringUtils.isNotBlank(host) && host.contains("ruidaiwang.cn")) {
+				request.setAttribute("isRuidaiwang", "true");
+			}
+			String isHttps = request.getHeader("IsHttps");
+			if ("false".equals(isHttps)) {
+				request.setAttribute("isHttps", "false");
+			} else {
+				request.setAttribute("isHttps", "true");
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("[setHost]", e);
+		}
 	}
 }

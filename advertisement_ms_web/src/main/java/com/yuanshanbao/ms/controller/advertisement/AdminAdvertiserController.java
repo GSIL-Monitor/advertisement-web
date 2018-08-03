@@ -65,6 +65,10 @@ public class AdminAdvertiserController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
+		Advertiser user = getBindAdvertiserByUser();
+		if (user != null) {
+			advertiser.setAdvertiserId(user.getAdvertiserId());
+		}
 		Object object = advertiserService.selectAdvertiser(advertiser, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
@@ -89,10 +93,16 @@ public class AdminAdvertiserController extends PaginationController {
 			validateParameters(advertiser);
 			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
 			advertiser.setBindUserName(user.getUsername());
+			advertiser.setProjectId(getProjectId(request));
 			user.setPassword(encoder.encodePassword(user.getPassword(), null));
 			user.setProjectId(getProjectId(request));
-			advertiserService.insertAdvertiser(advertiser);
+			if (userService.isUserExits(user.getUsername())) {
+				result.put(RET_CODE_PARAM, RET_INTERROR);
+				result.put(ComRetCode.RET_DESC, "该用户已经存在，请重新输入用户名！");
+				return result;
+			}
 			userService.insertUser(user);
+			advertiserService.insertAdvertiser(advertiser);
 			groupService.insertUserGroups(user.getUsername(), new String[] { "002", "002003" });
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
@@ -161,10 +171,6 @@ public class AdminAdvertiserController extends PaginationController {
 	@RequestMapping("/view.do")
 	public String view(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
 		Advertiser advertiser = getBindAdvertiserByUser();
-		List<Advertiser> list = advertiserService.selectAdvertiser(advertiser, new PageBounds());
-		if (list != null && list.size() >= 0) {
-			advertiser = list.get(0);
-		}
 		request.setAttribute("itemEdit", advertiser);
 		return PAGE_VIEW;
 	}
@@ -178,10 +184,12 @@ public class AdminAdvertiserController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/viewAd.do")
-	public Object viewAd(String range, Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
+	public Object viewAd(String range, Advertiser advertiser, String title, HttpServletRequest request,
+			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Advertisement advertisement = new Advertisement();
 		advertisement.setAdvertiserId(advertiser.getAdvertiserId());
+		advertisement.setTitle(title);
 		Object resultList = advertisementService.selectAdvertisement(advertisement, getPageBounds(range, request));
 		PageList pageList = (PageList) resultList;
 		return setPageInfo(request, response, pageList);

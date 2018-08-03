@@ -15,8 +15,10 @@ public class Config {
 	private Long configId;
 	private Long activityId;
 	private Long merchantId;
+	private Long insuranceId;
 	private Long productId;
 	private String appKey;
+
 	private String channel;
 	private Long functionId;
 	private Boolean decision;
@@ -33,6 +35,14 @@ public class Config {
 
 	public Long getConfigId() {
 		return configId;
+	}
+
+	public Long getInsuranceId() {
+		return insuranceId;
+	}
+
+	public void setInsuranceId(Long insuranceId) {
+		this.insuranceId = insuranceId;
 	}
 
 	public void setConfigId(Long configId) {
@@ -152,6 +162,12 @@ public class Config {
 				&& CommonUtil.isNullOrEquals(this.appKey, appKey);
 	}
 
+	public boolean isMatch(Long activityId, String channel, Long merchantId, Long insuranceId, Long functionId) {
+		return isNullOrEquals(this.activityId, activityId) && isNullOrEquals(this.channel, channel)
+				&& isNullOrEquals(this.merchantId, merchantId) && isNullOrEquals(this.insuranceId, insuranceId)
+				&& isNullOrEquals(this.functionId, functionId);
+	}
+
 	public boolean isMatch(Long activityId, String channel, String appKey, Long merchantId, Long productId) {
 		return isMatch(activityId, channel, appKey, merchantId, productId, null);
 	}
@@ -179,6 +195,11 @@ public class Config {
 
 	public boolean isMatchWithoutFunction(Long activityId, String channel, String appKey) {
 		return isMatchWithoutFunction(activityId, channel, appKey, null, null);
+	}
+
+	public boolean isMatchWithoutFunction(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		return isNullOrEquals(this.activityId, activityId) && isNullOrEquals(this.channel, channel)
+				&& isNullOrEquals(this.merchantId, merchantId) && isNullOrEquals(this.insuranceId, insuranceId);
 	}
 
 	public Activity getActivity() {
@@ -235,4 +256,19 @@ public class Config {
 		this.sort = sort;
 	}
 
+	private boolean isNullOrEquals(Long value1, Long value2) {
+		if (value1 != null) {
+			return value1.equals(value2);
+		} else {
+			return true;
+		}
+	}
+
+	private boolean isNullOrEquals(String content1, String content2) {
+		if (StringUtils.isNotBlank(content1)) {
+			return content1.equals(content2);
+		} else {
+			return true;
+		}
+	}
 }

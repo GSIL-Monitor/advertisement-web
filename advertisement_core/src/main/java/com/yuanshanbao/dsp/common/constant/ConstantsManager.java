@@ -43,6 +43,8 @@ import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.dsp.product.model.ProductCategory;
+import com.yuanshanbao.dsp.product.service.ProductCategoryService;
 import com.yuanshanbao.dsp.project.model.Project;
 import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.dsp.quota.model.Quota;
@@ -137,6 +139,9 @@ public class ConstantsManager {
 
 	@Resource
 	private AdvertisementStrategyService strategyService;
+	
+	@Resource
+	private ProductCategoryService productCategoryService;
 
 	public static boolean validateConstants(long[] types, Long id) {
 		for (long type : types) {
@@ -312,8 +317,9 @@ public class ConstantsManager {
 		advertisementParam.setStatus(CommonStatus.ONLINE);
 		AdvertisementStrategy strategyParam = new AdvertisementStrategy();
 		strategyParam.setStatus(CommonStatus.ONLINE);
-		AdvertisementCategory categoryParam = new AdvertisementCategory();
-		categoryParam.setStatus(CommonStatus.ONLINE);
+		AdvertisementCategory adCategoryParam = new AdvertisementCategory();
+		adCategoryParam.setStatus(CommonStatus.ONLINE);
+		ProductCategory productCategoryParam = new ProductCategory();
 
 		PageBounds pageBounds = new PageBounds();
 		ConfigManager.refreshConfig(channelService.selectChannels(channelParam, pageBounds),
@@ -324,7 +330,8 @@ public class ConstantsManager {
 				configService.selectConfig(configParam, pageBounds),
 				advertisementService.selectAdvertisement(advertisementParam, pageBounds),
 				advertisementStrategyService.selectAdvertisementStrategy(strategyParam, pageBounds),
-				advertisementCategoryService.selectCategory(categoryParam, pageBounds));
+				advertisementCategoryService.selectCategory(adCategoryParam, pageBounds),
+				productCategoryService.selectProductCategorys(productCategoryParam, pageBounds));
 	}
 
 	private void refreshLocationMap() {
@@ -627,4 +634,5 @@ public class ConstantsManager {
 		}
 		return map.get(positionKey);
 	}
+
 }

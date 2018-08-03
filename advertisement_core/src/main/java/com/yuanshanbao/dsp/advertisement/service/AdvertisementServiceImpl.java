@@ -7,18 +7,22 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.position.model.Position;
@@ -64,6 +68,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	@Autowired
 	private AdvertisementStrategyService strategyService;
+
+	@Autowired
+	private ChannelService channelService;
+
+	@Autowired
+	private ActivityService activityService;
 
 	@Override
 	public void insertAdvertisement(Advertisement advertisement) {
@@ -340,6 +350,210 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			} else {
 				redisCacheService.incr(RedisConstant.getAdvertisementShowCountKey(quota.getAdvertisementId(),
 						positionId));
+				if (QuotaType.CPM.equals(quota.getType()) || QuotaType.CPT.equals(quota.getType())) {
+					redisCacheService.incr(RedisConstant.getQuotaCount(quota.getQuotaId()));
+				}
+			}
+		}
+	}
+
+	// 查找奖品信息
+	public List<AdvertisementVo> selectGift(String activityId, String channel) {
+		Map<Long, Probability> proMap = new HashMap<Long, Probability>();
+		Map<Long, Quota> quotaMap = new HashMap<Long, Quota>();
+		Probability probability = new Probability();
+		Quota quota = new Quota();
+		List<AdvertisementVo> result = new ArrayList<AdvertisementVo>();
+		List<Long> advertisementIds = new ArrayList<Long>();
+		Map<Long, Advertisement> adMap = new HashMap<Long, Advertisement>();
+
+		probability.setActivityId(Long.valueOf(activityId));
+		quota.setActivityId(Long.valueOf(activityId));
+		if (!StringUtils.isBlank(channel)) {
+			probability.setChannel(channel);
+			quota.setChannel(channel);
+		}
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(probability, new PageBounds());
+		List<Quota> quotaList = quotaService.selectQuota(quota, new PageBounds());
+		for (Probability pro : probabilityList) {
+			proMap.put(pro.getAdvertisementId(), pro);
+			advertisementIds.add(pro.getAdvertisementId());
+		}
+		for (Quota quo : quotaList) {
+			quotaMap.put(quo.getAdvertisementId(), quo);
+		}
+		adMap = selectAdvertisementByIds(advertisementIds);
+		for (Long advertisementId : advertisementIds) {
+			AdvertisementVo adVo = new AdvertisementVo(adMap.get(advertisementId));
+			adVo.setAdvertisementId(advertisementId);
+			adVo.setProbability(proMap.get(advertisementId));
+			adVo.setQuota(quotaMap.get(advertisementId));
+			result.add(adVo);
+		}
+		return result;
+	}
+
+	public List<Advertisement> getGift(Long projectId, String activityKey, String channelKey, Instance instance) {
+		List<Advertisement> advertismentList = new ArrayList<Advertisement>();
+		List<Probability> probabilityList = probabilityService.selectProbabilityByKeyFromCache(projectId, activityKey,
+				channelKey, null);
+		Map<Long, Probability> advertisementIdMap = new LinkedHashMap<Long, Probability>();
+		for (Probability probability : probabilityList) {
+			if (probability.getStartTime() != null) {
+				if (probability.getStartTime().after(new Date())) {
+					continue;
+				}
+			}
+			if (probability.getEndTime() != null) {
+				if (probability.getEndTime().before(new Date())) {
+					continue;
+				}
+			}
+			advertisementIdMap.put(probability.getAdvertisementId(), probability);
+		}
+		if (advertisementIdMap.size() == 0) {
+			return advertismentList;
+		}
+
+		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channelKey);
+
+		for (Quota quota : quotaList) {
+			// TODO 走活动下默认的quota数量判断
+			if (quota.getCount() != null && quota.getCount() > 0) {
+				String countValue = "";
+				if (QuotaType.CPC.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementClickCountPVKey(null,
+							quota.getAdvertisementId() + "", quota.getChannel()));
+				}
+				if (QuotaType.CPM.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
+							quota.getAdvertisementId() + "", quota.getChannel()));
+				}
+				if (QuotaType.CPT.equals(quota.getType())) {
+					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
+							quota.getAdvertisementId() + "", quota.getChannel()));
+				}
+				if (ValidateUtil.isNumber(countValue)) {
+					Integer currentCount = Integer.parseInt(countValue);
+					if (currentCount > quota.getCount()) {
+						advertisementIdMap.remove(quota.getAdvertisementId());
+					}
+				}
+			}
+			if (quota.getStartTime() != null) {
+				if (quota.getStartTime().after(new Date())) {
+					advertisementIdMap.remove(quota.getAdvertisementId());
+				}
+			}
+			if (quota.getEndTime() != null) {
+				if (quota.getEndTime().before(new Date())) {
+					advertisementIdMap.remove(quota.getAdvertisementId());
+				}
+			}
+		}
+
+		List<Long> resultAdvertisementIdList = new ArrayList<Long>();
+		Double totalProbability = 0D;
+		for (Probability probability : advertisementIdMap.values()) {
+			if (probability.getProbability() == null) {
+				continue;
+			} else {
+				totalProbability += probability.getProbability();
+			}
+		}
+
+		for (Probability probability : advertisementIdMap.values()) {
+			if (probability.getProbability() != null) {
+				double random = Math.random() * totalProbability;
+				if (random < probability.getProbability()) {
+					resultAdvertisementIdList.add(probability.getAdvertisementId());
+					break;
+				} else {
+					totalProbability -= probability.getProbability();
+				}
+			} else {
+				continue;
+			}
+		}
+		Map<Long, Advertisement> advertisementMap = selectAdvertisementByIds(resultAdvertisementIdList);
+		for (Long advertisementId : resultAdvertisementIdList) {
+			advertismentList.add(advertisementMap.get(advertisementId));
+		}
+
+		return advertismentList;
+	}
+
+	// // 点击量
+	// public void addAdvertisementCount(HttpServletRequest request, String
+	// activityKey, String channel, Long id,
+	// String position) {
+	// String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_CLICK + "_" +
+	// channel + "_" + id;
+	// String clickValue = (String)
+	// request.getSession().getAttribute(sessionKey);
+	// if (StringUtils.isBlank(clickValue)) {
+	// request.getSession().setAttribute(sessionKey, "true");
+	// if (StringUtils.isNotBlank(channel)) {
+	// redisCacheService.incr(RedisConstant.getAdvertisementClickCountUVKey(null,
+	// id, channel));
+	// } else {
+	// redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountUVKey(null,
+	// id, channel));
+	// }
+	// }
+	// if (StringUtils.isNotBlank(channel)) {
+	// request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM,
+	// channel);
+	// redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(),
+	// id + ":" + channel);
+	// redisCacheService.incr(RedisConstant.getAdvertisementClickCountPVKey(null,
+	// id, channel));
+	// } else {
+	// redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountPVKey(null,
+	// id, channel));
+	// }
+	// }
+	//
+	// // 曝光量
+	// public void addAdvertisementShowCount(HttpServletRequest request, String
+	// activityKey, String channel, Long id,
+	// String position) {
+	// String sessionKey = SessionConstants.SESSION_ADVERTISEMENT_SHOW + "_" +
+	// channel + "_" + id;
+	// String showValue = (String)
+	// request.getSession().getAttribute(sessionKey);
+	// if (StringUtils.isBlank(showValue)) {
+	// request.getSession().setAttribute(sessionKey, "true");
+	// if (StringUtils.isNotBlank(channel)) {
+	// redisCacheService.incr(RedisConstant.getAdvertisementShowCountUVKey(null,
+	// id, channel));
+	// } else {
+	// redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountUVKey(null,
+	// id, activityKey));
+	// }
+	// }
+	//
+	// if (StringUtils.isNotBlank(channel)) {
+	// request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM,
+	// channel);
+	// redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(),
+	// id + ":" + channel);
+	// redisCacheService.incr(RedisConstant.getAdvertisementShowCountPVKey(null,
+	// id, channel));
+	// } else {
+	// redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountPVKey(null,
+	// id, activityKey));
+	// }
+	// }
+
+	private void recordAdvertisementCount(Long projectId, String activityKey, String channel, boolean isClick) {
+		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channel);
+		for (Quota quota : quotaList) {
+			if (isClick) {
+				if (QuotaType.CPC.equals(quota.getType())) {
+					redisCacheService.incr(RedisConstant.getQuotaCount(quota.getQuotaId()));
+				}
+			} else {
 				if (QuotaType.CPM.equals(quota.getType()) || QuotaType.CPT.equals(quota.getType())) {
 					redisCacheService.incr(RedisConstant.getQuotaCount(quota.getQuotaId()));
 				}

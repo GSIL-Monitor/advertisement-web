@@ -15,7 +15,6 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -31,6 +30,7 @@ import com.yuanshanbao.dsp.page.model.Page;
 import com.yuanshanbao.dsp.page.model.PageStep;
 import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.user.service.UserService;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
 public class ExtendInfoServiceImpl implements ExtendInfoService {
@@ -294,7 +294,7 @@ public class ExtendInfoServiceImpl implements ExtendInfoService {
 	}
 
 	@Override
-	public Map<String, String> getExtendInfoMap(String userId, Long informationId) {
+	public Map<String, String> getExtendInfoMap(Long userId, Long informationId) {
 		Map<String, String> map = new HashMap<String, String>();
 		ExtendInfo params = new ExtendInfo();
 		params.setUserId(userId);

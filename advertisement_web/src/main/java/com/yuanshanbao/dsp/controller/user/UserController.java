@@ -16,6 +16,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
 import com.github.sd4324530.fastweixin.api.response.OauthGetTokenResponse;
+import com.yuanshanbao.common.constant.SessionConstants;
+import com.yuanshanbao.common.exception.BusinessException;
+import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.CookieUtils;
+import com.yuanshanbao.common.util.DataFormat;
+import com.yuanshanbao.common.util.JSPHelper;
+import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.MD5Util;
+import com.yuanshanbao.common.util.RandomUtil;
+import com.yuanshanbao.common.util.StringUtil;
+import com.yuanshanbao.common.util.UploadUtils;
+import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.common.util.VerifyFormatUtil;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -35,19 +48,6 @@ import com.yuanshanbao.dsp.user.service.InviteCodeService;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.dsp.weixin.service.WeixinService;
-import com.yuanshanbao.common.constant.SessionConstants;
-import com.yuanshanbao.common.exception.BusinessException;
-import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.CookieUtils;
-import com.yuanshanbao.common.util.DataFormat;
-import com.yuanshanbao.common.util.JSPHelper;
-import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.common.util.MD5Util;
-import com.yuanshanbao.common.util.RandomUtil;
-import com.yuanshanbao.common.util.StringUtil;
-import com.yuanshanbao.common.util.UploadUtils;
-import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.common.util.VerifyFormatUtil;
 
 @Controller
 @RequestMapping({ "/i/user", "/m/user" })
@@ -188,7 +188,7 @@ public class UserController extends BaseController {
 					String password = RandomUtil.generateNumberString(8);
 					generateUser(user, password, inviteCode);
 				}
-				loginToken = tokenService.generateLoginToken(appId, user.getUserId(), userIp);
+				loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "", userIp);
 				if (loginToken == null) {
 					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.LOGIN_FAIL);
 					return resultMap;
@@ -238,7 +238,7 @@ public class UserController extends BaseController {
 				user = userService.insertBaseInfoFromWeixin(request, user, userInfo);
 				register = true;
 			}
-			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId(),
+			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "",
 					JSPHelper.getRemoteAddr(request));
 			loginToken.setRegister(register);
 			loginToken.setUser(user);
@@ -270,7 +270,7 @@ public class UserController extends BaseController {
 				setSession(request, token, user);
 			}
 			if (user != null) {
-				String tempToken = tokenService.generateTempToken(appId, user.getUserId());
+				String tempToken = tokenService.generateTempToken(appId, user.getUserId() + "");
 				resultMap.put("tempToken", tempToken);
 			} else {
 				resultMap.put("tempToken", "");
@@ -346,7 +346,7 @@ public class UserController extends BaseController {
 				user.setRegisterFrom(registerFrom);
 				user.setStatus(UserStatus.NORMAL);
 				generateUser(user, password, inviteCode);
-				LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId(), userIp);
+				LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "", userIp);
 				user = userService.selectUserById(user.getUserId());
 				loginToken.setUser(user);
 				setSession(request, loginToken.getToken(), user);
@@ -381,7 +381,7 @@ public class UserController extends BaseController {
 			if (channel == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			String key = channel.getEncryptKey();
+			String key = null;
 
 			String mobile = request.getParameter("mobile");
 			String password = request.getParameter("password");
@@ -444,14 +444,14 @@ public class UserController extends BaseController {
 			user.setInviteType(invite.getInviteType());
 		}
 		userService.insertOrUpdateUser(user);
-		user.setPassword(MD5Util.encryptPassword(password, user.getUserId()));
+		user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 		userService.updateUser(user);
 
 		BaseInfo baseInfo = new BaseInfo();
-		baseInfo.setUserId(user.getUserId());
+		baseInfo.setUserId(user.getUserId() + "");
 		baseInfo.setName(DataFormat.hiddenMobile(user.getMobile()));
 		baseInfo.setStatus(CommonStatus.ONLINE);
-		userService.insertOrUpdateBaseInfo(baseInfo);
+		// userService.insertOrUpdateBaseInfo(baseInfo);
 		user.setBaseInfo(baseInfo);
 	}
 
@@ -474,7 +474,7 @@ public class UserController extends BaseController {
 				}
 				smsCodeService.validateSmsCode(mobile, smsCode, "", userIp);
 				User user = userService.selectUserByMobile(mobile);
-				user.setPassword(MD5Util.encryptPassword(password, user.getUserId()));
+				user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 				userService.updateUser(user);
 				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 				return resultMap;
@@ -505,7 +505,7 @@ public class UserController extends BaseController {
 				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.WRONG_PASSOWRD);
 				return resultMap;
 			}
-			user.setPassword(MD5Util.encryptPassword(password, user.getUserId()));
+			user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 			userService.updateUser(user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 			return resultMap;
@@ -534,11 +534,9 @@ public class UserController extends BaseController {
 				throw new BusinessException(ComRetCode.UPLOAD_AVATAR_ERROR);
 			}
 			String originalPath = user.getAvatar();
-			String path = UploadUtils.uploadFile(file, UploadUtils.FTP_AVATAR);
-			BaseInfo baseInfo = new BaseInfo();
-			baseInfo.setUserId(user.getUserId());
-			baseInfo.setAvatar(path);
-			userService.insertOrUpdateBaseInfo(baseInfo);
+			String path = UploadUtils.uploadFile(file, "test/img");
+			user.setAvatar(path);
+			userService.insertOrUpdateUser(user);
 
 			UploadUtils.deleteFile(originalPath);
 			resultMap.put("avatarUrl", path);
@@ -560,16 +558,16 @@ public class UserController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/commitInfo")
-	public Object commitBaseInfo(HttpServletRequest request, String token, BaseInfo baseInfo) {
+	public Object commitBaseInfo(HttpServletRequest request, String token, User userInfo) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			User user = tokenService.verifyLoginToken(token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.TOKEN_INVALID);
 			}
-			baseInfo.setMobile(user.getMobile());
-			baseInfo.setUserId(user.getUserId());
-			userService.insertOrUpdateBaseInfo(baseInfo);
+			userInfo.setMobile(user.getMobile());
+			userInfo.setUserId(user.getUserId());
+			userService.insertOrUpdateUser(userInfo);
 			User currentUser = userService.selectUserById(user.getUserId());
 			resultMap.put("user", new UserVo(currentUser));
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

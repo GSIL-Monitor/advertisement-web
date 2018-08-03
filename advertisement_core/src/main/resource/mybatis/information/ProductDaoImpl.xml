@@ -80,6 +80,18 @@
 				<if test="status != null">
 					status= #{status} and
 				</if>
+				<if test="authorize != null">
+					<foreach item="id" collection="authorize">
+						authorize_tags LIKE
+						CONCAT('%',#{id},'%') and
+					</foreach>
+				</if>
+				<if test="feature != null">
+					<foreach item="id" collection="feature">
+						feature_tags LIKE
+						CONCAT('%',#{id},'%') and
+					</foreach>
+				</if>
 			</trim>
 			and status != -1
 		</where>

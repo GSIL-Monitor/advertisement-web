@@ -4,7 +4,7 @@ public class IndexUser {
 
 	private String openId;
 	private Integer type;
-	private String userId;
+	private Long userId;
 
 	public String getOpenId() {
 		return openId;
@@ -22,11 +22,11 @@ public class IndexUser {
 		this.type = type;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 

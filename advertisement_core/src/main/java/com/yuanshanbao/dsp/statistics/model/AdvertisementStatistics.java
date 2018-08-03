@@ -249,4 +249,11 @@ public class AdvertisementStatistics {
 		this.projectId = projectId;
 	}
 
+	public void addShowCount(Integer showCount) {
+		this.showCount = this.showCount + showCount;
+	}
+
+	public void addClickCount(Integer clickCount) {
+		this.clickCount = this.clickCount + clickCount;
+	}
 }

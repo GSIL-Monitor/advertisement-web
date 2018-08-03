@@ -8,7 +8,7 @@ public class UserVo implements Serializable {
 
 	private static final long serialVersionUID = 4165445835251317169L;
 
-	private String userId;
+	private Long userId;
 	private String name;
 	private String avatar;
 	private Long gender;
@@ -21,21 +21,13 @@ public class UserVo implements Serializable {
 
 	public UserVo(User user) {
 		if (user != null) {
-			this.userId = user.getUserId();
+			this.setUserId(user.getUserId());
 			this.name = user.getName();
 			this.avatar = user.getAvatar();
 			this.gender = user.getGender();
 			this.channel = user.getRegisterFrom();
 			this.bindAlias = CommonUtil.getBindPrefix() + user.getUserId();
 		}
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public String getName() {
@@ -76,6 +68,14 @@ public class UserVo implements Serializable {
 
 	public void setBindAlias(String bindAlias) {
 		this.bindAlias = bindAlias;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 }

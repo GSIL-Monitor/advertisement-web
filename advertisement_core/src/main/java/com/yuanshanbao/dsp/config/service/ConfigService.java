@@ -33,4 +33,8 @@ public interface ConfigService {
 
 	public Map<Long, String> selectConfigsDivideByChannel(Long activityId, List<Long> functionIds, String channel);
 
+	public Map<Integer, ConfigCategory> getConfigCategoryList(Long activityId, String channel);
+
+	public void updateActivityConfig(HttpServletRequest request, Long activityId, String channel);
+
 }

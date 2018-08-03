@@ -49,7 +49,7 @@
 	<select id="queryUserByName" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.User">
 		select
 		* from tb_admin_users 
-		where username = #{username} and project_id = #{projectId}
+		where username = #{username}
 	</select>
 
 	<insert id="insertUser" parameterType="com.yuanshanbao.ms.model.admin.User">
@@ -74,7 +74,7 @@
 	<delete id="deleteUser" parameterType="String">
 		delete from tb_admin_users
 		where
-		username=#{userName} and project_id=#{projectId}
+		username=#{userName}
 	</delete>
 	
 	<update id="updateUser" parameterType="com.yuanshanbao.ms.model.admin.User">
