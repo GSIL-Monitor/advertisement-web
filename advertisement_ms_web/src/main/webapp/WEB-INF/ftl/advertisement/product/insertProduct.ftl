@@ -71,6 +71,18 @@
                       <input type="file" name="image" style="width:90%;">
                     </td>
                   </tr>
+                  <tr>
+                    <td>推荐页logo：</td>
+                    <td>
+                      <input type="file" name="bigImage" style="width:90%;">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>详情页banner：</td>
+                    <td>
+                      <input type="file" name="detailImage" style="width:90%;">
+                    </td>
+                  </tr>
           		  <tr>
                     <td>库存：</td>
                     <td>

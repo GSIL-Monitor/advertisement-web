@@ -131,11 +131,11 @@
 
 	<insert id="insertProduct" parameterType="Product">
 		insert into
-		tb_product( name, title,activity_id,merchant_id, description, image_url, feature_tags,
+		tb_product( name, title,activity_id,merchant_id, description, image_url,big_image_url,detail_image_url, feature_tags,
 		 recommend_tags, authorize_tags,school_time,brand_feature,total_amount,discount_amount,min_age,max_age, requirements, apply_flow, advantage,
 		  guide, type, sort, positive_rate, status, create_time, update_time )
 		values
-		( #{name}, #{title},#{activityId},#{merchantId}, #{description}, #{imageUrl},
+		( #{name}, #{title},#{activityId},#{merchantId}, #{description}, #{imageUrl},#{bigImageUrl},#{detailImageUrl},
 		  #{featureTags}, #{recommendTags}, #{authorizeTags},#{schoolTime},#{brandFeature},
 		  #{totalAmount},#{discountAmount},#{minAge},#{maxAge}, #{requirements},
 		  #{applyFlow}, #{advantage}, #{guide}, #{type}, 
@@ -161,6 +161,12 @@
 				</if>
 				<if test="imageUrl != null">
 					image_url= #{imageUrl},
+				</if>
+				<if test="bigImageUrl != null">
+					big_image_url= #{bigImageUrl},
+				</if>
+				<if test="detailImageUrl != null">
+					detail_image_url= #{detailImageUrl},
 				</if>
 				<if test="featureTags != null">
 					feature_tags= #{featureTags},

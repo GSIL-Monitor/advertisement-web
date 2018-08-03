@@ -17,7 +17,7 @@
     <hr>
     <div class="row-fluid">
       <form action="${rc.contextPath}/admin/${functionName}/update.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-      	<input type="hidden" name="${functionId}" value="${itemEdit.partnerId?c}"/>
+      	<input type="hidden" name="${functionId}" value="${itemEdit.productId?c}"/>
         <div class="span12">
           <div class="widget-box">
             <div class="widget-title">
@@ -46,9 +46,21 @@
                   </tr>
                   
                   <tr>
-                    <td>公司logo：</td>
+                    <td>产品logo：</td>
                     <td>
                       <input type="file" name="image" style="width:90%;">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>推荐页logo：</td>
+                    <td>
+                      <input type="file" name="bigImage" style="width:90%;">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>详情页banner：</td>
+                    <td>
+                      <input type="file" name="detailImage" style="width:90%;">
                     </td>
                   </tr>
              
