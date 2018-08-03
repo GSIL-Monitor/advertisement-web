@@ -96,7 +96,7 @@ public class ApplyController extends BaseController {
 			}
 			// setShowCount(request, productId);
 			applyService.applyProduct(user, productId, information);
-			if (StringUtils.isNotBlank(productId + "")) {
+			if (productId != null) {
 				resultMap.put("productId", productId);
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

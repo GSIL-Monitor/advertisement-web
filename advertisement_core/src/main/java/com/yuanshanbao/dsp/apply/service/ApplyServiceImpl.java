@@ -229,7 +229,7 @@ public class ApplyServiceImpl implements ApplyService {
 	@Override
 	public void applyProduct(User user, Long productId, Information information) {
 		completeInformation(user, information);
-		if (StringUtils.isNotBlank(productId + "")) {
+		if (productId != null) {
 			checkInformationExist(user);
 			Product product = productService.selectProduct(productId);
 			if (product == null) {

@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.product.model.vo;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,8 @@ public class ProductVo {
 	private String brandFeature;
 	private Integer minAge;
 	private Integer maxAge;
-	private Integer totalAmount;
+	private BigDecimal totalAmount;
+	private BigDecimal discountAmount;
 	private Integer status;
 	private Long applyCount;
 	private List<TagsVo> featureTagsList;
@@ -56,7 +58,8 @@ public class ProductVo {
 		this.setApplyCount(product.getApplyCount());
 		this.minAge = product.getMinAge();
 		this.maxAge = product.getMaxAge();
-		this.totalAmount = product.getTotalAmount();
+		this.setTotalAmount(product.getTotalAmount());
+		this.discountAmount = product.getDiscountAmount();
 		this.schoolTime = getDivideDetail(product.getSchoolTime());
 		this.brandFeature = getDivideDetail(product.getBrandFeature());
 	}
@@ -232,19 +235,27 @@ public class ProductVo {
 		return sb.toString();
 	}
 
-	public Integer getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(Integer totalAmount) {
-		this.totalAmount = totalAmount;
-	}
-
 	public String getDetailImageUrl() {
 		return detailImageUrl;
 	}
 
 	public void setDetailImageUrl(String detailImageUrl) {
 		this.detailImageUrl = detailImageUrl;
+	}
+
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 }

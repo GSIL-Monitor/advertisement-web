@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.product.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,9 @@ public class Product {
 
 	private String brandFeature;
 
-	private Integer totalAmount;
+	private BigDecimal totalAmount;
+
+	private BigDecimal discountAmount;
 
 	private Integer minAge;
 
@@ -445,20 +448,28 @@ public class Product {
 		this.brandFeature = brandFeature;
 	}
 
-	public Integer getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(Integer totalAmount) {
-		this.totalAmount = totalAmount;
-	}
-
 	public String getDetailImageUrl() {
 		return detailImageUrl;
 	}
 
 	public void setDetailImageUrl(String detailImageUrl) {
 		this.detailImageUrl = detailImageUrl;
+	}
+
+	public BigDecimal getDiscountAmount() {
+		return discountAmount;
+	}
+
+	public void setDiscountAmount(BigDecimal discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
 }

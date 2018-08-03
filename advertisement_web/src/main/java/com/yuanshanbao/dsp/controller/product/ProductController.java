@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -114,10 +115,19 @@ public class ProductController extends BaseController {
 		}
 
 		List<Product> list = productService.selectProducts(product, formatPageBounds(pageBounds));
-		if (StringUtils.isNotBlank(product.getQueryAge() + "")) {
-			if (list.size() > 1) {
-				for (int i = 0; i < list.size(); i++) {
-					list.remove(i);
+		if (product.getQueryAge() != null) {
+			Iterator<Product> it = list.iterator();
+			while (it.hasNext()) {
+				it.next();
+				if (list.size() > 1) {
+					it.remove();
+				}
+			}
+			it = list.iterator();
+			while (it.hasNext()) {
+				Product pro = it.next();
+				if (StringUtils.isEmpty(pro.getBigImageUrl())) {
+					it.remove();
 				}
 			}
 		}

@@ -22,6 +22,7 @@
 		<result property="schoolTime" column="school_time" jdbcType="VARCHAR" />
 		<result property="brandFeature" column="brand_feature" jdbcType="VARCHAR" />
 		<result property="totalAmount" column="total_amount" jdbcType="NUMERIC" />
+		<result property="discountAmount" column="discount_amount" jdbcType="NUMERIC" />
 		<result property="minAge" column="min_age" jdbcType="NUMERIC" />
 		<result property="maxAge" column="max_age" jdbcType="NUMERIC" />
 		<result property="requirements" column="requirements" jdbcType="VARCHAR" />
@@ -131,12 +132,12 @@
 	<insert id="insertProduct" parameterType="Product">
 		insert into
 		tb_product( name, title,activity_id,merchant_id, description, image_url, feature_tags,
-		 recommend_tags, authorize_tags,school_time,brand_feature,total_amount,min_age,max_age, requirements, apply_flow, advantage,
+		 recommend_tags, authorize_tags,school_time,brand_feature,total_amount,discount_amount,min_age,max_age, requirements, apply_flow, advantage,
 		  guide, type, sort, positive_rate, status, create_time, update_time )
 		values
 		( #{name}, #{title},#{activityId},#{merchantId}, #{description}, #{imageUrl},
-		  #{featureTags}, #{recommendTags}, #{authorizeTags},#{schoolTime},#{brandFeature},#{totalAmount},#{minAge},
-		  #{maxAge}, #{requirements},
+		  #{featureTags}, #{recommendTags}, #{authorizeTags},#{schoolTime},#{brandFeature},
+		  #{totalAmount},#{discountAmount},#{minAge},#{maxAge}, #{requirements},
 		  #{applyFlow}, #{advantage}, #{guide}, #{type}, 
 		  #{sort}, #{positiveRate}, #{status}, sysdate(), sysdate() )
 		<selectKey resultType="java.lang.Long" order="AFTER"
