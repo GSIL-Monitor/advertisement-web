@@ -67,10 +67,10 @@
 	<insert id="insertTags" parameterType="Tags">
 		insert into
 		tb_tags(parent_id, type, name, value, description, big_image, image,
-		show_order, search_type, score, status, create_time,update_time)
+		times,amount,show_order, search_type, score, status, create_time,update_time)
 		values
 		(#{parentId}, #{type}, #{name}, #{value}, #{description}, #{bigImage},
-		#{image}, #{showOrder}, #{searchType}, #{score}, #{status}, sysdate(),
+		#{image},#{times},#{amount}, #{showOrder}, #{searchType}, #{score}, #{status}, sysdate(),
 		sysdate())
 	</insert>
 
