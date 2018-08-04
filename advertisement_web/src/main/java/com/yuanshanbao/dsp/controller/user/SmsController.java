@@ -79,13 +79,13 @@ public class SmsController extends BaseController {
 				type = parameterMap.get("type");
 				appKey = appService.getAppKey(request.getParameter("appId"));
 			} else {
-				String sessionToken = (String) request.getSession().getAttribute(SessionConstants.SMS_TOKEN);
-				Long time = (Long) request.getSession().getAttribute(SessionConstants.TOKEN_TIME);
-				if (!(StringUtils.isNotBlank(sessionToken) && sessionToken.equals(smsToken)) || time == null
-						|| (System.currentTimeMillis() - time) < 4000) {
-					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.WRONG_PARAMETER);
-					return resultMap;
-				}
+//				String sessionToken = (String) request.getSession().getAttribute(SessionConstants.SMS_TOKEN);
+//				Long time = (Long) request.getSession().getAttribute(SessionConstants.TOKEN_TIME);
+//				if (!(StringUtils.isNotBlank(sessionToken) && sessionToken.equals(smsToken)) || time == null
+//						|| (System.currentTimeMillis() - time) < 4000) {
+//					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.WRONG_PARAMETER);
+//					return resultMap;
+//				}
 			}
 			// 1.手机号不为空，则使用传入的手机号
 			if (StringUtils.isBlank(mobile)) {

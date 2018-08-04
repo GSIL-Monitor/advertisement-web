@@ -72,15 +72,12 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 			smsVerifyCodeDao.addObject(smsVerifyCode);
 			LoggerUtil.sendMessageInfo("[Send Sms]: mobile=[" + mobile + "], verificationCode=[" + verificationCode
 					+ "], effectiveMin=[" + effectiveMin + "]");
-			//if (!"dev".equals(CommonUtil.getEnvironment()) && !"test".equals(CommonUtil.getEnvironment())) {
-			if ("dev".equals(CommonUtil.getEnvironment())) {
+			if (!"dev".equals(CommonUtil.getEnvironment()) && !"test".equals(CommonUtil.getEnvironment())) {
 				String rt = "";
 				if (voice) {
 					// rt = messageSender.sendVoiceCode(mobile,
 					// verificationCode, effectiveMin);
 				} else {
-					// rt = messageSender.sendVerifyCodeAli(signature, mobile,
-					// verificationCode + "");
 					//rt = messageSender.sendVerifyCodeChuangLan(signature, mobile, verificationCode + "");
 					rt = messageSender.sendVerifyCodeAli(mobile, verificationCode + "", tip, signature);
 				}
