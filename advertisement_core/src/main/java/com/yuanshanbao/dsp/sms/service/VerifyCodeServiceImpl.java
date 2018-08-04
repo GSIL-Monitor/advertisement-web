@@ -63,7 +63,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		long receiveTime = System.currentTimeMillis();
 		SmsVerifyCode smsVerifyCode = new SmsVerifyCode(mobile, verificationCode, receiveTime, channel, userIp,
 				effectiveMin);
-
+		String tip=null;
 		// 3.将验证码保存到db
 		try {
 			if (alertCount()) {
@@ -72,7 +72,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 			smsVerifyCodeDao.addObject(smsVerifyCode);
 			LoggerUtil.sendMessageInfo("[Send Sms]: mobile=[" + mobile + "], verificationCode=[" + verificationCode
 					+ "], effectiveMin=[" + effectiveMin + "]");
-			if (!"dev".equals(CommonUtil.getEnvironment()) && !"test".equals(CommonUtil.getEnvironment())) {
+			//if (!"dev".equals(CommonUtil.getEnvironment()) && !"test".equals(CommonUtil.getEnvironment())) {
+			if ("dev".equals(CommonUtil.getEnvironment())) {
 				String rt = "";
 				if (voice) {
 					// rt = messageSender.sendVoiceCode(mobile,
@@ -80,7 +81,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 				} else {
 					// rt = messageSender.sendVerifyCodeAli(signature, mobile,
 					// verificationCode + "");
-					rt = messageSender.sendVerifyCodeChuangLan(signature, mobile, verificationCode + "");
+					//rt = messageSender.sendVerifyCodeChuangLan(signature, mobile, verificationCode + "");
+					rt = messageSender.sendVerifyCodeAli(mobile, verificationCode + "", tip, signature);
 				}
 				LoggerUtil.sendMessageInfo(rt);
 			}

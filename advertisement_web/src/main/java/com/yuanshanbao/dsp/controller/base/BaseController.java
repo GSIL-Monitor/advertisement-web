@@ -45,6 +45,7 @@ import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
+import com.yuanshanbao.dsp.sms.model.SmsConstant;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserStatus;
 import com.yuanshanbao.dsp.user.service.UserService;
@@ -452,5 +453,38 @@ public class BaseController {
 		// tagsList.add(0, tags);
 		// }
 		// vo.setRecommendTagsList(tagsList);
+	}
+	
+	/**
+	 * 短信接口添加标识，区分远山，青蓝
+	 * 
+	 * @param request
+	 * @return
+	 */
+	protected String getSmsSignName(HttpServletRequest request) {
+		String center = SmsConstant.TEMPLATE_SMS_JUBAOKEJI_SIGN_NAME;
+		try {
+
+//			String signName = getConfigSignName(request);
+//			if (StringUtils.isNotBlank(signName)) {
+//				return signName;
+//			}
+			String host = request.getHeader("Host");
+			if (StringUtils.isNotBlank(host) && host.contains("huhabao.com")) {
+				return SmsConstant.TEMPLATE_SMS_QINGLAN_SIGN_NAME;
+			}
+			if (StringUtils.isNotBlank(host) && host.contains("dachuanbao.cn")) {
+				return SmsConstant.TEMPLATE_SMS_HANQIAN_SIGN_NAME;
+			}
+			if (StringUtils.isNotBlank(host) && host.contains("ruidaizhijia.com")) {
+				return SmsConstant.TEMPLATE_SMS_JUBAOKEJI_SIGN_NAME;
+			}
+			if (StringUtils.isNotBlank(host) && host.contains("ruidaiwang.cn")) {
+				return SmsConstant.TEMPLATE_SMS_JUBAOKEJI_SIGN_NAME;
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("sms center error", e);
+		}
+		return center;
 	}
 }

@@ -96,7 +96,7 @@ public class SmsController extends BaseController {
 				return resultMap;
 			}
 
-			String signature = getSignatureValue(type, mobile, appKey);
+			//String signature = getSignatureValue(type, mobile, appKey);
 
 			// 3.短信发送是否超过上限,如果没有则发送短信
 			TimesLimitModel timesLimit = timesLimitService.getTimesLimitModel(TimesLimitConstants.SEND_SMS_RANDOM_CODE,
@@ -110,8 +110,9 @@ public class SmsController extends BaseController {
 				if ("true".equals(voice)) {
 					voiceValue = true;
 				}
+				String signName = getSmsSignName(request);
 				SmsVerifyCode smsVerifyCode = smsCodeService
-						.sendSmsCode(signature, mobile, channel, userIp, voiceValue);
+						.sendSmsCode(signName, mobile, channel, userIp, voiceValue);
 				timesLimit.increaseTimes();
 				resultMap.put("signValue", smsVerifyCode.getSign());
 				resultMap.put("expiredTime", smsVerifyCode.getExpiredTime());

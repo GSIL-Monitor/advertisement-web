@@ -148,6 +148,18 @@ public class MessageSender {
 		map.put("time", "10");
 		return sender.sendSmsAli(signature, VERIFY_CODE, mobile, JacksonUtil.obj2json(map));
 	}
+	
+	public String sendVerifyCodeAli(String mobile, String code, String activity, String signName) {
+		MessageSender sender = new MessageSender();
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("code", code);
+		if (StringUtils.isBlank(activity)) {
+			activity = "赠险";
+		}
+		map.put("activity", activity);
+		map.put("time", "10");
+		return sender.sendSmsAli(signName, VERIFY_CODE, mobile, JacksonUtil.obj2json(map));
+	}
 
 	public String format(String template, String name, String merchantName, String insuranceName, String telephone) {
 		if (name != null) {
