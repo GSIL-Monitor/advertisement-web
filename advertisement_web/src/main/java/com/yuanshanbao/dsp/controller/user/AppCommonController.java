@@ -78,10 +78,10 @@ public class AppCommonController extends BaseController {
 			String wapUrl = "";
 
 			if (MOBILE_OS_ANDROID.equalsIgnoreCase(mobileOsType)) {
-				version = IniBean.getIniValue("app_android_version", "1.0.1");
-				minorVer = IniBean.getIniValue("app_android_minorVer", "1.0.1");
-				inver = IniBean.getIniValue("app_android_inver", "1.0.1");
-				desc = IniBean.getIniValue("app_android_desc", "兴贷Android客户端");
+				version = IniBean.getIniValue("app_android_version", "1.0.0");
+				minorVer = IniBean.getIniValue("app_android_minorVer", "1.0.0");
+				inver = IniBean.getIniValue("app_android_inver", "1.0.0");
+				desc = IniBean.getIniValue("app_android_desc", "小课堂Android客户端");
 				wapUrl = IniBean.getIniValue(ANDROID_DOWNLOAD_URL_KEY,
 						"https://advertisementtech.oss-cn-beijing.aliyuncs.com/app/xingdai/xingdai-1.0.1.apk");
 				if (StringUtils.isNotBlank(wapUrl) && wapUrl.contains("%s")) {
@@ -91,7 +91,7 @@ public class AppCommonController extends BaseController {
 				version = IniBean.getIniValue("app_iPhone_version", "1.0");
 				minorVer = IniBean.getIniValue("app_iPhone_minorVer", "1.0");
 				inver = IniBean.getIniValue("app_iPhone_inver", "1.0");
-				desc = IniBean.getIniValue("app_iPhone_desc", "红红彩IOS客户端");
+				desc = IniBean.getIniValue("app_iPhone_desc", "小课堂IOS客户端");
 				wapUrl = IniBean.getIniValue(IOS_DOWNLOAD_URL_KEY, "https://itunes.apple.com/cn/app/");
 			}
 
