@@ -4,9 +4,36 @@
 <@topHeaderMenu />
 <@sideBar />
 <script>
-$(document).ready(function(){
-	dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do";
-	dataTableConfig.columns = [{
+	function reload() {
+		var newUrl="${rc.contextPath}/admin/${functionName}/query.do";
+		dataTable.ajax.url(newUrl);
+		dataTable.ajax.reload();
+	}
+	function change(id,status){
+		var url = "${rc.contextPath}/admin/${functionName}/updateStatus.do?${functionId}="+id;
+		var message = "";
+		if(status==1){
+			message="您确认将状态更改为未投放吗";
+		}else if(status==2){
+			message="您确认将状态更改为投放吗";
+		}
+		var r=confirm(message);
+		if(r==true){
+			$.ajax({
+                type: "POST",
+                dataType: "json",
+                url: url,
+                data: "",
+                success: function (data) {
+                	alert("修改成功");
+			    	reload();
+				}
+        	});
+		}
+	}
+	$(document).ready(function(){
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do";
+		dataTableConfig.columns = [{
       		"data": "${functionId}"
     	}, {
 	    	"data": "name"
@@ -17,6 +44,19 @@ $(document).ready(function(){
 	        "render": function ( data, type, full, meta ) {
 	            return '<a href="${rc.contextPath}/admin/${functionName}/view.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看详情</a>';
 	        }
+	    }, {
+		    	"data": "statusValue"
+		}, {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
+		        	if(data.status ==1){
+		            	return "<a href='javascript:;' onclick=\"change('"+data.productId+"','"+data.status+"')\" class='btn btn-red' target='_blank'>下线</a>";
+		        	}else if(data.status ==2){
+		        		return "<a href='javascript:;' onclick=\"change('"+data.productId+"','"+data.status+"')\" class='btn btn-cyan' target='_blank'>投放</a>";
+		        	}else if(data.status ==0){
+		        		return "<a href='javascript:;'  class='btn btn-cyan' target='_blank'>投放</a>";
+		        	}
+		        }
 	    }, {
 	    	"data": "${functionId}",
 	        "render": function ( data, type, full, meta ) {
@@ -61,6 +101,8 @@ $(document).ready(function(){
                   <th>产品名称</th>
                   <th>所属机构</th>
                   <th>产品详情</th>
+                  <th>状态</th>
+				  <th>操作</th>
                   <th>修改</th>
                   <th>删除</th>
               </thead>

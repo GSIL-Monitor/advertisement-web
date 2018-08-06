@@ -21,12 +21,13 @@ import com.yuanshanbao.dsp.advertisement.model.AdvertisementPosition;
 import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
-import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
+import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
+import com.yuanshanbao.paginator.domain.Order;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -52,7 +53,8 @@ public class IndexController extends BaseController {
 			}
 			// 产品列表
 			product.setActivityId(activity.getActivityId());
-			product.setStatus(CommonStatus.ONLINE);
+			product.setStatus(ProductStatus.ONLINE);
+			pageBounds.setOrders(Order.formString("sort.asc"));
 			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 					formatPageBounds(pageBounds));
 			PageList<ProductVo> voList = convertVo(request, productList, token, pageBounds);

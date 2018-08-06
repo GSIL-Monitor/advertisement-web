@@ -37,10 +37,10 @@ import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.BaseRedis;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
-import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
+import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.tags.model.TagsSearchType;
@@ -72,7 +72,7 @@ public class ProductController extends BaseController {
 				throw new BusinessException();
 			}
 			product.setActivityId(activity.getActivityId());
-			product.setStatus(CommonStatus.ONLINE);
+			product.setStatus(ProductStatus.ONLINE);
 			// isApprovalEdition(request, product);
 			PageList<Product> productList = null;
 			productList = setProductProperty(product, categoryId, pageBounds);

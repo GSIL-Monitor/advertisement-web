@@ -25,6 +25,7 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.model.ProductType;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.quota.model.Quota;
@@ -61,6 +62,7 @@ public class AdminProductController extends PaginationController {
 	public String list(Long merchantId, HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("merchantId", merchantId);
 		request.setAttribute("merchant", merchantService.selectMerchant(merchantId));
+		request.setAttribute("statusList", ProductStatus.getCodeDescriptionMap().entrySet());
 		return PAGE_LIST;
 	}
 
@@ -182,4 +184,29 @@ public class AdminProductController extends PaginationController {
 		return PAGE_VIEW;
 	}
 
+	@ResponseBody
+	@RequestMapping("/updateStatus.do")
+	public Object updateStatus(Long productId, HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		try {
+			if (productId == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Product product = productService.selectProduct(productId);
+			if (product.getStatus() == 1) {
+				product.setStatus(ProductStatus.OFFLINE);
+			} else if (product.getStatus() == 2) {
+				product.setStatus(ProductStatus.ONLINE);
+			}
+			productService.updateProduct(product);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("product update status function - upload image error", e2);
+		}
+
+		return result;
+	}
 }

@@ -132,8 +132,7 @@ public class Advertisement {
 	}
 
 	public String getStatusValue() {
-		// return AdvertisementStatus.getDescription(status);
-		return "";
+		return AdvertisementStatus.getDescription(status);
 	}
 
 	public String getCreateTimeContent() {
@@ -165,8 +164,7 @@ public class Advertisement {
 	}
 
 	public String getTypeContent() {
-		// return AdvertisementType.getDescription(type);
-		return "";
+		return AdvertisementType.getDescription(type);
 	}
 
 	public void addChannelToLink(String channel) {

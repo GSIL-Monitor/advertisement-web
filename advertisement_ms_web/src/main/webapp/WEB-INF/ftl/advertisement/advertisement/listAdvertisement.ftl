@@ -47,11 +47,11 @@
 		    },   {
 		    	"data": null,
 		        "render": function ( data, type, full, meta ) {
-		        	if(data.statusValue =="投放中"){
+		        	if(data.status ==1){
 		            	return "<a href='javascript:;' onclick=\"change('"+data.advertisementId+"','"+data.statusValue+"')\" class='btn btn-red' target='_blank'>下线</a>";
-		        	}else if(data.statusValue =="未投放"){
+		        	}else if(data.status ==2){
 		        		return "<a href='javascript:;' onclick=\"change('"+data.advertisementId+"','"+data.statusValue+"')\" class='btn btn-cyan' target='_blank'>投放</a>";
-		        	}else if(data.statusValue =="失效"){
+		        	}else if(data.status ==0){
 		        		return "<a href='javascript:;'  class='btn btn-cyan' target='_blank'>投放</a>";
 		        	}
 		        }

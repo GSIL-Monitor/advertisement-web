@@ -68,9 +68,6 @@
 				<if test="recommendTags != null">
 					recommend_tags= #{recommendTags} and
 				</if>
-				<if test="authorizeTags != null">
-					authorize_tags= #{authorizeTags} and
-				</if>
 				<if test="requirements != null">
 					requirements= #{requirements} and
 				</if>
@@ -97,14 +94,13 @@
 				</if>
 				<if test="authorize != null">
 					<foreach item="id" collection="authorize">
-						authorize_tags LIKE
-						CONCAT('%',#{id},'%') and
+						authorize_tags LIKE CONCAT('%',${id},'%') and
 					</foreach>
 				</if>
 				<if test="feature != null">
 					<foreach item="id" collection="feature">
 						feature_tags LIKE
-						CONCAT('%',#{id},'%') and
+						CONCAT('%',${id},'%') and
 					</foreach>
 				</if>
 				<if test="queryAge != null">
@@ -185,6 +181,9 @@
 				</if>
 				<if test="totalAmount != null">
 					total_amount= #{totalAmount},
+				</if>
+				<if test="discountAmount != null">
+					discount_amount= #{discountAmount},
 				</if>
 				<if test="minAge != null">
 					min_age= #{minAge},

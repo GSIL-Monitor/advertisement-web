@@ -472,4 +472,8 @@ public class Product {
 		this.totalAmount = totalAmount;
 	}
 
+	public String getStatusValue() {
+		return ProductStatus.getDescription(status);
+	}
+
 }
