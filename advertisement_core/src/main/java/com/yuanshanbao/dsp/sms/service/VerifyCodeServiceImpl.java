@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.sms.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,8 +30,9 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 
 	/** 24 hours **/
 	public static final long DEFAULT_EMAIL_EFFECTIVE_TIME = 24 * 60;
-	
-	public static final String APPROVE_MOBILE = "18888888888";
+
+	public static final String APPROVE_MOBILE[] = { "18888888881", "18888888882", "18888888883", "18888888884",
+			"18888888885", "18888888886", "18888888887", "18888888888", "18888888889" };
 	public static final int APPROVE_SMS_CODE = 1111;
 
 	@Autowired
@@ -63,7 +65,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		long receiveTime = System.currentTimeMillis();
 		SmsVerifyCode smsVerifyCode = new SmsVerifyCode(mobile, verificationCode, receiveTime, channel, userIp,
 				effectiveMin);
-		String tip=null;
+		String tip = null;
 		// 3.将验证码保存到db
 		try {
 			if (alertCount()) {
@@ -78,7 +80,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 					// rt = messageSender.sendVoiceCode(mobile,
 					// verificationCode, effectiveMin);
 				} else {
-					//rt = messageSender.sendVerifyCodeChuangLan(signature, mobile, verificationCode + "");
+					// rt = messageSender.sendVerifyCodeChuangLan(signature,
+					// mobile, verificationCode + "");
 					rt = messageSender.sendVerifyCodeAli(mobile, verificationCode + "", tip, signature);
 				}
 				LoggerUtil.sendMessageInfo(rt);
@@ -152,7 +155,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		smsVerifyCode.setExpiredTime(expiredTime);
 		smsVerifyCode.setEffectiveTime(effectiveMin * 60 * 1000);
 		smsVerifyCode.setUserIp(userIp);
-		if(checkIsApprove(mobile,smsCodeInt)) {
+		if (checkIsApprove(mobile, smsCodeInt)) {
 			return true;
 		}
 
@@ -165,12 +168,14 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 		throw new BusinessException(ComRetCode.SMS_CODE_WRONG);
 	}
 
-	private boolean checkIsApprove(String mobile,int smsCode) {
-		if(mobile.equals(APPROVE_MOBILE)&&smsCode==APPROVE_SMS_CODE) {
-			return true;
-		}else {
-			return false;
+	private boolean checkIsApprove(String mobile, int smsCode) {
+		if (Arrays.asList(APPROVE_MOBILE).contains(mobile)) {
+			if (smsCode == APPROVE_SMS_CODE) {
+				return true;
+			}
 		}
+		return false;
+
 	}
 
 	/**
