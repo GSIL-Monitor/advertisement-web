@@ -222,6 +222,10 @@ public class ComRetCode {
 	public static final int INFORMATION_NOT_COMPLETE = 411;
 	public static final String INFORMATION_NOT_COMPLETE_DESC = "您的基本信息不完全";
 
+	/* 408您已经领取过该产品 */
+	public static final int APPLY_EXIST_ERROR = 408;
+	public static final String APPLY_EXIST_ERROR_DESC = "您已经领取过该产品";
+
 	/* 404无符合营销手机号 */
 	public static final int MARKETING_SMS_NOT_VERIFY_ERROR = 404;
 	public static final String MARKETING_SMS_NOT_VERIFY_ERROR_DESC = "无符合营销手机号";

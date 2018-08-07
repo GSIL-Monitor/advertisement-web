@@ -94,7 +94,8 @@
 				</if>
 				<if test="authorize != null">
 					<foreach item="id" collection="authorize">
-						authorize_tags LIKE CONCAT('%',${id},'%') and
+						authorize_tags LIKE
+						CONCAT('%',${id},'%') and
 					</foreach>
 				</if>
 				<if test="feature != null">

@@ -39,4 +39,6 @@ public interface ApplyService {
 
 	public Long getProductApplyCount(Long productId);
 
+	public boolean checkApplyExist(User user, Long productId);
+
 }

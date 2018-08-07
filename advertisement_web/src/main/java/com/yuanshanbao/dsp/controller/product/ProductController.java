@@ -75,7 +75,7 @@ public class ProductController extends BaseController {
 			product.setStatus(ProductStatus.ONLINE);
 			// isApprovalEdition(request, product);
 			PageList<Product> productList = null;
-			productList = setProductProperty(product, categoryId, pageBounds);
+			productList = setProductProperty(product, categoryId, token, pageBounds);
 			PageList<ProductVo> voList = convertVo(request, productList, token, formatPageBounds(pageBounds));
 			voList.setPaginator(productList.getPaginator());
 			resultMap.put("productList", voList);
@@ -90,8 +90,9 @@ public class ProductController extends BaseController {
 		return resultMap;
 	}
 
-	protected PageList<Product> setProductProperty(Product product, Long categoryId, PageBounds pageBounds) {
+	protected PageList<Product> setProductProperty(Product product, Long categoryId, String token, PageBounds pageBounds) {
 		PageList<Product> productList = null;
+		User user = userService.selectUserByToken(token);
 		if (categoryId != null) {
 			ProductCategory category = ConfigManager.getProductCategory(categoryId);
 			if (category == null) {
@@ -121,6 +122,15 @@ public class ProductController extends BaseController {
 				it.next();
 				if (list.size() > 1) {
 					it.remove();
+				}
+			}
+			if (user != null) {
+				it = list.iterator();
+				while (it.hasNext()) {
+					Product pro = it.next();
+					if (applyService.checkApplyExist(user, pro.getProductId())) {
+						it.remove();
+					}
 				}
 			}
 			it = list.iterator();

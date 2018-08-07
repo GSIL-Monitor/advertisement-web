@@ -229,6 +229,10 @@ public class ApplyServiceImpl implements ApplyService {
 	@Override
 	public void applyProduct(User user, Long productId, Information information) {
 		completeInformation(user, information);
+		boolean applyExist = checkApplyExist(user, productId);
+		if (applyExist) {
+			throw new BusinessException(ComRetCode.APPLY_EXIST_ERROR);
+		}
 		if (productId != null) {
 			checkInformationExist(user);
 			Product product = productService.selectProduct(productId);
@@ -282,6 +286,19 @@ public class ApplyServiceImpl implements ApplyService {
 		Information information = list.get(0);
 		if (StringUtils.isEmpty(information.getAge() + "") || StringUtils.isEmpty(information.getName())) {
 			throw new BusinessException(ComRetCode.INFORMATION_NOT_COMPLETE);
+		}
+	}
+
+	public boolean checkApplyExist(User user, Long productId) {
+		Apply apply = new Apply();
+		apply.setUserId(user.getUserId());
+		apply.setProductId(productId);
+		apply.setStatus(ApplyStatus.APPLIED);
+		List<Apply> list = selectApplys(apply, new PageBounds());
+		if (list.size() > 0) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
