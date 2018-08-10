@@ -17,6 +17,7 @@ public class Quota {
 	private Long merchantId;
 	private String channel;
 	private Long advertisementId;
+	private Long advertiserId;
 	private Integer type;
 	private Integer count;
 	private Integer stock;
@@ -198,6 +199,14 @@ public class Quota {
 
 	public void setMerchantId(Long merchantId) {
 		this.merchantId = merchantId;
+	}
+
+	public Long getAdvertiserId() {
+		return advertiserId;
+	}
+
+	public void setAdvertiserId(Long advertiserId) {
+		this.advertiserId = advertiserId;
 	}
 
 }

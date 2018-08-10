@@ -252,6 +252,10 @@ public class ComRetCode {
 	public static final int CONFIG_NO_SMS_FORMAT_ERROR = 802;
 	public static final String CONFIG_NO_SMS_FORMAT_ERROR_DESC = "请联系管理员配置不校验手机号";
 
+	/* 803您填写的手机号已经在近期领取过赠险 */
+	public static final int ORDER_MOBILE_HAS_EXIST_ERROR = 803;
+	public static final String ORDER_MOBILE_HAS_EXIST_ERROR_DESC = "您填写的手机号已经在近期领取过赠险";
+
 	public static Map<Integer, String> retCodeMap = new LinkedHashMap<Integer, String>();
 
 	static {

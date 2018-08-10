@@ -125,6 +125,7 @@ public class BaseGameController extends BaseController {
 			Map<String, Object> resultMap, String activityKey) {
 		// TODO Auto-generated method stub
 		String channel = (String) request.getSession().getAttribute(activityKey + SessionConstants.SESSION_USER_FROM);
+		channel = "qudaos";
 		List<Long> pickedPrizeIdList = parsePickedPrize(request, activityKey, true);
 		Activity activity = activityService.selectActivity(activityKey);
 		if (activity != null && activity.getActivityId() != null) {

@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.bill.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import com.yuanshanbao.dsp.bill.model.BillType;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -21,6 +24,9 @@ public class BillServiceImpl implements BillService {
 
 	@Autowired
 	private RedisService redisService;
+
+	@Autowired
+	private QuotaService quotaService;
 
 	@Override
 	public void insertBill(Bill bill) {
@@ -49,15 +55,16 @@ public class BillServiceImpl implements BillService {
 	@Override
 	public void payment(Advertiser advertiser) {
 		// 今日总消耗
-		double todayCount = getCount(RedisConstant.getAdvertiserBalanceCountKey(null, advertiser.getAdvertiserId()));
+		double todayCount = getCount(RedisConstant.getAdvertiserBalanceCountKey(advertiser.getAdvertiserId()));
 		// 上次操作扣费时消耗的数量
-		double lastCount = getCount(RedisConstant.getAdvertiserLastBalanceCountKey(null, advertiser.getAdvertiserId()));
+		double lastCount = getCount(RedisConstant.getAdvertiserLastBalanceCountKey(advertiser.getAdvertiserId()));
 		double difference = todayCount - lastCount;
-		Bill bill = createBill(advertiser, difference, BillType.DEDUCTION);
-		insertBill(bill);
-		redisService.set(RedisConstant.getAdvertiserBalanceCountKey(null, advertiser.getAdvertiserId()),
-				String.valueOf(todayCount));
-
+		if (difference > 0) {
+			Bill bill = createBill(advertiser, difference, BillType.DEDUCTION);
+			insertBill(bill);
+			redisService.set(RedisConstant.getAdvertiserBalanceCountKey(advertiser.getAdvertiserId()),
+					String.valueOf(todayCount));
+		}
 	}
 
 	private Bill createBill(Advertiser advertiser, double difference, int type) {
@@ -77,5 +84,20 @@ public class BillServiceImpl implements BillService {
 			LoggerUtil.info("error");
 		}
 		return 0;
+	}
+
+	private void count() {
+		Advertiser params = new Advertiser();
+		params.setStatus(CommonStatus.ONLINE);
+		List<Advertiser> list = new ArrayList<Advertiser>();
+		for (Advertiser advertiser : list) {
+			Quota quota = new Quota();
+			quota.setAdvertiserId(advertiser.getAdvertiserId());
+			quota.setStatus(CommonStatus.ONLINE);
+			List<Quota> quotaList = quotaService.selectQuota(quota, new PageBounds());
+			for (Quota quo : quotaList) {
+
+			}
+		}
 	}
 }

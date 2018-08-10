@@ -169,7 +169,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		// return adStatistics.getWelfareCount() + adStatistics.getBannerCount()
 		// + adStatistics.getTagsCount()
 		// + adStatistics.getDownloadCount();
-		return 1;
+		return adStatistics.getClickCount() + adStatistics.getShowCount();
 	}
 
 	private Integer getPv(String date, String channel, String position, Long advertisementId) {

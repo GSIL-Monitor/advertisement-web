@@ -458,6 +458,7 @@ public class AdminActivityController extends PaginationController {
 		try {
 			probability.setProjectId(getProjectId(request));
 			quota.setProjectId(getProjectId(request));
+			probability.setChannel(probability.getChannel() != null ? probability.getChannel() : "");
 			probabilityService.insertProbability(probability);
 			// quotaService.insertQuota(quota);
 			AdminServerController.refreshConfirm();

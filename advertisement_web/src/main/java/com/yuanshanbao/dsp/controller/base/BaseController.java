@@ -34,6 +34,7 @@ import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.apply.service.ApplyService;
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.model.SmsToken;
@@ -41,7 +42,9 @@ import com.yuanshanbao.dsp.common.model.SmsTokenList;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.model.ProductType;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
@@ -298,7 +301,7 @@ public class BaseController {
 				return appKey;
 			}
 		}
-		return "xingdai";
+		return "xiaoketang";
 	}
 
 	protected void setAdvertisement(Integer client, Map<String, Object> resultMap, String channel, String appKey,
@@ -399,8 +402,26 @@ public class BaseController {
 	}
 
 	private List<SmsTokenList> generateRandomSmsTokenList() {
-		// TODO Auto-generated method stub
-		return null;
+		List<SmsTokenList> list = new ArrayList<SmsTokenList>();
+		int count = getRandom(4);
+		boolean hasEnable = false;
+		for (int i = 0; i < count; i++) {
+			SmsTokenList tokenList = new SmsTokenList();
+			tokenList.generateRandomSmsTokenList();
+			if (getRandom(2) > 1) {
+				tokenList.setEnable(true);
+				hasEnable = true;
+			}
+			list.add(tokenList);
+		}
+		if (!hasEnable) {
+			list.get(getRandom(count) - 1).setEnable(true);
+		}
+		return list;
+	}
+
+	private int getRandom(int max) {
+		return (int) (Math.random() * max) + 1;
 	}
 
 	protected PageList<ProductVo> convertVo(HttpServletRequest request, List<Product> productList, String token,
@@ -454,7 +475,7 @@ public class BaseController {
 		// }
 		// vo.setRecommendTagsList(tagsList);
 	}
-	
+
 	/**
 	 * 短信接口添加标识，区分远山，青蓝
 	 * 
@@ -465,10 +486,10 @@ public class BaseController {
 		String center = SmsConstant.TEMPLATE_SMS_JUBAOKEJI_SIGN_NAME;
 		try {
 
-//			String signName = getConfigSignName(request);
-//			if (StringUtils.isNotBlank(signName)) {
-//				return signName;
-//			}
+			// String signName = getConfigSignName(request);
+			// if (StringUtils.isNotBlank(signName)) {
+			// return signName;
+			// }
 			String host = request.getHeader("Host");
 			if (StringUtils.isNotBlank(host) && host.contains("huhabao.com")) {
 				return SmsConstant.TEMPLATE_SMS_QINGLAN_SIGN_NAME;
@@ -486,5 +507,65 @@ public class BaseController {
 			LoggerUtil.error("sms center error", e);
 		}
 		return center;
+	}
+
+	/**
+	 * 判断是否是审核版本
+	 * 
+	 * @param product
+	 * 
+	 */
+	public boolean isApprovalEdition(HttpServletRequest request, Product product) {
+		String appId = request.getParameter("appId");
+		String approvelProductVersion = IniBean.getIniValue("approvelProductVersion");
+		String invalidProductVersion = IniBean.getIniValue("invalidProductVersion");
+		String approvalProductChannel = IniBean.getIniValue("approvalProductChannel");
+		if (StringUtils.isBlank(appId)) {
+			if (StringUtils.isNotBlank(approvelProductVersion)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		String applicationType = appService.getApplicationType(appId);
+		String channel = appService.getAppChannel(appId);
+		String appkey = getAppKey(request);
+		if (StringUtils.isBlank(approvelProductVersion) || StringUtils.isBlank(applicationType)) {
+			return false;
+		}
+		if (isContains(approvelProductVersion, applicationType, appkey)) {
+			if (product != null) {
+				product.setType(ProductType.ONLINE);
+			}
+			if (!isContains(approvalProductChannel, channel, appkey)) {
+				return false;
+			}
+			return true;
+		}
+		if (isContains(invalidProductVersion, applicationType, appkey)) {
+			if (product != null) {
+				if (appkey.equals(AppType.RUIDAI)) {
+					// product.setType(ProductType.APPROVAL_RUIDAI);
+				} else {
+					// product.setType(ProductType.APPROVAL);
+				}
+			}
+			if (!isContains(approvalProductChannel, channel, appkey)) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isContains(String iniStr, String str, String appKey) {
+		String[] inis = iniStr.split(CommonConstant.COMMA_SPLIT_STR);
+		for (String ini : inis) {
+			String[] iniStrings = ini.split(CommonConstant.COMMON_SPLIT_STR);
+			if (iniStrings[0].equals(appKey) && iniStrings[1].equals(str)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

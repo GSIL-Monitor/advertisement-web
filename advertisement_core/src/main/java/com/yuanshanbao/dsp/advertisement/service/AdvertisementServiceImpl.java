@@ -372,6 +372,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		if (!StringUtils.isBlank(channel)) {
 			probability.setChannel(channel);
 			quota.setChannel(channel);
+		} else {
+			probability.setChannel("");
+			quota.setChannel("");
 		}
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(probability, new PageBounds());
 		List<Quota> quotaList = quotaService.selectQuota(quota, new PageBounds());

@@ -249,18 +249,12 @@ public class RedisConstant {
 		return getCachePrefix(REQUEST_COUNT, date + "_" + channel);
 	}
 
-	public static String getAdvertiserBalanceCountKey(String date, Long advertiserId) {
-		if (StringUtils.isBlank(date)) {
-			date = DateUtils.format(new Date());
-		}
-		return getCachePrefix(ADVERTISER_BALANCE_COUNT, date + "_" + advertiserId);
+	public static String getAdvertiserBalanceCountKey(Long advertiserId) {
+		return getCachePrefix(ADVERTISER_BALANCE_COUNT, advertiserId + "");
 	}
 
-	public static String getAdvertiserLastBalanceCountKey(String date, Long advertiserId) {
-		if (StringUtils.isBlank(date)) {
-			date = DateUtils.format(new Date());
-		}
-		return getCachePrefix(ADVERTISER_LAST_BALANCE_COUNT, date + "_" + advertiserId);
+	public static String getAdvertiserLastBalanceCountKey(Long advertiserId) {
+		return getCachePrefix(ADVERTISER_LAST_BALANCE_COUNT, advertiserId + "");
 	}
 
 	public static String getApplyShowCountKey() {
@@ -280,4 +274,5 @@ public class RedisConstant {
 	public static String getAgentNotifyHandlerKey(String mobile) {
 		return getCachePrefix(AGENT_NOTIFY_HANDLER_KEY, mobile);
 	}
+
 }
