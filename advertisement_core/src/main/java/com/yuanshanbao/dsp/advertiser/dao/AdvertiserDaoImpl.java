@@ -2,6 +2,7 @@ package com.yuanshanbao.dsp.advertiser.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -39,6 +40,16 @@ public class AdvertiserDaoImpl extends BaseDaoImpl implements AdvertiserDao {
 		}
 
 		return getSqlSession().selectList("advertiser.selectAdvertiserByIds", advertiserIds);
+	}
+
+	@Override
+	public int lockBalance(Map<String, Object> parameters) {
+		return getSqlSession().update("advertiser.rechargeBalance", parameters);
+	}
+
+	@Override
+	public int cutPayment(Map<String, Object> parameters) {
+		return getSqlSession().update("advertiser.cutPayment", parameters);
 	}
 
 }

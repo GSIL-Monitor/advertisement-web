@@ -11,6 +11,8 @@ public class AdvertisementVo {
 	private String subTitle;
 	private String imageUrl;
 	private String link;
+	private Integer category;
+	private String categoryDesc;
 	private Probability probability;
 	private Quota quota;
 
@@ -24,7 +26,7 @@ public class AdvertisementVo {
 		this.subTitle = advertisement.getSubTitle();
 		this.imageUrl = advertisement.getImageUrl();
 		this.link = advertisement.getLink();
-
+		this.category = advertisement.getCategory();
 	}
 
 	public Long getAdvertisementId() {
@@ -81,5 +83,21 @@ public class AdvertisementVo {
 
 	public void setQuota(Quota quota) {
 		this.quota = quota;
+	}
+
+	public Integer getCategory() {
+		return category;
+	}
+
+	public void setCategory(Integer category) {
+		this.category = category;
+	}
+
+	public String getCategoryDesc() {
+		return categoryDesc;
+	}
+
+	public void setCategoryDesc(String categoryDesc) {
+		this.categoryDesc = categoryDesc;
 	}
 }

@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.advertiser.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
@@ -17,6 +18,7 @@ public class Advertiser {
 	private String bindUserName;
 	private String businessNumber;
 	private String businessPicture;
+	private BigDecimal balance;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
@@ -140,6 +142,14 @@ public class Advertiser {
 
 	public void setBusinessPicture(String businessPicture) {
 		this.businessPicture = businessPicture;
+	}
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
 	}
 
 }

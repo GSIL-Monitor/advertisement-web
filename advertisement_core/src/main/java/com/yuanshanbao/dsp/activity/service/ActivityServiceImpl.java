@@ -11,10 +11,17 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.JacksonUtil;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.dao.ActivityDao;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.information.model.InformationStatus;
 import com.yuanshanbao.dsp.information.service.InformationService;
+import com.yuanshanbao.dsp.quota.model.Quota;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -22,11 +29,21 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 @Service
 public class ActivityServiceImpl implements ActivityService {
 
+	private static final String INI_NAME_MAX = "activity_count_increase_max";
+
+	private static final String INI_NAME_MIN = "activity_count_increase_min";
+
 	@Autowired
 	private ActivityDao activityDao;
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private QuotaService quotaService;
+
+	@Autowired
+	private RedisService redisService;
 
 	@Autowired
 	private InformationService informationService;
@@ -136,15 +153,39 @@ public class ActivityServiceImpl implements ActivityService {
 		// if (information == null) {
 		// throw new BusinessException(ComRetCode.INSURANT_NOT_EXIST_ERROR);
 		// }
-		// Quota quota =
-		// quotaService.pickGoodsForInformation(activity.getActivityId(),
-		// information);
-		// if (quota == null) {
-		// informationService.insertInformation(information);
-		// throw new BusinessException(ComRetCode.ORDER_DELIVER_ERROR);
+		Quota quota = quotaService.pickGoodsForInformation(activity.getActivityId(), information);
+		if (quota == null) {
+			informationService.insertInformation(information);
+			throw new BusinessException(ComRetCode.ORDER_DELIVER_ERROR);
+		}
+		applyForInformation(information, activity, quota);
+		return information;
+	}
+
+	private void applyForInformation(Information information, Activity activity, Quota quota) {
+		// Goods goods = goodsService.selectGoods(quota.getGoodsId());
+		// if (goods == null) {
+		// throw new BusinessException(ComRetCode.INSURANCE_NOT_EXIST_ERROR);
 		// }
-		// applyForInformation(information, activity, quota);
-		// return information;
-		return null;
+		information.setActivityId(activity.getActivityId());
+		// LoggerUtil.info("获取配额成功, 配合信息={}, 商品信息={}",
+		// JacksonUtil.obj2json(quota), JacksonUtil.obj2json(goods));
+		// information.setMerchantId(goods.getMerchantId());
+		// information.setGoodsId(goods.getGoodsId());
+		information.setStatus(InformationStatus.INIT_STATE);
+		informationService.insertInformation(information);
+		LoggerUtil.info("创建本地订单, 订单信息={}", JacksonUtil.obj2json(information));
+		increaseActivityCount(activity);
+	}
+
+	private void increaseActivityCount(Activity activity) {
+		int increaseCount = 1;
+		String min = IniBean.getIniValue(INI_NAME_MIN, "1");
+		String max = IniBean.getIniValue(INI_NAME_MAX, "9");
+		double increaseMin = Double.parseDouble(min);
+		double increaseMax = Double.parseDouble(max);
+		increaseCount = (int) (Math.random() * (increaseMax - increaseMin + 1) + increaseMin);
+		// redisService.increBy(RedisConstant.getInsuranceCountKey(activity.getKey()),
+		// increaseCount);
 	}
 }

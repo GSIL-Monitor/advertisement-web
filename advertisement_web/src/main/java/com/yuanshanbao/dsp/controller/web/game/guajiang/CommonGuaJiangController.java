@@ -83,7 +83,7 @@ public class CommonGuaJiangController extends BaseGuaJiangController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-			LoggerUtil.error("[nhshbLuck: error]", e);
+			LoggerUtil.error("[guajiangLuckUser: error]", e);
 		}
 		return resultMap;
 	}

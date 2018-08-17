@@ -16,6 +16,7 @@
 		<result property="bindUserName" column="bind_username" jdbcType="VARCHAR" />
 		<result property="businessNumber" column="business_number" jdbcType="VARCHAR" />
 		<result property="businessPicture" column="business_picture" jdbcType="VARCHAR" />
+		<result property="balance" column="balance" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -121,4 +122,22 @@
 		advertiser_id=#{advertiserId}
 	</delete>
 
+	<update id="rechargeBalance" parameterType="map">
+		update tb_advertiser
+		set
+		balance = balance + #{amount, jdbcType=NUMERIC}
+		where
+		advertiser_id = #{advertiserId, jdbcType=INTEGER} 
+		and status = 1
+	</update>
+	
+	<update id="cutPayment" parameterType="map">
+		update tb_advertiser
+		set
+		balance = balance - #{amount, jdbcType=NUMERIC}
+		where
+		advertiser_id = #{advertiserId, jdbcType=INTEGER} 
+		and status = 1
+	</update>
+	
 </mapper>

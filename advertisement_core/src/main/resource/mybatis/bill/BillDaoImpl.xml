@@ -15,7 +15,7 @@
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 	</resultMap>
 
-	<select id="selectBill" parameterType="Bill"
+	<select id="z" parameterType="Bill"
 		resultMap="billMap">
 		select
 		* from

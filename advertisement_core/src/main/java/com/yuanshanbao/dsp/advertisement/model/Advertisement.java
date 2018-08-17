@@ -36,6 +36,7 @@ public class Advertisement {
 	private String imageUrl;
 	private String bigImageUrl;
 	private String description;
+	private Integer category;
 	private Integer status;
 	private Integer type;
 	private Timestamp createTime;
@@ -227,5 +228,13 @@ public class Advertisement {
 
 	public void setPosition(String position) {
 		this.position = position;
+	}
+
+	public Integer getCategory() {
+		return category;
+	}
+
+	public void setCategory(Integer category) {
+		this.category = category;
 	}
 }

@@ -13,6 +13,9 @@ public class InformationType {
 	public static final int LOAN = 2;
 	public static final String LOAN_DESCRIPTION = "贷款";
 
+	public static final int EDUCATION = 3;
+	public static final String EDUCATION_DESCRIPTION = "教育";
+
 	static {
 		initCodeDescriptionMap();
 	}
@@ -20,6 +23,7 @@ public class InformationType {
 	public static void initCodeDescriptionMap() {
 		codeDescriptionMap.put(INSURANCE, INSURANCE_DESCRIPTION);
 		codeDescriptionMap.put(LOAN, LOAN_DESCRIPTION);
+		codeDescriptionMap.put(EDUCATION, EDUCATION_DESCRIPTION);
 	}
 
 	public static String getTypeDescription(Integer code) {

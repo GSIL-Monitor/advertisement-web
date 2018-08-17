@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CookieUtils {
 
-	public static String COOKIE_DOMAIN = "ms.51yuanshan.com";
+	public static String COOKIE_DOMAIN = "ms.51yuanshan.com,51yuanshan.com";
 
 	public static String COOKIE_PATH = "/";
 

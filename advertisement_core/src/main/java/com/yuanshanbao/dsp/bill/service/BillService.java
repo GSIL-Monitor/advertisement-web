@@ -16,4 +16,8 @@ public interface BillService {
 	public List<Bill> selectBill(Bill bill, PageBounds pageBounds);
 
 	public void payment(Advertiser advertiser);
+
+	public void calculate();
+
+	public void recharge(Bill bill);
 }

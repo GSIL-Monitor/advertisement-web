@@ -13,6 +13,7 @@
 		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="stock" column="stock" jdbcType="NUMERIC" />
 		<result property="count" column="count" jdbcType="NUMERIC" />
@@ -52,6 +53,9 @@
 				<if test="advertisementId != null">
 					advertisement_id = #{advertisementId} and
 				</if>
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
+				</if>
 				<if test="channel != null">
 					channel = #{channel} and
 				</if>
@@ -85,10 +89,10 @@
 	<insert id="insertQuota" parameterType="Quota">
 		insert into
 		tb_quota(project_id, activity_id, product_id,position_id,merchant_id, channel, advertisement_id, type, 
-		count,stock, start_time, end_time, unit_price, status, create_time, update_time)
+		advertiser_id,count,stock, start_time, end_time, unit_price, status, create_time, update_time)
 		values
 		(#{projectId}, #{activityId}, #{productId}, #{positionId},#{merchantId}, #{channel}, #{advertisementId}, #{type}, 
-		#{count},#{stock}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
+		#{advertiserId},#{count},#{stock}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="quotaId">
 			SELECT LAST_INSERT_ID()

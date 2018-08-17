@@ -277,6 +277,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		double value = Math.random() * total;
 		double current = 0;
 		for (int i = 0; i < probabilityList.size(); i++) {
+			if (probabilityList.get(i).getProbability() == null) {
+				continue;
+			}
 			current += probabilityList.get(i).getProbability();
 			if (value < current) {
 				return probabilityList.get(i);
@@ -332,10 +335,6 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		List<Probability> channelProList = new ArrayList<Probability>();
 		Activity activity = ConfigManager.getActivityByKey(activityKey);
 		Channel channel = ConfigManager.getChannel(channelKey);
-		if (channel == null) {
-			LoggerUtil.info("未找到对应渠道,channelKey={}", channelKey);
-			throw new BusinessException();
-		}
 		if (activity == null) {
 			LoggerUtil.info("未找到对应活动,activitykey={}", activityKey);
 			throw new BusinessException();
@@ -350,14 +349,18 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		if (isCombination(activity.getCombination())) {
 			resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey, probabilityList);
 		} else {
-			if (isIndependent(channel.getIndependent())) {
-				resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
-						probabilityList);
+			if (channel != null) {
+				if (isIndependent(channel.getIndependent())) {
+					resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
+							probabilityList);
+				} else {
+					activityProList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
+					channelProList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
+							probabilityList);
+					resultList = dealProbabilityConfig(activityProList, channelProList);
+				}
 			} else {
-				activityProList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
-				channelProList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
-						probabilityList);
-				resultList = dealProbabilityConfig(activityProList, channelProList);
+				resultList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
 			}
 		}
 		return resultList;
@@ -366,7 +369,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	private List<Probability> selectProbabilityByActivityId(Long activityId, List<Probability> probabilityList) {
 		List<Probability> resultList = new ArrayList<Probability>();
 		for (Probability probability : probabilityList) {
-			if (activityId.equals(probability.getActivityId()) && probability.getChannel() == null) {
+			if (activityId.equals(probability.getActivityId()) && StringUtils.isEmpty(probability.getChannel())) {
 				resultList.add(probability);
 			}
 		}

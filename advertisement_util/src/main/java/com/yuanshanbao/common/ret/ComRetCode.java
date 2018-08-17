@@ -114,6 +114,10 @@ public class ComRetCode {
 	public static final int IP_NOT_ALLOW = 302;
 	public static final String IP_NOT_ALLOW_DESC = "IP校验失败";
 
+	/* 303您填写的身份证号已经在近期领取过赠险 */
+	public static final int ORDER_IDENTITY_CARD_HAS_EXIST_ERROR = 303;
+	public static final String ORDER_IDENTITY_CARD_HAS_EXIST_ERROR_DESC = "您填写的身份证号已经在近期领取过赠险";
+
 	/** #31 输入格式错误 **/
 
 	/* 311原密码错误。 */

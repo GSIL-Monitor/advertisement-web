@@ -98,8 +98,15 @@ public class BaseGameController extends BaseController {
 		modelMap.put("uvCountChannel", channel);
 		modelMap.put("activityKey", activityKey);
 		modelMap.put("channel", ConfigManager.getChannel(channel));
-		// modelMap.put("luckUserList", getLuckUserList(prizeName,
-		// probabilityRandom));
+		String[] popAdId = modelMap.get(ConfigConstants.ADVERTISEMENT_POPUP_CONFIG).toString().split(",");
+		if (popAdId != null && popAdId[0].length() > 0) {
+			Advertisement popUpAdvertisement = ConfigManager.getAdvertisement(popAdId[0]);
+			if (popUpAdvertisement != null) {
+				// TODO 广告位置是否需要做处理
+				popUpAdvertisement.setLink(popUpAdvertisement.getJumperLink("", channel));
+				modelMap.put("popUpAdvertisement", popUpAdvertisement);
+			}
+		}
 		recordGameRequestCount(request, channel);
 	}
 
@@ -123,9 +130,7 @@ public class BaseGameController extends BaseController {
 
 	protected Advertisement pickPrize(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> resultMap, String activityKey) {
-		// TODO Auto-generated method stub
 		String channel = (String) request.getSession().getAttribute(activityKey + SessionConstants.SESSION_USER_FROM);
-		channel = "qudaos";
 		List<Long> pickedPrizeIdList = parsePickedPrize(request, activityKey, true);
 		Activity activity = activityService.selectActivity(activityKey);
 		if (activity != null && activity.getActivityId() != null) {
@@ -162,7 +167,6 @@ public class BaseGameController extends BaseController {
 	}
 
 	protected List<Advertisement> getMyPrizeList(HttpServletRequest request, String activityKey) {
-		String channel = (String) request.getSession().getAttribute(activityKey + SessionConstants.SESSION_USER_FROM);
 		List<Long> prizeIdList = parsePickedPrize(request, activityKey, false);
 		Map<Long, Advertisement> prizeMap = advertisementService.selectAdvertisementByIds(prizeIdList);
 		List<Advertisement> result = new ArrayList<Advertisement>();

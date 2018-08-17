@@ -135,7 +135,7 @@ public class BaseInformationController extends BaseController {
 			throw new BusinessException(ComRetCode.ACTIVITY_NOT_EXIST_ERROR);
 		}
 		information.setActivityId(activity.getActivityId());
-		information.setType(InformationType.LOAN);
+		information.setType(InformationType.EDUCATION);
 		information.setIp(JSPHelper.getRemoteAddr(request));
 		String channel = (String) request.getSession().getAttribute(activityKey + SessionConstants.SESSION_USER_FROM);
 		information.setChannel(channel);

@@ -141,7 +141,6 @@ public class InformationServiceImpl implements InformationService {
 
 	@Override
 	public void checkExist(Information information) {
-		// TODO Auto-generated method stub
 		Information params = new Information();
 		params.setType(information.getType());
 		params.setMobile(information.getMobile());
@@ -149,8 +148,7 @@ public class InformationServiceImpl implements InformationService {
 		List<Information> informationList = selectInformations(params, new PageBounds());
 		for (Information insu : informationList) {
 			if (DateUtils.getDiffDays(insu.getCreateTime(), new Date()) < 180) {
-				// throw new
-				// BusinessException(ComRetCode.ORDER_MOBILE_HAS_EXIST_ERROR);
+				throw new BusinessException(ComRetCode.ORDER_MOBILE_HAS_EXIST_ERROR);
 			}
 		}
 		if (StringUtils.isNotBlank(information.getIdentityCard())) {
@@ -160,8 +158,7 @@ public class InformationServiceImpl implements InformationService {
 			informationList = selectInformations(params, new PageBounds());
 			for (Information insu : informationList) {
 				if (DateUtils.getDiffDays(insu.getCreateTime(), new Date()) < 180) {
-					// throw new
-					// BusinessException(ComRetCode.ORDER_IDENTITY_CARD_HAS_EXIST_ERROR);
+					throw new BusinessException(ComRetCode.ORDER_IDENTITY_CARD_HAS_EXIST_ERROR);
 				}
 			}
 		}

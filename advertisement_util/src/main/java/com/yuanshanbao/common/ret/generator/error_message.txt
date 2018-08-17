@@ -26,6 +26,7 @@ BROKER_AUDITING_DESC = 资质审核中，暂时无法修改信息
 #30 通用格式错误
 WRONG_PARAMETER_DESC = 请求参数错误，请稍后重试
 IP_NOT_ALLOW_DESC = IP校验失败
+ORDER_IDENTITY_CARD_HAS_EXIST_ERROR_DESC = 您填写的身份证号已经在近期领取过赠险
 
 #31 输入格式错误
 OLD_PASSWORD_ERROR_DESC = 原密码错误。

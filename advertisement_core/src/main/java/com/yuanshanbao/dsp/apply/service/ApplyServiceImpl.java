@@ -271,7 +271,7 @@ public class ApplyServiceImpl implements ApplyService {
 		}
 		information.setUserId(user.getUserId());
 		information.setStatus(CommonStatus.ONLINE);
-		if (StringUtils.isNotEmpty(information.getName()) || StringUtils.isNotEmpty(information.getAge() + "")) {
+		if (StringUtils.isNotEmpty(information.getName()) || information.getAge() != null) {
 			informationService.insertOrUpdateInformation(information);
 		}
 	}
@@ -284,7 +284,7 @@ public class ApplyServiceImpl implements ApplyService {
 			throw new BusinessException(ComRetCode.INFORMATION_NOT_COMPLETE);
 		}
 		Information information = list.get(0);
-		if (StringUtils.isEmpty(information.getAge() + "") || StringUtils.isEmpty(information.getName())) {
+		if (information.getAge() == null || StringUtils.isEmpty(information.getName())) {
 			throw new BusinessException(ComRetCode.INFORMATION_NOT_COMPLETE);
 		}
 	}

@@ -1,4 +1,4 @@
-package com.yuanshanbao.dsp.controller.web.game.zhuanpan;
+package com.yuanshanbao.dsp.controller.web.game.zajindan;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +15,9 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 
-@RequestMapping({ "/activity/zhuanpan/common", "/m/activity/zhuanpan/common" })
 @Controller
-public class CommonZhuanPanController extends BaseZhuanPanController {
+@RequestMapping({ "/activity/zjd/common", "/m/activity/zjd/common", "/game/zjd/common", "/m/game/zjd/common" })
+public class CommonZaJinDanController extends BaseZaJinDanController {
 
 	@ResponseBody
 	@RequestMapping("/chance")
@@ -30,7 +30,7 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-			LoggerUtil.error("[zhuanpanChance: error]", e);
+			LoggerUtil.error("[zajindanChance: error]", e);
 		}
 		return resultMap;
 	}
@@ -47,7 +47,7 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-			LoggerUtil.error("[zhuanpanChance: error]", e);
+			LoggerUtil.error("[zajidanIndex: error]", e);
 		}
 		return resultMap;
 	}
@@ -59,13 +59,13 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 		try {
 			pickPrizeAndSetResult(request, response, resultMap, activityKey, parentKey);
 			// resultMap.put("position", POSITION);
-			resultMap.put("angle", positionAngles[4 - 1]);
+			resultMap.put("angle", positionAngles[5 - 1]);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-			LoggerUtil.error("[nhshbLuck: error]", e);
+			LoggerUtil.error("[zajindanLuck: error]", e);
 		}
 		return resultMap;
 	}
@@ -84,7 +84,7 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-			LoggerUtil.error("[nhshbLuck: error]", e);
+			LoggerUtil.error("[zajindanLuckUser: error]", e);
 		}
 		return resultMap;
 	}
@@ -103,12 +103,5 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 			LoggerUtil.error("[MyPrize: error]", e);
 		}
 		return resultMap;
-	}
-
-	public static void main(String[] args) {
-		for (int i = 0; i < 10; i++) {
-			double d = (double) ((1 - Math.random()) % 1);
-			System.err.println(d);
-		}
 	}
 }

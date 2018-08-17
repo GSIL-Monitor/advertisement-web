@@ -694,10 +694,6 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 				}
 			} else {
 				for (Probability pro : list) {
-					if (pro.getChannel() != null && pro.getChannel().equals("qudaos")) {
-
-						System.err.println(pro.getAdvertisementId());
-					}
 					AdvertisementStatistics statistic = createChannelAdvertisementStatistic(diffDate, pv,
 							pro.getChannel(), pro.getAdvertisementId());
 					addToResultMap(resultMap, pro.getChannel(), statistic);
