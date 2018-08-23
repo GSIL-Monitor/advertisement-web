@@ -36,7 +36,7 @@
 		information_id, project_id, activity_id, user_id, mobile, name, gender,
 		identity_card, birthday,
 		email, education, location, address, province, city, position,
-		salary, marriage,
+		salary, marriage,age,
 		has_child, channel, status,
 		create_time,
 		update_time

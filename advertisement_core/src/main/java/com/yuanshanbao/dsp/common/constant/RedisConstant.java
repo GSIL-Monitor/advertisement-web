@@ -35,6 +35,7 @@ public class RedisConstant {
 	public static final String QUOTA_COUNT = "quota_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_SHOW_COUNT = "advertisement_show_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT = "advertisement_click_count" + COMMON_REDIS_PREFIX;
+	public static final String ADVERTISEMENT_GET_COUNT = "advertisement_get_count" + COMMON_REDIS_PREFIX;
 
 	public static final String ADVERTISEMENT_CHANNEL = "advertisement_channel" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CHANNEL_AND_ID = "advertisement_channel_and_id" + COMMON_REDIS_PREFIX;
@@ -249,12 +250,18 @@ public class RedisConstant {
 		return getCachePrefix(REQUEST_COUNT, date + "_" + channel);
 	}
 
-	public static String getAdvertiserBalanceCountKey(Long advertiserId) {
-		return getCachePrefix(ADVERTISER_BALANCE_COUNT, advertiserId + "");
+	public static String getAdvertiserBalanceCountKey(String date, Long advertiserId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISER_BALANCE_COUNT, date + "_" + advertiserId + "");
 	}
 
-	public static String getAdvertiserLastBalanceCountKey(Long advertiserId) {
-		return getCachePrefix(ADVERTISER_LAST_BALANCE_COUNT, advertiserId + "");
+	public static String getAdvertiserLastBalanceCountKey(String date, Long advertiserId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(ADVERTISER_LAST_BALANCE_COUNT, date + "_" + advertiserId + "");
 	}
 
 	public static String getApplyShowCountKey() {
@@ -275,4 +282,8 @@ public class RedisConstant {
 		return getCachePrefix(AGENT_NOTIFY_HANDLER_KEY, mobile);
 	}
 
+	// 福利领取数量
+	public static String getAdvertisementGetCountKey(Long advertisementId) {
+		return getCachePrefix(ADVERTISEMENT_GET_COUNT, advertisementId + "");
+	}
 }

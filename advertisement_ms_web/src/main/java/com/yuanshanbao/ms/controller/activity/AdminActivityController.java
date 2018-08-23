@@ -34,6 +34,7 @@ import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.model.ChannelAllocateStatus;
 import com.yuanshanbao.dsp.channel.model.ChannelIndependentStatus;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.model.Config;
 import com.yuanshanbao.dsp.config.model.ConfigCategory;
 import com.yuanshanbao.dsp.config.model.Function;
@@ -452,15 +453,18 @@ public class AdminActivityController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/allocateGift.do")
-	public Object allocateGift(Probability probability, Quota quota, HttpServletRequest request,
+	public Object allocateGift(Probability probability, Quota quota, Long advertisementId, HttpServletRequest request,
 			HttpServletResponse response, ModelMap modelMap) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
+			Advertisement advertisement = ConfigManager.getAdvertisement(advertisementId + "");
 			probability.setProjectId(getProjectId(request));
 			quota.setProjectId(getProjectId(request));
+			quota.setAdvertiserId(advertisement.getAdvertiserId());
 			probability.setChannel(probability.getChannel() != null ? probability.getChannel() : "");
+			quota.setChannel(quota.getChannel() != null ? quota.getChannel() : "");
 			probabilityService.insertProbability(probability);
-			// quotaService.insertQuota(quota);
+			quotaService.insertQuota(quota);
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

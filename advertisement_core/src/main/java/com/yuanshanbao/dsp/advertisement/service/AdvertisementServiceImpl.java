@@ -189,7 +189,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	@Override
 	public Long getAdvertisementCount(Long advertisementId) {
-		String key = RedisConstant.getAdvertisementShowCountKey(advertisementId, null);
+		String key = RedisConstant.getAdvertisementGetCountKey(advertisementId);
 		String str = (String) redisCacheService.get(key);
 		long count = 0;
 		if (ValidateUtil.isNumber(str)) {

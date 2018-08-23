@@ -180,7 +180,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	@Override
 	public Probability pickPrize(HttpServletRequest request, Long projectId, String activityKey, String channel,
 			List<Long> pickedAdvertisementIdList) {
-		List<Probability> list = selectProbabilityByKeyFromCache(projectId, activityKey, channel, null);
+		// List<Probability> list = selectProbabilityByKeyFromCache(projectId,
+		// activityKey, channel, null);
+		List<Probability> list = selectProbabilitys(request, projectId, activityKey, channel);
 		List<Probability> unpickedList = new ArrayList<Probability>();
 		for (Probability probability : list) {
 			boolean isPicked = false;

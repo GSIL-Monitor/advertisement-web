@@ -106,7 +106,6 @@ public class AdminTagsController extends PaginationController {
 				tags.setBigImage(UploadUtils.uploadFile(bigImage, UploadUtils.FTP_COMMON_FILE));
 			}
 			tagsService.insertTags(tags);
-			ConstantsManager.refresh();
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -167,5 +166,10 @@ public class AdminTagsController extends PaginationController {
 
 		request.setAttribute("itemEdit", tags);
 		return PAGE_DETAIL;
+	}
+
+	public static void main(String[] args) {
+		Object a = null;
+		System.err.println(a.toString());
 	}
 }

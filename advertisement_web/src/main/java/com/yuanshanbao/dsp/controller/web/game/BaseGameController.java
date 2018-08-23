@@ -130,7 +130,10 @@ public class BaseGameController extends BaseController {
 
 	protected Advertisement pickPrize(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> resultMap, String activityKey) {
-		String channel = (String) request.getSession().getAttribute(activityKey + SessionConstants.SESSION_USER_FROM);
+		// String channel = (String)
+		// request.getSession().getAttribute(activityKey +
+		// SessionConstants.SESSION_USER_FROM);
+		String channel = request.getParameter("channel");
 		List<Long> pickedPrizeIdList = parsePickedPrize(request, activityKey, true);
 		Activity activity = activityService.selectActivity(activityKey);
 		if (activity != null && activity.getActivityId() != null) {

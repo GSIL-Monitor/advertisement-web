@@ -1,5 +1,6 @@
 package com.yuanshanbao.ms.controller.bill;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.bill.model.Bill;
@@ -122,10 +125,18 @@ public class AdminBillController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/calculateCount")
-	public Object calculateCount() {
+	public Object calculateCount(String calculatedate) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String date = null;
 		try {
-			billService.calculate();
+			if (calculatedate != null) {
+				if (ValidateUtil.isBirthday(calculatedate, DateUtils.DEFAULT_DATE_FORMAT)) {
+					date = calculatedate;
+				}
+			} else {
+				date = DateUtils.format(new Date());
+			}
+			billService.calculate(date);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (Exception e2) {
 			LoggerUtil.error("calculateCount  function -  error", e2);

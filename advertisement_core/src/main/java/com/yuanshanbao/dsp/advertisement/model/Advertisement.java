@@ -36,7 +36,8 @@ public class Advertisement {
 	private String imageUrl;
 	private String bigImageUrl;
 	private String description;
-	private Integer category;
+	private String buttonName;
+	private Long category;
 	private Integer status;
 	private Integer type;
 	private Timestamp createTime;
@@ -230,11 +231,20 @@ public class Advertisement {
 		this.position = position;
 	}
 
-	public Integer getCategory() {
+	public Long getCategory() {
 		return category;
 	}
 
-	public void setCategory(Integer category) {
+	public void setCategory(Long category) {
 		this.category = category;
 	}
+
+	public String getButtonName() {
+		return buttonName;
+	}
+
+	public void setButtonName(String buttonName) {
+		this.buttonName = buttonName;
+	}
+
 }

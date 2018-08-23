@@ -13,6 +13,7 @@
 		<result property="link" column="link" jdbcType="VARCHAR" />
 		<result property="appUrl" column="app_url" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="buttonName" column="button_name" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
 		<result property="bigImageUrl" column="big_image_url" jdbcType="VARCHAR" />
 		<result property="category" column="category" jdbcType="NUMERIC" />

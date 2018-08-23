@@ -82,13 +82,13 @@ public class BillServiceImpl implements BillService {
 	@Override
 	public void payment(Advertiser advertiser) {
 		// 总消耗
-		double nowCount = getCount(RedisConstant.getAdvertiserBalanceCountKey(advertiser.getAdvertiserId()));
+		double nowCount = getCount(RedisConstant.getAdvertiserBalanceCountKey(null, advertiser.getAdvertiserId()));
 		// 上次操作扣费时消耗的数量
-		double lastCount = getCount(RedisConstant.getAdvertiserLastBalanceCountKey(advertiser.getAdvertiserId()));
+		double lastCount = getCount(RedisConstant.getAdvertiserLastBalanceCountKey(null, advertiser.getAdvertiserId()));
 		double difference = nowCount - lastCount;
 		if (difference > 0) {
 			createBill(advertiser, difference, BillType.DEDUCTION);
-			redisService.set(RedisConstant.getAdvertiserLastBalanceCountKey(advertiser.getAdvertiserId()),
+			redisService.set(RedisConstant.getAdvertiserLastBalanceCountKey(null, advertiser.getAdvertiserId()),
 					String.valueOf(nowCount));
 		}
 	}
@@ -125,7 +125,7 @@ public class BillServiceImpl implements BillService {
 		return 0;
 	}
 
-	public void calculate() {
+	public void calculate(String date) {
 		Advertiser params = new Advertiser();
 		params.setStatus(CommonStatus.ONLINE);
 		List<Advertiser> list = advertiserService.selectAdvertiser(params, new PageBounds());
@@ -142,30 +142,32 @@ public class BillServiceImpl implements BillService {
 				if (quo.getType() != null) {
 					if (quo.getType().equals(QuotaType.CPC)) {
 						if (StringUtils.isNotBlank(quo.getChannel())) {
-							count = getClickOrShowCount(RedisConstant.getAdvertisementClickCountPVKey(null,
+							count = getClickOrShowCount(RedisConstant.getAdvertisementClickCountPVKey(date,
 									quo.getAdvertisementId() + "", quo.getChannel()));
 						} else {
-							count = getClickOrShowCount(RedisConstant.getAdvertisementActivityClickCountPVKey(null,
+							count = getClickOrShowCount(RedisConstant.getAdvertisementActivityClickCountPVKey(date,
 									quo.getAdvertisementId() + "", quo.getChannel()));
 						}
 					} else if (quo.getType().equals(QuotaType.CPT)) {
 						if (StringUtils.isNotBlank(quo.getChannel())) {
-							count = getClickOrShowCount(RedisConstant.getAdvertisementShowCountPVKey(null,
+							count = getClickOrShowCount(RedisConstant.getAdvertisementShowCountPVKey(date,
 									quo.getAdvertisementId() + "", quo.getChannel()));
 						} else {
-							count = getClickOrShowCount(RedisConstant.getAdvertisementActivityShowCountPVKey(null,
+							count = getClickOrShowCount(RedisConstant.getAdvertisementActivityShowCountPVKey(date,
 									quo.getAdvertisementId() + "", quo.getChannel()));
 						}
 					}
-					count = count + getClickOrShowCount(RedisConstant.getQuotaCount(quo.getQuotaId()));
-					redisService.increBy(RedisConstant.getQuotaCount(quo.getQuotaId()), count);
+					// count = count -
+					// getClickOrShowCount(RedisConstant.getQuotaCount(quo.getQuotaId()));
+					// redisService.increBy(RedisConstant.getQuotaCount(quo.getQuotaId()),
+					// count);
 				}
 				if (quo.getUnitPrice() != null) {
 					money = money.add(quo.getUnitPrice().multiply(BigDecimal.valueOf(count)));
 				}
 			}
 			System.err.println(money);
-			redisService.set(RedisConstant.getAdvertiserBalanceCountKey(advertiser.getAdvertiserId()),
+			redisService.set(RedisConstant.getAdvertiserBalanceCountKey(date, advertiser.getAdvertiserId()),
 					String.valueOf(money));
 		}
 	}

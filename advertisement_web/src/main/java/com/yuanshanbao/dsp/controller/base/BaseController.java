@@ -332,13 +332,6 @@ public class BaseController {
 				channel);
 		List<AdvertisementVo> resultList = new ArrayList<AdvertisementVo>();
 		for (Advertisement advertisement : list) {
-			String link = "";
-			if (client == null || Advertisement.IS_IOS == client || Advertisement.IS_ANDROID == client) {
-				link = advertisement.getAppLink(position, channel);
-			} else {
-				link = advertisement.getJumperLink(position, channel);
-			}
-			advertisement.setLink(link);
 			advertisement.setCount(advertisementService.getAdvertisementCount(advertisement.getAdvertisementId()));
 			if (advertisement.getShowType() != null) {
 				advertisement.setPosition(constant);

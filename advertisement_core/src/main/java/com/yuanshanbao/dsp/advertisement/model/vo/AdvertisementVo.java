@@ -11,7 +11,9 @@ public class AdvertisementVo {
 	private String subTitle;
 	private String imageUrl;
 	private String link;
-	private Integer category;
+	private String buttonName;
+	private Long count;
+	private Long category;
 	private String categoryDesc;
 	private Probability probability;
 	private Quota quota;
@@ -26,7 +28,9 @@ public class AdvertisementVo {
 		this.subTitle = advertisement.getSubTitle();
 		this.imageUrl = advertisement.getImageUrl();
 		this.link = advertisement.getLink();
-		this.category = advertisement.getCategory();
+		this.buttonName = advertisement.getButtonName();
+		this.count = advertisement.getCount();
+		this.setCategory(advertisement.getCategory());
 	}
 
 	public Long getAdvertisementId() {
@@ -85,19 +89,35 @@ public class AdvertisementVo {
 		this.quota = quota;
 	}
 
-	public Integer getCategory() {
-		return category;
-	}
-
-	public void setCategory(Integer category) {
-		this.category = category;
-	}
-
 	public String getCategoryDesc() {
 		return categoryDesc;
 	}
 
 	public void setCategoryDesc(String categoryDesc) {
 		this.categoryDesc = categoryDesc;
+	}
+
+	public Long getCategory() {
+		return category;
+	}
+
+	public void setCategory(Long category) {
+		this.category = category;
+	}
+
+	public Long getCount() {
+		return count;
+	}
+
+	public void setCount(Long count) {
+		this.count = count;
+	}
+
+	public String getButtonName() {
+		return buttonName;
+	}
+
+	public void setButtonName(String buttonName) {
+		this.buttonName = buttonName;
 	}
 }

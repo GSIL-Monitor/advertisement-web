@@ -17,7 +17,7 @@ public interface BillService {
 
 	public void payment(Advertiser advertiser);
 
-	public void calculate();
+	public void calculate(String date);
 
 	public void recharge(Bill bill);
 }

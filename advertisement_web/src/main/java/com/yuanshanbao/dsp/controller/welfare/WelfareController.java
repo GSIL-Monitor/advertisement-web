@@ -38,6 +38,8 @@ import com.yuanshanbao.dsp.product.service.ProductService;
 @RequestMapping({ "/welfare", "/i/welfare" })
 public class WelfareController extends BaseController {
 
+	private static final String EDUCATION_APP = "education_app";
+
 	@Autowired
 	private ProductService productService;
 
@@ -52,7 +54,7 @@ public class WelfareController extends BaseController {
 				channel = channel + "_approval";
 			}
 			request.getSession().setAttribute(activityKey + SessionConstants.SESSION_USER_FROM, channel);
-			Activity activity = ConfigManager.getActivityByKey(activityKey);
+			Activity activity = ConfigManager.getActivityByKey(EDUCATION_APP);
 			Long activityId = null;
 			if (activity != null) {
 				activityId = activity.getActivityId();
