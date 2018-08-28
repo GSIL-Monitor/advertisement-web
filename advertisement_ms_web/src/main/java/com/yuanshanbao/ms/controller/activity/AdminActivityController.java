@@ -91,6 +91,8 @@ public class AdminActivityController extends PaginationController {
 
 	private static final String PAGE_QUOTA_CONFIG = "advertisement/activity/insertQuota";
 
+	private static final String PAGE_PROBABILITY = "advertisement/activity/updateProbability";
+
 	@Autowired
 	private ActivityService activityService;
 
@@ -459,12 +461,12 @@ public class AdminActivityController extends PaginationController {
 		try {
 			Advertisement advertisement = ConfigManager.getAdvertisement(advertisementId + "");
 			probability.setProjectId(getProjectId(request));
+			probability.setChannel(probability.getChannel() != null ? probability.getChannel() : "");
+			probabilityService.insertProbability(probability);
 			quota.setProjectId(getProjectId(request));
 			quota.setAdvertiserId(advertisement.getAdvertiserId());
-			probability.setChannel(probability.getChannel() != null ? probability.getChannel() : "");
 			quota.setChannel(quota.getChannel() != null ? quota.getChannel() : "");
-			probabilityService.insertProbability(probability);
-			quotaService.insertQuota(quota);
+			// quotaService.insertQuota(quota);
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -477,7 +479,7 @@ public class AdminActivityController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/deletePro.do")
-	public Object deletePro(Long probabilityId, HttpServletRequest request, HttpServletResponse response)
+	public Object deletePro(Long probabilityId, Long quotaId, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -489,7 +491,16 @@ public class AdminActivityController extends PaginationController {
 			probability.setProbabilityId(probabilityId);
 			probability.setStatus(CommonStatus.OFFLINE);
 			probabilityService.updateProbability(probability);
-
+			Quota params = new Quota();
+			params.setActivityId(probability.getActivityId());
+			params.setChannel(probability.getChannel());
+			params.setStatus(CommonStatus.ONLINE);
+			List<Quota> list = quotaService.selectQuota(params, new PageBounds());
+			if (list.size() > 0) {
+				Quota quota = list.get(0);
+				quota.setStatus(CommonStatus.OFFLINE);
+				quotaService.updateQuota(quota);
+			}
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
@@ -514,7 +525,36 @@ public class AdminActivityController extends PaginationController {
 		try {
 			quota.setProjectId(getProjectId(request));
 			quota.setStatus(CommonStatus.ONLINE);
+			quota.setChannel(quota.getChannel() != null ? quota.getChannel() : "");
 			quotaService.insertQuota(quota);
+			AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("probability insert function - reload error", e2);
+		}
+		return result;
+	}
+
+	@RequestMapping("/probabilityWindow.do")
+	public String probabilityWindow(Long probabilityId, HttpServletRequest request, HttpServletResponse response) {
+		Probability probability = probabilityService.selectProbability(probabilityId);
+		request.setAttribute("itemEdit", probability);
+		return PAGE_PROBABILITY;
+	}
+
+	@ResponseBody
+	@RequestMapping("/updateProbability.do")
+	public Object updateProbability(Probability probability, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			validateParameters(probability);
+			if (probability.getProbabilityId() == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			probabilityService.updateProbability(probability);
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

@@ -66,9 +66,9 @@
 		        	}
 		        }
 		    }, {
-		    	"data": "${functionId}",
+		    	"data": "probability.probabilityId",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
+		            return '<a href="${rc.contextPath}/admin/${functionName}/probabilityWindow.do?probabilityId='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
 		        }
 		    }, {
 		    	"data": "probability.probabilityId",

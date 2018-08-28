@@ -388,7 +388,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		adMap = selectAdvertisementByIds(advertisementIds);
 		for (Long advertisementId : advertisementIds) {
 			AdvertisementVo adVo = new AdvertisementVo(adMap.get(advertisementId));
-			adVo.setAdvertisementId(advertisementId);
 			adVo.setProbability(proMap.get(advertisementId));
 			adVo.setQuota(quotaMap.get(advertisementId));
 			result.add(adVo);
