@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.JSPHelper;
@@ -79,13 +78,17 @@ public class SmsController extends BaseController {
 				type = parameterMap.get("type");
 				appKey = appService.getAppKey(request.getParameter("appId"));
 			} else {
-//				String sessionToken = (String) request.getSession().getAttribute(SessionConstants.SMS_TOKEN);
-//				Long time = (Long) request.getSession().getAttribute(SessionConstants.TOKEN_TIME);
-//				if (!(StringUtils.isNotBlank(sessionToken) && sessionToken.equals(smsToken)) || time == null
-//						|| (System.currentTimeMillis() - time) < 4000) {
-//					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.WRONG_PARAMETER);
-//					return resultMap;
-//				}
+				// String sessionToken = (String)
+				// request.getSession().getAttribute(SessionConstants.SMS_TOKEN);
+				// Long time = (Long)
+				// request.getSession().getAttribute(SessionConstants.TOKEN_TIME);
+				// if (!(StringUtils.isNotBlank(sessionToken) &&
+				// sessionToken.equals(smsToken)) || time == null
+				// || (System.currentTimeMillis() - time) < 4000) {
+				// InterfaceRetCode.setAppCodeDesc(resultMap,
+				// ComRetCode.WRONG_PARAMETER);
+				// return resultMap;
+				// }
 			}
 			// 1.手机号不为空，则使用传入的手机号
 			if (StringUtils.isBlank(mobile)) {
@@ -96,7 +99,7 @@ public class SmsController extends BaseController {
 				return resultMap;
 			}
 
-			//String signature = getSignatureValue(type, mobile, appKey);
+			// String signature = getSignatureValue(type, mobile, appKey);
 
 			// 3.短信发送是否超过上限,如果没有则发送短信
 			TimesLimitModel timesLimit = timesLimitService.getTimesLimitModel(TimesLimitConstants.SEND_SMS_RANDOM_CODE,
@@ -111,8 +114,7 @@ public class SmsController extends BaseController {
 					voiceValue = true;
 				}
 				String signName = getSmsSignName(request);
-				SmsVerifyCode smsVerifyCode = smsCodeService
-						.sendSmsCode(signName, mobile, channel, userIp, voiceValue);
+				SmsVerifyCode smsVerifyCode = smsCodeService.sendSmsCode(signName, mobile, channel, userIp, voiceValue);
 				timesLimit.increaseTimes();
 				resultMap.put("signValue", smsVerifyCode.getSign());
 				resultMap.put("expiredTime", smsVerifyCode.getExpiredTime());

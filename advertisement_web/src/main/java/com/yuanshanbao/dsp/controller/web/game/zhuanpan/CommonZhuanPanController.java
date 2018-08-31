@@ -47,7 +47,7 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-			LoggerUtil.error("[zhuanpanChance: error]", e);
+			LoggerUtil.error("[zhuanpanIndex: error]", e);
 		}
 		return resultMap;
 	}

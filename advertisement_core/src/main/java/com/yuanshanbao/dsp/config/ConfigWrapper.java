@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.config;
 import org.apache.commons.lang3.StringUtils;
 
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.information.model.Information;
 
 public class ConfigWrapper extends ConfigManager {
 
@@ -70,5 +71,15 @@ public class ConfigWrapper extends ConfigManager {
 	public static boolean isEmailOption(Long activityId, String channel, Long merchantId, Long insuranceId) {
 		return ConfigConstants.TRUE.equals(ConfigManager.getConfigValue(activityId, channel, merchantId, insuranceId,
 				ConfigConstants.EMAIL_OPTION));
+	}
+
+	public static String getSmsTemplate(Information information) {
+		return ConfigManager.getConfigValue(information.getActivityId(), information.getChannel(),
+				information.getMerchantId(), null, ConfigConstants.SMS_TEMPLATE);
+	}
+
+	public static boolean isSendSms(Long activityId, String channel, Long merchantId, Long insuranceId) {
+		return ConfigConstants.TRUE.equals(ConfigManager.getConfigValue(activityId, channel, merchantId, insuranceId,
+				ConfigConstants.SEND_SMS));
 	}
 }

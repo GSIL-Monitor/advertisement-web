@@ -6,13 +6,13 @@
 
 	<resultMap id="extendInfoMap" type="extendInfo">
 		<id property="extendInfoId" column="extend_info_id" jdbcType="NUMERIC" />
-		<result property="userId" column="user_id" jdbcType="NUMERIC" />
 		<result property="informationId" column="information_id" jdbcType="NUMERIC" />
-		<result property="fieldId" column="field_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="key" column="key" jdbcType="VARCHAR" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="value" column="value" jdbcType="VARCHAR" />
-		<result property="tagsId" column="tags_id" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -33,6 +33,12 @@
 				</if>
 				<if test="informationId != null">
 					information_id=#{informationId} and
+				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id=#{merchantId} and
 				</if>
 				<if test="fieldId != null">
 					field_id=#{fieldId} and
@@ -71,13 +77,13 @@
 
 	<insert id="insertExtendInfo" parameterType="ExtendInfo">
 		insert into
-		tb_extend_info(extend_info_id, user_id,information_id, field_id, `key`,
-		name, `value`, tags_id,
-		status, create_time, update_time)
+		tb_extend_info(information_id, 
+		activity_id,merchant_id,channel,
+		 `key`,`value`,status, create_time, update_time)
 		values
-		(#{extendInfoId}, #{userId},
-		#{informationId}, #{fieldId}, 
-		#{key}, #{name}, #{value}, #{tagsId}, #{status},
+		(#{informationId},
+		#{activityId},#{merchantId},#{channel},
+		#{key},  #{value},  #{status},
 		sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="extendInfoId">

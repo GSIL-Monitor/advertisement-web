@@ -78,6 +78,8 @@ public class Product {
 
 	private String guide;
 
+	private String deliverOrderUrl;
+
 	private Integer type;
 
 	private Integer sort;
@@ -474,6 +476,14 @@ public class Product {
 
 	public String getStatusValue() {
 		return ProductStatus.getDescription(status);
+	}
+
+	public String getDeliverOrderUrl() {
+		return deliverOrderUrl;
+	}
+
+	public void setDeliverOrderUrl(String deliverOrderUrl) {
+		this.deliverOrderUrl = deliverOrderUrl;
 	}
 
 }

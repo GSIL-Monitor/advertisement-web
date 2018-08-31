@@ -26,6 +26,8 @@ public interface InformationService {
 
 	public void checkExist(Information information);
 
-	public void tryDeliver(Information information, boolean b, boolean c);
+	public void tryDeliver(Information information, boolean changeGoods, boolean forceDeliver);
+
+	public void notifyAgent(Information information);
 
 }

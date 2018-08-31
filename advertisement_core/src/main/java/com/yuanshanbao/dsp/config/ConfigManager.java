@@ -157,6 +157,85 @@ public class ConfigManager implements ConfigConstants {
 		resultMap.put(ALL_CONFIG_IN_PAGE, allConfigs);
 	}
 
+	// public static void setAdvertisementConfig(Map<String, String> configMap,
+	// Insurant insurant) {
+	// try {
+	// String channel = "";
+	// if (insurant != null && StringUtils.isNotBlank(insurant.getChannel())) {
+	// channel = insurant.getChannel();
+	// }
+	// List<Advertisement> advertisementPromotionList = getAdvertisementList(
+	// configMap.get(ConfigConstants.ADVERTISEMENT_PROMOTION_CONFIG), insurant);
+	// List<Advertisement> advertisementCalculatorList = getAdvertisementList(
+	// configMap.get(ConfigConstants.ADVERTISEMENT_CALCULATOR_CONFIG),
+	// insurant);
+	// List<Advertisement> advertisementFailList = getAdvertisementList(
+	// configMap.get(ConfigConstants.ADVERTISEMENT_FAIL_CONFIG), insurant);
+	// List<Advertisement> advertisementInvalidList = getAdvertisementList(
+	// configMap.get(ConfigConstants.ADVERTISEMENT_INVALID_CONFIG), insurant);
+	// List<Advertisement> advertisementExclusiveList = getAdvertisementList(
+	// configMap.get(ConfigConstants.ADVERTISEMENT_EXCLUSIVE_CONFIG), insurant);
+	// String failTipTextConfig = "", failTipLinkConfig = "",
+	// invalidTipTextConfig = "", invalidTipLinkConfig = "";
+	// String surveyPromotionTextConfig = "", surveyPromotionLinkConfig = "",
+	// allPromotionTipTextConfig = "", allPromotionTipLinkConfig = "";
+	// if (advertisementCalculatorList.size() > 0) {
+	// surveyPromotionTextConfig =
+	// advertisementCalculatorList.get(0).getTitle();
+	// surveyPromotionLinkConfig =
+	// advertisementCalculatorList.get(0).getJumperLink(
+	// AdvertisementPosition.PROMOTION, channel);
+	// configMap.put(ConfigConstants.SURVEY_PROMOTION_TEXT,
+	// surveyPromotionTextConfig);
+	// configMap.put(ConfigConstants.SURVEY_PROMOTION_LINK,
+	// surveyPromotionLinkConfig);
+	// } else {
+	// configMap.put(ConfigConstants.SURVEY_PROMOTION_TEXT, "");
+	// configMap.put(ConfigConstants.SURVEY_PROMOTION_LINK, "");
+	// }
+	// for (Advertisement advertisement : advertisementPromotionList) {
+	// allPromotionTipTextConfig += advertisement.getSubTitle() + ",";
+	// allPromotionTipLinkConfig +=
+	// advertisement.getJumperLink(AdvertisementPosition.PROMOTION, channel)
+	// + ",";
+	// }
+	// for (Advertisement advertisement : advertisementFailList) {
+	// failTipTextConfig += advertisement.getSubTitle() + ",";
+	// failTipLinkConfig +=
+	// advertisement.getJumperLink(AdvertisementPosition.FAIL, channel) + ",";
+	// }
+	// for (Advertisement advertisement : advertisementInvalidList) {
+	// invalidTipTextConfig += advertisement.getTitle() + ",";
+	// invalidTipLinkConfig +=
+	// advertisement.getJumperLink(AdvertisementPosition.INVALID, channel) +
+	// ",";
+	// }
+	// for (Advertisement advertisement : advertisementExclusiveList) {
+	// failTipTextConfig += advertisement.getSubTitle() + ",";
+	// failTipLinkConfig +=
+	// advertisement.getJumperLink(AdvertisementPosition.FAIL, channel) + ",";
+	// allPromotionTipTextConfig += advertisement.getSubTitle() + ",";
+	// allPromotionTipLinkConfig +=
+	// advertisement.getJumperLink(AdvertisementPosition.PROMOTION, channel)
+	// + ",";
+	// }
+	// configMap.put(ConfigConstants.ALL_PROMOTION_TIP_TEXT,
+	// substringLastChar(allPromotionTipTextConfig));
+	// configMap.put(ConfigConstants.ALL_PROMOTION_TIP_LINK,
+	// substringLastChar(allPromotionTipLinkConfig));
+	// configMap.put(ConfigConstants.FAIL_TIP_TEXT,
+	// substringLastChar(failTipTextConfig));
+	// configMap.put(ConfigConstants.FAIL_TIP_LINK,
+	// substringLastChar(failTipLinkConfig));
+	// configMap.put(ConfigConstants.INVALID_TIP_TEXT,
+	// substringLastChar(invalidTipTextConfig));
+	// configMap.put(ConfigConstants.INVALID_TIP_LINK,
+	// substringLastChar(invalidTipLinkConfig));
+	// } catch (Exception e) {
+	// LoggerUtil.error("[setAdvertisementConfig]", e);
+	// }
+	// }
+
 	public static Channel getChannel(String key) {
 		return channelMap.get(key);
 	}

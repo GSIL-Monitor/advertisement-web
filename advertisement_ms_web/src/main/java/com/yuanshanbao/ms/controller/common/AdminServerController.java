@@ -61,7 +61,7 @@ public class AdminServerController extends PaginationController {
 			}
 			HttpUtil.sendGetRequest("http://" + ip + "/internal/server/refreshConstants.html");
 		}
-		// ConstantsManager.refresh();
+		 ConstantsManager.refresh();
 	}
 
 	public static void refreshConfirm() throws Exception {

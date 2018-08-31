@@ -226,6 +226,10 @@ public class ComRetCode {
 	public static final int INFORMATION_NOT_COMPLETE = 411;
 	public static final String INFORMATION_NOT_COMPLETE_DESC = "您的基本信息不完全";
 
+	/* 409提交信息不能为空 */
+	public static final int INFORMATION_EMPTY_ERROR = 409;
+	public static final String INFORMATION_EMPTY_ERROR_DESC = "提交信息不能为空";
+
 	/* 408您已经领取过该产品 */
 	public static final int APPLY_EXIST_ERROR = 408;
 	public static final String APPLY_EXIST_ERROR_DESC = "您已经领取过该产品";

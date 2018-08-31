@@ -13,12 +13,30 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.thread.ThreadPool;
+import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.model.ChannelProcedure;
 import com.yuanshanbao.dsp.channel.service.ChannelProcedureService;
+import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.config.ConfigWrapper;
+import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.information.dao.InformationDao;
 import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.information.model.InformationStatus;
+import com.yuanshanbao.dsp.notify.information.InformationDeliverNotify;
+import com.yuanshanbao.dsp.notify.information.ManualInformationDeliverNotify;
+import com.yuanshanbao.dsp.partner.agent.AbstractAgentNotifyHandler;
+import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
+import com.yuanshanbao.dsp.share.model.Share;
+import com.yuanshanbao.dsp.share.service.ShareService;
+import com.yuanshanbao.dsp.sms.service.MessageSender;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -34,7 +52,22 @@ public class InformationServiceImpl implements InformationService {
 	private ProjectService projectService;
 
 	@Autowired
+	private ProductService productService;
+
+	@Autowired
 	private ExtendInfoService extendInfoService;
+
+	@Autowired
+	private MessageSender messageSender;
+
+	@Autowired
+	private ShareService shareService;
+
+	@Autowired
+	private RedisService redisService;
+
+	@Autowired
+	private ChannelService channelService;
 
 	@Override
 	public List<Information> selectInformations(Information information, PageBounds pageBounds) {
@@ -165,8 +198,143 @@ public class InformationServiceImpl implements InformationService {
 	}
 
 	@Override
-	public void tryDeliver(Information information, boolean b, boolean c) {
-		// TODO Auto-generated method stub
+	public void tryDeliver(Information information, boolean changeGoods, boolean forceDeliver) {
+		notifyDeliver(information, forceDeliver);
+	}
 
+	private boolean notifyDeliver(Information information, boolean forceDeliver) {
+		LoggerUtil.order("开始通知发货, informationId={}", information.getInformationId());
+		boolean gorderResult = true;
+		try {
+			boolean result;
+			Product product = productService.selectProduct(information.getProductId());
+			String deliverOrderUrl = product.getDeliverOrderUrl();
+			if (StringUtils.isNotBlank(deliverOrderUrl) && !isTestInformation(information.getName())) {
+				InformationDeliverNotify notify = (InformationDeliverNotify) Class.forName(deliverOrderUrl)
+						.newInstance();
+				if (forceDeliver) {
+					notify.setForceDeliver();
+				}
+				result = notify.deliver(information);
+			} else {
+				result = new ManualInformationDeliverNotify().deliver(information);
+			}
+			if (!result) {
+				gorderResult = false;
+			}
+		} catch (BusinessException be) {
+			throw be;
+		} catch (Exception e) {
+			LoggerUtil.error("notifyDeliver", e);
+			throw new BusinessException(ComRetCode.ORDER_DELIVER_ERROR);
+		}
+		if (gorderResult) {
+			information.setStatus(InformationStatus.SUBMIT_SUCCESS_STATE);
+			updateInformation(information);
+			sendSms(information);
+			updateShareDetails(information);
+			notifyAgent(information);
+		}
+		return gorderResult;
+	}
+
+	@Override
+	public void notifyAgent(final Information information) {
+		final Channel channel = ConfigWrapper.getChannel(information.getChannel());
+		if (channel != null && StringUtils.isNotBlank(channel.getNotifyHandler())) {
+			if (checkChannelBonus(information) == ComRetCode.SUCCESS) {
+				try {
+					ThreadPool.getInstance().exec(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								Information currentInformation = information;
+								if (information.getInformationId() != null) {
+									currentInformation = selectInformation(information.getInformationId());
+								}
+								AbstractAgentNotifyHandler notifyHandler = (AbstractAgentNotifyHandler) Class.forName(
+										channel.getNotifyHandler()).newInstance();
+								// notifyHandler.setInsurantService(insurantService);
+								notifyHandler.setRedisCacheService(redisService);
+								// notifyHandler.setInsurantReturnLogService(insurantReturnLogService);
+								notifyHandler.notifyAgent(currentInformation);
+							} catch (Exception e) {
+								LoggerUtil.error("[notifyAgent]", e);
+							}
+						}
+					});
+				} catch (Exception e) {
+					LoggerUtil.error("[notifyAgent]", e);
+				}
+			}
+		}
+	}
+
+	public int checkChannelBonus(Information information) {
+		Channel channel = channelService.selectChannel(information.getChannel());
+		if (channel == null) {
+			return ComRetCode.SUCCESS;
+		}
+		Double bonus = channel.getBonus();
+		if (bonus == null) {
+			bonus = 1D;
+		}
+		int returnCode = ComRetCode.SUCCESS;
+		return returnCode;
+	}
+
+	private boolean isTestInformation(String name) {
+		String names = IniBean.getIniValue("test_insurant_names");
+		if (StringUtils.isNotBlank(names) && names.contains(name)) {
+			return true;
+		}
+		return false;
+	}
+
+	private void sendSms(Information information) {
+		try {
+			if (!ConfigWrapper.isSendSms(information.getActivityId(), information.getChannel(),
+					information.getMerchantId(), null)
+					|| "dev".equals(CommonUtil.getEnvironment())
+					|| information.getStatus() != InformationStatus.SUBMIT_SUCCESS_STATE) {
+				return;
+			}
+
+			if (!checkSendSms(information)) {
+				return;
+			}
+			String merchantName = "VIPKid";
+			String telephone = "";
+			// if (information.getMerchant() != null) {
+			// merchantName = insurance.getMerchant().getName();
+			// telephone = insurance.getMerchant().getTelephone();
+			// }
+			String template = ConfigWrapper.getSmsTemplate(information);
+			if (template.startsWith("SMS_")) {
+				messageSender.sendSmsAli(template, information.getMobile(), information.getName(), merchantName, null,
+						telephone);
+			} else {
+				messageSender.sendSmsChuangLan(information.getMobile(),
+						messageSender.format(template, information.getName(), merchantName, null, telephone));
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("[sendSms]", e);
+		}
+	}
+
+	private boolean checkSendSms(Information information) {
+		return true;
+	}
+
+	private void updateShareDetails(Information information) {
+		if (StringUtils.isBlank(information.getShareMobile())) {
+			return;
+		}
+		Share share = new Share();
+		share.setMobile(information.getMobile());
+		share.setShareMobile(information.getShareMobile());
+		share.setActivityId(Long.valueOf(information.getShareActivityId()));
+		share.setStatus(CommonStatus.ONLINE);
+		shareService.insertOrUpdateShare(share);
 	}
 }

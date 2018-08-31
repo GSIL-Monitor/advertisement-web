@@ -523,6 +523,8 @@ public class AdminActivityController extends PaginationController {
 	public Object insertQuota(Quota quota, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
+			Advertisement advertisement = ConfigManager.getAdvertisement(quota.getAdvertisementId() + "");
+			quota.setAdvertiserId(advertisement.getAdvertiserId());
 			quota.setProjectId(getProjectId(request));
 			quota.setStatus(CommonStatus.ONLINE);
 			quota.setChannel(quota.getChannel() != null ? quota.getChannel() : "");

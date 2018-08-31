@@ -16,7 +16,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -38,6 +40,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 public class HttpsUtil {
 	private static final String METHOD_POST = "POST";
+	private static final String METHOD_GET = "GET";
 	private static final String DEFAULT_CHARSET = "utf-8";
 
 	public static String doPost(String url, String params, String charset, int connectTimeout, int readTimeout)
@@ -188,6 +191,23 @@ public class HttpsUtil {
 		return conn;
 	}
 
+	private static HttpsURLConnection getConnection(URL url, String method, Map<String, String> header)
+			throws IOException {
+		HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+		conn.setRequestMethod(method);
+		conn.setDoInput(true);
+		conn.setDoOutput(true);
+		conn.setUseCaches(false);
+		// conn.setRequestProperty("Accept", "*/*");
+		// conn.setRequestProperty("User-Agent", "stargate");
+		if (header != null) {
+			for (Entry<String, String> entry : header.entrySet()) {
+				conn.addRequestProperty(entry.getKey(), entry.getValue());
+			}
+		}
+		return conn;
+	}
+
 	protected static String getResponseAsString(HttpURLConnection conn) throws IOException {
 		String charset = getResponseCharset(conn.getContentType());
 		InputStream es = conn.getErrorStream();
@@ -318,4 +338,57 @@ public class HttpsUtil {
 
 		return sbUrl.toString();
 	}
+
+	public static String doGet(String url, String params, String charset, int connectTimeout, int readTimeout)
+			throws Exception {
+		Map<String, String> header = new HashMap<String, String>();
+		return doSend(url, header, params, charset, METHOD_GET, connectTimeout, readTimeout);
+	}
+
+	public static String doSend(String url, Map<String, String> header, String content, String charset, String method,
+			int connectTimeout, int readTimeout) throws Exception {
+		HttpsURLConnection conn = null;
+		PrintWriter out = null;
+		String rsp = null;
+		try {
+			try {
+				SSLContext ctx = SSLContext.getInstance("SSL");
+				ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
+				SSLContext.setDefault(ctx);
+
+				conn = getConnection(new URL(url), method, header);
+				conn.setHostnameVerifier(new HostnameVerifier() {
+					@Override
+					public boolean verify(String hostname, SSLSession session) {
+						return true;
+					}
+				});
+				conn.setConnectTimeout(connectTimeout);
+				conn.setReadTimeout(readTimeout);
+			} catch (Exception e) {
+				LoggerUtil.error("GET_CONNECTOIN_ERROR, URL = " + url, e);
+				throw e;
+			}
+			try {
+				out = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), charset));
+				out.write(content);
+				out.flush();
+				rsp = getResponseAsString(conn);
+			} catch (IOException e) {
+				LoggerUtil.error("REQUEST_RESPONSE_ERROR, URL = " + url, e);
+				throw e;
+			}
+
+		} finally {
+			if (out != null) {
+				out.close();
+			}
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
+
+		return rsp;
+	}
+
 }

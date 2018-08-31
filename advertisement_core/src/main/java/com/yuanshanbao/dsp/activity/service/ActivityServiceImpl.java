@@ -13,8 +13,10 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.dao.ActivityDao;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.information.model.Information;
@@ -32,6 +34,8 @@ public class ActivityServiceImpl implements ActivityService {
 	private static final String INI_NAME_MAX = "activity_count_increase_max";
 
 	private static final String INI_NAME_MIN = "activity_count_increase_min";
+
+	private static final String INI_INITIAL_COUNT = "activity_count_initial_";
 
 	@Autowired
 	private ActivityDao activityDao;
@@ -146,13 +150,12 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Override
 	public Information applyActivityForInformation(User user, Information information, Activity activity) {
-		// if (activity == null) {
-		// throw new
-		// BusinessException(ComRetCode.FREE_INSURANCE_NOT_EXIST_ERROR);
-		// }
-		// if (information == null) {
-		// throw new BusinessException(ComRetCode.INSURANT_NOT_EXIST_ERROR);
-		// }
+		if (activity == null) {
+			throw new BusinessException(ComRetCode.ACTIVITY_NOT_EXIST_ERROR);
+		}
+		if (information == null) {
+			throw new BusinessException(ComRetCode.INFORMATION_EMPTY_ERROR);
+		}
 		Quota quota = quotaService.pickGoodsForInformation(activity.getActivityId(), information);
 		if (quota == null) {
 			informationService.insertInformation(information);
@@ -163,15 +166,9 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	private void applyForInformation(Information information, Activity activity, Quota quota) {
-		// Goods goods = goodsService.selectGoods(quota.getGoodsId());
-		// if (goods == null) {
-		// throw new BusinessException(ComRetCode.INSURANCE_NOT_EXIST_ERROR);
-		// }
 		information.setActivityId(activity.getActivityId());
-		// LoggerUtil.info("获取配额成功, 配合信息={}, 商品信息={}",
-		// JacksonUtil.obj2json(quota), JacksonUtil.obj2json(goods));
-		// information.setMerchantId(goods.getMerchantId());
-		// information.setGoodsId(goods.getGoodsId());
+		information.setMerchantId(quota.getMerchantId());
+		information.setProductId(quota.getProductId());
 		information.setStatus(InformationStatus.INIT_STATE);
 		informationService.insertInformation(information);
 		LoggerUtil.info("创建本地订单, 订单信息={}", JacksonUtil.obj2json(information));
@@ -185,7 +182,21 @@ public class ActivityServiceImpl implements ActivityService {
 		double increaseMin = Double.parseDouble(min);
 		double increaseMax = Double.parseDouble(max);
 		increaseCount = (int) (Math.random() * (increaseMax - increaseMin + 1) + increaseMin);
-		// redisService.increBy(RedisConstant.getInsuranceCountKey(activity.getKey()),
-		// increaseCount);
+		redisService.increBy(RedisConstant.getActivityCountKey(activity.getKey()), increaseCount);
+	}
+
+	@Override
+	public Long getActivityCount(String activityKey) {
+		String key = RedisConstant.getActivityCountKey(activityKey);
+		String str = (String) redisService.get(key);
+		long count = 0;
+		if (ValidateUtil.isNumber(str)) {
+			count = Long.parseLong(str);
+		}
+		if (count == 0) {
+			count = (long) IniBean.getIniIntegerValue(INI_INITIAL_COUNT + activityKey, 357625);
+			redisService.set(key, String.valueOf(count));
+		}
+		return count;
 	}
 }

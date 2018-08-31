@@ -15,16 +15,20 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.JacksonUtil;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.information.model.Information;
 import com.yuanshanbao.dsp.limitation.service.LimitationService;
 import com.yuanshanbao.dsp.location.model.Location;
 import com.yuanshanbao.dsp.location.service.MobileLocationService;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.quota.dao.QuotaDao;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
@@ -46,6 +50,9 @@ public class QuotaServiceImpl implements QuotaService {
 
 	@Autowired
 	private RedisService redisService;
+
+	@Autowired
+	private ProductService productService;
 
 	@Autowired
 	private AdvertisementStatisticsService advertisementStatisticsService;
@@ -227,8 +234,25 @@ public class QuotaServiceImpl implements QuotaService {
 
 	@Override
 	public Quota pickGoodsForInformation(Long activityId, Information information) {
-		// TODO Auto-generated method stub
-		return null;
+		Location location = mobileLocationService.queryMobileLocation(information.getMobile());
+		information.setLocation(location);
+		Product params = new Product();
+		params.setActivityId(activityId);
+		params.setStatus(CommonStatus.ONLINE);
+		List<Product> list = productService.selectProducts(params, new PageBounds());
+		if (list.size() <= 0) {
+			throw new BusinessException(ComRetCode.PRODUCT_NOT_EXIST_ERROR);
+		}
+		// TODO 多个产品循环领取
+		Product product = list.get(0);
+		User user = new User();
+		user.setMobile(information.getMobile());
+		Quota quota = pickProductForApply(user, product);
+		if (quota == null) {
+			return null;
+		}
+		LoggerUtil.info("获取配额成功, 配合信息={}, 商品信息={}", JacksonUtil.obj2json(quota), JacksonUtil.obj2json(product));
+		return quota;
 	}
 
 	@Transactional

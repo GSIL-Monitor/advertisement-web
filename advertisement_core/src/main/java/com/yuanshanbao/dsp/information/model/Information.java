@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.information.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
@@ -21,13 +22,16 @@ import com.yuanshanbao.dsp.location.model.LocationType;
  *
  * @author
  */
-public class Information {
+public class Information implements Serializable {
+
+	private static final long serialVersionUID = 3511228480142367698L;
 
 	private Long informationId;
 	private Long projectId;
 	private Long activityId;
 	private Long merchantId;
 	private Long userId;
+	private Long productId;
 	private String mobile;
 	private String name;
 	private Long gender;
@@ -418,5 +422,13 @@ public class Information {
 
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 }

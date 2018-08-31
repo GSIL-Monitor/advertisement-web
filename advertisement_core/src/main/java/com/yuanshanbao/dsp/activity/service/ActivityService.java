@@ -27,4 +27,6 @@ public interface ActivityService {
 	public Activity selectActivity(String key);
 
 	public Information applyActivityForInformation(User user, Information information, Activity activity);
+
+	public Long getActivityCount(String activityKey);
 }

@@ -75,6 +75,9 @@ public class BaseInformationController extends BaseController {
 
 	protected void setChannelVariables(HttpServletRequest request, Map<String, Object> resultMap, String pageKey) {
 		String from = request.getParameter("channel");
+		if (StringUtils.isEmpty(from) || from.equals("null")) {
+			from = null;
+		}
 		String code = request.getParameter("code");
 		request.getSession().setAttribute(pageKey + SessionConstants.SESSION_USER_FROM, from);
 		request.getSession().setAttribute(SessionConstants.SESSION_PAGE_KEY, pageKey);
@@ -98,7 +101,6 @@ public class BaseInformationController extends BaseController {
 	private void setShareVariables(HttpServletRequest request, Map<String, Object> resultMap) {
 		String shareMobile = request.getParameter("shareMobile");
 		String shareActivityId = request.getParameter("shareActivityId");
-		resultMap.put("switch", "true");
 		if (StringUtils.isBlank(shareMobile) && StringUtils.isBlank(shareActivityId)) {
 			resultMap.put("weChatConfig", "true");
 			return;
@@ -330,5 +332,15 @@ public class BaseInformationController extends BaseController {
 		// return redirectUrl;
 		// }
 		return null;
+	}
+
+	protected void setResultShareVariables(Map<String, Object> resultMap, Information information) {
+		if (information != null) {
+			if (StringUtils.isBlank(information.getShareMobile())) {
+				resultMap.put("weChatConfig", "true");
+			} else {
+				resultMap.put("weChatConfig", "false");
+			}
+		}
 	}
 }
