@@ -28,9 +28,6 @@
 				<if test="extendInfoId != null">
 					extend_info_id=#{extendInfoId} and
 				</if>
-				<if test="userId != null">
-					user_id=#{userId} and
-				</if>
 				<if test="informationId != null">
 					information_id=#{informationId} and
 				</if>
@@ -77,11 +74,11 @@
 
 	<insert id="insertExtendInfo" parameterType="ExtendInfo">
 		insert into
-		tb_extend_info(information_id, 
+		tb_extend_info(information_id,
 		activity_id,merchant_id,channel,
 		 `key`,`value`,status, create_time, update_time)
 		values
-		(#{informationId},
+		(#{informationId}
 		#{activityId},#{merchantId},#{channel},
 		#{key},  #{value},  #{status},
 		sysdate(), sysdate())
@@ -95,9 +92,6 @@
 		update tb_extend_info
 		<set>
 			<trim suffixOverrides=",">
-				<if test="userId != null">
-					user_id=#{userId},
-				</if>
 				<if test="informationId != null">
 					information_id=#{informationId},
 				</if>
