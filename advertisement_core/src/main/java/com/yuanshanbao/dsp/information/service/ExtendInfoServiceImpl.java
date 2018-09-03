@@ -170,7 +170,6 @@ public class ExtendInfoServiceImpl implements ExtendInfoService {
 			String value = parameterMap.get(field.getFieldName());
 			if (StringUtils.isNotBlank(value)) {
 				ExtendInfo extendInfo = new ExtendInfo();
-				extendInfo.setUserId(information.getUserId());
 				extendInfo.setInformationId(information.getInformationId());
 				extendInfo.setFieldId(field.getFieldId());
 				extendInfo.setStatus(CommonStatus.ONLINE);
@@ -297,7 +296,6 @@ public class ExtendInfoServiceImpl implements ExtendInfoService {
 	public Map<String, String> getExtendInfoMap(Long userId, Long informationId) {
 		Map<String, String> map = new HashMap<String, String>();
 		ExtendInfo params = new ExtendInfo();
-		params.setUserId(userId);
 		params.setInformationId(informationId);
 		List<ExtendInfo> extendInfoList = extendInfoDao.selectExtendInfo(params, new PageBounds());
 

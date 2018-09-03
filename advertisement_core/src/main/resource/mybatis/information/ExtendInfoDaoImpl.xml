@@ -28,9 +28,6 @@
 				<if test="extendInfoId != null">
 					extend_info_id=#{extendInfoId} and
 				</if>
-				<if test="userId != null">
-					user_id=#{userId} and
-				</if>
 				<if test="informationId != null">
 					information_id=#{informationId} and
 				</if>
@@ -95,9 +92,6 @@
 		update tb_extend_info
 		<set>
 			<trim suffixOverrides=",">
-				<if test="userId != null">
-					user_id=#{userId},
-				</if>
 				<if test="informationId != null">
 					information_id=#{informationId},
 				</if>
