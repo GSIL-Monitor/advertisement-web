@@ -12,7 +12,6 @@ public class ExtendInfo {
 	private Long activityId;
 	private Long merchantId;
 	private String channel;
-	private Long userId;
 	private Long informationId;
 	private Long fieldId;
 	/**
@@ -162,14 +161,6 @@ public class ExtendInfo {
 
 	public void setInformationField(InformationField informationField) {
 		this.informationField = informationField;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
 	}
 
 	public Long getActivityId() {
