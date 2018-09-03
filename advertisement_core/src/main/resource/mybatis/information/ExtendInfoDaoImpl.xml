@@ -19,7 +19,7 @@
 	</resultMap>
 
 	<select id="selectExtendInfo" parameterType="ExtendInfo"
-		resultMap="extendInfoMap">
+			resultMap="extendInfoMap">
 		select
 		* from
 		tb_extend_info
@@ -59,14 +59,14 @@
 	</select>
 
 	<select id="selectExtendInfoByInformationIds" parameterType="List"
-		resultMap="extendInfoMap">
+			resultMap="extendInfoMap">
 		select
 		* from
 		tb_extend_info
 		<where>
 			information_id in
 			<foreach item="id" collection="list" open="(" separator=","
-				close=")">
+					 close=")">
 				#{id}
 			</foreach>
 		</where>
@@ -74,16 +74,11 @@
 
 	<insert id="insertExtendInfo" parameterType="ExtendInfo">
 		insert into
-		tb_extend_info(information_id,
-		activity_id,merchant_id,channel,
-		 `key`,`value`,status, create_time, update_time)
+		tb_extend_info(information_id,activity_id,merchant_id,channel,`key`,`value`,status,create_time,update_time)
 		values
-		(#{informationId}
-		#{activityId},#{merchantId},#{channel},
-		#{key},  #{value},  #{status},
-		sysdate(), sysdate())
+		(#{informationId},#{activityId},#{merchantId},#{channel},#{key},#{value},#{status},sysdate(),sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
-			keyProperty="extendInfoId">
+				   keyProperty="extendInfoId">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>
