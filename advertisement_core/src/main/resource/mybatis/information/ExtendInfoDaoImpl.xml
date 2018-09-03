@@ -74,11 +74,11 @@
 
 	<insert id="insertExtendInfo" parameterType="ExtendInfo">
 		insert into
-		tb_extend_info(information_id, 
+		tb_extend_info(information_id,
 		activity_id,merchant_id,channel,
 		 `key`,`value`,status, create_time, update_time)
 		values
-		(#{informationId},
+		(#{informationId}
 		#{activityId},#{merchantId},#{channel},
 		#{key},  #{value},  #{status},
 		sysdate(), sysdate())
