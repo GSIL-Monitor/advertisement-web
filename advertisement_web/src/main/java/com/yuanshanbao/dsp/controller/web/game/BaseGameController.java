@@ -401,8 +401,11 @@ public class BaseGameController extends BaseController {
 					configChance);
 		}
 		int chance = configChance - prizeIdList.size();
+
 		if (chance < 0) {
 			chance = 0;
+		}else{
+			chance--;
 		}
 		resultMap.put("chance", chance);
 	}
