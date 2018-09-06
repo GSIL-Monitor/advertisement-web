@@ -24,7 +24,8 @@ public class CommonFanPaiController extends BaseFanPaiController {
 	public Object chance(HttpServletRequest request, HttpServletResponse response, String activityKey, String channel) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			getChanceAndSetResult(request, response, resultMap, activityKey, channel);
+			// getChanceAndSetResult(request, response, resultMap, activityKey,
+			// channel);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

@@ -752,7 +752,8 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			dataTypeFunction(AdvertisementStatisticsType.UV_DATA, date, channelKey, resultList, advertisementId);
 		}
 		for (AdvertisementStatistics adStatistics : resultList) {
-			if (adStatistics.getChannel() != null && adStatistics.getChannel().equals(channelKey)) {
+			if (adStatistics.getChannel() != null && adStatistics.getChannel() != ""
+					&& adStatistics.getChannel().equals(channelKey)) {
 				// if (advertisementId != adStatistics.getAdvertisementId()) {
 				// result.setAdvertisementId(adStatistics.getAdvertisementId());
 				// result.setAdvertisement(advertisementService.selectAdvertisement(adStatistics.getAdvertisementId()));

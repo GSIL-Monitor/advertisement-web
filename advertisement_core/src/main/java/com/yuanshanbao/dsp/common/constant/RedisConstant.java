@@ -33,6 +33,7 @@ public class RedisConstant {
 	private static final String ADVERTISER_LAST_BALANCE_COUNT = "advertiser_last_balance_count" + COMMON_REDIS_PREFIX;;
 
 	public static final String QUOTA_COUNT = "quota_count" + COMMON_REDIS_PREFIX;
+	public static final String REVERSE_SHOW_COUNT = "reverse_show_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_SHOW_COUNT = "advertisement_show_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT = "advertisement_click_count" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_GET_COUNT = "advertisement_get_count" + COMMON_REDIS_PREFIX;
@@ -290,5 +291,9 @@ public class RedisConstant {
 
 	public static String getActivityCountKey(String key) {
 		return getCachePrefix(ACTIVITY_COUNT, key);
+	}
+
+	public static String getReverseShowCountKey(String key, String activityKey) {
+		return getCachePrefix(REVERSE_SHOW_COUNT, key + "_" + activityKey);
 	}
 }

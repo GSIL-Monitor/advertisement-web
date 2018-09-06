@@ -124,4 +124,15 @@ public class Activity {
 		return entranceUrl;
 	}
 
+	public boolean checkCombination() {
+		if (combination == null) {
+			return false;
+		}
+		if (combination.equals(0)) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
 }

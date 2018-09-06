@@ -79,22 +79,7 @@ public class BaseGameController extends BaseController {
 		if (activity != null) {
 			ConfigManager.setConfigMap(modelMap, activity.getActivityId(), channel);
 		}
-		int chance;
-		if (StringUtils.isBlank(parentKey)) {
-			int configChance = probabilityList.size();
-			// 获取配置的抽奖次数
-			if (activity != null && activity.getActivityId() != null) {
-				configChance = Math.min(ConfigWrapper.getPickChance(activity.getActivityId(), channel, null, null),
-						configChance);
-			}
-			chance = configChance - prizeIdList.size();
-			if (chance < 0) {
-				chance = 0;
-			}
-		} else {
-			chance = 1;
-		}
-		modelMap.put("chance", chance);
+		modelMap.put("chance", getChance(activity, probabilityList, prizeIdList, parentKey, channel));
 		modelMap.put("uvCountChannel", channel);
 		modelMap.put("activityKey", activityKey);
 		modelMap.put("channel", ConfigManager.getChannel(channel));
@@ -269,23 +254,21 @@ public class BaseGameController extends BaseController {
 			boolean isSelfJump) {
 		String channel = request.getParameter("channel");
 		Activity activity = activityService.selectActivity(activityKey);
-		// if (checkCombination(activity)) {
-		// // 若是活动组合
-		// ActivityCombine activityCombine =
-		// activityCombineService.selectActivityCombine(activity.getActivityId());
-		// ActivityCombine params = new ActivityCombine();
-		// params.setParentId(activityCombine.getParentId());
-		// List<ActivityCombine> list =
-		// activityCombineService.selectActivityCombine(params, new
-		// PageBounds());
-		// for (ActivityCombine combine : list) {
-		// if (combine.getSort().equals(activityCombine.getSort() + 1)) {
-		// return combine.getActivity().getEntranceUrl();
-		// }
-		// }
-		// activity =
-		// activityService.selectActivity(activityCombine.getParentId());
-		// }
+
+		if (checkCombination(activity)) {
+			// 若是活动组合
+			ActivityCombine activityCombine = activityCombineService.selectActivityCombine(activity.getActivityId());
+			ActivityCombine params = new ActivityCombine();
+			params.setParentId(activityCombine.getParentId());
+			List<ActivityCombine> list = activityCombineService.selectActivityCombine(params, new PageBounds());
+			for (ActivityCombine combine : list) {
+				if (combine.getSort().equals(activityCombine.getSort() + 1)) {
+					return combine.getActivity().getEntranceUrl();
+				}
+			}
+			activity = activityService.selectActivity(activityCombine.getParentId());
+		}
+
 		String gameJump = ConfigManager.getConfigValue(activity.getActivityId(), channel, null, null,
 				ConfigConstants.GAME_RESULT_JUMP);
 		if (StringUtils.isNotBlank(gameJump)) {
@@ -406,7 +389,8 @@ public class BaseGameController extends BaseController {
 	}
 
 	protected void getChanceAndSetResult(HttpServletRequest request, HttpServletResponse response,
-			Map<String, Object> resultMap, String activityKey, String channel) {
+			Map<String, Object> resultMap, String activityKey) {
+		String channel = request.getParameter("channel");
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
 				activityKey, channel);
 		int configChance = probabilityList.size();
@@ -474,5 +458,25 @@ public class BaseGameController extends BaseController {
 		}
 		ActivityCombine nextActivityCombine = map.get(index + 1);
 		return nextActivityCombine;
+	}
+
+	private Integer getChance(Activity activity, List<Probability> probabilityList, List<Long> prizeIdList,
+			String parentKey, String channel) {
+		int chance;
+		if (StringUtils.isBlank(parentKey)) {
+			int configChance = probabilityList.size();
+			// 获取配置的抽奖次数
+			if (activity != null && activity.getActivityId() != null) {
+				configChance = Math.min(ConfigWrapper.getPickChance(activity.getActivityId(), channel, null, null),
+						configChance);
+			}
+			chance = configChance - prizeIdList.size();
+			if (chance < 0) {
+				chance = 0;
+			}
+		} else {
+			chance = 1;
+		}
+		return chance;
 	}
 }

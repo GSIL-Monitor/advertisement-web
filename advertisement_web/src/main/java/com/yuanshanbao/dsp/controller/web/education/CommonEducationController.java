@@ -33,8 +33,7 @@ public class CommonEducationController extends BaseInformationController {
 		try {
 			setChannelVariables(request, resultMap, activityKey);
 			modelMap.put("appliedCount", activityService.getActivityCount(activityKey));
-			// modelMap.put("reverseCount", getReverseShowCount(channel,
-			// activityKey));
+			modelMap.put("reverseCount", getReverseShowCount(channel, activityKey));
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);

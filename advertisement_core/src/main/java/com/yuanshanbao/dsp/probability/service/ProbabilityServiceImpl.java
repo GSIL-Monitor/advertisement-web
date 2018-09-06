@@ -348,11 +348,11 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		if (probabilityList == null) {
 			return resultList;
 		}
-		if (isCombination(activity.getCombination())) {
+		if (activity.checkCombination()) {
 			resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey, probabilityList);
 		} else {
 			if (channel != null) {
-				if (isIndependent(channel.getIndependent())) {
+				if (channel.checkIndependent()) {
 					resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
 							probabilityList);
 				} else {
@@ -389,51 +389,28 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return resultList;
 	}
 
-	private boolean isCombination(Integer combination) {
-		if (combination.equals(0)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	private boolean isIndependent(Integer independent) {
-		if (independent != null && independent.equals(0)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 	private List<Probability> dealProbabilityConfig(List<Probability> activityProList, List<Probability> channelProList) {
-		List<Probability> resultList = new ArrayList<Probability>();
+		List<Probability> resultList = new ArrayList<Probability>(activityProList);
 		for (Probability probability : channelProList) {
-			activityProList = dealDisplayType(probability, activityProList);
-		}
-		resultList = activityProList;
-		return resultList;
-	}
-
-	private List<Probability> dealDisplayType(Probability probability, List<Probability> activityProList) {
-		List<Probability> resultList = new ArrayList<Probability>();
-		if (probability.getDisplayType().equals(AdvertisementDisplayType.ADD)) {
-			activityProList.add(probability);
-		} else {
-			ListIterator<Probability> it = activityProList.listIterator();
-			while (it.hasNext()) {
-				Probability pro = it.next();
-				if (probability.getAdvertisementId().equals(pro.getAdvertisementId())) {
-					if (probability.getDisplayType().equals(AdvertisementDisplayType.COVER)) {
-						it.remove();
-						it.set(probability);
-					}
-					if (probability.getDisplayType().equals(AdvertisementDisplayType.DELETE)) {
-						it.remove();
+			if (probability.getDisplayType().equals(AdvertisementDisplayType.ADD)) {
+				resultList.add(probability);
+			} else {
+				ListIterator<Probability> it = resultList.listIterator();
+				while (it.hasNext()) {
+					Probability pro = it.next();
+					if (probability.getAdvertisementId().equals(pro.getAdvertisementId())) {
+						if (probability.getDisplayType().equals(AdvertisementDisplayType.COVER)) {
+							it.remove();
+							it.set(probability);
+						}
+						if (probability.getDisplayType().equals(AdvertisementDisplayType.DELETE)) {
+							it.remove();
+						}
 					}
 				}
 			}
 		}
-		resultList = activityProList;
 		return resultList;
 	}
+
 }

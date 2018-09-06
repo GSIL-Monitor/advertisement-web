@@ -283,4 +283,15 @@ public class Channel {
 		this.independent = independent;
 	}
 
+	public boolean checkIndependent() {
+		if (independent == null) {
+			return false;
+		}
+		if (independent.equals(0)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 }

@@ -329,6 +329,7 @@ public class ConfigServiceImpl implements ConfigService {
 			}
 			function.setDefaultAction(action);
 		}
+		Function fun = functionMap.get("hasIdentityCardConfig");
 		// 获取key的function map
 		List<Function> functionList = new ArrayList<Function>();
 		// map中value转换为list

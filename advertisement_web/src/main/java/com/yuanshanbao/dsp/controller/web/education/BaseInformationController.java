@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.controller.web.education;
 
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,15 +15,18 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.AESUtil;
 import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.NumberUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.common.util.VerifyIdcard;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.ConfigWrapper;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.information.model.ExtendInfo;
 import com.yuanshanbao.dsp.information.model.Information;
@@ -342,5 +346,26 @@ public class BaseInformationController extends BaseController {
 				resultMap.put("weChatConfig", "false");
 			}
 		}
+	}
+
+	/**
+	 * 获取活动倒数次数
+	 * 
+	 * @return
+	 */
+	public List<Integer> getReverseShowCount(String channel, String activityKey) {
+		String key = RedisConstant.getReverseShowCountKey(channel, activityKey);
+		String str = (String) redisCacheService.get(key);
+		long count = 0;
+		if (ValidateUtil.isNumber(str)) {
+			count = Long.parseLong(str);
+		}
+		if (count == 0) {
+			count = (long) IniBean.getIniIntegerValue("reverse_show_count", 999);
+			redisCacheService.set(key, count + "");
+			redisCacheService.expire(key, 24 * 3600);
+		}
+
+		return NumberUtil.toList(count);
 	}
 }

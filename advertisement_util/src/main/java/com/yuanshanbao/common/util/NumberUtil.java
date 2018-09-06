@@ -35,23 +35,32 @@ public class NumberUtil {
 		String rt = df.format(money);
 		return new Double(rt);
 	}
-	
+
 	public static List<Integer> toList(long count, int length) {
 		List<Integer> list = new ArrayList<Integer>();
-		String num = count+"";
+		String num = count + "";
 		for (int i = 0; i < length; i++) {
 			list.add(Integer.parseInt(String.valueOf(num.charAt(i))));
 		}
 		return list;
 	}
-	
-	public static String getPercent(Integer num,Integer total ){
+
+	public static List<Integer> toList(long count) {
+		List<Integer> list = new ArrayList<Integer>();
+		String num = count + "";
+		for (int i = 0; i < num.length(); i++) {
+			list.add(Integer.parseInt(String.valueOf(num.charAt(i))));
+		}
+		return list;
+	}
+
+	public static String getPercent(Integer num, Integer total) {
 		String percent;
 		Double per = 0.0;
-		if(total == 0){
+		if (total == 0) {
 			per = 0.0;
-		}else{
-			per = num*1.0/total;
+		} else {
+			per = num * 1.0 / total;
 		}
 		NumberFormat nf = NumberFormat.getPercentInstance();
 		nf.setMinimumFractionDigits(2);
