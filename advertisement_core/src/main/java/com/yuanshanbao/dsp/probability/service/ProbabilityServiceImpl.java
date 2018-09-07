@@ -27,7 +27,6 @@ import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
-import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.location.service.IpLocationService;
@@ -36,6 +35,8 @@ import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
+import com.yuanshanbao.dsp.quota.service.operation.AdvertisementOperation;
+import com.yuanshanbao.dsp.quota.service.operation.QuotaOperationFactory;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -210,6 +211,22 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		}
 		List<Probability> probabilityList = selectProbabilityByKeyFromCache(projectId, activityKey, channel, null);
 		Map<Long, Probability> advertisementIdMap = new LinkedHashMap<Long, Probability>();
+		// 判断时间是否符合
+		checkProbabilityTime(probabilityList, advertisementIdMap);
+
+		if (advertisementIdMap.size() == 0) {
+			return resultList;
+		}
+
+		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channel);
+
+		checkQuotaTimeAndCount(quotaList, advertisementIdMap);
+
+		resultList.addAll(advertisementIdMap.values());
+		return resultList;
+	}
+
+	private void checkProbabilityTime(List<Probability> probabilityList, Map<Long, Probability> advertisementIdMap) {
 		for (Probability probability : probabilityList) {
 			if (probability.getStartTime() != null) {
 				if (probability.getStartTime().after(new Date())) {
@@ -223,28 +240,19 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			}
 			advertisementIdMap.put(probability.getAdvertisementId(), probability);
 		}
-		if (advertisementIdMap.size() == 0) {
-			return resultList;
-		}
+	}
 
-		List<Quota> quotaList = quotaService.selectQuotaByKeyFromCache(projectId, activityKey, channel);
+	private void checkQuotaTimeAndCount(List<Quota> quotaList, Map<Long, Probability> advertisementIdMap) {
 
 		for (Quota quota : quotaList) {
 			// TODO 走活动下默认的quota数量判断
-			if (quota.getCount() != null && quota.getCount() > 0) {
+			if (quota.getCount() != null && quota.getCount() > 0 && quota.getType() != null) {
 				String countValue = "";
-				if (QuotaType.CPC.equals(quota.getType())) {
-					countValue = redisCacheService.get(RedisConstant.getAdvertisementClickCountPVKey(null,
-							quota.getAdvertisementId() + "", quota.getChannel()));
-				}
-				if (QuotaType.CPM.equals(quota.getType())) {
-					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
-							quota.getAdvertisementId() + "", quota.getChannel()));
-				}
-				if (QuotaType.CPT.equals(quota.getType())) {
-					countValue = redisCacheService.get(RedisConstant.getAdvertisementShowCountPVKey(null,
-							quota.getAdvertisementId() + "", quota.getChannel()));
-				}
+				QuotaOperationFactory factory = QuotaType.getCountFactory(quota.getType());
+				AdvertisementOperation operation = factory.getOperation();
+				operation.setQuota(quota);
+				operation.setRedisCacheService(redisCacheService);
+				countValue = operation.getResult();
 				if (ValidateUtil.isNumber(countValue)) {
 					Integer currentCount = Integer.parseInt(countValue);
 					if (currentCount > quota.getCount()) {
@@ -263,8 +271,6 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 				}
 			}
 		}
-		resultList.addAll(advertisementIdMap.values());
-		return resultList;
 	}
 
 	private Probability pickGift(List<Probability> probabilityList) {

@@ -3,8 +3,14 @@ package com.yuanshanbao.dsp.quota.model;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.yuanshanbao.dsp.quota.service.operation.CPCOperationFactory;
+import com.yuanshanbao.dsp.quota.service.operation.CPMOperationFactory;
+import com.yuanshanbao.dsp.quota.service.operation.CPTOperationFactory;
+import com.yuanshanbao.dsp.quota.service.operation.QuotaOperationFactory;
+
 public class QuotaType {
 	protected static Map<Integer, String> codeDescriptionMap = new LinkedHashMap<Integer, String>();
+	protected static Map<Integer, QuotaOperationFactory> codeCountFactoryMap = new LinkedHashMap<Integer, QuotaOperationFactory>();
 
 	public static final Integer CPC = 1;
 	public static final String CPC_DESCRIPTION = "CPC";
@@ -15,6 +21,7 @@ public class QuotaType {
 
 	static {
 		initCodeDescriptionMap();
+		initCodeCountFactoryMap();
 	}
 
 	public static void initCodeDescriptionMap() {
@@ -23,8 +30,18 @@ public class QuotaType {
 		codeDescriptionMap.put(CPT, CPT_DESCRIPTION);
 	}
 
+	public static void initCodeCountFactoryMap() {
+		codeCountFactoryMap.put(CPC, new CPCOperationFactory());
+		codeCountFactoryMap.put(CPM, new CPMOperationFactory());
+		codeCountFactoryMap.put(CPT, new CPTOperationFactory());
+	}
+
 	public static String getDescription(Integer code) {
 		return codeDescriptionMap.get(code);
+	}
+
+	public static QuotaOperationFactory getCountFactory(Integer code) {
+		return codeCountFactoryMap.get(code);
 	}
 
 	public static Map<Integer, String> getCodeDescriptionMap() {
