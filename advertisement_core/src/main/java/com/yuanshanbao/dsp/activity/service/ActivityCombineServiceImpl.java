@@ -129,10 +129,10 @@ public class ActivityCombineServiceImpl implements ActivityCombineService {
 
 	@Override
 	public ActivityCombine selectActivityCombine(Long activityId) {
-		ActivityCombine activityCombine = new ActivityCombine();
 		if (activityId == null) {
 			return null;
 		}
+		ActivityCombine activityCombine = new ActivityCombine();
 		activityCombine.setActivityId(activityId);
 		List<ActivityCombine> list = selectActivityCombine(activityCombine, new PageBounds());
 		if (list.size() > 0) {

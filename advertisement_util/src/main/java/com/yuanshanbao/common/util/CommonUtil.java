@@ -523,7 +523,10 @@ public class CommonUtil {
 		if (environment.equals("confirm")) {
 			environment = "online";
 		}
-		return "advertisement" + environment + key;
+		if (environment.equals("online")) {
+			environment = "online";
+		}
+		return environment + key;
 	}
 
 	public static String getBindPrefix() {

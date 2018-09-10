@@ -55,7 +55,7 @@
 		function reload() {
 			var date=$('#date').val();
 			var pv=$('#pv').val();
-			var newUrl="${rc.contextPath}/admin/${functionName}/queryChannelAdvertisements.do?channelKey=${channelkey}&statisticsDate="+encodeURI(encodeURI(date))+"&isPv="+pv;
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryChannelAdvertisements.do?channel=${channelkey}&statisticsDate="+encodeURI(encodeURI(date))+"&isPv="+pv;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		}

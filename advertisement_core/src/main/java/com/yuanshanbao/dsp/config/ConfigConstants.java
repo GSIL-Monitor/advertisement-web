@@ -170,4 +170,7 @@ public interface ConfigConstants {
 	 */
 	public static final String FORCE = "force";
 	public static final String OPTION = "option";
+
+	public static final String BANNER_IMAGE_CONFIG = "bannerImageUrlConfig";
+	public static final String TITLE_CONTENT_CONFIG = "titleContentConfig";
 }

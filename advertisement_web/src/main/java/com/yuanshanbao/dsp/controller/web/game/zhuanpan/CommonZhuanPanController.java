@@ -19,25 +19,6 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 @Controller
 public class CommonZhuanPanController extends BaseZhuanPanController {
 
-	// @ResponseBody
-	// @RequestMapping("/chance")
-	// public Object chance(HttpServletRequest request, HttpServletResponse
-	// response, String activityKey, String channel) {
-	// Map<String, Object> resultMap = new HashMap<String, Object>();
-	// try {
-	// getChanceAndSetResult(request, response, resultMap, activityKey,
-	// channel);
-	// InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
-	// } catch (BusinessException e) {
-	// InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(),
-	// e.getMessage());
-	// } catch (Exception e) {
-	// InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-	// LoggerUtil.error("[zhuanpanChance: error]", e);
-	// }
-	// return resultMap;
-	// }
-
 	@ResponseBody
 	@RequestMapping("/index")
 	public Object index(HttpServletRequest request, HttpServletResponse response, String activityKey, String channel,
@@ -60,10 +41,12 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 	public Object luck(HttpServletRequest request, HttpServletResponse response, String activityKey, String parentKey) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			// 获取次数
+			getChanceAndSetResult(request, response, resultMap, activityKey);
+			// 抽奖
 			pickPrizeAndSetResult(request, response, resultMap, activityKey, parentKey);
 			// resultMap.put("position", POSITION);
 			resultMap.put("angle", positionAngles[4 - 1]);
-			getChanceAndSetResult(request, response, resultMap, activityKey);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
