@@ -256,6 +256,10 @@ public class ComRetCode {
 	public static final int GAME_NO_PRIZE_ERROR = 801;
 	public static final String GAME_NO_PRIZE_ERROR_DESC = "抽奖机会已用完";
 
+	/* 805活动组合进行跳转 */
+	public static final int GAME_NO_PRIZE_AND_JUMP = 805;
+	public static final String GAME_NO_PRIZE_AND_JUMP_DESC = "活动组合进行跳转";
+
 	/* 802请联系管理员配置不校验手机号 */
 	public static final int CONFIG_NO_SMS_FORMAT_ERROR = 802;
 	public static final String CONFIG_NO_SMS_FORMAT_ERROR_DESC = "请联系管理员配置不校验手机号";

@@ -36,16 +36,12 @@
 	      		"data": "advertisementId"
 	    	}, {
 	      		"data": "title"
-	    	}, {
-	      		"data": "probability.positionId"
-	    	}, {
+	    	},{
 	      		"data": "probability.probability"
 	    	}, {
 		    	"data": "quota.unitPrice"	
 		    }, {
 		    	"data": "quota.count"
-		    }, {
-		    	"data": "statusValue"
 		    }, {
 		    	"data": "typeValue"
 		    }, {
@@ -54,17 +50,6 @@
 		    	"data": "link"
 		    }, {
 		    	"data": "statusValue"
-		    },   {
-		    	"data": null,
-		        "render": function ( data, type, full, meta ) {
-		        	if(data.statusValue =="投放中"){
-		            	return "<a href='javascript:;' onclick=\"change('"+data.advertisementId+"','"+data.statusValue+"')\" class='btn btn-red' target='_blank'>下线</a>";
-		        	}else if(data.statusValue =="未投放"){
-		        		return "<a href='javascript:;' onclick=\"change('"+data.advertisementId+"','"+data.statusValue+"')\" class='btn btn-cyan' target='_blank'>投放</a>";
-		        	}else if(data.statusValue =="失效"){
-		        		return "<a href='javascript:;'  class='btn btn-cyan' target='_blank'>投放</a>";
-		        	}
-		        }
 		    }, {
 		    	"data": "probability.probabilityId",
 		        "render": function ( data, type, full, meta ) {
@@ -163,16 +148,13 @@
 						<tr>
 							<th>奖品ID</th>
 							<th>奖品名称</th>
-							<th>位置</th>
 							<th>概率</th>
 							<th>单价</th>
 							<th>奖品配额</th>
-							<th>每日最高限额</th>
 							<th>奖品类型</th>
 							<th>添加时间</th>
 							<th>入口地址</th>
 							<th>状态</th>
-							<th>详情</th>
 							<th>修改</th>
 							<th>限额配置</th>
 							<th>删除</th>

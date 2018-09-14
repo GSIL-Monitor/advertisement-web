@@ -153,6 +153,7 @@ public class Probability {
 	}
 
 	public String getCreateTimeContent() {
+		System.err.println(DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss"));
 		return DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss");
 	}
 

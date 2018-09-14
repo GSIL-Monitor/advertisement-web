@@ -173,4 +173,8 @@ public interface ConfigConstants {
 
 	public static final String BANNER_IMAGE_CONFIG = "bannerImageUrlConfig";
 	public static final String TITLE_CONTENT_CONFIG = "titleContentConfig";
+	public static final String PICK_PRIZE_MIN_CHANCE_CONFIG = "pickPrizeMinChanceConfig";
+
+	public static final String ACTIVITY_COMBINE_PRIZE_ALLOCATE_CONFIG = "activityCombinePrizeAllocateConfig";
+
 }

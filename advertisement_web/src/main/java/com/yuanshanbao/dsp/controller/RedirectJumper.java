@@ -21,6 +21,7 @@ import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 
 @Controller
 @RequestMapping({ "/j", "/m/j" })
@@ -28,6 +29,9 @@ public class RedirectJumper extends BaseController {
 
 	@Autowired
 	private AdvertisementService advertisementService;
+
+	@Autowired
+	private QuotaService quotaService;
 
 	@RequestMapping("/common")
 	public String common(HttpServletRequest request, ModelMap modelMap, String id, String position, String channel) {
@@ -77,8 +81,6 @@ public class RedirectJumper extends BaseController {
 			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
 			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
 			redisCacheService.incr(RedisConstant.getAdvertisementShowCountPVKey(null, id, channel));
-		} else {
-			redisCacheService.incr(RedisConstant.getAdvertisementActivityShowCountPVKey(null, id, channel));
 		}
 
 	}
@@ -99,9 +101,6 @@ public class RedirectJumper extends BaseController {
 			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
 			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
 			redisCacheService.incr(RedisConstant.getAdvertisementClickCountPVKey(null, id, channel));
-		} else {
-			redisCacheService.incr(RedisConstant.getAdvertisementActivityClickCountPVKey(null, id, channel));
 		}
 	}
-
 }

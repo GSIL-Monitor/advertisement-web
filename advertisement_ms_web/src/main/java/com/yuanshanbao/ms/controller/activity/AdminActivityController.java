@@ -542,6 +542,8 @@ public class AdminActivityController extends PaginationController {
 	@RequestMapping("/probabilityWindow.do")
 	public String probabilityWindow(Long probabilityId, HttpServletRequest request, HttpServletResponse response) {
 		Probability probability = probabilityService.selectProbability(probabilityId);
+		request.setAttribute("activity", ConfigManager.getActivityById(probability.getActivityId()));
+		request.setAttribute("advertisement", ConfigManager.getAdvertisement(probability.getAdvertisementId() + ""));
 		request.setAttribute("itemEdit", probability);
 		return PAGE_PROBABILITY;
 	}
@@ -562,7 +564,7 @@ public class AdminActivityController extends PaginationController {
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
-			LoggerUtil.error("probability insert function - reload error", e2);
+			LoggerUtil.error("probability update function - reload error", e2);
 		}
 		return result;
 	}

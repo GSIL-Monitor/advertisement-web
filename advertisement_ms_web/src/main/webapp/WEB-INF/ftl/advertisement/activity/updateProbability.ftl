@@ -28,6 +28,18 @@
               <table class="table table-bordered table-striped" id="">
                 <tbody>
                   <tr>
+                    <td style="width:20%;">活动名称：</td>
+                    <td>
+                      <input type="text" name="" disabled="disabled" style="width:60%;" value="${activity.name}">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width:20%;">广告：</td>
+                    <td>
+                      <input type="text" name="" disabled="disabled" style="width:60%;" value="${advertisement.advertisementId}${advertisement.title}">
+                    </td>
+                  </tr>
+                  <tr>
                     <td style="width:20%;">概率：</td>
                     <td>
                       <input type="text" name="probability" style="width:60%;" value="${itemEdit.probability}">

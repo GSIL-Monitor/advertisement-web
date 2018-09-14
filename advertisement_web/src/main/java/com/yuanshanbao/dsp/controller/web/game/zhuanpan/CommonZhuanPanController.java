@@ -21,11 +21,10 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 
 	@ResponseBody
 	@RequestMapping("/index")
-	public Object index(HttpServletRequest request, HttpServletResponse response, String activityKey, String channel,
-			String parentKey) {
+	public Object index(HttpServletRequest request, HttpServletResponse response, String activityKey, String channel) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			setIndex(request, resultMap, activityKey, channel, null, null, parentKey);
+			setIndex(request, resultMap, activityKey, channel, null, null);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -38,13 +37,13 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 
 	@ResponseBody
 	@RequestMapping("/luck")
-	public Object luck(HttpServletRequest request, HttpServletResponse response, String activityKey, String parentKey) {
+	public Object luck(HttpServletRequest request, HttpServletResponse response, String activityKey) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			// 获取次数
 			getChanceAndSetResult(request, response, resultMap, activityKey);
 			// 抽奖
-			pickPrizeAndSetResult(request, response, resultMap, activityKey, parentKey);
+			pickPrizeAndSetResult(request, response, resultMap, activityKey);
 			// resultMap.put("position", POSITION);
 			resultMap.put("angle", positionAngles[4 - 1]);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
@@ -92,10 +91,4 @@ public class CommonZhuanPanController extends BaseZhuanPanController {
 		return resultMap;
 	}
 
-	public static void main(String[] args) {
-		for (int i = 0; i < 10; i++) {
-			double d = (double) ((1 - Math.random()) % 1);
-			System.err.println(d);
-		}
-	}
 }

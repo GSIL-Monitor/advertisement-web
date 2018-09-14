@@ -26,6 +26,11 @@
 		    },  {
 		    	"data": null,
 		        "render": function ( data, type, full, meta ) {
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/giftList.do?activityId='+data.activityId+'"  class="btn btn-green">活动奖品列表</a>';
+		        }
+		    }, {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
 		            return '<a target="_blank" href="${rc.contextPath}/admin/${functionName}/listChannel.do?activityId='+data.activityId+'"  class="btn btn-green">渠道详情</a>';
 		        }
 		    }, {
@@ -79,6 +84,7 @@
 									<th>入口地址</th> 
 									<th>状态</th>
 									<th>组合详情</th>
+									<th>活动奖品列表</th>
 									<th>渠道详情</th>
 									<th>操作</th>
 									<th>删除</th>									

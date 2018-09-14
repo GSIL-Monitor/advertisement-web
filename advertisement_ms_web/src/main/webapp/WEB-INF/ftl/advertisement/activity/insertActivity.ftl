@@ -39,7 +39,7 @@
                     <td style="width:20%;">活动类型：</td>
                     <td>
                       <div style="width:60%;">
-                      <select name="status" class="selectpicker form-control">
+                      <select name="type" class="selectpicker form-control">
                         <#list typeList as type>
                         <option value="${type.key}">${type.value}</option>
                         </#list>

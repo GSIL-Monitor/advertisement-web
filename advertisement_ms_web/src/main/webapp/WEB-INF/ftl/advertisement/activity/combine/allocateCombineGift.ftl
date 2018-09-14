@@ -139,7 +139,7 @@
 										<td>展示状态：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="status" class="selectpicker form-control">
+												<select name="displayType" class="selectpicker form-control">
 													<#list displayList as display>
 														<option value="${display.key}">${display.value}</option>
 													</#list>

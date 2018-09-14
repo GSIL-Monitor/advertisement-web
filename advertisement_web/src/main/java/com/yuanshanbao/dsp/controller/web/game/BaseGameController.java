@@ -1,9 +1,11 @@
 package com.yuanshanbao.dsp.controller.web.game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.ListSortUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
@@ -41,10 +44,13 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 
 public class BaseGameController extends BaseController {
 
-	private static final int EXPIRE_TIME = 24 * 60 * 60;
+	private static final int EXPIRE_TIME_DAY = 24 * 60 * 60;
+	private static final int EXPIRE_TIME_WEEK = 24 * 60 * 60;
 
 	private String[] mobilePrefix = { "189", "188", "187", "186", "150", "151", "152", "153", "155", "156", "158",
 			"159", "130", "131", "132", "133", "134", "135", "136", "137", "138", "139" };
+
+	private String[] subChanceProbability = { "4", "3", "2", "1" };
 
 	protected int[] positionAngles = { 331, 269, 211, 149, 91, 29 };
 
@@ -67,19 +73,16 @@ public class BaseGameController extends BaseController {
 	protected ActivityCombineService activityCombineService;
 
 	protected void setIndex(HttpServletRequest request, Map<String, Object> modelMap, String activityKey,
-			String channel, String[] prizeName, double[] probabilityRandom, String parentKey) {
-		if (StringUtils.isNotBlank(parentKey)) {
-			activityKey = parentKey;
-		}
+			String channel, String[] prizeName, double[] probabilityRandom) {
 		request.getSession().setAttribute(activityKey + SessionConstants.SESSION_USER_FROM, channel);
-		List<Long> prizeIdList = parsePickedPrize(request, activityKey, true);
+		List<Long> prizeIdList = parsePickedPrize(request, channel, true);
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
 				activityKey, channel);
 		Activity activity = activityService.selectActivity(activityKey);
 		if (activity != null) {
 			ConfigManager.setConfigMap(modelMap, activity.getActivityId(), channel);
 		}
-		modelMap.put("chance", getChance(activity, probabilityList, prizeIdList, parentKey, channel));
+		modelMap.put("chance", getChance(activity, probabilityList, prizeIdList, activityKey, channel));
 		modelMap.put("uvCountChannel", channel);
 		modelMap.put("activityKey", activityKey);
 		modelMap.put("channel", ConfigManager.getChannel(channel));
@@ -96,15 +99,9 @@ public class BaseGameController extends BaseController {
 	}
 
 	protected void pickPrizeAndSetResult(HttpServletRequest request, HttpServletResponse response,
-			Map<String, Object> resultMap, String activityKey, String parentKey) {
+			Map<String, Object> resultMap, String activityKey) {
 		resultMap.put("myPrizeList", getMyPrizeList(request, activityKey));
-		if (StringUtils.isNotBlank(parentKey)) {
-			activityKey = parentKey;
-		}
 		Advertisement advertisement = pickPrize(request, response, resultMap, activityKey);
-		if (StringUtils.isNotBlank(parentKey)) {
-			setNextActivity(resultMap, activityKey, parentKey);
-		}
 		if (advertisement == null) {
 			setGameJumpUrl(request, resultMap, activityKey, false);
 			throw new BusinessException(ComRetCode.GAME_NO_PRIZE_ERROR);
@@ -115,12 +112,11 @@ public class BaseGameController extends BaseController {
 
 	protected Advertisement pickPrize(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> resultMap, String activityKey) {
-		// String channel = (String)
-		// request.getSession().getAttribute(activityKey +
-		// SessionConstants.SESSION_USER_FROM);
 		String channel = request.getParameter("channel");
-		List<Long> pickedPrizeIdList = parsePickedPrize(request, activityKey, true);
-		Activity activity = activityService.selectActivity(activityKey);
+		// 该渠道已抽取的奖品
+		List<Long> pickedPrizeIdList = parsePickedPrize(request, channel, true);
+		List<Long> pickAllPrizeIdList = parseAllPickedPrize(request, channel, true);
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
 		if (activity != null && activity.getActivityId() != null) {
 			int picked = pickedPrizeIdList.size();
 			if (picked >= ConfigWrapper.getPickChance(activity.getActivityId(), channel, null, null)) {
@@ -133,9 +129,11 @@ public class BaseGameController extends BaseController {
 		Advertisement advertisement = null;
 		if (probability != null) {
 			pickedPrizeIdList.add(probability.getAdvertisementId());
-			setPickedPrizeCookie(request, response, activityKey, pickedPrizeIdList);
+			pickAllPrizeIdList.add(probability.getAdvertisementId());
+			setPickedPrizeCookie(request, response, channel, pickedPrizeIdList);
+			setAllPickedPrizeCookie(request, response, pickAllPrizeIdList);
 			advertisement = ConfigManager.getAdvertisement(probability.getAdvertisementId() + "");
-			advertisement.addChannelToLink(channel);
+			// advertisement.addChannelToLink(channel);
 		}
 		return advertisement;
 	}
@@ -150,12 +148,78 @@ public class BaseGameController extends BaseController {
 			prizeIds += prizeId + ",";
 		}
 		String value = System.currentTimeMillis() / 1000 + ":" + prizeIds.substring(0, prizeIds.length() - 1);
-		CookieUtils.setPersistCookieValue(response, key + SessionConstants.SESSION_GAME_PRIZE, value, EXPIRE_TIME);
-		request.getSession().setAttribute(key + SessionConstants.SESSION_GAME_PRIZE, value);
+		// 根据渠道设置以及抽取过得奖品
+		CookieUtils.setPersistCookieValue(response, key + SessionConstants.SESSION_GAME_CHANNEL_PRIZE, value,
+				EXPIRE_TIME_DAY);
+		request.getSession().setAttribute(key + SessionConstants.SESSION_GAME_CHANNEL_PRIZE, value);
+	}
+
+	private void setAllPickedPrizeCookie(HttpServletRequest request, HttpServletResponse response,
+			List<Long> pickedPrizeIdList) {
+		if (pickedPrizeIdList == null || pickedPrizeIdList.size() == 0) {
+			return;
+		}
+		String prizeIds = "";
+		for (Long prizeId : pickedPrizeIdList) {
+			prizeIds += prizeId + ",";
+		}
+		String value = System.currentTimeMillis() / 1000 + ":" + prizeIds.substring(0, prizeIds.length() - 1);
+		// 根据渠道设置以及抽取过得奖品
+		CookieUtils.setPersistCookieValue(response, SessionConstants.SESSION_GAME_ALL_PRIZE, value, EXPIRE_TIME_WEEK);
+		request.getSession().setAttribute(SessionConstants.SESSION_GAME_ALL_PRIZE, value);
+	}
+
+	protected void pickSubPrizeAndSetResult(HttpServletRequest request, HttpServletResponse response,
+			Map<String, Object> resultMap, String activityKey, String parentKey, String channel) {
+		Advertisement advertisement = pickSubPrize(request, response, resultMap, activityKey, parentKey, channel);
+		if (advertisement == null) {
+			setNextActivity(resultMap, activityKey, parentKey);
+			if (resultMap.get("nextKey") != null) {
+				Activity activity = ConfigManager.getActivityByKey((String) resultMap.get("nextKey"));
+				List<Probability> probabilityList = probabilityService.selectProbabilitys(request,
+						getProjectId(request), parentKey, channel);
+				Map<Long, List<Probability>> chanceMap = allocatePrize(parentKey, activityKey, probabilityList, channel);
+				if (chanceMap.get(activity.getActivityId()) != null
+						&& chanceMap.get(activity.getActivityId()).size() > 0) {
+					resultMap.put("gameJumpImage", activity.getImageUrl());
+					resultMap.put("gameJumpUrl", activity.getEntranceUrl());
+					throw new BusinessException(ComRetCode.GAME_NO_PRIZE_AND_JUMP);
+				} else {
+					throw new BusinessException(ComRetCode.GAME_NO_PRIZE_ERROR);
+				}
+			}
+		}
+		resultMap.put("prize", advertisement);
+		resultMap.put("angle", positionAngles[5 - 1]);
+	}
+
+	private Advertisement pickSubPrize(HttpServletRequest request, HttpServletResponse response,
+			Map<String, Object> resultMap, String activityKey, String parentKey, String channel) {
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
+		List<Long> pickedPrizeIdList = parsePickedPrize(request, channel, true);
+		List<Long> pickAllPrizeIdList = parseAllPickedPrize(request, channel, true);
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
+				parentKey, channel);
+		Map<Long, List<Probability>> chanceMap = allocatePrize(parentKey, activityKey, probabilityList, channel);
+		List<Probability> subList = chanceMap.get(activity.getActivityId());
+		if (subList == null) {
+			return null;
+		}
+		Probability probability = probabilityService.pickSubPrize(subList, pickedPrizeIdList);
+		Advertisement advertisement = null;
+		if (probability != null) {
+			pickedPrizeIdList.add(probability.getAdvertisementId());
+			pickAllPrizeIdList.add(probability.getAdvertisementId());
+			setPickedPrizeCookie(request, response, channel, pickedPrizeIdList);
+			setAllPickedPrizeCookie(request, response, pickAllPrizeIdList);
+			advertisement = ConfigManager.getAdvertisement(probability.getAdvertisementId() + "");
+			// advertisement.addChannelToLink(channel);
+		}
+		return advertisement;
 	}
 
 	protected List<Advertisement> getMyPrizeList(HttpServletRequest request, String activityKey) {
-		List<Long> prizeIdList = parsePickedPrize(request, activityKey, false);
+		List<Long> prizeIdList = parseAllPickedPrize(request, activityKey, false);
 		Map<Long, Advertisement> prizeMap = advertisementService.selectAdvertisementByIds(prizeIdList);
 		List<Advertisement> result = new ArrayList<Advertisement>();
 		Collections.reverse(prizeIdList);
@@ -221,11 +285,12 @@ public class BaseGameController extends BaseController {
 		}
 	}
 
-	protected List<Long> parsePickedPrize(HttpServletRequest request, String activityKey, boolean isDay) {
-		String hasPickedPrize = CookieUtils.getCookieValue(request, activityKey + SessionConstants.SESSION_GAME_PRIZE);
+	protected List<Long> parsePickedPrize(HttpServletRequest request, String channel, boolean isDay) {
+		String hasPickedPrize = CookieUtils.getCookieValue(request, channel
+				+ SessionConstants.SESSION_GAME_CHANNEL_PRIZE);
 		if (StringUtils.isBlank(hasPickedPrize)) {
 			hasPickedPrize = (String) request.getSession().getAttribute(
-					activityKey + SessionConstants.SESSION_GAME_PRIZE);
+					channel + SessionConstants.SESSION_GAME_CHANNEL_PRIZE);
 		}
 		List<Long> pickedPrizeIdList = new ArrayList<Long>();
 		if (StringUtils.isNotBlank(hasPickedPrize)) {
@@ -234,7 +299,34 @@ public class BaseGameController extends BaseController {
 				if (ValidateUtil.isNumber(segs[0])) {
 					Long pickTime = Long.parseLong(segs[0]);
 					if ((isDay && !DateUtils.isToday(new Date(pickTime * 1000)))
-							|| System.currentTimeMillis() / 1000 - pickTime > EXPIRE_TIME) {
+							|| System.currentTimeMillis() / 1000 - pickTime > EXPIRE_TIME_DAY) {
+						return pickedPrizeIdList;
+					}
+				}
+				String[] prizeIds = segs[1].split(",");
+				for (String prizeId : prizeIds) {
+					if (ValidateUtil.isNumber(prizeId)) {
+						request.getRemoteAddr();
+						pickedPrizeIdList.add(Long.parseLong(prizeId));
+					}
+				}
+			}
+		}
+		return pickedPrizeIdList;
+	}
+
+	protected List<Long> parseAllPickedPrize(HttpServletRequest request, String channel, boolean isDay) {
+		String hasPickedPrize = CookieUtils.getCookieValue(request, SessionConstants.SESSION_GAME_ALL_PRIZE);
+		if (StringUtils.isBlank(hasPickedPrize)) {
+			hasPickedPrize = (String) request.getSession().getAttribute(SessionConstants.SESSION_GAME_ALL_PRIZE);
+		}
+		List<Long> pickedPrizeIdList = new ArrayList<Long>();
+		if (StringUtils.isNotBlank(hasPickedPrize)) {
+			String[] segs = hasPickedPrize.split("\\:");
+			if (segs.length == 2) {
+				if (ValidateUtil.isNumber(segs[0])) {
+					Long pickTime = Long.parseLong(segs[0]);
+					if (System.currentTimeMillis() / 1000 - pickTime > EXPIRE_TIME_WEEK) {
 						return pickedPrizeIdList;
 					}
 				}
@@ -307,11 +399,12 @@ public class BaseGameController extends BaseController {
 		for (String id : ids) {
 			Activity activity = activityService.selectActivity(Long.parseLong(id));
 			if (activity != null) {
-				String hasPickedPrize = CookieUtils.getCookieValue(request, activity.getKey()
-						+ SessionConstants.SESSION_GAME_PRIZE);
-				if (StringUtils.isBlank(hasPickedPrize)) {
-					list.add(Long.parseLong(id));
-				}
+				// String hasPickedPrize = CookieUtils.getCookieValue(request,
+				// activity.getKey()
+				// + SessionConstants.SESSION_GAME_PRIZE);
+				// if (StringUtils.isBlank(hasPickedPrize)) {
+				// list.add(Long.parseLong(id));
+				// }
 			}
 		}
 		if (list.size() > 0) {
@@ -394,7 +487,7 @@ public class BaseGameController extends BaseController {
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
 				activityKey, channel);
 		int configChance = probabilityList.size();
-		List<Long> prizeIdList = parsePickedPrize(request, activityKey, true);
+		List<Long> prizeIdList = parsePickedPrize(request, channel, true);
 		Activity activity = activityService.selectActivity(activityKey);
 		if (activity != null && activity.getActivityId() != null) {
 			configChance = Math.min(ConfigWrapper.getPickChance(activity.getActivityId(), channel, null, null),
@@ -404,7 +497,7 @@ public class BaseGameController extends BaseController {
 
 		if (chance < 0) {
 			chance = 0;
-		}else{
+		} else {
 			chance--;
 		}
 		resultMap.put("chance", chance);
@@ -413,22 +506,21 @@ public class BaseGameController extends BaseController {
 	protected void setCombineIndex(HttpServletRequest request, Map<String, Object> modelMap, String activityKey,
 			String channel, String[] prizeName, double[] probabilityRandom) {
 		request.getSession().setAttribute(activityKey + SessionConstants.SESSION_USER_FROM, channel);
-		List<Long> prizeIdList = parsePickedPrize(request, activityKey, true);
-		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
-				activityKey, channel);
-		Activity activity = activityService.selectActivity(activityKey);
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
 		ActivityCombine params = new ActivityCombine();
 		params.setParentId(activity.getActivityId());
 		List<ActivityCombine> list = activityCombineService.selectActivityCombine(params, new PageBounds());
-		ActivityCombine activityCombine = getSortActivity(list);
+		ActivityCombine activityCombine = getFirstSubActivity(list);
 		if (activityCombine != null) {
 			// 活动页面进行跳转
-			Activity resultActivity = activityService.selectActivity(activityCombine.getActivityId());
+			Activity resultActivity = ConfigManager.getActivityById(activityCombine.getActivityId());
 			modelMap.put("jumpUrl", resultActivity.getEntranceUrl());
+			request.getSession().setAttribute("parentKey", activityKey);
+			request.getSession().setAttribute("channel", channel);
 		}
 	}
 
-	private ActivityCombine getSortActivity(List<ActivityCombine> list) {
+	private ActivityCombine getFirstSubActivity(List<ActivityCombine> list) {
 		for (ActivityCombine activityCombine : list) {
 			if (activityCombine.getSort() != null & activityCombine.getSort().equals(1)) {
 				return activityCombine;
@@ -446,7 +538,9 @@ public class BaseGameController extends BaseController {
 		ActivityCombine activityCombine = getNextActivityCombine(activity, combineList);
 		if (activityCombine != null) {
 			Activity nextActivity = ConfigManager.getActivityById(activityCombine.getActivityId());
-			resultMap.put("nextUrl", nextActivity.getEntranceUrl());
+			resultMap.put("nextKey", nextActivity.getKey());
+		} else {
+			throw new BusinessException(ComRetCode.GAME_NO_PRIZE_ERROR);
 		}
 	}
 
@@ -464,9 +558,9 @@ public class BaseGameController extends BaseController {
 	}
 
 	private Integer getChance(Activity activity, List<Probability> probabilityList, List<Long> prizeIdList,
-			String parentKey, String channel) {
+			String activityKey, String channel) {
 		int chance;
-		if (StringUtils.isBlank(parentKey)) {
+		if (StringUtils.isNotBlank(activityKey)) {
 			int configChance = probabilityList.size();
 			// 获取配置的抽奖次数
 			if (activity != null && activity.getActivityId() != null) {
@@ -481,5 +575,152 @@ public class BaseGameController extends BaseController {
 			chance = 1;
 		}
 		return chance;
+	}
+
+	protected void subIndex(HttpServletRequest request, Map<String, Object> resultMap, String parentKey,
+			String activityKey, String channel, String[] prizeName, double[] probabilityRandom) {
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
+				parentKey, channel);
+		Activity activity = activityService.selectActivity(parentKey);
+		if (activity != null) {
+			// ConfigManager.setConfigMap(resultMap, activity.getActivityId(),
+			// channel);
+		}
+		// 获取活动奖品
+		getSubActivityPrize(request, resultMap, parentKey, activityKey, channel, probabilityList);
+	}
+
+	private void getSubActivityPrize(HttpServletRequest request, Map<String, Object> resultMap, String parentKey,
+			String activityKey, String channel, List<Probability> probabilityList) {
+		List<Long> prizeIdList = parsePickedPrize(request, channel, true);
+		Activity activity = activityService.selectActivity(activityKey);
+		Map<Long, List<Probability>> chanceMap = allocatePrize(parentKey, activityKey, probabilityList, channel);
+		resultMap.put("chance", getActivityLeftChance(chanceMap.get(activity.getActivityId()), prizeIdList));
+	}
+
+	private int getActivityLeftChance(List<Probability> list, List<Long> prizeIdList) {
+		if (list == null) {
+			return 0;
+		}
+		int chance = list.size();
+		for (Probability probability : list) {
+			if (prizeIdList.contains(probability.getAdvertisementId())) {
+				chance--;
+			}
+		}
+		if (chance < 0) {
+			return 0;
+		}
+		return chance;
+	}
+
+	private Map<Long, List<Probability>> allocatePrize(String parentKey, String activityKey,
+			List<Probability> probabilityList, String channel) {
+		Activity parentActivity = ConfigManager.getActivityByKey(parentKey);
+		ActivityCombine activityCombine = new ActivityCombine();
+		activityCombine.setParentId(parentActivity.getActivityId());
+		List<ActivityCombine> list = activityCombineService.selectActivityCombine(activityCombine, new PageBounds());
+		// 按照次序进行排序
+		ListSortUtil<ActivityCombine> sortList = new ListSortUtil<ActivityCombine>();
+		sortList.sort(list, "Sort", "desc");
+		// 若活动奖品数量过少，则不进行分配
+		Iterator<ActivityCombine> iterator = list.iterator();
+		while (iterator.hasNext()) {
+			if (list.size() == 1) {
+				break;
+			}
+			ActivityCombine ac = iterator.next();
+			if (!checkActivityMinSize(ac, probabilityList)) {
+				iterator.remove();
+			} else {
+				break;
+			}
+		}
+		return setChanceBySubActivityKey(list, probabilityList);
+
+	}
+
+	private Map<Long, List<Probability>> setChanceBySubActivityKey(List<ActivityCombine> list,
+			List<Probability> probabilityList) {
+		Map<Long, List<Probability>> map = new HashMap<Long, List<Probability>>();
+		List<Probability> getList = new ArrayList<Probability>(probabilityList);
+		for (ActivityCombine ac : list) {
+			List<Probability> acList = new ArrayList<Probability>();
+			// 若只有一个活动，将次数全部给他
+			if (list.size() == 1) {
+				acList.addAll(probabilityList);
+				map.put(ac.getActivityId(), acList);
+				break;
+			}
+			int chance = getChance(ac, probabilityList);
+			for (int i = 0; i < chance; i++) {
+				if (probabilityList.size() > 0) {
+					acList.add(getList.get(0));
+					getList.remove(0);
+				} else {
+					break;
+				}
+			}
+			map.put(ac.getActivityId(), acList);
+		}
+
+		return map;
+	}
+
+	private boolean checkActivityMinSize(ActivityCombine activityCombine, List<Probability> probabilityList) {
+		double chance = getChance(activityCombine, probabilityList);
+		double minChance = Double.valueOf(ConfigManager.getConfigValue(activityCombine.getActivityId(), null,
+				ConfigConstants.PICK_PRIZE_MIN_CHANCE_CONFIG));
+		if (chance < minChance) {
+			return false;
+		}
+		return true;
+	}
+
+	// 根据次序与分配比例分配奖品个数
+	private int getChance(ActivityCombine activityCombine, List<Probability> probabilityList) {
+
+		String allocateConfig = ConfigManager.getConfigValue(activityCombine.getParentId(), null,
+				ConfigConstants.ACTIVITY_COMBINE_PRIZE_ALLOCATE_CONFIG);
+		List<String> countPro = new ArrayList<String>();
+		if (allocateConfig != null) {
+			String[] config = allocateConfig.split(",");
+			countPro = Arrays.asList(config);
+		} else {
+			ActivityCombine params = new ActivityCombine();
+			params.setParentId(activityCombine.getParentId());
+			List<ActivityCombine> combineList = activityCombineService.selectActivityCombine(params, new PageBounds());
+			int size = combineList.size();
+			for (int i = size; i > 0; i--) {
+				countPro.add(String.valueOf(i));
+			}
+		}
+		int total = 0;
+		for (String s : countPro) {
+			total += Integer.valueOf(s);
+		}
+		double chance = probabilityList.size() * Double.valueOf(countPro.get(activityCombine.getSort() - 1)) / total;
+		if (chance < 1) {
+			return 0;
+		}
+		return (int) Math.round(chance);
+	}
+
+	protected void getSubChanceAndSetResult(HttpServletRequest request, HttpServletResponse response,
+			Map<String, Object> resultMap, String parentKey, String activityKey, String channel) {
+		List<Long> prizeIdList = parsePickedPrize(request, channel, true);
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
+				parentKey, channel);
+		Map<Long, List<Probability>> chanceMap = allocatePrize(parentKey, activityKey, probabilityList, channel);
+
+		List<Probability> activityProbabilityList = chanceMap.get(activity.getActivityId());
+		int chance = getActivityLeftChance(activityProbabilityList, prizeIdList);
+		if (chance <= 0) {
+			chance = 0;
+		} else {
+			chance--;
+		}
+		resultMap.put("chance", chance);
 	}
 }

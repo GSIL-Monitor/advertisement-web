@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.advertisement.model.vo;
 
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.quota.model.Quota;
 
@@ -119,5 +120,9 @@ public class AdvertisementVo {
 
 	public void setButtonName(String buttonName) {
 		this.buttonName = buttonName;
+	}
+
+	public String getStatusValue() {
+		return CommonStatus.getDescription(probability.getStatus());
 	}
 }

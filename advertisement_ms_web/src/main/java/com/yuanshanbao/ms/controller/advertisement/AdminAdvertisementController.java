@@ -46,6 +46,7 @@ public class AdminAdvertisementController extends PaginationController {
 	private static final String PAGE_LIST = "advertisement/advertisement/listAdvertisement";
 
 	private static final String PAGE_INSERT = "advertisement/advertisement/insertAdvertisement";
+	private static final String PAGE_INSERT_SIMPLE = "advertisement/advertisement/insertSimpleAdvertisement";
 
 	private static final String PAGE_UPDATE = "advertisement/advertisement/updateAdvertisement";
 
@@ -276,6 +277,38 @@ public class AdminAdvertisementController extends PaginationController {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
 			LoggerUtil.error("advertisement update function - upload image error", e2);
+		}
+
+		return result;
+	}
+
+	@RequestMapping("/insertAdvertisementWindow.do")
+	public String insertAdvertisementWindow(HttpServletRequest request, HttpServletResponse response,
+			Long advertiserId, Integer type, ModelMap modelMap) {
+		setProperty(request, getProjectId(request), advertiserId);
+		modelMap.put("categories", ConfigManager.getCategoryMap());
+		return PAGE_INSERT_SIMPLE;
+	}
+
+	@ResponseBody
+	@RequestMapping("/insertAdvertisement.do")
+	public Object insertAdvertisement(HttpServletRequest request, HttpServletResponse response,
+			Advertisement advertisement, MultipartFile image) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if (image != null && !image.isEmpty()) {
+				advertisement.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
+			}
+			validateParameters(advertisement);
+			String quotaType = request.getParameter("quotaType");
+			advertisement.setProjectId(getProjectId(request));
+			advertisementService.insertAdvertisement(advertisement);
+			// AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("advertisement insert function - upload image error", e2);
 		}
 
 		return result;

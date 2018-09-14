@@ -91,7 +91,7 @@
 	    	<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a> 
 	    	<a href="#" class="current">${functionTitle}列表</a>
 	    	<span class="add">
-	    		<a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加${functionTitle}</button></a>
+	    		<a href="${rc.contextPath}/admin/${functionName}/insertAdvertisementWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加${functionTitle}</button></a>
 	    	</span>
 	    </div>
 	</div>

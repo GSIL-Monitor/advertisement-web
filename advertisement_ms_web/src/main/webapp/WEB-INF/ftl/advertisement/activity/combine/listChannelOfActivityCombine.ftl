@@ -14,10 +14,6 @@
 		}, {
 			"data": "createTimeContent"
 		}, {
-			"data": "prizeCount"
-		}, {
-			"data": "statusContent"
-		}, {
 			"data": "key",
 			"render": function ( data, type, full, meta ) {
 					return '<a href="${rc.contextPath}/admin/${functionName}/giftList.do?activityId=${activityId}&channel='+data+'"	class="btn btn-cyan" target="_blank">查看</a>';
@@ -90,8 +86,6 @@
 								<th>渠道ID</th>
 								<th>渠道类型</th>
 								<th>上线时间</th>
-								<th>奖品个数 </th>
-								<th>状态</th>
 								<th>查看奖品</th>
 								<th>投放策略</th>
 								<th>操作</th>

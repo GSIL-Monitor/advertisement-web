@@ -39,4 +39,6 @@ public interface ProbabilityService {
 
 	public Probability pickPrize(HttpServletRequest request, Long projectId, String activityKey, String channel,
 			List<Long> pickedAdvertisementIdList);
+
+	public Probability pickSubPrize(List<Probability> probabilityList, List<Long> pickedPrizeIdList);
 }

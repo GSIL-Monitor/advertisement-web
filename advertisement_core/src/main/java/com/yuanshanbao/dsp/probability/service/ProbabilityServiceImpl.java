@@ -245,7 +245,6 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	private void checkQuotaTimeAndCount(List<Quota> quotaList, Map<Long, Probability> advertisementIdMap) {
 
 		for (Quota quota : quotaList) {
-			// TODO 走活动下默认的quota数量判断
 			if (quota.getCount() != null && quota.getCount() > 0 && quota.getType() != null) {
 				String countValue = "";
 				QuotaOperationFactory factory = QuotaType.getCountFactory(quota.getType());
@@ -354,23 +353,26 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		if (probabilityList == null) {
 			return resultList;
 		}
-		if (activity.checkCombination()) {
-			resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey, probabilityList);
-		} else {
-			if (channel != null) {
-				if (channel.checkIndependent()) {
-					resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
-							probabilityList);
-				} else {
-					activityProList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
-					channelProList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
-							probabilityList);
-					resultList = dealProbabilityConfig(activityProList, channelProList);
-				}
+		// 如果是活动组合
+		// if (activity.checkCombination()) {
+		// resultList =
+		// selectProbabilityByChannelAndActivityKey(activity.getActivityId(),
+		// channelKey, probabilityList);
+		// } else {
+		if (channel != null) {
+			if (channel.checkIndependent()) {
+				resultList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
+						probabilityList);
 			} else {
-				resultList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
+				activityProList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
+				channelProList = selectProbabilityByChannelAndActivityKey(activity.getActivityId(), channelKey,
+						probabilityList);
+				resultList = dealProbabilityConfig(activityProList, channelProList);
 			}
+		} else {
+			resultList = selectProbabilityByActivityId(activity.getActivityId(), probabilityList);
 		}
+		// }
 		return resultList;
 	}
 
@@ -417,6 +419,24 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			}
 		}
 		return resultList;
+	}
+
+	@Override
+	public Probability pickSubPrize(List<Probability> probabilityList, List<Long> pickedPrizeIdList) {
+		List<Probability> unpickedList = new ArrayList<Probability>();
+		for (Probability probability : probabilityList) {
+			boolean isPicked = false;
+			for (Long advertisementId : pickedPrizeIdList) {
+				if (advertisementId.equals(probability.getAdvertisementId())) {
+					isPicked = true;
+					break;
+				}
+			}
+			if (!isPicked) {
+				unpickedList.add(probability);
+			}
+		}
+		return pickGift(unpickedList);
 	}
 
 }
