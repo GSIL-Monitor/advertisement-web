@@ -501,9 +501,12 @@ public class AdminActivityController extends PaginationController {
 				quota.setStatus(CommonStatus.OFFLINE);
 				quotaService.updateQuota(quota);
 			}
+			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("probability delete function - reload error", e2);
 		}
 
 		return result;
