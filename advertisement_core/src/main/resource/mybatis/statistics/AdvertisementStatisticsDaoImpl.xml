@@ -198,15 +198,6 @@
 				<if test="date != null">
 					date = #{date},
 				</if>
-				<if test="welfareCount != null">
-					welfare_count = #{welfareCount},
-				</if>
-				<if test="bannerCount != null">
-					banner_count = #{bannerCount},
-				</if>
-				<if test="tagsCount != null">
-					tags_count = #{tagsCount},
-				</if>
 				<if test="downloadCount != null">
 					download_count = #{downloadCount},
 				</if>

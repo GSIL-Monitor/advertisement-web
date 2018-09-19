@@ -56,13 +56,7 @@
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
-		function reload() {
-			var date=$('#date').val();
-			var pv=$('#pv').val();
-			var newUrl="${rc.contextPath}/admin/${functionName}/queryChannelAdvertisements.do?statisticsDate="+encodeURI(encodeURI(date))+"&isPv="+pv;
-			dataTable.ajax.url(newUrl);
-			dataTable.ajax.reload();
-		}
+		
 	});
 </script>
 <div id="content">
@@ -80,11 +74,6 @@
 							<select name="pv" id="pv">
 								<option value="false" selected>uv</option>
 								<option value="true">pv</option>
-							</select>
-							<select name="date" id="date">
-								<#list dateList as date>
-									<option value="${date}"<#if date_index == 0>selected</#if>>${date}</option>
-								</#list>
 							</select>
 							<div class="filter-component">
 									<h6>日期：</h6>

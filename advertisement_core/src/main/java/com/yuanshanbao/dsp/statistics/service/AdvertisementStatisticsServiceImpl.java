@@ -522,7 +522,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private List<AdvertisementStatistics> intervalAdvertisementStatistics(int dateDiff, boolean fromDB, Integer dataType) {
 		String date = DateUtils.format(DateUtils.addDays(new Date(), -dateDiff));
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
-		Set<String> channelAndIdList = redisCacheService.smembers(RedisConstant.getAdvertisementChannelKey(date));
+		Set<String> channelAndIdList = redisCacheService.smembers(RedisConstant.getAdvertisementChannelAndIdKey(date));
 		Advertisement param = new Advertisement();
 		param.setStatus(CommonStatus.ONLINE);
 		List<Advertisement> list = advertisementService.selectAdvertisement(param, new PageBounds());
@@ -665,9 +665,10 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		adStatistics.setAdvertisementId(advertisementId);
 		adStatistics.setChannel(channel);
 		adStatistics.setDate(date);
-		adStatistics.setType(AdvertisementStatisticsType.UV_DATA);
+		adStatistics.setType(AdvertisementStatisticsType.PV_DATA);
 		adStatistics.setShowCount(getShowPv(date, channel, advertisementId));
 		adStatistics.setClickCount(getClickPv(date, channel, advertisementId));
+		adStatistics.setTotal(calculateTotal(adStatistics));
 		resultList.add(adStatistics);
 	}
 

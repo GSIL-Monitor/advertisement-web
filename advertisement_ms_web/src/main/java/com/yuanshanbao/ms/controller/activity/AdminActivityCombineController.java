@@ -32,6 +32,7 @@ import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.model.ChannelAllocateStatus;
 import com.yuanshanbao.dsp.channel.model.ChannelIndependentStatus;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.probability.model.Probability;
@@ -67,6 +68,9 @@ public class AdminActivityCombineController extends PaginationController {
 	private static final String PAGE_ALLOCATE_GIFT = "advertisement/activity/combine/allocateCombineGift";
 
 	private static final String PAGE_ADD_ACTIVITY = "advertisement/activity/combine/addActivity";
+
+	private static final String PAGE_ALLOCATE_RESULT = "advertisement/activity/combine/listAllocateResult";
+
 	@Autowired
 	private ActivityService activityService;
 
@@ -282,7 +286,7 @@ public class AdminActivityCombineController extends PaginationController {
 			probability.setProjectId(getProjectId(request));
 			quota.setProjectId(getProjectId(request));
 			probabilityService.insertProbability(probability);
-			quotaService.insertQuota(quota);
+			// quotaService.insertQuota(quota);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
@@ -290,8 +294,41 @@ public class AdminActivityCombineController extends PaginationController {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		String a = "2018.07.07 00:00:15,984 INFO  cn.millertech.common.util.LoggerUtil 40 access - sessionID=0059e191-ea25-4c9c-ae40-6e97c8537a3d--474247392863432696-25409063539943763, sid=0059e191-ea25-4c9c-ae40-6e97c8537a3d--474247392863432696-25409063539943763, pid=null, userId=24189574, mobile=13910952788, ip=106.37.36.4, url=http://www.yuanshanbx.com/m/activity/zh/result/commit.html?name=于海宁&question1=您孩子的年龄&answer1=10岁&resultKey=dada, referer=https://www.yuanshanbx.com/m/activity/common/success.html?gorderId=21993163&gorderKey=Pt0gnBMKX2anCoakyKVJ4A%3D%3D%0D%0A, userAgent=Mozilla/5.0 (Linux; Android 7.0; SM-G9550 Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/6.2 TBS/044109 Mobile Safari/537.36 MicroMessenger/6.6.6.1300(0x26060638) NetType/3G Language/zh_CN, xff=null";
-		System.err.println(a.substring(a.indexOf("sid=") + 4, a.indexOf(", pid")));
+	@RequestMapping("/prizeAllocateList.do")
+	public String prizeAllocateResult(String activityId, String channel, HttpServletRequest request,
+			HttpServletResponse response, ModelMap modelMap) {
+		request.setAttribute("activityId", activityId);
+		request.setAttribute("channel", channel);
+		return PAGE_ALLOCATE_RESULT;
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryPrizeAllocate.do")
+	public Object allocateGift(String activityId, String channel, HttpServletRequest request,
+			HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		List<Probability> list = new ArrayList<Probability>();
+		try {
+			Activity activity = ConfigManager.getActivityById(Long.valueOf(activityId));
+			List<Probability> listProbabilities = probabilityService.selectProbabilitys(request, getProjectId(request),
+					activity.getKey(), channel);
+			Map<Long, List<Probability>> prizeMap = activityCombineService.allocatePrize(activity.getKey(),
+					listProbabilities, channel);
+			for (Map.Entry<Long, List<Probability>> entry : prizeMap.entrySet()) {
+				List<Probability> proList = prizeMap.get(entry.getKey());
+				for (Probability probability : proList) {
+					probability.setActivityId(entry.getKey());
+					list.add(probability);
+				}
+			}
+			result.put("data", list);
+			result.put("draw", request.getParameter("draw"));
+			result.put("recordsTotal", 1000);
+			result.put("recordsFiltered", 1);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		}
+		return result;
 	}
 }

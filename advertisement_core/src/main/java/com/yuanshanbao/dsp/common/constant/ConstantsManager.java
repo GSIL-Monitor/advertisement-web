@@ -18,6 +18,8 @@ import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.activity.model.ActivityCombine;
+import com.yuanshanbao.dsp.activity.service.ActivityCombineService;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory;
@@ -139,9 +141,12 @@ public class ConstantsManager {
 
 	@Resource
 	private AdvertisementStrategyService strategyService;
-	
+
 	@Resource
 	private ProductCategoryService productCategoryService;
+
+	@Resource
+	private ActivityCombineService activityCombineService;
 
 	public static boolean validateConstants(long[] types, Long id) {
 		for (long type : types) {
@@ -320,6 +325,8 @@ public class ConstantsManager {
 		AdvertisementCategory adCategoryParam = new AdvertisementCategory();
 		adCategoryParam.setStatus(CommonStatus.ONLINE);
 		ProductCategory productCategoryParam = new ProductCategory();
+		ActivityCombine acCombineParam = new ActivityCombine();
+		acCombineParam.setStatus(CommonStatus.ONLINE);
 
 		PageBounds pageBounds = new PageBounds();
 		ConfigManager.refreshConfig(channelService.selectChannels(channelParam, pageBounds),
@@ -331,7 +338,8 @@ public class ConstantsManager {
 				advertisementService.selectAdvertisement(advertisementParam, pageBounds),
 				advertisementStrategyService.selectAdvertisementStrategy(strategyParam, pageBounds),
 				advertisementCategoryService.selectCategory(adCategoryParam, pageBounds),
-				productCategoryService.selectProductCategorys(productCategoryParam, pageBounds));
+				productCategoryService.selectProductCategorys(productCategoryParam, pageBounds),
+				activityCombineService.selectActivityCombine(acCombineParam, pageBounds));
 	}
 
 	private void refreshLocationMap() {

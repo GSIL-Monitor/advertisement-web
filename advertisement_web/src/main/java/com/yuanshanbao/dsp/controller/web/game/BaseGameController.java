@@ -20,7 +20,6 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.DateUtils;
-import com.yuanshanbao.common.util.ListSortUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
@@ -510,13 +509,15 @@ public class BaseGameController extends BaseController {
 		ActivityCombine params = new ActivityCombine();
 		params.setParentId(activity.getActivityId());
 		List<ActivityCombine> list = activityCombineService.selectActivityCombine(params, new PageBounds());
+		// List<ActivityCombine> combineList2 =
+		// ConfigManager.getActivityCombineList(activity.getActivityId());
 		ActivityCombine activityCombine = getFirstSubActivity(list);
 		if (activityCombine != null) {
 			// 活动页面进行跳转
 			Activity resultActivity = ConfigManager.getActivityById(activityCombine.getActivityId());
 			modelMap.put("jumpUrl", resultActivity.getEntranceUrl());
-			request.getSession().setAttribute("parentKey", activityKey);
-			request.getSession().setAttribute("channel", channel);
+			request.getSession().setAttribute(channel + SessionConstants.SESSION_ACTIVITY_COMBINE_KEY, activityKey);
+			request.getSession().setAttribute(SessionConstants.SESSION_ACTIVITY_COMBINE_CHANNEL, channel);
 		}
 	}
 
@@ -583,8 +584,7 @@ public class BaseGameController extends BaseController {
 				parentKey, channel);
 		Activity activity = activityService.selectActivity(parentKey);
 		if (activity != null) {
-			// ConfigManager.setConfigMap(resultMap, activity.getActivityId(),
-			// channel);
+			ConfigManager.setConfigMap(resultMap, activity.getActivityId(), channel);
 		}
 		// 获取活动奖品
 		getSubActivityPrize(request, resultMap, parentKey, activityKey, channel, probabilityList);
@@ -593,7 +593,7 @@ public class BaseGameController extends BaseController {
 	private void getSubActivityPrize(HttpServletRequest request, Map<String, Object> resultMap, String parentKey,
 			String activityKey, String channel, List<Probability> probabilityList) {
 		List<Long> prizeIdList = parsePickedPrize(request, channel, true);
-		Activity activity = activityService.selectActivity(activityKey);
+		Activity activity = ConfigManager.getActivityByKey(activityKey);
 		Map<Long, List<Probability>> chanceMap = allocatePrize(parentKey, activityKey, probabilityList, channel);
 		resultMap.put("chance", getActivityLeftChance(chanceMap.get(activity.getActivityId()), prizeIdList));
 	}
@@ -620,9 +620,7 @@ public class BaseGameController extends BaseController {
 		ActivityCombine activityCombine = new ActivityCombine();
 		activityCombine.setParentId(parentActivity.getActivityId());
 		List<ActivityCombine> list = activityCombineService.selectActivityCombine(activityCombine, new PageBounds());
-		// 按照次序进行排序
-		ListSortUtil<ActivityCombine> sortList = new ListSortUtil<ActivityCombine>();
-		sortList.sort(list, "Sort", "desc");
+		List<ActivityCombine> list2 = ConfigManager.getActivityCombineList(parentActivity.getActivityId());
 		// 若活动奖品数量过少，则不进行分配
 		Iterator<ActivityCombine> iterator = list.iterator();
 		while (iterator.hasNext()) {
@@ -630,18 +628,18 @@ public class BaseGameController extends BaseController {
 				break;
 			}
 			ActivityCombine ac = iterator.next();
-			if (!checkActivityMinSize(ac, probabilityList)) {
+			if (!checkActivityMinSize(ac, probabilityList, channel)) {
 				iterator.remove();
 			} else {
 				break;
 			}
 		}
-		return setChanceBySubActivityKey(list, probabilityList);
+		return setChanceBySubActivityKey(list, probabilityList, channel);
 
 	}
 
 	private Map<Long, List<Probability>> setChanceBySubActivityKey(List<ActivityCombine> list,
-			List<Probability> probabilityList) {
+			List<Probability> probabilityList, String channel) {
 		Map<Long, List<Probability>> map = new HashMap<Long, List<Probability>>();
 		List<Probability> getList = new ArrayList<Probability>(probabilityList);
 		for (ActivityCombine ac : list) {
@@ -652,9 +650,9 @@ public class BaseGameController extends BaseController {
 				map.put(ac.getActivityId(), acList);
 				break;
 			}
-			int chance = getChance(ac, probabilityList);
+			int chance = getChance(ac, probabilityList, channel);
 			for (int i = 0; i < chance; i++) {
-				if (probabilityList.size() > 0) {
+				if (getList.size() > 0) {
 					acList.add(getList.get(0));
 					getList.remove(0);
 				} else {
@@ -667,8 +665,9 @@ public class BaseGameController extends BaseController {
 		return map;
 	}
 
-	private boolean checkActivityMinSize(ActivityCombine activityCombine, List<Probability> probabilityList) {
-		double chance = getChance(activityCombine, probabilityList);
+	private boolean checkActivityMinSize(ActivityCombine activityCombine, List<Probability> probabilityList,
+			String channel) {
+		double chance = getChance(activityCombine, probabilityList, channel);
 		double minChance = Double.valueOf(ConfigManager.getConfigValue(activityCombine.getActivityId(), null,
 				ConfigConstants.PICK_PRIZE_MIN_CHANCE_CONFIG));
 		if (chance < minChance) {
@@ -678,9 +677,8 @@ public class BaseGameController extends BaseController {
 	}
 
 	// 根据次序与分配比例分配奖品个数
-	private int getChance(ActivityCombine activityCombine, List<Probability> probabilityList) {
-
-		String allocateConfig = ConfigManager.getConfigValue(activityCombine.getParentId(), null,
+	private int getChance(ActivityCombine activityCombine, List<Probability> probabilityList, String channel) {
+		String allocateConfig = ConfigManager.getConfigValue(activityCombine.getParentId(), channel,
 				ConfigConstants.ACTIVITY_COMBINE_PRIZE_ALLOCATE_CONFIG);
 		List<String> countPro = new ArrayList<String>();
 		if (allocateConfig != null) {

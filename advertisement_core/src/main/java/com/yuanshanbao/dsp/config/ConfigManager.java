@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.activity.model.ActivityCombine;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
@@ -52,10 +54,12 @@ public class ConfigManager implements ConfigConstants {
 
 	protected static Map<Long, ProductCategory> productCategoryMap = new LinkedHashMap<Long, ProductCategory>();
 
+	protected static Map<Long, List<ActivityCombine>> activityCombineMap = new LinkedHashMap<Long, List<ActivityCombine>>();
+
 	public static void refreshConfig(List<Channel> channels, List<Activity> activitys, List<Merchant> merchants,
 			List<Page> pages, List<Function> functions, List<Config> configs, List<Advertisement> advertisements,
 			List<AdvertisementStrategy> advertisementStrategies, List<AdvertisementCategory> advertisementCategories,
-			List<ProductCategory> productCategorys) {
+			List<ProductCategory> productCategorys, List<ActivityCombine> activityCombines) {
 		Map<String, Channel> tempChannelMap = new LinkedHashMap<String, Channel>();
 		if (channels != null) {
 			for (Channel channel : channels) {
@@ -136,6 +140,19 @@ public class ConfigManager implements ConfigConstants {
 
 		if (configs != null) {
 			configList = configs;
+		}
+
+		Map<Long, List<ActivityCombine>> tempActivityCombineMap = new HashMap<Long, List<ActivityCombine>>();
+		if (activityCombines != null) {
+			for (ActivityCombine activityCombine : activityCombines) {
+				List<ActivityCombine> list = tempActivityCombineMap.get(activityCombine.getParentId());
+				if (list == null) {
+					list = new ArrayList<ActivityCombine>();
+					tempActivityCombineMap.put(activityCombine.getParentId(), list);
+				}
+				list.add(activityCombine);
+			}
+			activityCombineMap = tempActivityCombineMap;
 		}
 	}
 
@@ -457,4 +474,7 @@ public class ConfigManager implements ConfigConstants {
 		return productCategoryMap.get(id);
 	}
 
+	public static List<ActivityCombine> getActivityCombineList(Long id) {
+		return activityCombineMap.get(id);
+	}
 }

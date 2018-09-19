@@ -33,7 +33,7 @@
 			</trim>
 			and status != -1
 		</where>
-		order by create_time desc
+		order by sort desc, create_time desc
 	</select>
 
 

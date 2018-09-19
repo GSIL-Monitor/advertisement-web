@@ -37,8 +37,6 @@
 	    	}, {
 	      		"data": "title"
 	    	}, {
-	      		"data": "probability.positionId"
-	    	}, {
 	      		"data": "probability.probability"
 	    	}, {
 		    	"data": "quota.unitPrice"	
@@ -158,7 +156,6 @@
 						<tr>
 							<th>奖品ID</th>
 							<th>奖品名称</th>
-							<th>位置</th>
 							<th>概率</th>
 							<th>单价</th>
 							<th>奖品配额</th>

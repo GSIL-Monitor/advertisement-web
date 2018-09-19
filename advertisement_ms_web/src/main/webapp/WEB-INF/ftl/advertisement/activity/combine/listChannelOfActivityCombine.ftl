@@ -19,9 +19,9 @@
 					return '<a href="${rc.contextPath}/admin/${functionName}/giftList.do?activityId=${activityId}&channel='+data+'"	class="btn btn-cyan" target="_blank">查看</a>';
 			}
 		}, {
-			"data": "${functionId}",
+			"data": "key",
 			"render": function ( data, type, full, meta ) {
-					return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"	class="btn btn-blue" target="_blank">策略</a>';
+					return '<a href="${rc.contextPath}/admin/${functionName}/prizeAllocateList.do?${functionId}=${activityId}&channel='+data+'"	class="btn btn-blue" target="_blank">策略</a>';
 			}
 		}, {
 			"data": "${functionId}",

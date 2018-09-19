@@ -12,6 +12,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
@@ -78,15 +79,19 @@ public class CommonZuHeController extends BaseGameController {
 
 	@ResponseBody
 	@RequestMapping("/checkIsFromCombine")
-	public Object checkIsFromCombine(HttpServletRequest request, ModelMap modelMap) {
+	public Object checkIsFromCombine(HttpServletRequest request, ModelMap modelMap, String channel) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		String parentKey = (String) request.getSession().getAttribute("parentKey");
-		String channel = (String) request.getSession().getAttribute("channel");
+		String combineChannel = (String) request.getSession().getAttribute(
+				SessionConstants.SESSION_ACTIVITY_COMBINE_CHANNEL);
+		if (StringUtils.isNotEmpty(channel) && !channel.equals(combineChannel)) {
+			return resultMap;
+		}
+		String parentKey = (String) request.getSession().getAttribute(
+				combineChannel + SessionConstants.SESSION_ACTIVITY_COMBINE_KEY);
 		if (StringUtils.isNotBlank(parentKey)) {
 			resultMap.put("parentKey", parentKey);
-			resultMap.put("channel", channel);
+			resultMap.put("channel", combineChannel);
 		}
 		return resultMap;
 	}
-
 }

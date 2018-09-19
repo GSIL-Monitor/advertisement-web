@@ -22,10 +22,6 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.PropertyUtil;
 import com.yuanshanbao.common.util.UploadUtils;
-import com.yuanshanbao.ms.controller.base.PaginationController;
-import com.yuanshanbao.ms.controller.common.AdminServerController;
-import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.paginator.domain.PageList;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.app.model.AppType;
@@ -44,6 +40,10 @@ import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
+import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
+import com.yuanshanbao.paginator.domain.PageBounds;
+import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
 @RequestMapping("/admin/channel")
@@ -285,7 +285,6 @@ public class AdminChannelController extends PaginationController {
 			Config config = new Config();
 			config.setStatus(CommonStatus.ONLINE);
 			List<Config> configsList = configService.selectConfig(config, new PageBounds());
-			ConfigManager.refreshConfig(null, null, null, null, null, configsList, null, null, null, null);
 			AdminServerController.refreshConfirm();
 
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);

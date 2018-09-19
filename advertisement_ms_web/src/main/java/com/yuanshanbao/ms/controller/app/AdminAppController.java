@@ -18,10 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.ms.controller.base.PaginationController;
-import com.yuanshanbao.ms.controller.common.AdminServerController;
-import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.paginator.domain.PageList;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
@@ -37,6 +33,10 @@ import com.yuanshanbao.dsp.config.service.ConfigService;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
+import com.yuanshanbao.paginator.domain.PageBounds;
+import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
 @RequestMapping("/admin/app")
@@ -132,7 +132,7 @@ public class AdminAppController extends PaginationController {
 			Config config = new Config();
 			config.setStatus(CommonStatus.ONLINE);
 			List<Config> configsList = configService.selectConfig(config, new PageBounds());
-			ConfigManager.refreshConfig(null, null, null, null, null, configsList, null, null, null, null);
+			ConfigManager.refreshConfig(null, null, null, null, null, configsList, null, null, null, null, null);
 			AdminServerController.refreshConfirm();
 
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);

@@ -32,6 +32,9 @@ public class SessionConstants {
 
 	public static final String SESSION_ACTIVITY_TICKET_TYPE = "session_activity_ticket_type";
 
+	public static final String SESSION_ACTIVITY_COMBINE_KEY = "session_activity_combine_key";
+	public static final String SESSION_ACTIVITY_COMBINE_CHANNEL = "session_activity_combine_channel";
+
 	public static final String SESSION_ADVERTISEMENT_CLICK = "session_advertisement_click";
 
 	public static final String SESSION_ADVERTISEMENT_SHOW = "session_advertisement_show";
