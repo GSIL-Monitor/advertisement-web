@@ -15,7 +15,7 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 
-@RequestMapping({ "/activity/{gameKey}/common", "/m/activity/{gameKey}/common" })
+@RequestMapping({ "/activity/{gameKey}/common", "/i/activity/{gameKey}/common" })
 @Controller
 public class CommonZhuanPanController extends BaseZhuanPanController {
 

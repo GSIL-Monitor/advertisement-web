@@ -19,7 +19,7 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.controller.web.game.BaseGameController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 
-@RequestMapping({ "/activity/zuhe/common", "/m/activity/zuhe/common" })
+@RequestMapping({ "/activity/zuhe/common", "/i/activity/zuhe/common" })
 @Controller
 public class CommonZuHeController extends BaseGameController {
 

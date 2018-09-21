@@ -304,21 +304,21 @@ public class AdminActivityCombineController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/queryPrizeAllocate.do")
-	public Object allocateGift(String activityId, String channel, HttpServletRequest request,
+	public Object allocateGift(Probability probability, String activityId, String channel, HttpServletRequest request,
 			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Probability> list = new ArrayList<Probability>();
 		try {
 			Activity activity = ConfigManager.getActivityById(Long.valueOf(activityId));
-			List<Probability> listProbabilities = probabilityService.selectProbabilitys(request, getProjectId(request),
-					activity.getKey(), channel);
+			List<Probability> listProbabilities = probabilityService.selectProbabilitys(probability, new PageBounds());
 			Map<Long, List<Probability>> prizeMap = activityCombineService.allocatePrize(activity.getKey(),
 					listProbabilities, channel);
 			for (Map.Entry<Long, List<Probability>> entry : prizeMap.entrySet()) {
 				List<Probability> proList = prizeMap.get(entry.getKey());
-				for (Probability probability : proList) {
-					probability.setActivityId(entry.getKey());
-					list.add(probability);
+				for (Probability params : proList) {
+					Probability pro = params;
+					pro.setActivityId(entry.getKey());
+					list.add(pro);
 				}
 			}
 			result.put("data", list);

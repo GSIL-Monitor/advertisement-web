@@ -22,7 +22,7 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.information.model.Information;
 
-@RequestMapping({ "/ed/education/common", "/m/ed/education/common" })
+@RequestMapping({ "/ed/education/common", "/i/ed/education/common" })
 @Controller
 public class CommonEducationController extends BaseInformationController {
 

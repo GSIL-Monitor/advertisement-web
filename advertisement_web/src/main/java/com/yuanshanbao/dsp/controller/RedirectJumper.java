@@ -24,7 +24,7 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 
 @Controller
-@RequestMapping({ "/j", "/m/j" })
+@RequestMapping({ "/j", "/i/j" })
 public class RedirectJumper extends BaseController {
 
 	@Autowired

@@ -21,7 +21,7 @@
 		}, {
 			"data": "key",
 			"render": function ( data, type, full, meta ) {
-					return '<a href="${rc.contextPath}/admin/${functionName}/prizeAllocateList.do?${functionId}=${activityId}&channel='+data+'"	class="btn btn-blue" target="_blank">策略</a>';
+					return '<a href="${rc.contextPath}/admin/${functionName}/prizeAllocateList.do?${functionId}=${activityId}&channel='+data+'"	class="btn btn-blue" target="_blank">查看</a>';
 			}
 		}, {
 			"data": "${functionId}",
@@ -87,7 +87,7 @@
 								<th>渠道类型</th>
 								<th>上线时间</th>
 								<th>查看奖品</th>
-								<th>投放策略</th>
+								<th>奖品分配查询</th>
 								<th>操作</th>
 								<th>删除</th>
 							</tr>
