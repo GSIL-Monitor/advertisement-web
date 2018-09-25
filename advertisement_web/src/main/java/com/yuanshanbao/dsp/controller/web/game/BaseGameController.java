@@ -80,6 +80,7 @@ public class BaseGameController extends BaseController {
 		Activity activity = activityService.selectActivity(activityKey);
 		if (activity != null) {
 			ConfigManager.setConfigMap(modelMap, activity.getActivityId(), channel);
+			setRuleConfig(activity, channel, modelMap);
 		}
 		modelMap.put("chance", getChance(activity, probabilityList, prizeIdList, activityKey, channel));
 		modelMap.put("uvCountChannel", channel);
@@ -582,9 +583,10 @@ public class BaseGameController extends BaseController {
 			String activityKey, String channel, String[] prizeName, double[] probabilityRandom) {
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
 				parentKey, channel);
-		Activity activity = activityService.selectActivity(parentKey);
+		Activity activity = activityService.selectActivity(activityKey);
 		if (activity != null) {
 			ConfigManager.setConfigMap(resultMap, activity.getActivityId(), channel);
+			setRuleConfig(activity, channel, resultMap);
 		}
 		// 获取活动奖品
 		getSubActivityPrize(request, resultMap, parentKey, activityKey, channel, probabilityList);
@@ -720,5 +722,14 @@ public class BaseGameController extends BaseController {
 			chance--;
 		}
 		resultMap.put("chance", chance);
+	}
+
+	private void setRuleConfig(Activity activity, String channel, Map<String, Object> modelMap) {
+		String content = ConfigManager.getConfigValue(activity.getActivityId(), channel,
+				ConfigConstants.ACTIVITY_RULE_CONTENT_CONFIG);
+		if (StringUtils.isNotEmpty(content)) {
+			String[] rule = content.split("\\|");
+			modelMap.put("rule", rule);
+		}
 	}
 }

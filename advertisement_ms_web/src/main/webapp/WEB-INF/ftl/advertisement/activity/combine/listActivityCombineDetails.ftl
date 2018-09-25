@@ -18,8 +18,6 @@
 		    	"data": "createTimeContent"
 		    }, {
 		     	"data": "activity.entranceUrl"
-		    }, {
-		    	"data": "statusValue"
 		    },  {
 		    	"data": null,
 		        "render": function ( data, type, full, meta ) {
@@ -82,7 +80,6 @@
 									<th>活动类型</th>
 									<th>添加时间</th> 
 									<th>入口地址</th>
-									<th>状态</th>
 									<th>奖品</th>
 									<th>渠道</th>
 									<th>操作</th>									

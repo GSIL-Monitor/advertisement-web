@@ -177,4 +177,6 @@ public interface ConfigConstants {
 
 	public static final String ACTIVITY_COMBINE_PRIZE_ALLOCATE_CONFIG = "activityCombinePrizeAllocateConfig";
 
+	public static final String ACTIVITY_RULE_CONTENT_CONFIG = "activityRuleContentConfig";
+
 }
