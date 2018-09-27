@@ -40,7 +40,7 @@
 		
 		$('#queryButton').on('click', function(){
 			var searchText=$('#search').val();
-			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?name="+encodeURI(encodeURI(searchText));
+			var newUrl="${rc.contextPath}/admin/activity/channel/query.do?activityId=${activityId}&key="+encodeURI(encodeURI(searchText));
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
@@ -65,10 +65,6 @@
 					<h5>${functionTitle}列表</h5>
 	            	<div class="filter-box">
 						<div class="btn-group">
-							<div class="filter-component">
-								<h6>日期：</h6>
-								<@timeRangeSearchBar/>
-							</div>
 							<div class="filter-component">
 								<h6>渠道名称：</h6>
 								<input type="text" name="search" id="search" placeholder="搜索渠道名称" />

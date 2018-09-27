@@ -42,26 +42,14 @@
 		    	"data": "quota.unitPrice"	
 		    }, {
 		    	"data": "quota.count"
-		    }, {
+		    },  {
+		    	"data": "probability.createTimeContent"
+		    },  {
 		    	"data": "statusValue"
 		    }, {
-		    	"data": "typeValue"
-		    }, {
-		    	"data": "probability.creatTimeContent"
-		    }, {
-		    	"data": "link"
-		    }, {
-		    	"data": "statusValue"
-		    },   {
-		    	"data": null,
+		    	"data": "probability.probabilityId",
 		        "render": function ( data, type, full, meta ) {
-		        	if(data.statusValue =="投放中"){
-		            	return "<a href='javascript:;' onclick=\"change('"+data.advertisementId+"','"+data.statusValue+"')\" class='btn btn-red' target='_blank'>下线</a>";
-		        	}else if(data.statusValue =="未投放"){
-		        		return "<a href='javascript:;' onclick=\"change('"+data.advertisementId+"','"+data.statusValue+"')\" class='btn btn-cyan' target='_blank'>投放</a>";
-		        	}else if(data.statusValue =="失效"){
-		        		return "<a href='javascript:;'  class='btn btn-cyan' target='_blank'>投放</a>";
-		        	}
+		            return '<a href="${rc.contextPath}/admin/${functionName}/quotaWindow.do?probabilityId='+data+'"  class="btn btn-cyan" target="_blank">限额配置</a>';
 		        }
 		    }, {
 		    	"data": "probability.probabilityId",
@@ -69,9 +57,9 @@
 		            return '<a href="${rc.contextPath}/admin/activity/probabilityWindow.do?probabilityId='+data+'"  class="btn btn-cyan" target="_blank">广告配置</a>';
 		        }
 		    }, {
-		    	"data": "${functionId}",
+		    	"data": null,
 		        "render": function ( data, type, full, meta ) {
-		        	var deleteUrl = '${rc.contextPath}/admin/${functionName}/delete.do?${functionId}='+data;
+		        	var deleteUrl = '${rc.contextPath}/admin/activity/deletePro.do?probabilityId='+data.probability.probabilityId;
 		            return '<a href="#" class="btn btn-red" onclick="confirmDelete(\''+deleteUrl+'\');">删除</a>';
 		        }
 		    }];
@@ -118,26 +106,6 @@
 					</div>
 					<div class="btn-group">
             			<div style="width:60%;">
-							<h6>广告主名称：</h6>
-							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
-								<#list advertiserList as advertiser>
-									<option value="${advertiser.advertiserId}">${advertiser.companyName}</option>
-								</#list>
-							</select>
-						</div>
-					</div>
-					<div class="btn-group">
-            			<div style="width:60%;">
-							<h6>广告类型：</h6>
-							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
-								<#list typeList as type>
-									<option value="${type.key}">${type.value}</option>
-								</#list>
-							</select>
-						</div>
-					</div>
-					<div class="btn-group">
-            			<div style="width:60%;">
 							<h6>广告状态：</h6>
 							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
 								<#list statusList as status>
@@ -159,12 +127,9 @@
 							<th>概率</th>
 							<th>单价</th>
 							<th>奖品配额</th>
-							<th>每日最高限额</th>
-							<th>奖品类型</th>
 							<th>添加时间</th>
-							<th>入口地址</th>
 							<th>状态</th>
-							<th>详情</th>
+							<th>限额配置</th>
 							<th>修改</th>
 							<th>删除</th>
 						</tr>
