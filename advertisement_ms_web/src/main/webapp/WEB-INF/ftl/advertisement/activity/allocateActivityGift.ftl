@@ -135,6 +135,18 @@
 										</td>
 									</tr>
 									<tr>
+										<td>展示状态：</td>
+										<td>
+											<div style="width:60%;">
+												<select name="displayType" class="selectpicker form-control">
+													<#list displayList as display>
+														<option value="${display.key}">${display.value}</option>
+													</#list>
+												</select>
+											</div>
+										</td>
+									</tr>
+									<tr>
 										<td>状态：</td>
 										<td>
 											<div style="width:60%;">
