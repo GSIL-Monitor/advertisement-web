@@ -14,6 +14,7 @@
 		<result property="appUrl" column="app_url" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="buttonName" column="button_name" jdbcType="VARCHAR" />
+		<result property="smallImageUrl" column="small_image_url" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
 		<result property="bigImageUrl" column="big_image_url" jdbcType="VARCHAR" />
 		<result property="category" column="category" jdbcType="NUMERIC" />
@@ -85,11 +86,11 @@
 	<insert id="insertAdvertisement" parameterType="Advertisement">
 		insert into
 		tb_advertisement(project_id, advertiser_id, title, sub_title,
-		link,app_url, description,image_url, big_image_url, 
+		link,app_url, description,small_image_url,image_url, big_image_url, 
 		status, type,create_time, update_time)
 		values
 		(#{projectId}, #{advertiserId}, #{title}, #{subTitle},
-		#{link},#{appUrl}, #{description}, #{imageUrl}, #{bigImageUrl}, 
+		#{link},#{appUrl}, #{description}, #{smallImageUrl}, #{imageUrl}, #{bigImageUrl}, 
 		#{status}, #{type}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertisementId">
@@ -118,6 +119,9 @@
 				</if>
 				<if test="description != null">
 					description=#{description},
+				</if>
+				<if test="smallImageUrl != null">
+					small_image_url=#{smallImageUrl},
 				</if>
 				<if test="imageUrl != null">
 					image_url=#{imageUrl},

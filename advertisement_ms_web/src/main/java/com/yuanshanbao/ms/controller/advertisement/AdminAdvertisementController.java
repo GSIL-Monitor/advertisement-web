@@ -174,18 +174,21 @@ public class AdminAdvertisementController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/update.do")
 	public Object update(Advertisement advertisement, String prizeDesc, Probability probability, Quota quota,
-			MultipartFile image, HttpServletRequest request, HttpServletResponse response) {
+			MultipartFile image, MultipartFile smallImage, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
 			// checkForm(advertisement);
 			if (image != null && !image.isEmpty()) {
-				advertisement.setImageUrl(UploadUtils.uploadFile(image, "file/game"));
+				advertisement.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
+			}
+			if (smallImage != null && !smallImage.isEmpty()) {
+				advertisement.setSmallImageUrl(UploadUtils.uploadFile(smallImage, "test/img"));
 			}
 			validateParameters(advertisement);
 			advertisementService.updateAdvertisement(advertisement);
-			probabilityService.updateProbability(probability);
-			quotaService.updateQuota(quota);
+			// probabilityService.updateProbability(probability);
+			// quotaService.updateQuota(quota);
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -293,11 +296,14 @@ public class AdminAdvertisementController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/insertAdvertisement.do")
 	public Object insertAdvertisement(HttpServletRequest request, HttpServletResponse response,
-			Advertisement advertisement, MultipartFile image) {
+			Advertisement advertisement, MultipartFile image, MultipartFile smallImage) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			if (image != null && !image.isEmpty()) {
 				advertisement.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
+			}
+			if (smallImage != null && !smallImage.isEmpty()) {
+				advertisement.setSmallImageUrl(UploadUtils.uploadFile(smallImage, "test/img"));
 			}
 			validateParameters(advertisement);
 			String quotaType = request.getParameter("quotaType");

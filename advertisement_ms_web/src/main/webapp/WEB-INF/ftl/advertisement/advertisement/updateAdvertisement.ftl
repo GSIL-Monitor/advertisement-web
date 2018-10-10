@@ -74,6 +74,12 @@
 										</td>
 									</tr>
 									<tr>
+										<td>小图：</td>
+										<td>
+											<input type="file" name="smallImage" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
 										<td>类型：</td>
 										<td>
 											<div style="width:60%;">

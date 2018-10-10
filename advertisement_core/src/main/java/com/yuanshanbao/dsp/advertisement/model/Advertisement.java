@@ -33,6 +33,7 @@ public class Advertisement {
 	private String title;
 	private String subTitle;
 	private String link;
+	private String smallImageUrl;
 	private String imageUrl;
 	private String bigImageUrl;
 	private String description;
@@ -245,6 +246,14 @@ public class Advertisement {
 
 	public void setButtonName(String buttonName) {
 		this.buttonName = buttonName;
+	}
+
+	public String getSmallImageUrl() {
+		return smallImageUrl;
+	}
+
+	public void setSmallImageUrl(String smallImageUrl) {
+		this.smallImageUrl = smallImageUrl;
 	}
 
 }

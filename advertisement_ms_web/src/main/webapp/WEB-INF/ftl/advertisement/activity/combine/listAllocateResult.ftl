@@ -12,6 +12,8 @@
 		    	"data": "channel"
 		    }, {
 		    	"data": "activityId"
+		    },{
+		    	"data": "probability"
 		    }, {
 		    	"data": "createTimeContent"
 		    }, {
@@ -29,7 +31,6 @@
 	<div class="container-fluid">
 		<hr>
 			<div class="row-fluid">
-				<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do" target="_blank"><button class="btn btn-cyan">添加${functionTitle}</button></a></span>
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
 						<h5>数据表格</h5>
@@ -41,6 +42,7 @@
 									<th>广告Id</th>
 									<th>渠道</th>
 									<th>分配后所属活动Id</th>
+									<th>概率</th>
 									<th>上线时间</th>
 									<th>状态</th>
 								</tr>
