@@ -126,10 +126,12 @@ public class AdminMainController extends PaginationController {
 	public Object query(AdvertisementStatistics statistics, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> modelMap = new HashMap<String, Object>();
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
-		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistics(statistics,
-				new PageBounds());
-		resultList = advertisementStatisticsService.combineAdvertiserAndPosition(list);
-		resultList = this.countTotal(resultList);
+		// List<AdvertisementStatistics> list =
+		// advertisementStatisticsService.selectAdvertisementStatistics(statistics,
+		// new PageBounds());
+		// resultList =
+		// advertisementStatisticsService.combineAdvertiserAndPosition(list);
+		// resultList = this.countTotal(resultList);
 		modelMap.put("data", resultList);
 		modelMap.put("draw", request.getParameter("draw"));
 		modelMap.put("recordsTotal", 1000);
