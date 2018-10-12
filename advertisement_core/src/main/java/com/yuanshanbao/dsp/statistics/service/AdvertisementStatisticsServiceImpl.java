@@ -856,7 +856,6 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private String incDate(String date, int addDays) {
 		Date s = DateUtils.formatToDate(date, DateUtils.DEFAULT_DATE_FORMAT);
 		s = DateUtils.addDays(s, addDays);
-		System.err.println(DateUtils.format(s));
 		return DateUtils.format(s);
 	}
 

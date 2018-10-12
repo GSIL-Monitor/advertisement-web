@@ -10,9 +10,15 @@
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryChannelAdvertisements.do?channel=${channelkey}";
 		dataTableConfig.columns = [
 			{
+				 "data": null,
+		    	 "render": function ( data, type, full, meta ) {
+		            return data.date;
+		        }
+					
+	      	},{
 		    	"data": null,
 		    	 "render": function ( data, type, full, meta ) {
-		            return '【'+data.advertisement.advertisementId+'】'+ data.advertisement.description;
+		            return '【'+data.advertisement.advertisementId+'】'+ data.advertisement.subTitle;
 		        }
 	      	}, {
 		    	"data": "total"
@@ -24,12 +30,6 @@
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
 		
-		$('#date').change(function(){
-			reload();
-		});
-		$('#pv').change(function(){
-			reload();
-		});
 		$('#queryButton').on('click', function(){
 			var queryStartTime=$('#createTimeStart').val();
 			var queryEndTime=$('#createTimeEnd').val();
@@ -83,6 +83,7 @@
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
 								<tr>
+									<td>日期</td>
 									<td>广告名称</td>
 									<td>总数</td>
 									<td>点击量</td>
