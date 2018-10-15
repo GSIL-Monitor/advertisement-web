@@ -85,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
 	public Map<Long, Order> selectOrderByIds(List<Long> orderIds) {
 
 		Map<Long, Order> map = new HashMap<Long, Order>();
-		if (orderIds == null & orderIds.size() == 0) {
+		if (orderIds == null || orderIds.size() == 0) {
 			return map;
 		}
 		List<Order> list = orderDao.selectOrderByIds(orderIds);

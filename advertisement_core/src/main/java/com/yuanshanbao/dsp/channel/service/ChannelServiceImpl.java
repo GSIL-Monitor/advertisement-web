@@ -15,6 +15,8 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.channel.dao.ChannelDao;
 import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -163,5 +165,12 @@ public class ChannelServiceImpl implements ChannelService {
 		} else {
 			return null;
 		}
+	}
+
+	// 该渠道下计划进行竞价
+	public List<Probability> channelBidding(List<Probability> list, String channelKey) {
+		Channel channel = ConfigManager.getChannel(channelKey);
+		// TODO 获得channel成本价
+
 	}
 }

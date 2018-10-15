@@ -450,9 +450,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 
 	@Override
 	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds) {
-		// if (orderIds == null || orderIds.size() == 0) {
-		// return null;
-		// }
+		if (orderIds == null || orderIds.size() == 0) {
+			return new ArrayList<Probability>();
+		}
 		return setProperty(probabilityDao.selectProbabilityByOrderIds(orderIds));
 	}
+
 }
