@@ -6,20 +6,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementStrategyDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
 import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.FunctionService;
+import com.yuanshanbao.dsp.location.model.Location;
+import com.yuanshanbao.dsp.location.service.IpLocationService;
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -33,6 +40,9 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 
 	@Autowired
 	private FunctionService functionService;
+
+	@Autowired
+	private IpLocationService ipLocationService;
 
 	@Override
 	public void insertAdvertisementStrategy(AdvertisementStrategy advertisementStrategy) {
@@ -168,6 +178,76 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	}
 
 	@Override
+	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list) {
+		List<AdvertisementStrategy> ipRegionList = new ArrayList<AdvertisementStrategy>();
+		List<AdvertisementStrategy> deviceTypeList = new ArrayList<AdvertisementStrategy>();
+		List<Probability> resultList = new ArrayList<Probability>();
+		// 针对计划进行处理
+		for (Probability prob : list) {
+			// 取出广告策略
+			List<AdvertisementStrategy> advertisementStrategyList = ConfigManager.getAdvertisementStrategy(prob
+					.getAdvertisementId() + "");
+			for (AdvertisementStrategy as : advertisementStrategyList) {
+				// 如果策略不属于该计划
+				if (!prob.getProbabilityId().equals(as.getProbabilityId())) {
+					break;
+				}
+				ipRegionList = new ArrayList<AdvertisementStrategy>();
+				deviceTypeList = new ArrayList<AdvertisementStrategy>();
+				if (as.getType() != null) {
+					if (as.getType().equals(AdvertisementStrategyType.IP_REGION)) {
+						ipRegionList.add(as);
+					} else if (as.getType().equals(AdvertisementStrategyType.DEVICETYPE)) {
+						deviceTypeList.add(as);
+					}
+				}
+			}
+			boolean strategyPass = judgeStrategy(request, ipRegionList, deviceTypeList);
+			if (strategyPass) {
+				resultList.add(prob);
+			}
+		}
+		return resultList;
+	}
+
+	private boolean judgeStrategy(HttpServletRequest request, List<AdvertisementStrategy> ipRegionList,
+			List<AdvertisementStrategy> deviceTypeList) {
+		if (checkIpRegion(request, ipRegionList) && checkDeviceType(request, deviceTypeList)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private boolean checkDeviceType(HttpServletRequest request, List<AdvertisementStrategy> list) {
+		boolean strategyPass = true;
+		if (list != null) {
+			for (AdvertisementStrategy advertisementStrategy : list) {
+
+			}
+		}
+		return strategyPass;
+	}
+
+	private boolean checkIpRegion(HttpServletRequest request, List<AdvertisementStrategy> list) {
+		boolean strategyPass = true;
+		if (list != null) {
+			for (AdvertisementStrategy advertisementStrategy : list) {
+				if (advertisementStrategy.getType().equals(AdvertisementStrategyType.REGION)) {
+					Location location = ipLocationService.queryIpLocation(JSPHelper.getRemoteAddr(request));
+					Location configLocation = ConstantsManager.getLocationByCode(advertisementStrategy.getValue());
+					// 配置了该地域，该地域即可通过
+					if (location != null && configLocation != null && !configLocation.contains(location.getCode())) {
+						strategyPass = false;
+						break;
+					}
+				}
+			}
+		}
+		return strategyPass;
+	}
+
+	@Override
 	public List<Long> getAvailableAdvertisementList(List<Long> advertisementIdList,
 			List<AdvertisementStrategy> strategyList, Instance instrance) {
 		List<Long> result = new ArrayList<Long>();
@@ -194,6 +274,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 				deviceTypeList.add(strategy);
 			}
 		}
+
 		// 若没有配置过广告策略，则不进行屏蔽
 		for (Long advertisementId : advertisementIdList) {
 			if (!hasStrategyList.contains(advertisementId)) {

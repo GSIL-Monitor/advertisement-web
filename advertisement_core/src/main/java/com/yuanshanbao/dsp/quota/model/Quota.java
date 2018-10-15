@@ -11,8 +11,10 @@ public class Quota {
 
 	private Long quotaId;
 	private Long projectId;
+	private Long probabilityId;
 	private Long activityId;
 	private Long positionId;
+	private Long orderId;
 	private Long productId;
 	private Long merchantId;
 	private String channel;
@@ -207,6 +209,22 @@ public class Quota {
 
 	public void setAdvertiserId(Long advertiserId) {
 		this.advertiserId = advertiserId;
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public Long getProbabilityId() {
+		return probabilityId;
+	}
+
+	public void setProbabilityId(Long probabilityId) {
+		this.probabilityId = probabilityId;
 	}
 
 }

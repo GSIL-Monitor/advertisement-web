@@ -49,4 +49,9 @@ public class ProbabilityDaoImpl extends BaseDaoImpl implements ProbabilityDao {
 		return getSqlSession().selectList("probability.selectWheelsActivityIds");
 	}
 
+	@Override
+	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds) {
+		return getSqlSession().selectList("probability.selectProbabilityByOrderIds", orderIds);
+	}
+
 }

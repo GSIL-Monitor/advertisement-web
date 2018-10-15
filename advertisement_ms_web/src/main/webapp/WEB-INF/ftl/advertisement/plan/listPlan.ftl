@@ -9,29 +9,28 @@
 		dataTable.ajax.reload();
 	}
 	$(document).ready(function(){
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?orderId=${orderId}";
 		dataTableConfig.columns = [{
-			    	"data": "orderId"
+			    	"data": "probabilityId"
+			    },{
+			    	"data": "order.name"
 			    },{
 			    	"data": "name"
 			    },{
-			    	"data": "amount"
+			    	"data": "排期"
 			    },{
 			    	"data": "createTimeContent"
 				},{
+			    	"data": "statusValue"
+		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">修改</a>';
+			            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划添加</a>';
 			       }
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/plan/list.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划详情</a>';
-			       }
-		        },{
-			    	"data": "${functionId}",
-			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/plan/insertWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划添加</a>';
+			            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划添加</a>';
 			       }
 		        }];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -114,11 +113,12 @@
 						<tr>
 							<th>ID</th>
 							<th>订单名称</th>
-							<th>总预算</th>
+							<th>计划名称</th>
+							<th>排期</th>
 							<th>创建时间</th>
+							<th>投放状态</th>
+							<th>查看详情</th>
 							<th>修改</th>
-							<th>计划详情</th>
-							<th>添加计划</th>
 						</tr>
 					</thead>
 					<tbody>

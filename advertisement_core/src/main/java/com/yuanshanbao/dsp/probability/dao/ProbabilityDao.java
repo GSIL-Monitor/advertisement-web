@@ -20,4 +20,6 @@ public interface ProbabilityDao {
 	public List<Probability> selectProbabilitys(List<Long> probabilityIdList);
 
 	public List<Long> getWheelsActivityIds();
+
+	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds);
 }

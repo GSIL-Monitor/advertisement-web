@@ -12,6 +12,7 @@ public class AdvertisementStrategy {
 	private Long projectId;
 	private Long functionId;
 	private Long advertisementId;
+	private Long probabilityId;
 	private String key;
 	private String value;
 	private String description;
@@ -191,6 +192,14 @@ public class AdvertisementStrategy {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	public Long getProbabilityId() {
+		return probabilityId;
+	}
+
+	public void setProbabilityId(Long probabilityId) {
+		this.probabilityId = probabilityId;
 	}
 
 }

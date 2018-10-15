@@ -10,6 +10,8 @@
 		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
 		<result property="merchantId" column="merchant_id" jdbcType="NUMERIC" />
 		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
+		<result property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
 		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
@@ -43,6 +45,12 @@
 				</if>
 				<if test="productId != null">
 					product_id = #{productId} and
+				</if>
+				<if test="orderId != null">
+					order_id = #{orderId} and
+				</if>
+				<if test="probabilityId != null">
+					probability_id = #{probabilityId} and
 				</if>
 				<if test="merchantId != null">
 					merchant_id = #{merchantId} and
@@ -88,10 +96,10 @@
 
 	<insert id="insertQuota" parameterType="Quota">
 		insert into
-		tb_quota(project_id, activity_id, product_id,position_id,merchant_id, channel, advertisement_id, type, 
-		advertiser_id,count,stock, start_time, end_time, unit_price, status, create_time, update_time)
+		tb_quota(project_id, activity_id, product_id,order_id,probability_id,position_id,merchant_id, channel, advertisement_id,
+		type, advertiser_id,count,stock, start_time, end_time, unit_price, status, create_time, update_time)
 		values
-		(#{projectId}, #{activityId}, #{productId}, #{positionId},#{merchantId}, #{channel}, #{advertisementId}, #{type}, 
+		(#{projectId}, #{activityId}, #{productId},#{orderId},#{probabilityId}, #{positionId},#{merchantId}, #{channel}, #{advertisementId}, #{type}, 
 		#{advertiserId},#{count},#{stock}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="quotaId">

@@ -30,6 +30,8 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.location.service.IpLocationService;
+import com.yuanshanbao.dsp.order.model.Order;
+import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.probability.dao.ProbabilityDao;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.quota.model.Quota;
@@ -63,6 +65,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	@Autowired
 	private QuotaService quotaService;
 
+	@Autowired
+	private OrderService orderService;
+
 	@Override
 	public List<Probability> selectProbabilitys(Probability probability, PageBounds pageBounds) {
 		return setProperty(probabilityDao.selectProbabilitys(probability, pageBounds));
@@ -71,15 +76,19 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	private List<Probability> setProperty(List<Probability> probabilityList) {
 		List<Long> activityIdList = new ArrayList<Long>();
 		List<String> channelList = new ArrayList<String>();
+		List<Long> orderList = new ArrayList<Long>();
 		for (Probability probability : probabilityList) {
 			activityIdList.add(probability.getActivityId());
 			channelList.add(probability.getChannel());
+			orderList.add(probability.getOrderId());
 		}
 		Map<Long, Activity> activityMap = activityService.selectActivitys(activityIdList);
 		Map<String, Channel> channelMap = channelService.selectChannelByKeys(channelList);
+		Map<Long, Order> orderMap = orderService.selectOrderByIds(orderList);
 		for (Probability probability : probabilityList) {
 			probability.setActivity(activityMap.get(probability.getActivityId()));
 			probability.setChannelObject(channelMap.get(probability.getChannel()));
+			probability.setOrder(orderMap.get(probability.getOrderId()));
 		}
 		return probabilityList;
 	}
@@ -439,4 +448,11 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return pickGift(unpickedList);
 	}
 
+	@Override
+	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds) {
+		// if (orderIds == null || orderIds.size() == 0) {
+		// return null;
+		// }
+		return setProperty(probabilityDao.selectProbabilityByOrderIds(orderIds));
+	}
 }

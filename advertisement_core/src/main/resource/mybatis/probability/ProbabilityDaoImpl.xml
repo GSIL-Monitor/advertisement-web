@@ -9,8 +9,10 @@
 		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
 		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
+		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
 		<result property="positionId" column="position_id" jdbcType="NUMERIC" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="displayType" column="display_type" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="probability" column="probability" jdbcType="NUMERIC" />
@@ -35,6 +37,9 @@
 				<if test="projectId != null">
 					project_id = #{projectId} and
 				</if>
+				<if test="orderId != null">
+					order_id = #{orderId} and
+				</if>
 				<if test="activityId != null">
 					activity_id = #{activityId} and
 				</if>
@@ -49,6 +54,9 @@
 				</if>
 				<if test="channel != null">
 					channel = #{channel} and
+				</if>
+				<if test="name != null">
+					name = #{name} and
 				</if>
 				<if test="status != null">
 					status = #{status} and
@@ -76,11 +84,11 @@
 
 	<insert id="insertProbability" parameterType="Probability">
 		insert into
-		tb_probability(project_id, activity_id, advertiser_id, position_id, channel, advertisement_id, probability, 
-		sort, start_time, end_time,display_type, status, create_time, update_time)
+		tb_probability(project_id, activity_id, advertiser_id,order_id, position_id, channel, advertisement_id, probability, 
+		name,sort, start_time, end_time,display_type, status, create_time, update_time)
 		values
-		(#{projectId}, #{activityId}, #{advertiserId}, #{positionId}, #{channel}, #{advertisementId}, #{probability}, 
-		#{sort}, #{startTime}, #{endTime},#{displayType}, #{status}, sysdate(), sysdate())
+		(#{projectId}, #{activityId}, #{advertiserId},#{orderId}, #{positionId}, #{channel}, #{advertisementId}, #{probability}, 
+		#{name},#{sort}, #{startTime}, #{endTime},#{displayType}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="probabilityId">
 			SELECT LAST_INSERT_ID()
@@ -112,6 +120,9 @@
 				<if test="sort != null">
 					sort=#{sort},
 				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
 				<if test="startTime != null">
 					start_time=#{startTime},
 				</if>
@@ -128,6 +139,21 @@
 			probability_id=#{probabilityId}
 		</where>
 	</update>
+
+	<select id="selectProbabilityByOrderIds" parameterType="List"
+		resultMap="probabilityMap">
+		select
+		* from
+		tb_probability
+		<where>
+			order_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
 
 	<delete id="deleteProbability" parameterType="long">
 		delete from

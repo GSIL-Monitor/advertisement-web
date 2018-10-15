@@ -6,15 +6,18 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.order.model.Order;
 
 public class Probability {
 
 	private Long probabilityId;
 	private Long projectId;
 	private Long activityId;
+	private Long orderId;
 	private Long advertiserId;
 	private Long positionId;
 	private String channel;
+	private String name;
 	private Long advertisementId;
 	private Double probability;
 	private Integer sort;
@@ -27,6 +30,7 @@ public class Probability {
 
 	private Activity activity;
 	private Channel channelObject;
+	private Order order;
 
 	public Long getProbabilityId() {
 		return probabilityId;
@@ -178,5 +182,29 @@ public class Probability {
 
 	public void setDisplayType(Integer displayType) {
 		this.displayType = displayType;
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 }

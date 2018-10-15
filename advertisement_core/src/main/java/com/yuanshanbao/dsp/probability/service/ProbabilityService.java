@@ -41,4 +41,6 @@ public interface ProbabilityService {
 			List<Long> pickedAdvertisementIdList);
 
 	public Probability pickSubPrize(List<Probability> probabilityList, List<Long> pickedPrizeIdList);
+
+	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds);
 }

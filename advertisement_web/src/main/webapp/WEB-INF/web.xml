@@ -41,7 +41,7 @@
 	    </init-param>
 	    <init-param>
 	      <param-name>cookieDomain</param-name>
-	      <param-value>51yuanshan.com,51yuanshanbx.com,t.huhad.com</param-value>
+	      <param-value>t.huhad.com</param-value>
 	    </init-param>
 	    <init-param>
 	      <param-name>cookiePath</param-name>

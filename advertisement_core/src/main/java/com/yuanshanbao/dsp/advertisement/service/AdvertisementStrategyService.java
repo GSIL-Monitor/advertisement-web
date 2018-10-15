@@ -3,8 +3,11 @@ package com.yuanshanbao.dsp.advertisement.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface AdvertisementStrategyService {
@@ -33,4 +36,6 @@ public interface AdvertisementStrategyService {
 
 	public List<Long> getAvailableAdvertisementList(List<Long> advertisementIdList,
 			List<AdvertisementStrategy> stagtegyList, Instance instrance);
+
+	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list);
 }
