@@ -19,6 +19,7 @@
 		<result property="notifyHandler" column="notify_handler"
 			jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="NUMERIC" />
+		<result property="unitPrice" column="unit_price" jdbcType="NUMERIC" />
 		<result property="allocateType" column="allocate_type" jdbcType="NUMERIC" />
 		<result property="independent" column="independent" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
@@ -90,13 +91,13 @@
 		insert into
 		tb_channel(`key`,  type, name, description,
 		mark, bonus,show_type, show_fields, notify_handler,
-		 image_url, allocate_type,independent,
+		unit_price,image_url, allocate_type,independent,
 		status, create_time, update_time)
 		values
 		(#{key},  #{type}, #{name},
 		#{description}, #{mark},
 		#{bonus}, #{showType}, #{showFields},
-		#{notifyHandler},#{imageUrl},
+		#{notifyHandler},#{unitPrice},#{imageUrl},
 		#{allocateType}, #{independent},#{status},
 		sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"

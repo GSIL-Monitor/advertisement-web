@@ -2,6 +2,7 @@ package com.yuanshanbao.dsp.probability.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -52,6 +53,11 @@ public class ProbabilityDaoImpl extends BaseDaoImpl implements ProbabilityDao {
 	@Override
 	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds) {
 		return getSqlSession().selectList("probability.selectProbabilityByOrderIds", orderIds);
+	}
+
+	@Override
+	public int cutPayment(Map<String, Object> parameters) {
+		return getSqlSession().update("probability.cutPayment", parameters);
 	}
 
 }

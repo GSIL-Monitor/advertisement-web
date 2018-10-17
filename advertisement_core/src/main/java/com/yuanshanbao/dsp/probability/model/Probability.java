@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.probability.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
@@ -16,6 +17,7 @@ public class Probability {
 	private Long orderId;
 	private Long advertiserId;
 	private Long positionId;
+	private BigDecimal spend;
 	private String channel;
 	private String name;
 	private Long advertisementId;
@@ -206,5 +208,13 @@ public class Probability {
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public BigDecimal getSpend() {
+		return spend;
+	}
+
+	public void setSpend(BigDecimal spend) {
+		this.spend = spend;
 	}
 }

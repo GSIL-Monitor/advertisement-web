@@ -18,4 +18,6 @@ public interface QuotaDao {
 	public List<Quota> selectQuotaByIds(List<Long> quotaIds);
 
 	public int lockStock(Map<String, Object> parameters);
+
+	public List<Quota> selectQuotaByProbabilityIds(List<Long> ids);
 }

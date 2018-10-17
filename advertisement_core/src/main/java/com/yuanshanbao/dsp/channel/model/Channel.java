@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.channel.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
@@ -83,7 +84,7 @@ public class Channel {
 	 * 更新时间
 	 */
 	private String deliverOrderUrl;
-	private Double unitPrice;
+	private BigDecimal unitPrice;
 
 	private Timestamp updateTime;
 	private Activity activity;
@@ -255,14 +256,6 @@ public class Channel {
 		this.appId = appId;
 	}
 
-	public Double getUnitPrice() {
-		return unitPrice;
-	}
-
-	public void setUnitPrice(Double unitPrice) {
-		this.unitPrice = unitPrice;
-	}
-
 	public Integer getAllocateType() {
 		return allocateType;
 	}
@@ -292,6 +285,14 @@ public class Channel {
 		} else {
 			return true;
 		}
+	}
+
+	public BigDecimal getUnitPrice() {
+		return unitPrice;
+	}
+
+	public void setUnitPrice(BigDecimal unitPrice) {
+		this.unitPrice = unitPrice;
 	}
 
 }

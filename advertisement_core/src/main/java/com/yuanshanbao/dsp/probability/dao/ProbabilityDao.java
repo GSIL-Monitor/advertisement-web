@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.probability.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -22,4 +23,6 @@ public interface ProbabilityDao {
 	public List<Long> getWheelsActivityIds();
 
 	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds);
+
+	public int cutPayment(Map<String, Object> parameters);
 }

@@ -27,6 +27,7 @@ import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.config.model.Config;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -48,6 +49,7 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 	private static final String PAGE_UPDATE = "advertisement/strategy/updateStrategy";
 
 	private static final String PAGE_VIEW = "advertisement/strategy/viewStrategy";
+	private static final String PAGE_STRATEGY = "advertisement/strategy/strategy";
 
 	@Autowired
 	private AdvertisementStrategyService strategyService;
@@ -206,6 +208,42 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@RequestMapping("/strategyWindow.do")
+	public String strategyWindow(AdvertisementStrategy strategy, ModelMap modelMap, HttpServletRequest request,
+			HttpServletResponse response) {
+		Map<String, String> stragegyKeyMap = AdvertisementStrategyType.getStrategyKeyMap();
+		request.setAttribute("strategyList", stragegyKeyMap.values());
+		return PAGE_STRATEGY;
+	}
+
+	@ResponseBody
+	@RequestMapping("/strategy.do")
+	public Object strategy(Long probabilityId, Function function, HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if (function == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+
+			// strategyService.updateStrategy(request, probabilityId, null);
+
+			Config config = new Config();
+			config.setStatus(CommonStatus.ONLINE);
+			// List<Config> configsList = configService.selectConfig(config, new
+			// PageBounds());
+			// ConfigManager.refreshConfig(null, null, null, configsList, null,
+			// null);
+			AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			LoggerUtil.error("", e);
+		}
+		return result;
 	}
 
 }

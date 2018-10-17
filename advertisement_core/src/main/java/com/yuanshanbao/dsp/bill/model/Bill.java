@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 public class Bill {
 	private Long billId;
 	private Long advertiserId;
+	private Long probabilityId;
 	private BigDecimal amount;
 	private String description;
 	private Integer type;
@@ -94,6 +95,14 @@ public class Bill {
 
 	public void setQueryEndTime(String queryEndTime) {
 		this.queryEndTime = queryEndTime;
+	}
+
+	public Long getProbabilityId() {
+		return probabilityId;
+	}
+
+	public void setProbabilityId(Long probabilityId) {
+		this.probabilityId = probabilityId;
 	}
 
 }

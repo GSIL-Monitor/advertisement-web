@@ -24,6 +24,10 @@ import com.yuanshanbao.dsp.bill.model.Bill;
 import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.order.model.Order;
+import com.yuanshanbao.dsp.order.service.OrderService;
+import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
@@ -40,6 +44,12 @@ public class AdminBillController extends PaginationController {
 
 	@Autowired
 	private BillService billService;
+
+	@Autowired
+	private OrderService orderService;
+
+	@Autowired
+	private ProbabilityService probabilityService;
 
 	@Autowired
 	private AdvertiserService advertiserService;
@@ -124,6 +134,23 @@ public class AdminBillController extends PaginationController {
 	}
 
 	@ResponseBody
+	@RequestMapping("/creatPlanBill")
+	public Object creatPlanBill() {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Probability probability = new Probability();
+		probability.setStatus(CommonStatus.ONLINE);
+		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
+		try {
+			for (Probability pro : list) {
+				billService.paymentForPlan(pro);
+			}
+		} catch (Exception e2) {
+			LoggerUtil.error("creatPlanBill  function -  error", e2);
+		}
+		return resultMap;
+	}
+
+	@ResponseBody
 	@RequestMapping("/calculateCount")
 	public Object calculateCount(String calculatedate) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -144,7 +171,41 @@ public class AdminBillController extends PaginationController {
 		return resultMap;
 	}
 
-	public static void main(String[] args) {
-		System.err.println(System.currentTimeMillis());
+	@ResponseBody
+	@RequestMapping("/calculatePlanCount")
+	public Object calculatePlanCount(String calculatedate) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String date = null;
+		try {
+			if (calculatedate != null) {
+				if (ValidateUtil.isBirthday(calculatedate, DateUtils.DEFAULT_DATE_FORMAT)) {
+					date = calculatedate;
+				}
+			} else {
+				date = DateUtils.format(new Date());
+			}
+			billService.calculateByPlan(date);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (Exception e2) {
+			LoggerUtil.error("calculateByPlan  function -  error", e2);
+		}
+		return resultMap;
+	}
+
+	@ResponseBody
+	@RequestMapping("/creatOrderBill")
+	public Object creatOrderBill() {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Order order = new Order();
+		order.setStatus(CommonStatus.ONLINE);
+		List<Order> list = orderService.selectOrder(order, new PageBounds());
+		try {
+			for (Order param : list) {
+				billService.payment(param);
+			}
+		} catch (Exception e2) {
+			LoggerUtil.error("calculateCount  function -  error", e2);
+		}
+		return resultMap;
 	}
 }

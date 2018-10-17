@@ -288,4 +288,17 @@ public class QuotaServiceImpl implements QuotaService {
 			throw new BusinessException(ComRetCode.ORDER_LOCK_STOCK_FAIL_ERROR);
 		}
 	}
+
+	@Override
+	public Map<Long, Quota> selectQuotaByProbabilityId(List<Long> ids) {
+		Map<Long, Quota> map = new HashMap<Long, Quota>();
+		if (ids == null || ids.size() == 0) {
+			return map;
+		}
+		List<Quota> result = quotaDao.selectQuotaByProbabilityIds(ids);
+		for (Quota quota : result) {
+			map.put(quota.getProbabilityId(), quota);
+		}
+		return map;
+	}
 }
