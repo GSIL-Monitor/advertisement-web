@@ -1,5 +1,7 @@
 <#include "core.ftl" />
 <@htmlHead title="添加${functionTitle}"/>
+<@cssFile file=["page/hscheckdata.css"] />
+<@jsFile file=["page/hscheckdata/citydata.js", "page/hscheckdata/hscheckdata.js"] />
 <@headerPart />
 <@topHeaderMenu />
 <@sideBar />
@@ -29,6 +31,12 @@
 									<tbody>
 											
 										<tr>
+											<td>区域：</td>
+											<td>
+												<div id="cityDuoXuan" style="width:300px;" class="hsCheckData"></div>
+											</td>
+										</tr>
+										<tr>
 											<td colspan="4" style="text-align:center">
 												<input type="submit" name="" value="提交" class=" btn btn-success" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();"></td>
 										</tr>
@@ -41,6 +49,14 @@
 			</div>
 	</div>
 </div>
+<script>
+	$('#cityDuoXuan').hsCheckData({
+        isShowCheckBox: true, //默认为false
+        minCheck: 0,//默认为0，不限最少选择个数
+        maxCheck: 10,//默认为0，不限最多选择个数
+        data: cityData
+    });
+</script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
 <@footPart />
 <@htmlFoot />
