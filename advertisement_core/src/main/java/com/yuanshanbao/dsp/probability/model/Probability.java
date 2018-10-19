@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.order.model.Order;
@@ -33,6 +34,7 @@ public class Probability {
 	private Activity activity;
 	private Channel channelObject;
 	private Order order;
+	private Advertiser advertiser;
 
 	public Long getProbabilityId() {
 		return probabilityId;
@@ -216,5 +218,13 @@ public class Probability {
 
 	public void setSpend(BigDecimal spend) {
 		this.spend = spend;
+	}
+
+	public Advertiser getAdvertiser() {
+		return advertiser;
+	}
+
+	public void setAdvertiser(Advertiser advertiser) {
+		this.advertiser = advertiser;
 	}
 }

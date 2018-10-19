@@ -14,8 +14,6 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<form action="${rc.contextPath}/admin/${functionName}/insert.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-				<input type="hidden" name="orderId" value="${orderId}" style="width:60%;">
-				<input type="hidden" name="advertiserId" value="${advertiserId}" style="width:60%;">
 				<div class="span12">
 					<div class="widget-box">
 						<div class="widget-title">
@@ -25,50 +23,64 @@
 						<div class="widget-content nopadding">
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
+								<tr>
+									<td style="width:20%;">广告主：</td>
+									<td>
+										<#if advertiser??>
+											${advertiser.companyName}
+											<input type="hidden" name="advertiserId" value="${advertiser.advertiserId}" />
+										<#else>
+										<div style="width:60%;">
+											<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+												<#list advertiserList as advertiser>
+													<option value="${advertiser.advertiserId}">${advertiser.companyName}</option>
+												</#list>
+											</select>
+										</div>
+									</#if>
+									</td>
+								</tr>
 									<tr>
-										<td style="width:20%;">计划名称：</td>
+										<td>创意名称：</td>
 										<td>
-											<input type="text" name="name" style="width:60%;">
+											<input type="text" name="name" style="width:60%;"></td>
 										</td>
 									</tr>
 									<tr>
-										<td>开始时间：</td>
+										<td>投放链接：</td>
 										<td>
-											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;"></td>
-									</tr>
-									<tr>
-										<td>结束时间：</td>
-										<td>
-											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;"></td>
-									</tr>
-									<tr>
-										<td>该计划预算金额（元）：</td>
-										<td>
-											<input type="text" name="spend" style="width:60%;">
+											<input type="text" name="link" style="width:60%;"></td>
 										</td>
 									</tr>
+									
 									<tr>
-										<td>投放总量：</td>
-										<td>
-											<input type="text" name="count" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td>当前最高出价：</td>
-										<td>
-											<input type="text" name="bestBid" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td>结算方式：</td>
+										<td>创意类型：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="quotaType" class="selectpicker form-control">
-													<#list quotaTypeList as type>
+												<select name="type" class="selectpicker form-control">
+													<#list typeList as type>
 														<option value="${type.key}">${type.value}</option>
 													</#list>
 												</select>
 											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>素材尺寸：</td>
+										<td>
+											<div style="width:60%;">
+												<select name="size" class="selectpicker form-control">
+													<#list sizeList as size>
+														<option value="${size.key}">${size.value}</option>
+													</#list>
+												</select>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>图片：</td>
+										<td>
+											<input type="file" name="image" style="width:60%;">
 										</td>
 									</tr>
 									<tr>

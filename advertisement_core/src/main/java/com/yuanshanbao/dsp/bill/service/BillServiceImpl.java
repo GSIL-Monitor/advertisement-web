@@ -164,6 +164,15 @@ public class BillServiceImpl implements BillService {
 		if (result < 0) {
 			throw new BusinessException(ComRetCode.FAIL);
 		}
+		// 对余额判断,
+		Probability resultProbability = probabilityService.selectProbability(probability.getProbabilityId());
+		if ((resultProbability.getSpend().compareTo(new BigDecimal(0))) < 0) {
+			// 计划如果多扣费了，应该再次从order表里扣费
+			Probability updateProbability = new Probability();
+			updateProbability.setProbabilityId(resultProbability.getProbabilityId());
+			updateProbability.setStatus(CommonStatus.OFFLINE);
+			probabilityService.updateProbability(updateProbability);
+		}
 	}
 
 	private double getCount(String key) {

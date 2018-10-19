@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.order.dao.OrderDao;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -19,6 +21,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	private OrderDao orderDao;
+
+	@Autowired
+	private AdvertiserService advertiserService;
 
 	@Override
 	public void insertOrder(Order order) {
@@ -62,6 +67,15 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	private List<Order> setProperty(List<Order> list) {
+		List<Long> advertiserIds = new ArrayList<Long>();
+		for (Order order : list) {
+			advertiserIds.add(order.getAdvertiserId());
+		}
+
+		Map<Long, Advertiser> map = advertiserService.selectAdvertiserByIds(advertiserIds);
+		for (Order order : list) {
+			order.setAdvertiser(map.get(order.getAdvertiserId()));
+		}
 		return list;
 	}
 

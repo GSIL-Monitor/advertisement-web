@@ -97,6 +97,7 @@
 			</div>
 	</div>
 </div>
+<input type="hidden" id="reqData" value="${strategyValue}">
 <script>
 	$('#cityDuoXuan').hsCheckData({
         isShowCheckBox: true, //默认为false

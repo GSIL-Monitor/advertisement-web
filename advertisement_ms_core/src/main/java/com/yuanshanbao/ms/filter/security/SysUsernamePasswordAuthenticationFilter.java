@@ -22,8 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.yuanshanbao.common.constant.SessionConstants;
-import com.yuanshanbao.common.util.CookieUtils;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.ms.model.admin.User;
 import com.yuanshanbao.ms.model.admin.UserMonitorLog;
 import com.yuanshanbao.ms.model.cache.UserLoginFailInfo;
@@ -33,9 +33,6 @@ import com.yuanshanbao.ms.service.monitor.UserMonitorLogService;
 import com.yuanshanbao.ms.utils.UserLoginInfo;
 import com.yuanshanbao.ms.utils.security.EntryptDecryptUtils;
 import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.dsp.common.constant.ConstantsManager;
-import com.yuanshanbao.dsp.project.model.Project;
-import com.yuanshanbao.dsp.project.service.ProjectService;
 
 public class SysUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	public static final String VALIDATE_CODE = "validateCode";
@@ -221,6 +218,7 @@ public class SysUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
 
 			User query = new User();
 			query.setUsername(username);
+			query.setProjectId(ConstantsManager.getProjectId(projectService, request));
 			List<User> users = userService.queryUsers(query, new PageBounds());
 			if (users != null && users.size() > 0) {
 				user = users.get(0);

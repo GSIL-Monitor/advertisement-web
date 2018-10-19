@@ -603,8 +603,9 @@ public class ConstantsManager {
 		if (projectId == null) {
 			String projectKey = CookieUtils.getCookieValue(request, "project_key");
 			return projectService.selectProject(projectKey);
+		} else {
+			return projectService.selectProject(projectId);
 		}
-		return null;
 	}
 
 	public static Project getProjectById(Long projectId) {

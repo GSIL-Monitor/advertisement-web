@@ -26,8 +26,9 @@ import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
-import com.yuanshanbao.dsp.config.model.Config;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -62,6 +63,10 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 
 	@RequestMapping("/list.do")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
+		}
 		return PAGE_LIST;
 	}
 
@@ -211,16 +216,21 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 	}
 
 	@RequestMapping("/strategyWindow.do")
-	public String strategyWindow(AdvertisementStrategy strategy, ModelMap modelMap, HttpServletRequest request,
+	public String strategyWindow(Long probabilityId, ModelMap modelMap, HttpServletRequest request,
 			HttpServletResponse response) {
-		Map<String, String> stragegyKeyMap = AdvertisementStrategyType.getStrategyKeyMap();
-		request.setAttribute("strategyList", stragegyKeyMap.values());
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
+		}
+		Map<String, String> map = ConfigManager.getStrategyMap(probabilityId);
+		request.setAttribute("strategyValue", map);
+		request.setAttribute("probabilityId", probabilityId);
 		return PAGE_STRATEGY;
 	}
 
 	@ResponseBody
-	@RequestMapping("/strategy.do")
-	public Object strategy(Long probabilityId, Function function, HttpServletRequest request,
+	@RequestMapping("/updateProbabilityStrategy.do")
+	public Object strategy(Long probabilityId, Long advertiserId, Function function, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
@@ -228,15 +238,8 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 
-			// strategyService.updateStrategy(request, probabilityId, null);
-
-			Config config = new Config();
-			config.setStatus(CommonStatus.ONLINE);
-			// List<Config> configsList = configService.selectConfig(config, new
-			// PageBounds());
-			// ConfigManager.refreshConfig(null, null, null, configsList, null,
-			// null);
-			AdminServerController.refreshConfirm();
+			strategyService.updateProbabilityStrategy(request, probabilityId, advertiserId);
+			// AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

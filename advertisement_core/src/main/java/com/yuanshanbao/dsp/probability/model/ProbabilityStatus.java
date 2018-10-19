@@ -12,6 +12,8 @@ public class ProbabilityStatus {
 	public static final String OFFLINE_DESCRIPTION = "未投放";
 	public static final int INVALID = 0;
 	public static final String INVALID_DESCRIPTION = "失效";
+	public static final int UNREVIEWED = 3;
+	public static final String UNREVIEWED_DESCRIPTION = "未审核";
 	public static final int DELETE = -1;
 	public static final String DELETE_DESCRIPTION = "已删除";
 
@@ -23,6 +25,7 @@ public class ProbabilityStatus {
 		codeDescriptionMap.put(ONLINE, ONLINE_DESCRIPTION);
 		codeDescriptionMap.put(OFFLINE, OFFLINE_DESCRIPTION);
 		codeDescriptionMap.put(INVALID, INVALID_DESCRIPTION);
+		codeDescriptionMap.put(UNREVIEWED, UNREVIEWED_DESCRIPTION);
 	}
 
 	public static String getDescription(Integer code) {

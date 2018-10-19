@@ -29,6 +29,7 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
@@ -95,8 +96,14 @@ public class AdminPlanController extends PaginationController {
 	}
 
 	@RequestMapping("/insertWindow.do")
-	public String insertGiftWindow(HttpServletRequest request, HttpServletResponse response, Long orderId,
-			Integer type, ModelMap modelMap) {
+	public String insertWindow(HttpServletRequest request, HttpServletResponse response, Long orderId, Integer type,
+			ModelMap modelMap) {
+		Long advertiserId = null;
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertiserId = advertiser.getAdvertiserId();
+		}
+		request.setAttribute("advertiserId", advertiserId);
 		setProperty(request, getProjectId(request), orderId);
 		modelMap.put("categories", ConfigManager.getCategoryMap());
 		return PAGE_INSERT;
@@ -111,8 +118,10 @@ public class AdminPlanController extends PaginationController {
 			if (StringUtils.isBlank(orderId)) {
 				throw new BusinessException(ComRetCode.FAIL);
 			}
-			probability.setStatus(CommonStatus.ONLINE);
+			probability.setProjectId(getProjectId(request));
+			probability.setStatus(ProbabilityStatus.UNREVIEWED);
 			probabilityService.insertProbability(probability);
+			quota.setProjectId(getProjectId(request));
 			quota.setProbabilityId(probability.getProbabilityId());
 			quota.setStatus(CommonStatus.ONLINE);
 			quotaService.insertQuota(quota);

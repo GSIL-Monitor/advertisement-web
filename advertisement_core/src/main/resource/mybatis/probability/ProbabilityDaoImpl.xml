@@ -169,7 +169,6 @@
 		spend = spend - #{amount, jdbcType=NUMERIC}
 		where
 		probability_id = #{probabilityId, jdbcType=INTEGER} 
-		and status = 1
 	</update>
 
 </mapper>
