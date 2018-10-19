@@ -52,7 +52,8 @@
 										<tr>
 											<td>区域：</td>
 											<td>
-												<div id="cityDuoXuan" name="ipRegionStrategy" style="width:300px;" class="hsCheckData"></div>
+												<div id="cityDuoXuan" style="width:300px;" class="hsCheckData"></div>
+												<input type="hidden" id="citys" name="citys" value="">
 											</td>
 										</tr>
 										<tr>
