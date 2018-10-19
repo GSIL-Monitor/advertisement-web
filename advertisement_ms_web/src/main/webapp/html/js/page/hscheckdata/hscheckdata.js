@@ -64,6 +64,7 @@
                     data_id = $(this).children('input[type="checkbox"]').val();
                     data_value = $(this).children('input[type="checkbox"]').nextAll("span").text();
                     $('#' + id).attr('data-id', data_id).text(data_value);
+                    $('#citys').val(data_id);
                     $('#' + id + "_hcd").remove();
                     $('#' + id).removeClass('hsCjeckData_check');
                 } else {
@@ -100,6 +101,7 @@
                     }
 
                     $('#' + id).attr('data-id', data_id).text(data_value);
+                    $('#citys').val(data_id);
                     $('#' + id + "_hcd").remove();
                     $('#' + id).removeClass('hsCjeckData_check');
                 });
@@ -123,6 +125,7 @@
                             data_id = $(this).children('input[type="checkbox"]').val();
                             data_value = $(this).children('input[type="checkbox"]').nextAll("span").text();
                             $('#' + id).attr('data-id', data_id).text(data_value);
+                            $('#citys').val(data_id);
                             $('#' + id + "_hcd").remove();
                             $('#' + id).removeClass('hsCjeckData_check');
                         } else {
