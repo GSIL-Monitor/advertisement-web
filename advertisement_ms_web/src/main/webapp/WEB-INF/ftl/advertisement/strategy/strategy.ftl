@@ -2,6 +2,13 @@
 <@htmlHead title="添加${functionTitle}"/>
 <@cssFile file=["page/hscheckdata.css"] />
 <@jsFile file=["page/hscheckdata/citydata.js", "page/hscheckdata/hscheckdata.js"] />
+<style>
+	input[type="radio"] {
+		display: inline-block;
+		vertical-align: baseline;
+		margin: 0 0.05rem 0 0.3rem;
+	}
+</style>
 <@headerPart />
 <@topHeaderMenu />
 <@sideBar />
@@ -32,7 +39,7 @@
 										<tr>
 											<td>性别：</td>
 											<td>
-												<input type="radio" name="gender" value="">不限
+												<input type="radio" name="gender" value="" checked>不限
 												<input type="radio" name="gender" value="男">男
 												<input type="radio" name="gender" value="女">女
 											</td>
@@ -51,27 +58,27 @@
 										<tr>
 											<td>平台：</td>
 											<td>
-												<input type="radio" name="gender" value="不限">
-												<input type="radio" name="gender" value="IOS">
-												<input type="radio" name="gender" value="Android">
-												<input type="radio" name="gender" value="PC">
+												<input type="radio" name="pingtai" value="不限" checked>不限
+												<input type="radio" name="pingtai" value="IOS">IOS
+												<input type="radio" name="pingtai" value="Android">Android
+												<input type="radio" name="pingtai" value="PC">PC
 											</td>
 										</tr>	
 										<tr>
 											<td>联网方式：</td>
 											<td>
-												<input type="radio" name="gender" value="不限">
-												<input type="radio" name="gender" value="WIFI">
-												<input type="radio" name="gender" value="4G">
-												<input type="radio" name="gender" value="3G">
+												<input type="radio" name="fangshi" value="不限" checked>不限
+												<input type="radio" name="fangshi" value="WIFI">WIFI
+												<input type="radio" name="fangshi" value="4G">4G
+												<input type="radio" name="fangshi" value="3G">3G
 											</td>
 										</tr>	
 										<tr>
 											<td>运营商：</td>
 											<td>
-												<input type="radio" name="gender" value="移动">
-												<input type="radio" name="gender" value="联通">
-												<input type="radio" name="gender" value="电信">
+												<input type="radio" name="yunying" value="移动" checked>移动
+												<input type="radio" name="yunying" value="联通">联通
+												<input type="radio" name="yunying" value="电信">电信
 											</td>
 										</tr>	
 										
