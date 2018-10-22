@@ -332,7 +332,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	}
 
 	@Override
-	public List<Probability> selectProbabilityFromCache(Long projectId, Long positionId, List<Long> advertisementIdList) {
+	public List<Probability> selectProbabilityFromCache(Long projectId, Long positionId,
+			List<Long> advertisementIdList) {
 		List<Probability> resultList = new ArrayList<Probability>();
 		if (projectId == null) {
 			return resultList;
@@ -415,7 +416,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return resultList;
 	}
 
-	private List<Probability> dealProbabilityConfig(List<Probability> activityProList, List<Probability> channelProList) {
+	private List<Probability> dealProbabilityConfig(List<Probability> activityProList,
+			List<Probability> channelProList) {
 		List<Probability> resultList = new ArrayList<Probability>(activityProList);
 		for (Probability probability : channelProList) {
 			if (probability.getDisplayType().equals(AdvertisementDisplayType.ADD)) {
@@ -463,6 +465,28 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			return new ArrayList<Probability>();
 		}
 		return setProperty(probabilityDao.selectProbabilityByOrderIds(orderIds));
+	}
+
+	// 查找计划并展示
+	public List<Probability> selectPlanFromCache(Long projectId, String channelKey) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		if (projectId == null || channelKey == null) {
+			return resultList;
+		}
+
+		List<Probability> list = ConstantsManager.getProbabilityList(projectId);
+		if (list == null || list.size() == 0) {
+			return resultList;
+		}
+
+		for (Probability probability : list) {
+			if (StringUtils.equals(channelKey, probability.getChannel())) {
+				resultList.add(probability);
+			} else {
+				break;
+			}
+		}
+		return resultList;
 	}
 
 }

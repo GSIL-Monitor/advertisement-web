@@ -261,7 +261,7 @@ public class BillServiceImpl implements BillService {
 			Probability proParams = new Probability();
 			proParams.setChannel(channel.getKey());
 			proParams.setStatus(CommonStatus.ONLINE);
-			List<Probability> proList = probabilityService.selectGeneralProbabilitys(proParams, new PageBounds());
+			List<Probability> proList = probabilityService.selectProbabilitys(proParams, new PageBounds());
 			List<Long> proIds = new ArrayList<Long>();
 			for (Probability probability : proList) {
 				proIds.add(probability.getProbabilityId());

@@ -23,6 +23,8 @@ public class Probability {
 	private String name;
 	private Long advertisementId;
 	private Double probability;
+	private String url;
+	private String creative;
 	private Integer sort;
 	private Timestamp startTime;
 	private Timestamp endTime;
@@ -226,5 +228,21 @@ public class Probability {
 
 	public void setAdvertiser(Advertiser advertiser) {
 		this.advertiser = advertiser;
+	}
+
+	public String getCreative() {
+		return creative;
+	}
+
+	public void setCreative(String creative) {
+		this.creative = creative;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }
