@@ -54,27 +54,10 @@ public class IndexController extends BaseController {
 			// 产品列表
 			product.setActivityId(activity.getActivityId());
 			product.setStatus(ProductStatus.ONLINE);
-			pageBounds.setOrders(Order.formString("sort.asc"));
 			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 					formatPageBounds(pageBounds));
-			PageList<ProductVo> voList = convertVo(request, productList, token, pageBounds);
-			voList.setPaginator(productList.getPaginator());
-			// productCategary
-			String channel = appService.getAppChannel(request.getParameter("appId"));
-			String appKey = getAppKey(request);
-			Long activityId = null;
-			if (activity != null) {
-				activityId = activity.getActivityId();
-			}
-			List<ProductCategory> productCategorys = new ArrayList<ProductCategory>();
-			String ids = ConfigManager.getConfigValue(activityId, channel, appKey,
-					ConfigConstants.PRODUCT_CATEGORY_INDEX_CONFIG);
-			productCategorys = ConfigManager.getProductCategoryList(ids);
 
-			resultMap.put("productCategorys", productCategorys);
-			resultMap.put("productList", voList);
-			resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
-			setAdvertisement(client, resultMap, channel, appKey, activityId, AdvertisementPosition.ADVERTISEMENT_INDEX);
+			resultMap.put("productList", productList);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
