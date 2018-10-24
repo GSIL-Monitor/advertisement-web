@@ -19,6 +19,7 @@
 		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="stock" column="stock" jdbcType="NUMERIC" />
 		<result property="count" column="count" jdbcType="NUMERIC" />
+		<result property="bestBid" column="best_bid" jdbcType="NUMERIC" />
 		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
 		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
 		<result property="unitPrice" column="unit_price" jdbcType="NUMERIC" />
@@ -97,10 +98,10 @@
 	<insert id="insertQuota" parameterType="Quota">
 		insert into
 		tb_quota(project_id, activity_id, product_id,order_id,probability_id,position_id,merchant_id, channel, advertisement_id,
-		type, advertiser_id,count,stock, start_time, end_time, unit_price, status, create_time, update_time)
+		best_bid,type, advertiser_id,count,stock, start_time, end_time, unit_price, status, create_time, update_time)
 		values
-		(#{projectId}, #{activityId}, #{productId},#{orderId},#{probabilityId}, #{positionId},#{merchantId}, #{channel}, #{advertisementId}, #{type}, 
-		#{advertiserId},#{count},#{stock}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
+		(#{projectId}, #{activityId}, #{productId},#{orderId},#{probabilityId}, #{positionId},#{merchantId}, #{channel}, #{advertisementId}, 
+		#{bestBid},#{type}, #{advertiserId},#{count},#{stock}, #{startTime}, #{endTime}, #{unitPrice}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="quotaId">
 			SELECT LAST_INSERT_ID()
@@ -141,6 +142,9 @@
 				<if test="unitPrice != null">
 					unit_price=#{unitPrice},
 				</if>
+				<if test="bestBid != null">
+					best_bid=#{bestBid},
+				</if>
 				<if test="status != null">
 					status=#{status},
 				</if>
@@ -161,11 +165,26 @@
 
 	<update id="lockStock" parameterType="map">
 		update tb_quota
-		set
+		select
 		stock = stock - #{count, jdbcType=INTEGER}
 		where
 		quota_id = #{quotaId, jdbcType=INTEGER} and
 		stock >= #{count, jdbcType=INTEGER}
 		and status = 1
 	</update>
+
+	<select id="selectQuotaByProbabilityIds" parameterType="List"
+		resultMap="quotaMap">
+		select
+		* from
+		tb_quota
+		<where>
+			probability_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
 </mapper>

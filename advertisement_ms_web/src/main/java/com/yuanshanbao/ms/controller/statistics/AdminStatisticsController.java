@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DateUtils;
-import com.yuanshanbao.common.util.ExcelUtil;
 import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.PropertyUtil;
@@ -88,6 +87,8 @@ public class AdminStatisticsController extends PaginationController {
 	private static final String PAGE_RESULT_CLICK_LIST = "advertisement/statistics/resultPageClick";
 
 	private static final String PAGE_MONTH_LIST = "advertisement/statistics/listMonthStatistics";
+
+	private static final String PAGE_ADVERTISER_STATISTIC_LIST = "advertisement/statistics/listAdvertiserStatistics";
 
 	public static String OSS_HOST_FILES = PropertyUtil.getProperty("oss.host.files");
 
@@ -410,7 +411,7 @@ public class AdminStatisticsController extends PaginationController {
 		Paginator paginator = ((PageList) list).getPaginator();
 		PageList<Map> tiList = new PageList<Map>();
 		if (channelMap.size() > 0) {
-			dataProcess(tiList, channelMap, list, showParam);
+			// dataProcess(tiList, channelMap, list, showParam);
 		}
 		tiList.setPaginator(paginator);
 		return setPageInfo(request, response, tiList);
@@ -465,7 +466,7 @@ public class AdminStatisticsController extends PaginationController {
 
 			Paginator paginator = (pageList).getPaginator();
 
-			dataProcess(tiList, channelMap, list, showParam);
+			// dataProcess(tiList, channelMap, list, showParam);
 
 			tiList.setPaginator(paginator);
 			return setPageInfo(request, response, tiList);
@@ -598,112 +599,6 @@ public class AdminStatisticsController extends PaginationController {
 		map.put("unitPrice", "单价");
 		map.put("calculateAmount", "结算金额");
 		return map;
-	}
-
-	@SuppressWarnings("rawtypes")
-	private void dataProcess(PageList<Map> tiList, Map<String, Channel> channelMap, List<Statistics> list,
-			List<String> showParam) {
-		for (Statistics stat : list) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("channel", stat.getChannel());
-			map.put("date", stat.getDate());
-			// map.put("pvCount", stat.getPvCount());
-			map.put("uvCount", stat.getUvCount());
-			map.put("downloadCount", stat.getDownloadCount());
-			map.put("registerCount", stat.getRegisterCount());
-			map.put("firstLoginCount", stat.getFirstLoginCount());
-			map.put("applyCount", stat.getApplyCount());
-			map.put("applyUserCount", stat.getApplyUserCount());
-			map.put("applySuccessCount", stat.getApplySuccessCount());
-			Double unitPrice = channelMap.get(stat.getChannel()).getUnitPrice();
-			// map.put("unitPrice", unitPrice);
-			if (unitPrice == null) {
-				unitPrice = 0.0;
-			}
-			// map.put("calculateAmount", (unitPrice *
-			// stat.getApplySuccessCount())); // 结算金额
-			tiList.add(map);
-		}
-	}
-
-	@RequestMapping("/downloadWindow.do")
-	public String download(HttpServletRequest request, String queryChannel, String statisticsDate,
-			HttpServletResponse response, ModelMap modelMap) {
-
-		Map<String, Channel> channelMap = getChannels();
-
-		Statistics statistics = new Statistics();
-		statistics.setType(StatisticsType.CHANNEL_WORKING_DATA);// 加工后数据
-		statistics.setStatus(StatisticsStatus.ALREADY);
-
-		List<String> channelKeys = getChannelKeys();
-		if (channelKeys == null || channelKeys.size() == 0) {
-			return PAGE_DOWNadvertisement_CHANNEL;
-		}
-		statistics.setChannelList(channelKeys);
-		if (!StringUtils.isBlank(statisticsDate)) {
-			statistics.setDate(statisticsDate);
-		}
-		if (!StringUtils.isBlank(queryChannel)) {
-			statistics.setChannel(queryChannel);
-		}
-
-		List<Statistics> list = statisticsService.selectStatistics(statistics, new PageBounds());
-
-		List<String> statisticsParam = getKeys();
-
-		List<List<String>> toList = new ArrayList<List<String>>();
-		setTitle(toList);
-		List<String> showParam = judgeChannel(statisticsParam, channelMap);
-
-		for (Statistics stat : list) {
-			List<String> rowList = new ArrayList<String>();
-			rowList.add(stat.getChannel());
-			rowList.add(stat.getDate());
-
-			if (showParam.size() > 0) {
-				if (showParam.contains("uvCount")) {
-					rowList.add(stat.getUvCount() + "");
-				}
-				if (showParam.contains("downloadCount")) {
-					rowList.add(stat.getDownloadCount() + "");
-				}
-				if (showParam.contains("registerCount")) {
-					rowList.add(stat.getRegisterCount() + "");
-				}
-				if (showParam.contains("firstLoginCount")) {
-					rowList.add(stat.getFirstLoginCount() + "");
-				}
-				if (showParam.contains("applyCount")) {
-					rowList.add(stat.getApplyCount() + "");
-				}
-				if (showParam.contains("applyUserCount")) {
-					rowList.add(stat.getApplyUserCount() + "");
-				}
-				if (showParam.contains("applySuccessCount")) {
-					rowList.add(stat.getApplySuccessCount() + "");
-				}
-			}
-
-			Double unitPrice = channelMap.get(stat.getChannel()).getUnitPrice();
-			if (unitPrice == null) {
-				unitPrice = 0.0;
-			}
-			rowList.add(unitPrice + "");
-			rowList.add((unitPrice * 0) + "");
-			toList.add(rowList);
-		}
-		Map<String, List<List<String>>> sheetMap = new HashMap<String, List<List<String>>>();
-		sheetMap.put("渠道数据", toList);
-		String path = OSS_HOST_FILES + "/";
-		try {
-			path += ExcelUtil.createSuffixXlsExcelByMoreSheets(sheetMap, "渠道数据");
-		} catch (Exception e) {
-			LoggerUtil.error("[statistics down error]", e);
-		}
-
-		modelMap.put("path", path);
-		return PAGE_DOWNadvertisement_CHANNEL;
 	}
 
 	private void setTitle(List<List<String>> toList) {
@@ -1034,4 +929,33 @@ public class AdminStatisticsController extends PaginationController {
 		return resultMap;
 	}
 
+	@RequestMapping("/advertiserStatistic.do")
+	public String advertiserStatistic(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
+			Long advertisementId) {
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
+		modelMap.put("advertisement", ConfigManager.getAdvertisement(advertisementId + ""));
+		modelMap.put("advertisementId", advertisementId);
+		addDateList(modelMap, 0);
+		return PAGE_ADVERTISER_STATISTIC_LIST;
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryAdvertiserStatistic.do")
+	public Object queryAdvertiserStatistic(HttpServletRequest request, HttpServletResponse response,
+			AdvertisementStatistics advertisementStatistics, Boolean isPv, ModelMap modelMap) {
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistic(
+				advertisementStatistics, isPv, null);
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser == null) {
+			return resultList;
+		}
+		for (AdvertisementStatistics as : list) {
+			if (advertiser.getAdvertiserId().equals(
+					ConfigManager.getAdvertisement(as.getAdvertisementId() + "").getAdvertiser().getAdvertiserId())) {
+				resultList.add(as);
+			}
+		}
+		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(list, new Paginator()));
+	}
 }

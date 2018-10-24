@@ -15,6 +15,7 @@
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="displayType" column="display_type" jdbcType="VARCHAR" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="spend" column="spend" jdbcType="NUMERIC" />
 		<result property="probability" column="probability" jdbcType="NUMERIC" />
 		<result property="sort" column="sort" jdbcType="NUMERIC" />
 		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
@@ -85,10 +86,10 @@
 	<insert id="insertProbability" parameterType="Probability">
 		insert into
 		tb_probability(project_id, activity_id, advertiser_id,order_id, position_id, channel, advertisement_id, probability, 
-		name,sort, start_time, end_time,display_type, status, create_time, update_time)
+		spend,name,sort, start_time, end_time,display_type, status, create_time, update_time)
 		values
 		(#{projectId}, #{activityId}, #{advertiserId},#{orderId}, #{positionId}, #{channel}, #{advertisementId}, #{probability}, 
-		#{name},#{sort}, #{startTime}, #{endTime},#{displayType}, #{status}, sysdate(), sysdate())
+		#{spend},#{name},#{sort}, #{startTime}, #{endTime},#{displayType}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="probabilityId">
 			SELECT LAST_INSERT_ID()
@@ -161,5 +162,13 @@
 		where
 		probability_id=#{probabilityId}
 	</delete>
+
+	<update id="cutPayment" parameterType="map">
+		update tb_probability
+		set
+		spend = spend - #{amount, jdbcType=NUMERIC}
+		where
+		probability_id = #{probabilityId, jdbcType=INTEGER} 
+	</update>
 
 </mapper>

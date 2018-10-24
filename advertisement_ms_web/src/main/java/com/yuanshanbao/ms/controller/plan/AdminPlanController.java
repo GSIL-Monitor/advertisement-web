@@ -26,15 +26,19 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.creative.model.Creative;
+import com.yuanshanbao.dsp.creative.service.CreativeService;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.controller.common.AdminServerController;
+import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 import com.yuanshanbao.paginator.domain.Paginator;
 
@@ -60,6 +64,9 @@ public class AdminPlanController extends PaginationController {
 
 	@Autowired
 	private QuotaService quotaService;
+	
+	@Autowired
+	private CreativeService creativeService;
 
 	@RequestMapping("/list.do")
 	public String list(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
@@ -67,8 +74,7 @@ public class AdminPlanController extends PaginationController {
 		if (advertiser != null) {
 			advertiserId = advertiser.getAdvertiserId();
 		}
-		request.setAttribute("advertiserId", advertiserId);
-		setProperty(request, getProjectId(request), orderId);
+		setProperty(request, getProjectId(request), orderId,advertiserId);
 		return PAGE_LIST;
 	}
 
@@ -85,19 +91,29 @@ public class AdminPlanController extends PaginationController {
 		return setPageInfo(request, response, new PageList<Object>(list, new Paginator()));
 	}
 
-	private void setProperty(HttpServletRequest request, Long projectId, Long orderId) {
+	private void setProperty(HttpServletRequest request, Long projectId, Long orderId,Long advertiserId) {
 		request.setAttribute("orderId", orderId);
+		request.setAttribute("advertiserId", advertiserId);
 		request.setAttribute("projectId", projectId);
 		request.setAttribute("positionList", ConstantsManager.getPositionList(projectId));
 		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("statusList", AdvertisementStatus.getCodeDescriptionMap().entrySet());
-	}
+		Creative creative = new Creative();
+		creative.setAdvertiserId(advertiserId);
+		List<Creative> list = creativeService.selectCreative(creative, new PageBounds());
+		request.setAttribute("creative", list);
+	} 
 
 	@RequestMapping("/insertWindow.do")
-	public String insertGiftWindow(HttpServletRequest request, HttpServletResponse response, Long orderId,
-			Integer type, ModelMap modelMap) {
-		setProperty(request, getProjectId(request), orderId);
+	public String insertWindow(HttpServletRequest request, HttpServletResponse response, Long orderId, Integer type,
+			ModelMap modelMap) {
+		Long advertiserId = null;
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertiserId = advertiser.getAdvertiserId();
+		}
+		setProperty(request, getProjectId(request), orderId,advertiserId);
 		modelMap.put("categories", ConfigManager.getCategoryMap());
 		return PAGE_INSERT;
 	}
@@ -111,8 +127,10 @@ public class AdminPlanController extends PaginationController {
 			if (StringUtils.isBlank(orderId)) {
 				throw new BusinessException(ComRetCode.FAIL);
 			}
-			probability.setStatus(CommonStatus.ONLINE);
+			probability.setProjectId(getProjectId(request));
+			probability.setStatus(ProbabilityStatus.UNREVIEWED);
 			probabilityService.insertProbability(probability);
+			quota.setProjectId(getProjectId(request));
 			quota.setProbabilityId(probability.getProbabilityId());
 			quota.setStatus(CommonStatus.ONLINE);
 			quotaService.insertQuota(quota);

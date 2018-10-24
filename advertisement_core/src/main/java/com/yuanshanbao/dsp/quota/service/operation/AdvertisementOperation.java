@@ -22,4 +22,6 @@ public abstract class AdvertisementOperation {
 	}
 
 	public abstract String getResult();
+
+	public abstract String getProbabilityResult();
 }

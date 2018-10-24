@@ -59,14 +59,15 @@
 				<table class="table table-bordered data-table" id="dataTable">
 					<thead>
 						<tr>
-							<th>广告ID</th>
-							<th>广告名称</th>
-							<th>广告主名称</th>
-							<th>上线日期</th>
-							<th>广告类型</th>
-							<th>状态</th>
-							<th>配置</th>
-							<th>操作</th>
+							<th>ID</th>
+							<th>订单名称</th>
+							<th>计划名称</th>
+							<th>策略名称</th>
+							<th>广告主</th>
+							<th>投放状态</th>
+							<th>查看</th>
+							<th>修改</th>
+							<th>删除</th>
 						</tr>
 					</thead>
 					<tbody>

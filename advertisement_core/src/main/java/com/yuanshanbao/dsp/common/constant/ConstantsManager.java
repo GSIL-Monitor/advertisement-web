@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.common.constant;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -603,8 +604,9 @@ public class ConstantsManager {
 		if (projectId == null) {
 			String projectKey = CookieUtils.getCookieValue(request, "project_key");
 			return projectService.selectProject(projectKey);
+		} else {
+			return projectService.selectProject(projectId);
 		}
-		return null;
 	}
 
 	public static Project getProjectById(Long projectId) {
@@ -642,5 +644,47 @@ public class ConstantsManager {
 		}
 		return map.get(positionKey);
 	}
+	
+	public Map<String, Map<Long, BigDecimal>> getChannelAllBid() {
+		Channel channelParams = new Channel();
+		channelParams.setStatus(CommonStatus.ONLINE);
+		List<Channel> channelList = channelService.selectChannels(channelParams, new PageBounds());
+		Map<String, Map<Long, BigDecimal>> channelCostMap = new HashMap<String, Map<Long, BigDecimal>>();
+		for (Channel channel : channelList) {
+			Probability proParams = new Probability();
+			proParams.setChannel(channel.getKey());
+			proParams.setStatus(CommonStatus.ONLINE);
+			List<Probability> proList = probabilityService.selectProbabilitys(proParams, new PageBounds());
+			List<Long> proIds = new ArrayList<Long>();
+			for (Probability probability : proList) {
+				proIds.add(probability.getProbabilityId());
+			}
+			Map<Long, Quota> map = quotaService.selectQuotaByProbabilityId(proIds);
+			List<Quota> quotaList = (List<Quota>) map.values();
+			Collections.sort(quotaList, new Comparator<Quota>() {
+				@Override
+				public int compare(Quota o1, Quota o2) {
+					return o2.getBestBid().compareTo(o1.getBestBid());
+				}
+			});
+			// 为每一条计划设置价格
+			Map<Long, BigDecimal> bidMap = setPlanBid(channel, quotaList);
+			channelCostMap.put(channel.getKey(), bidMap);
+		}
+		return channelCostMap;
+	}
 
+	private Map<Long, BigDecimal> setPlanBid(Channel channel, List<Quota> quotaList) {
+		Map<Long, BigDecimal> bidMap = new HashMap<Long, BigDecimal>();
+		int size = quotaList.size();
+		for (int i = 0; i < size; i++) {
+			int j = i + 1;
+			if (j > size) {
+				bidMap.put(quotaList.get(i).getProbabilityId(), channel.getUnitPrice());
+				break;
+			}
+			bidMap.put(quotaList.get(i).getProbabilityId(), quotaList.get(j).getBestBid());
+		}
+		return bidMap;
+	}
 }

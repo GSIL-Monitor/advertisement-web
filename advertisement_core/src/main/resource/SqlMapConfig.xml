@@ -64,6 +64,7 @@
         <typeAlias type="com.yuanshanbao.dsp.limitation.model.Limitation" alias="Limitation"/>
         <typeAlias type="com.yuanshanbao.dsp.apply.model.Apply" alias="Apply"/>
         <typeAlias type="com.yuanshanbao.dsp.order.model.Order" alias="Order"/>
+        <typeAlias type="com.yuanshanbao.dsp.creative.model.Creative" alias="Creative"/>
     </typeAliases>
 
     <mappers>
@@ -119,5 +120,6 @@
         <mapper resource="mybatis/apply/ApplyDaoImpl.xml"/>
         <mapper resource="mybatis/push/AppPushDaoImpl.xml"/>
         <mapper resource="mybatis/order/OrderDaoImpl.xml"/>
+        <mapper resource="mybatis/creative/CreativeDaoImpl.xml"/>
     </mappers>
 </configuration>

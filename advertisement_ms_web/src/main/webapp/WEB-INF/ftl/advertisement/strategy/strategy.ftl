@@ -1,5 +1,14 @@
 <#include "core.ftl" />
 <@htmlHead title="添加${functionTitle}"/>
+<@cssFile file=["page/hscheckdata.css"] />
+<@jsFile file=["page/hscheckdata/citydata.js", "page/hscheckdata/hscheckdata.js"] />
+<style>
+	input[type="radio"] {
+		display: inline-block;
+		vertical-align: baseline;
+		margin: 0 0.05rem 0 0.3rem;
+	}
+</style>
 <@headerPart />
 <@topHeaderMenu />
 <@sideBar />
@@ -16,9 +25,9 @@
 	<div class="container-fluid">
 		<hr>
 			<div class="row-fluid">
-				<form action="${rc.contextPath}/admin/${functionName}/config.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-					<input type="hidden" name="activityId" value="${activityId}">
-					<div class="span12">
+				<form action="${rc.contextPath}/admin/${functionName}/updateProbabilityStrategy.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
+					<input type="hidden" name="probabilityId" value="${probabilityId}">不限
+					<div>
 						<div class="widget-box">
 							<div class="widget-title">
 								<span class="icon"><i class="icon-th"></i>
@@ -27,10 +36,57 @@
 							<div class="widget-content nopadding">
 								<table class="table table-bordered table-striped" id="">
 									<tbody>
-											
+										<tr>
+											<td style="width:20%;">性别：</td>
+											<td>
+												<input type="radio" name="genderStrategy" value="" checked>不限
+												<input type="radio" name="genderStrategy" value="男">男
+												<input type="radio" name="genderStrategy" value="女">女
+											</td>
+										</tr>
+										<tr>
+											<td>年龄：</td>
+											<td>
+											</td>
+										</tr>
+										<tr>
+											<td>区域：</td>
+											<td>
+												<div id="cityDuoXuan" style="width:300px;" class="hsCheckData"></div>
+												<input type="hidden" id="citys" name="citys" value="">
+											</td>
+										</tr>
+										<tr>
+											<td>平台：</td>
+											<td>
+												<input type="radio" name="deviceTypeStrategy" value="" checked>不限
+												<input type="radio" name="deviceTypeStrategy" value="IOS">IOS
+												<input type="radio" name="deviceTypeStrategy" value="Android">Android
+												<input type="radio" name="deviceTypeStrategy" value="PC">PC
+											</td>
+										</tr>	
+										<tr>
+											<td>联网方式：</td>
+											<td>
+												<input type="radio" name="netWorkStrategy" value="不限" checked>不限
+												<input type="radio" name="netWorkStrategy" value="WIFI">WIFI
+												<input type="radio" name="netWorkStrategy" value="4G">4G
+												<input type="radio" name="netWorkStrategy" value="3G">3G
+											</td>
+										</tr>	
+										<tr>
+											<td>运营商：</td>
+											<td>
+												<input type="radio" name="tMobileStrategy" value="" checked>不限
+												<input type="radio" name="tMobileStrategy" value="移动">移动
+												<input type="radio" name="tMobileStrategy" value="联通">联通
+												<input type="radio" name="tMobileStrategy" value="电信">电信
+											</td>
+										</tr>	
+										
 										<tr>
 											<td colspan="4" style="text-align:center">
-												<input type="submit" name="" value="提交" class=" btn btn-success" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();"></td>
+												<input type="submit" name="" value="提交" class="btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();"></td>
 										</tr>
 									</tbody>
 								</table>
@@ -41,6 +97,15 @@
 			</div>
 	</div>
 </div>
+<input type="hidden" id="reqData" value="${strategyValue}">
+<script>
+	$('#cityDuoXuan').hsCheckData({
+        isShowCheckBox: true, //默认为false
+        minCheck: 0,//默认为0，不限最少选择个数
+        maxCheck: 10,//默认为0，不限最多选择个数
+        data: cityData
+    });
+</script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
 <@footPart />
 <@htmlFoot />

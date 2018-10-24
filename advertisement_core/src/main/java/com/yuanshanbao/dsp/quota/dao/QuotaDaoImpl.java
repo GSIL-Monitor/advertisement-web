@@ -47,4 +47,9 @@ public class QuotaDaoImpl extends BaseDaoImpl implements QuotaDao {
 		return getSqlSession().update("quota.lockStock", parameters);
 	}
 
+	@Override
+	public List<Quota> selectQuotaByProbabilityIds(List<Long> ids) {
+		return getSqlSession().selectList("quota.selectQuotaByProbabilityIds", ids);
+	}
+
 }

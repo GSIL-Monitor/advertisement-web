@@ -14,8 +14,13 @@
 			    	"data": "orderId"
 			    },{
 			    	"data": "name"
+			    },
+			    {
+			    	"data": "advertiser.companyName"
 			    },{
 			    	"data": "amount"
+			    },{
+			    	"data": "statusContent"
 			    },{
 			    	"data": "createTimeContent"
 				},{
@@ -58,7 +63,7 @@
 	    	<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a> 
 	    	<a href="#" class="current">${functionTitle}列表</a>
 	    	<span class="add">
-	    		<a href="${rc.contextPath}/admin/${functionName}/insertAdvertisementWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加${functionTitle}</button></a>
+	    		<a href="${rc.contextPath}/admin/${functionName}/insertWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加${functionTitle}</button></a>
 	    	</span>
 	    </div>
 	</div>
@@ -114,7 +119,9 @@
 						<tr>
 							<th>ID</th>
 							<th>订单名称</th>
+							<th>广告主</th>
 							<th>总预算</th>
+							<th>状态</th>
 							<th>创建时间</th>
 							<th>修改</th>
 							<th>计划详情</th>

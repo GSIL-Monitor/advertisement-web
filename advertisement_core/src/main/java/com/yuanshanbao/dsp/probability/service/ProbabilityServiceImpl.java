@@ -24,6 +24,8 @@ import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementDisplayType;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
@@ -68,6 +70,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	@Autowired
 	private OrderService orderService;
 
+	@Autowired
+	private AdvertiserService advertiserService;
+
 	@Override
 	public List<Probability> selectProbabilitys(Probability probability, PageBounds pageBounds) {
 		return setProperty(probabilityDao.selectProbabilitys(probability, pageBounds));
@@ -77,18 +82,22 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		List<Long> activityIdList = new ArrayList<Long>();
 		List<String> channelList = new ArrayList<String>();
 		List<Long> orderList = new ArrayList<Long>();
+		List<Long> advertiserList = new ArrayList<Long>();
 		for (Probability probability : probabilityList) {
 			activityIdList.add(probability.getActivityId());
 			channelList.add(probability.getChannel());
 			orderList.add(probability.getOrderId());
+			advertiserList.add(probability.getAdvertiserId());
 		}
 		Map<Long, Activity> activityMap = activityService.selectActivitys(activityIdList);
 		Map<String, Channel> channelMap = channelService.selectChannelByKeys(channelList);
 		Map<Long, Order> orderMap = orderService.selectOrderByIds(orderList);
+		Map<Long, Advertiser> advertiserMap = advertiserService.selectAdvertiserByIds(advertiserList);
 		for (Probability probability : probabilityList) {
 			probability.setActivity(activityMap.get(probability.getActivityId()));
 			probability.setChannelObject(channelMap.get(probability.getChannel()));
 			probability.setOrder(orderMap.get(probability.getOrderId()));
+			probability.setAdvertiser(advertiserMap.get(probability.getAdvertiserId()));
 		}
 		return probabilityList;
 	}
@@ -323,7 +332,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	}
 
 	@Override
-	public List<Probability> selectProbabilityFromCache(Long projectId, Long positionId, List<Long> advertisementIdList) {
+	public List<Probability> selectProbabilityFromCache(Long projectId, Long positionId,
+			List<Long> advertisementIdList) {
 		List<Probability> resultList = new ArrayList<Probability>();
 		if (projectId == null) {
 			return resultList;
@@ -406,7 +416,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return resultList;
 	}
 
-	private List<Probability> dealProbabilityConfig(List<Probability> activityProList, List<Probability> channelProList) {
+	private List<Probability> dealProbabilityConfig(List<Probability> activityProList,
+			List<Probability> channelProList) {
 		List<Probability> resultList = new ArrayList<Probability>(activityProList);
 		for (Probability probability : channelProList) {
 			if (probability.getDisplayType().equals(AdvertisementDisplayType.ADD)) {
@@ -454,6 +465,28 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			return new ArrayList<Probability>();
 		}
 		return setProperty(probabilityDao.selectProbabilityByOrderIds(orderIds));
+	}
+
+	// 查找计划并展示
+	public List<Probability> selectPlanFromCache(Long projectId, String channelKey) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		if (projectId == null || channelKey == null) {
+			return resultList;
+		}
+
+		List<Probability> list = ConstantsManager.getProbabilityList(projectId);
+		if (list == null || list.size() == 0) {
+			return resultList;
+		}
+
+		for (Probability probability : list) {
+			if (StringUtils.equals(channelKey, probability.getChannel())) {
+				resultList.add(probability);
+			} else {
+				break;
+			}
+		}
+		return resultList;
 	}
 
 }

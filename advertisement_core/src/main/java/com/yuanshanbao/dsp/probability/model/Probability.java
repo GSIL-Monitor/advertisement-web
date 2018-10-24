@@ -1,9 +1,11 @@
 package com.yuanshanbao.dsp.probability.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.order.model.Order;
@@ -16,10 +18,13 @@ public class Probability {
 	private Long orderId;
 	private Long advertiserId;
 	private Long positionId;
+	private BigDecimal spend;
 	private String channel;
 	private String name;
 	private Long advertisementId;
 	private Double probability;
+	private String url;
+	private String creative;
 	private Integer sort;
 	private Timestamp startTime;
 	private Timestamp endTime;
@@ -31,6 +36,7 @@ public class Probability {
 	private Activity activity;
 	private Channel channelObject;
 	private Order order;
+	private Advertiser advertiser;
 
 	public Long getProbabilityId() {
 		return probabilityId;
@@ -206,5 +212,37 @@ public class Probability {
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public BigDecimal getSpend() {
+		return spend;
+	}
+
+	public void setSpend(BigDecimal spend) {
+		this.spend = spend;
+	}
+
+	public Advertiser getAdvertiser() {
+		return advertiser;
+	}
+
+	public void setAdvertiser(Advertiser advertiser) {
+		this.advertiser = advertiser;
+	}
+
+	public String getCreative() {
+		return creative;
+	}
+
+	public void setCreative(String creative) {
+		this.creative = creative;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }

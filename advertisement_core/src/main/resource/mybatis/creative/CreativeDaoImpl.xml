@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="creative">
+
+	<resultMap id="creativeMap" type="Creative">
+		<id property="creativeId" column="creative_id" jdbcType="NUMERIC" />
+		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
+		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
+		<result property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="title" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="name" jdbcType="VARCHAR" />
+		<result property="link" column="link" jdbcType="VARCHAR" />
+		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
+		<result property="size" column="size" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectCreative" parameterType="Creative"
+		resultMap="creativeMap">
+		select
+		* from
+		tb_creative
+		<where>
+			<trim suffixOverrides="and">
+				<if test="creativeId != null">
+					creative_id = #{creativeId} and
+				</if>
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
+				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
+				<if test="size != null">
+					size = #{size} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+
+	<insert id="insertCreative" parameterType="Creative">
+		insert into
+		tb_creative( advertiser_id, advertisement_id, probability_id, 
+		name,title,description,link,image_url,
+		size,type,status,create_time, update_time)
+		values
+		( #{advertiserId}, #{advertisementId}, #{probabilityId},
+		#{name}, #{title}, #{description}, #{link}, #{imageUrl},
+		#{size}, #{type}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="creativeId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateCreative" parameterType="Creative">
+		update tb_creative
+		<set>
+			<trim suffixOverrides=",">
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="title != null">
+					title=#{title},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="image_url != null">
+					image_url=#{imageUrl},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="size != null">
+					size=#{size},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			creative_id=#{creativeId}
+		</where>
+	</update>
+
+
+	<delete id="deleteCreative" parameterType="long">
+		delete from
+		tb_creative
+		where
+		creative_id=#{creativeId}
+	</delete>
+
+</mapper>

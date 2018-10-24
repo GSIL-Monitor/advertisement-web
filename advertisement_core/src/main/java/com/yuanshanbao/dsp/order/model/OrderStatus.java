@@ -9,6 +9,8 @@ public class OrderStatus {
 
 	public static final int ONLINE = 1;
 	public static final String ONLINE_DESCRIPTION = "上线";
+	public static final int UNREVIEWED = 3;
+	public static final String UNREVIEWED_DESCRIPTION = "上线";
 
 	static {
 		initCodeDescriptionMap();
@@ -16,6 +18,7 @@ public class OrderStatus {
 
 	public static void initCodeDescriptionMap() {
 		codeDescriptionMap.put(ONLINE, ONLINE_DESCRIPTION);
+		codeDescriptionMap.put(UNREVIEWED, UNREVIEWED_DESCRIPTION);
 	}
 
 	public static String getDescription(Integer code) {

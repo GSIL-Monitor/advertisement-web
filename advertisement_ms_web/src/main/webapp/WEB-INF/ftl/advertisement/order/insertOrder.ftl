@@ -23,6 +23,23 @@
 						<div class="widget-content nopadding">
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
+								<tr>
+									<td style="width:20%;">广告主：</td>
+									<td>
+										<#if advertiser??>
+											${advertiser.companyName}
+											<input type="hidden" name="advertiserId" value="${advertiser.advertiserId}" />
+										<#else>
+										<div style="width:60%;">
+											<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+												<#list advertiserList as advertiser>
+													<option value="${advertiser.advertiserId}">${advertiser.companyName}</option>
+												</#list>
+											</select>
+										</div>
+									</#if>
+									</td>
+								</tr>
 									<tr>
 										<td>订单名称：</td>
 										<td>

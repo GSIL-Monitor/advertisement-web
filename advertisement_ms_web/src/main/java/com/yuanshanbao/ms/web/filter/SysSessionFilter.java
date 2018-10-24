@@ -15,14 +15,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.ms.http.wrapper.HttpServletRequestWrapper;
 
 /**
- * <p>Store session to other place if necessary.</p>
+ * <p>
+ * Store session to other place if necessary.
+ * </p>
  * 
- * <p>When system is large enough, we will consider store our session to 
+ * <p>
+ * When system is large enough, we will consider store our session to
  * 
- * disstributed storage.</p>
+ * disstributed storage.
+ * </p>
  * 
  * @author rnjin
  *
@@ -30,7 +35,7 @@ import com.yuanshanbao.ms.http.wrapper.HttpServletRequestWrapper;
 @SuppressWarnings("serial")
 public class SysSessionFilter extends HttpServlet implements Filter {
 	private static final Logger logger = Logger.getLogger("syssessionfilter");
-	
+
 	private String sessionId = "MS_SID";
 
 	private String cookieDomain = "ms.yuanshanbao.com";
@@ -38,15 +43,16 @@ public class SysSessionFilter extends HttpServlet implements Filter {
 	private String cookiePath = "/";
 
 	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+			throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		String sid = null;
-		
+
 		Cookie cookies[] = request.getCookies();
 		Cookie sCookie = null;
-		
+
 		if (cookies != null && cookies.length > 0) {
 			for (int i = 0; i < cookies.length; i++) {
 				sCookie = cookies[i];
@@ -56,7 +62,7 @@ public class SysSessionFilter extends HttpServlet implements Filter {
 				}
 			}
 		}
-		
+
 		if (sid == null || sid.length() == 0) {
 			sid = java.util.UUID.randomUUID().toString();
 			Cookie sessionCookie = new Cookie(sessionId, sid);
@@ -77,16 +83,14 @@ public class SysSessionFilter extends HttpServlet implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		// TODO Auto-generated method stub
 		this.sessionId = filterConfig.getInitParameter("sessionId");
-		if(sessionId == null || sessionId.length() == 0){
+		if (sessionId == null || sessionId.length() == 0) {
 			sessionId = "SID";
 		}
-		
+
 		this.cookieDomain = filterConfig.getInitParameter("cookieDomain");
-		logger.info("SysSessionFilter at domain: "+this.cookieDomain);
-		if (this.cookieDomain == null) {
-			this.cookieDomain = "data.urs.netease.com";
-		}
-		
+		logger.info("SysSessionFilter at domain: " + this.cookieDomain);
+		CookieUtils.COOKIE_DOMAIN = cookieDomain;
+
 		this.cookiePath = filterConfig.getInitParameter("cookiePath");
 		if (this.cookiePath == null || this.cookiePath.length() == 0) {
 			this.cookiePath = "/";

@@ -13,4 +13,10 @@ public class CPMOperation extends AdvertisementOperation {
 				.getAdvertisementId() + "", this.getQuota().getChannel()));
 	}
 
+	@Override
+	public String getProbabilityResult() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.advertisement.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementStrategyDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyStatus;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
 import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
@@ -81,6 +83,15 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 			throw new BusinessException(ComRetCode.FAIL);
 		}
 
+	}
+
+	@Override
+	public void insertOrUpdateAdvertisementStrategy(AdvertisementStrategy advertisementStrategy) {
+		if (advertisementStrategy.getAdvertisementStrategyId() == null) {
+			insertAdvertisementStrategy(advertisementStrategy);
+		} else {
+			updateAdvertisementStrategy(advertisementStrategy);
+		}
 	}
 
 	@Override
@@ -350,4 +361,32 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return true;
 	}
 
+	@Override
+	public void updateProbabilityStrategy(HttpServletRequest request, Long probabilityId, Long advertiserId) {
+		Map<String, String> map = ConfigManager.getStrategyMap(probabilityId);
+		Map<Integer, String> keysMap = AdvertisementStrategyType.getStrategyKeyMap();
+		Collection<String> keys = keysMap.values();
+		for (String key : keys) {
+			String params = request.getParameter(key); // key对应的value
+			// value比较不相等,被更改
+			if (StringUtils.isBlank(params) && map.get(key) == null) {
+				continue;
+			}
+			if (!params.equals(map.get(key))) {
+				AdvertisementStrategy strategy = new AdvertisementStrategy();
+				strategy.setProbabilityId(probabilityId);
+				strategy.setKey(key);
+				List<AdvertisementStrategy> strategyList = selectAdvertisementStrategy(strategy, new PageBounds());
+				for (AdvertisementStrategy exist : strategyList) {
+					strategy = exist;
+				}
+				strategy.setValue(params);
+				strategy.setStatus(AdvertisementStrategyStatus.UNREVIEWED);
+				if (advertiserId != null) {
+					strategy.setAdvertiserId(advertiserId);
+				}
+				insertOrUpdateAdvertisementStrategy(strategy);
+			}
+		}
+	}
 }

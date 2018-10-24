@@ -44,6 +44,8 @@ public class ConfigManager implements ConfigConstants {
 
 	protected static List<Config> configList = new ArrayList<Config>();
 
+	protected static List<AdvertisementStrategy> strategyList = new ArrayList<AdvertisementStrategy>();
+
 	protected static Map<String, List<AdvertisementStrategy>> advertisementStrategyMap = new LinkedHashMap<String, List<AdvertisementStrategy>>();
 
 	protected static Map<String, Advertisement> advertisementMap = new LinkedHashMap<String, Advertisement>();
@@ -120,6 +122,7 @@ public class ConfigManager implements ConfigConstants {
 			}
 
 			advertisementStrategyMap = tempAdvertisementStrategyMap;
+			strategyList = advertisementStrategies;
 		}
 
 		Map<Long, AdvertisementCategory> tempAdvertisementCategoryMap = new LinkedHashMap<Long, AdvertisementCategory>();
@@ -476,5 +479,15 @@ public class ConfigManager implements ConfigConstants {
 
 	public static List<ActivityCombine> getActivityCombineList(Long id) {
 		return activityCombineMap.get(id);
+	}
+
+	public static Map<String, String> getStrategyMap(Long probabilityId) {
+		Map<String, String> strategyMap = new LinkedHashMap<String, String>();
+		for (AdvertisementStrategy strategy : strategyList) {
+			if (probabilityId.equals(strategy.getProbabilityId())) {
+				strategyMap.put(strategy.getKey(), strategy.getValue());
+			}
+		}
+		return strategyMap;
 	}
 }

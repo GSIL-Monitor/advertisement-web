@@ -29,4 +29,6 @@ public interface QuotaService {
 	public Quota pickGoodsForInformation(Long activityId, Information information);
 
 	public Quota pickProductForApply(User user, Product product);
+
+	public Map<Long, Quota> selectQuotaByProbabilityId(List<Long> ids);
 }

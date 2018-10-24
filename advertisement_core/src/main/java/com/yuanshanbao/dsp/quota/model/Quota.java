@@ -2,6 +2,8 @@ package com.yuanshanbao.dsp.quota.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.yuanshanbao.common.util.DateUtils;
@@ -26,6 +28,7 @@ public class Quota {
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private BigDecimal unitPrice;
+	private BigDecimal bestBid;
 	private Integer displayType;
 	private Integer status;
 	private Timestamp createTime;
@@ -227,4 +230,21 @@ public class Quota {
 		this.probabilityId = probabilityId;
 	}
 
+	public BigDecimal getBestBid() {
+		return bestBid;
+	}
+
+	public void setBestBid(BigDecimal bestBid) {
+		this.bestBid = bestBid;
+	}
+
+	public void sortByBestBid(List<Quota> list) {
+		Collections.sort(list, new Comparator<Quota>() {
+
+			@Override
+			public int compare(Quota o1, Quota o2) {
+				return o1.getBestBid().compareTo(o2.getBestBid());
+			}
+		});
+	}
 }

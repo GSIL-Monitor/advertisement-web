@@ -7,6 +7,7 @@
 	<resultMap id="billMap" type="Bill">
 		<id property="billId" column="bill_id" jdbcType="NUMERIC" />
 		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
+		<result property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
 		<result property="amount" column="amount" jdbcType="NUMERIC" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
@@ -15,7 +16,7 @@
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 	</resultMap>
 
-	<select id="z" parameterType="Bill"
+	<select id="selectBills" parameterType="Bill"
 		resultMap="billMap">
 		select
 		* from
@@ -46,9 +47,9 @@
 
 	<insert id="insertBill" parameterType="Bill">
 		insert into
-		tb_bills(advertiser_id,amount,description, type,status, create_time, update_time)
+		tb_bills(advertiser_id,probability_id,amount,description, type,status, create_time, update_time)
 		values
-		(#{advertiserId},#{amount}, #{description}, #{type},#{status},
+		(#{advertiserId}#{probabilityId},#{amount}, #{description}, #{type},#{status},
 		 sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="billId">
@@ -68,7 +69,7 @@
 		</where>
 	</update>
 
-	<delete id="deleteAdvertiser" parameterType="long">
+	<delete id="deleteBills" parameterType="long">
 		delete from
 		tb_bills
 		where

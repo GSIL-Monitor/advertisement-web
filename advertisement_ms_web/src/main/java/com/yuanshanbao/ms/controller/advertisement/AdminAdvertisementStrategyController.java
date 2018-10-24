@@ -26,7 +26,9 @@ import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -48,6 +50,7 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 	private static final String PAGE_UPDATE = "advertisement/strategy/updateStrategy";
 
 	private static final String PAGE_VIEW = "advertisement/strategy/viewStrategy";
+	private static final String PAGE_STRATEGY = "advertisement/strategy/strategy";
 
 	@Autowired
 	private AdvertisementStrategyService strategyService;
@@ -60,6 +63,10 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 
 	@RequestMapping("/list.do")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
+		}
 		return PAGE_LIST;
 	}
 
@@ -206,6 +213,40 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@RequestMapping("/strategyWindow.do")
+	public String strategyWindow(Long probabilityId, ModelMap modelMap, HttpServletRequest request,
+			HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
+		}
+		Map<String, String> map = ConfigManager.getStrategyMap(probabilityId);
+		request.setAttribute("strategyValue", map);
+		request.setAttribute("probabilityId", probabilityId);
+		return PAGE_STRATEGY;
+	}
+
+	@ResponseBody
+	@RequestMapping("/updateProbabilityStrategy.do")
+	public Object strategy(Long probabilityId, Long advertiserId, Function function, HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if (function == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+
+			strategyService.updateProbabilityStrategy(request, probabilityId, advertiserId);
+			// AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			LoggerUtil.error("", e);
+		}
+		return result;
 	}
 
 }

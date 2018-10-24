@@ -15,6 +15,7 @@
 		<div class="row-fluid">
 			<form action="${rc.contextPath}/admin/${functionName}/insert.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
 				<input type="hidden" name="orderId" value="${orderId}" style="width:60%;">
+				<input type="hidden" name="advertiserId" value="${advertiserId}" style="width:60%;">
 				<div class="span12">
 					<div class="widget-box">
 						<div class="widget-title">
@@ -25,7 +26,7 @@
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
 									<tr>
-										<td>计划名称：</td>
+										<td style="width:20%;">计划名称：</td>
 										<td>
 											<input type="text" name="name" style="width:60%;">
 										</td>
@@ -41,9 +42,21 @@
 											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;"></td>
 									</tr>
 									<tr>
+										<td>该计划预算金额（元）：</td>
+										<td>
+											<input type="text" name="spend" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
 										<td>投放总量：</td>
 										<td>
 											<input type="text" name="count" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>当前最高出价：</td>
+										<td>
+											<input type="text" name="bestBid" style="width:60%;">
 										</td>
 									</tr>
 									<tr>

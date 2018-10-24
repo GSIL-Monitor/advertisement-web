@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 
 public class Order {
 	private Long orderId;
@@ -15,6 +16,8 @@ public class Order {
 	private BigDecimal amount;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+
+	private Advertiser advertiser;
 
 	public Long getOrderId() {
 		return orderId;
@@ -90,6 +93,18 @@ public class Order {
 
 	public String getCreateTimeContent() {
 		return DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss");
+	}
+
+	public String getStatusContent() {
+		return OrderStatus.getDescription(status);
+	}
+
+	public Advertiser getAdvertiser() {
+		return advertiser;
+	}
+
+	public void setAdvertiser(Advertiser advertiser) {
+		this.advertiser = advertiser;
 	}
 
 }

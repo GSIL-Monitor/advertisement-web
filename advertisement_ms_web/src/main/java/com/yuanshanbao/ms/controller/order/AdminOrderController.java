@@ -20,6 +20,7 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.model.OrderStatus;
@@ -63,7 +64,6 @@ public class AdminOrderController extends PaginationController {
 			advertiserId = advertiser.getAdvertiserId();
 		}
 		request.setAttribute("advertiserId", advertiserId);
-		setProperty(request, getProjectId(request), advertiserId);
 		return PAGE_LIST;
 	}
 
@@ -71,25 +71,21 @@ public class AdminOrderController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Order order, HttpServletRequest request, HttpServletResponse response) {
-		Advertiser advertiser = getBindAdvertiserByUser();
-		if (advertiser != null) {
-			order.setAdvertiserId(advertiser.getAdvertiserId());
-		}
 		Object object = orderService.selectOrder(order, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
 	}
 
 	@RequestMapping("/insertWindow.do")
-	public String insertGiftWindow(HttpServletRequest request, HttpServletResponse response, Long advertiserId,
-			Integer type, ModelMap modelMap) {
-		setProperty(request, getProjectId(request), advertiserId);
+	public String insertGiftWindow(HttpServletRequest request, HttpServletResponse response, Integer type,
+			ModelMap modelMap) {
+		setProperty(request, getProjectId(request));
 		modelMap.put("categories", ConfigManager.getCategoryMap());
 		return PAGE_INSERT;
 	}
 
-	private void setProperty(HttpServletRequest request, Long projectId, Long advertiserId) {
-		Advertiser advertiser = advertiserService.selectAdvertiser(advertiserId);
+	private void setProperty(HttpServletRequest request, Long projectId) {
+		Advertiser advertiser = getBindAdvertiserByUser();
 		if (advertiser != null) {
 			request.setAttribute("advertiser", advertiser);
 		} else {
@@ -110,6 +106,7 @@ public class AdminOrderController extends PaginationController {
 		try {
 			validateParameters(order);
 			order.setProjectId(getProjectId(request));
+			order.setStatus(CommonStatus.ONLINE);
 			orderService.insertOrder(order);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -140,7 +137,7 @@ public class AdminOrderController extends PaginationController {
 		}
 		Long advertiserId = null;
 		request.setAttribute("isDisplay", isDisplay);
-		setProperty(request, getProjectId(request), advertiserId);
+		// setProperty(request, getProjectId(request), advertiserId);
 		request.setAttribute("categories", ConfigManager.getCategoryMap());
 		request.setAttribute("tagsList", ConstantsManager.getTagsList(ConstantsManager.ADVERTISEMENT));
 		request.setAttribute("itemEdit", order);
