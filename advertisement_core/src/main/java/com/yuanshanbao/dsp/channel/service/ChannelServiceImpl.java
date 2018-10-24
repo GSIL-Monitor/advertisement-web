@@ -1,10 +1,7 @@
 package com.yuanshanbao.dsp.channel.service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +17,6 @@ import com.yuanshanbao.dsp.channel.dao.ChannelDao;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.probability.model.Probability;
-import com.yuanshanbao.dsp.quota.model.Quota;
-import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -32,9 +27,6 @@ public class ChannelServiceImpl implements ChannelService {
 
 	@Autowired
 	private ActivityService activityServcie;
-
-	@Autowired
-	private QuotaService quotaServcie;
 
 	@Override
 	public List<Channel> selectChannels(Channel channel, PageBounds pageBounds) {
@@ -176,50 +168,9 @@ public class ChannelServiceImpl implements ChannelService {
 	}
 
 	// 该渠道下计划进行竞价
-	public Probability channelBidding(List<Probability> list, String channelKey) {
+	public List<Probability> channelBidding(List<Probability> list, String channelKey) {
 		Channel channel = ConfigManager.getChannel(channelKey);
-		// 获得channel成本价
-		BigDecimal cost = channel.getUnitPrice();
-		if (list == null || list.size() == 0) {
-			return null;
-		}
-		List<Long> ids = new ArrayList<Long>();
-		Map<Long, Probability> proMap = new HashMap<Long, Probability>();
-		for (Probability probability : list) {
-			ids.add(probability.getProbabilityId());
-			proMap.put(probability.getProbabilityId(), probability);
-		}
-		Map<Long, Quota> quotaMap = quotaServcie.selectQuotaByProbabilityId(ids);
-		List<Quota> quotaList = (List<Quota>) quotaMap.values();
-		Collections.sort(quotaList, new Comparator<Quota>() {
-			@Override
-			public int compare(Quota o1, Quota o2) {
-				return o2.getBestBid().compareTo(o1.getBestBid());
-			}
-		});
-		Quota quota = quotaList.get(0);
-		if (cost != null && (cost.compareTo(quota.getBestBid())) < 0) {
-			return null;
-		}
-		return proMap.get(quota.getProbabilityId());
-	}
+		// TODO 获得channel成本价
 
-	public static void main(String[] args) {
-		List<Quota> list = new ArrayList<Quota>();
-		for (int i = 0; i < 10; i++) {
-			Quota quota = new Quota();
-			quota.setBestBid(new BigDecimal(Math.random()));
-			list.add(quota);
-		}
-
-		Collections.sort(list, new Comparator<Quota>() {
-			@Override
-			public int compare(Quota o1, Quota o2) {
-				return o2.getBestBid().compareTo(o1.getBestBid());
-			}
-		});
-		for (Quota q : list) {
-			System.err.println(q.getBestBid());
-		}
 	}
 }

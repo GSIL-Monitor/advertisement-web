@@ -38,7 +38,13 @@
 			        "render": function ( data, type, full, meta ) {
 			            return '<a href="${rc.contextPath}/admin/plan/insertWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划添加</a>';
 			       }
-		        }];
+
+			    },{
+					"data": "${functionId}",
+					"render": function ( data, type, full, meta ) {
+						return '<a href="${rc.contextPath}/admin/strategy/strategyWindow.do?${StrategyFunctionId}='+data+'"  class="btn btn-cyan" target="_blank">策略添加</a>';
+					}
+		}];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
 		
 		$('#queryButton').on('click', function(){
@@ -126,6 +132,7 @@
 							<th>修改</th>
 							<th>计划详情</th>
 							<th>添加计划</th>
+                            <th>添加策略</th>
 						</tr>
 					</thead>
 					<tbody>

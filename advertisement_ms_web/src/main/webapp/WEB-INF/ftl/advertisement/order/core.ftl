@@ -2,3 +2,4 @@
 <#assign functionName="order"/>
 <#assign functionTitle="订单"/>
 <#assign functionId="orderId"/>
+<#assign StrategyFunctionId="strategyId"/>

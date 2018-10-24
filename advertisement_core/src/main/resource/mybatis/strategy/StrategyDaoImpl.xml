@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Strategy">
+
+	<resultMap id="strategyMap" type="Strategy">
+		<id property="strategyId" column="strategy_id" jdbcType="INTEGER" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="VARCHAR" />
+		<result property="budget" column="budget" jdbcType="DECIMAL" />
+		<result property="bid" column="bid" jdbcType="CHAR" />
+		<result property="stratTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="stopTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectStatistics" parameterType="Statistics" resultMap="statisticsMap">
+		select
+		* from
+		tb_statistics s
+		<where>
+			<trim suffixOverrides="and">
+				<if test="statisticsId != null">
+					statistics_id=#{statisticsId} and
+				</if>
+				<if test="merchantId != null">
+					merchant_id = #{merchantId} and
+				</if>
+				<if test="productId != null">
+					product_id = #{productId} and
+				</if>
+				<if test="productName != null">
+					product_name = #{productName} and
+				</if>
+				<if test="channel != null">
+					channel = #{channel} and
+				</if>
+				<if test="queryChannel != null">
+					channel like CONCAT(CONCAT('%', #{queryChannel}),'%') and
+				</if>
+				<if test="queryDate != null">
+					date like CONCAT(#{queryDate},'%') and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="date != null">
+					date = #{date} and
+				</if>
+				<if test="channelList != null">
+					channel in
+					<foreach item="id" collection="channelList" open="(" separator="," close=")">
+						#{id}
+					</foreach>
+					and
+				</if>
+				<if test="status != null">
+					status = #{status}
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by date desc, create_time desc
+	</select>
+
+	<select id="selectStatisticsByIds" parameterType="List" resultMap="statisticsMap">
+		select
+		* from
+		tb_statistics
+		<where>
+			statistics_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertStrategy" parameterType="Strategy">
+		insert into
+		tb_strategy(strategy_id,name,type,stratTime,stopTime,budget,bid)
+		values
+		(#{strategyId}, #{name}, #{type}, #{stratTime}, #{stopTime}, #{budget}, #{bid})
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="strategyId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateStatistics" parameterType="statistics">
+		update tb_statistics
+		<set>
+			<trim suffixOverrides=",">
+				<if test="merchantId != null">
+					merchant_id = #{merchantId},
+				</if>
+				<if test="productId != null">
+					product_id = #{productId},
+				</if>
+				<if test="channel != null">
+					channel = #{channel},
+				</if>
+				<if test="pvCount != null">
+					pv_count = #{pvCount},
+				</if>
+				<if test="uvCount != null">
+					uv_count = #{uvCount},
+				</if>
+				<if test="applyCount != null">
+					apply_count = #{applyCount},
+				</if>
+				<if test="registerCount != null">
+					register_count = #{registerCount},
+				</if>
+				<if test="downloadCount != null">
+					download_count = #{downloadCount},
+				</if>
+				<if test="firstLoginCount != null">
+					first_login_count = #{firstLoginCount},
+				</if>
+				<if test="applyUserCount != null">
+					apply_user_count = #{applyUserCount},
+				</if>
+				<if test="applySuccessCount != null">
+					apply_success_count = #{applySuccessCount},
+				</if>
+				<if test="productDetailUvCount != null">
+					product_detail_uv_count = #{productDetailUvCount},
+				</if>
+				<if test="productName != null">
+					product_name = #{productName},
+				</if>
+				<if test="type != null">
+					type = #{type},
+				</if>
+				<if test="date != null">
+					date = #{date},
+				</if>
+				<if test="status != null">
+					status = #{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			statistics_id=#{statisticsId}
+		</where>
+	</update>
+
+	<delete id="deleteStatistics" parameterType="long">
+		delete from tb_statistics
+		where
+		statistics_id=#{statisticsId}
+	</delete>
+
+</mapper>

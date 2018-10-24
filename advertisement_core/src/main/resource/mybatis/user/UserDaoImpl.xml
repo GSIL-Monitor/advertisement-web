@@ -10,6 +10,7 @@
 		<result property="weixinId" column="weixin_id" jdbcType="VARCHAR" />
 		<result property="password" column="password" jdbcType="VARCHAR" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="userName" column="userName" jdbcType="VARCHAR" />
 		<result property="avatar" column="avatar" jdbcType="VARCHAR" />
 		<result property="inviteType" column="invite_type" jdbcType="NUMERIC" />
 		<result property="registerFrom" column="register_from" jdbcType="NUMERIC" />
@@ -17,6 +18,7 @@
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+		<result property="inviteId" column="invite_id" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<resultMap id="loginTokenMap" type="LoginToken">
@@ -173,5 +175,7 @@
 		</where>
 		order by create_time desc
 	</select>
+
+
 
 </mapper>

@@ -368,10 +368,33 @@ public class UserController extends BaseController {
 		}
 
 	}
+	/**
+	 * 添加身份证信息
+	 *
+	 */
+	@ResponseBody
+	@RequestMapping("/identity")
+	public Map<String, Object> identity(HttpServletRequest request, String appId, String params) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
+            String identityNumber = parameterMap.get("identityNumber");
+            String userName = parameterMap.get("userName");
+            if (!ValidateUtil.isIdentityNo(identityNumber)){
+                InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.IDNO_FORMAT_ERROR);
+                return resultMap;
+            }
+
+        }catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
+			return resultMap;
+		}
+		return  resultMap;
+	}
 
 	/**
 	 * 渠道注册
-	 * 
+	 *
 	 * @param request
 	 * @param agent
 	 * @return
@@ -595,6 +618,7 @@ public class UserController extends BaseController {
 		}
 
 	}
+
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(buildUser("3f7aec7e68f3c8cd", "jiaduobao", "13051678321", "123456", "2427"));

@@ -268,6 +268,23 @@ public class ComRetCode {
 	public static final int ORDER_MOBILE_HAS_EXIST_ERROR = 803;
 	public static final String ORDER_MOBILE_HAS_EXIST_ERROR_DESC = "您填写的手机号已经在近期领取过赠险";
 
+
+	/* 804,没有银行卡 */
+	public static final int NO_BANK_CARD = 804;
+	public static final String NO_BANK_CARD_DESC = "您还没有添加银行卡";
+
+	/* 805,没有实名认证 */
+	public static final int NO_IDENTITY = 805;
+	public static final String NO_IDENTITY_DESC = "您还没有实名认证";
+
+	/* 806,验证上次真实姓名 */
+	public static final int NO_USERNAME = 806;
+	public static final String NO_USERNAME_DESC = "姓名与上一次不一致";
+
+	/* 807,验证上次真实姓名 */
+	public static final int NO_AGENCY = 807;
+	public static final String NO_AGENCY_DESC = "抱歉，还没有代理人";
+
 	public static Map<Integer, String> retCodeMap = new LinkedHashMap<Integer, String>();
 
 	static {
