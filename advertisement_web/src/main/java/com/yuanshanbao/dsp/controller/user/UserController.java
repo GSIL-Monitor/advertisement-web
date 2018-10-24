@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +74,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private WeixinService weixinService;
+
+	@Autowired
+	private AgencyService agencyService;
 
 	@ResponseBody
 	@RequestMapping("/login")
@@ -209,7 +214,6 @@ public class UserController extends BaseController {
 			return resultMap;
 		}
 	}
-
 	@ResponseBody
 	@RequestMapping("/weixinLogin")
 	public Map<String, Object> weixinLogin(HttpServletRequest request, HttpServletResponse response, String appId,
@@ -328,13 +332,13 @@ public class UserController extends BaseController {
 
 			// 4.校验短信
 			try {
-				if (StringUtils.isBlank(password)) {
+			/*	if (StringUtils.isBlank(password)) {
 					password = RandomUtil.generateNumberString(8);
 				}
 				if (!VerifyFormatUtil.verifyPasswdFormat(password)) {
 					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.WRONG_PASSOWRD);
 					return resultMap;
-				}
+				}*/
 				User user = userService.selectUserByMobile(mobile);
 				if (user != null) {
 					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.USER_EXIST);
@@ -446,6 +450,14 @@ public class UserController extends BaseController {
 		userService.insertOrUpdateUser(user);
 		user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 		userService.updateUser(user);
+        User inviteUser = userService.selectUserById(user.getInviteUserId());
+        //邀请记录
+		Agency agency = new Agency();
+		agency.setInviteUserId(user.getInviteUserId());
+		agency.setUserId(user.getUserId());
+		agency.setUserName(user.getName());
+		agency.setAgencyName(inviteUser.getName());
+		agencyService.insertAgency(agency);
 
 		BaseInfo baseInfo = new BaseInfo();
 		baseInfo.setUserId(user.getUserId() + "");
@@ -581,6 +593,7 @@ public class UserController extends BaseController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 			return resultMap;
 		}
+
 	}
 
 	public static void main(String[] args) throws Exception {
