@@ -65,6 +65,7 @@
         <typeAlias type="com.yuanshanbao.dsp.apply.model.Apply" alias="Apply"/>
         <typeAlias type="com.yuanshanbao.dsp.order.model.Order" alias="Order"/>
         <typeAlias type="com.yuanshanbao.dsp.agency.model.Agency" alias="Agency"/>
+        <typeAlias type="com.yuanshanbao.dsp.creative.model.Creative" alias="Creative"/>
     </typeAliases>
 
     <mappers>
