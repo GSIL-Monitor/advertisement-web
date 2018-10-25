@@ -15,6 +15,8 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.order.model.Order;
+import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.plan.dao.PlanDao;
 import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.probability.model.Probability;
@@ -29,6 +31,9 @@ public class PlanServiceImpl implements PlanService {
 
 	@Autowired
 	private AdvertiserService advertiserService;
+
+	@Autowired
+	private OrderService orderService;
 
 	@Autowired
 	private ProbabilityService probabilityService;
@@ -79,13 +84,17 @@ public class PlanServiceImpl implements PlanService {
 
 	private List<Plan> setProperty(List<Plan> list) {
 		List<Long> advertiserIds = new ArrayList<Long>();
+		List<Long> orderIds = new ArrayList<Long>();
 		for (Plan plan : list) {
 			advertiserIds.add(plan.getAdvertiserId());
+			orderIds.add(plan.getOrderId());
 		}
 
 		Map<Long, Advertiser> map = advertiserService.selectAdvertiserByIds(advertiserIds);
+		Map<Long, Order> orderMap = orderService.selectOrderByIds(orderIds);
 		for (Plan plan : list) {
 			plan.setAdvertiser(map.get(plan.getAdvertiserId()));
+			plan.setOrder(orderMap.get(plan.getOrderId()));
 		}
 		return list;
 	}

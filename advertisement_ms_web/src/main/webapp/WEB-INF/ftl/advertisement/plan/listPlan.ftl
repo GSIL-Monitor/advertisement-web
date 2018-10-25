@@ -11,7 +11,7 @@
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?orderId=${orderId}";
 		dataTableConfig.columns = [{
-			    	"data": "probabilityId"
+			    	"data": "planId"
 			    },{
 			    	"data": "order.name"
 			    },{

@@ -14,6 +14,7 @@ public class AdvertisementStrategy {
 	private Long advertisementId;
 	private Long advertiserId;
 	private Long probabilityId;
+	private Long planId;
 	private String key;
 	private String value;
 	private String description;
@@ -209,6 +210,14 @@ public class AdvertisementStrategy {
 
 	public void setAdvertiserId(Long advertiserId) {
 		this.advertiserId = advertiserId;
+	}
+
+	public Long getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(Long planId) {
+		this.planId = planId;
 	}
 
 }

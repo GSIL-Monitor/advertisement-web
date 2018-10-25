@@ -23,18 +23,18 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.project.model.Project;
 
-@RequestMapping({ "/platform" })
+@RequestMapping({ "/dsp" })
 @Controller
 public class IndexDspController {
 
 	// dsp请求广告接口
-	@RequestMapping("/{projectKey}/content")
+	@RequestMapping("/content")
 	@ResponseBody
 	public Object getContent(HttpServletRequest request, @RequestBody JSONObject body, HttpServletResponse response,
 			Instance instance, String channel, @PathVariable("projectKey") String projectKey) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			Project project = ConstantsManager.getProjectByKey(projectKey);
+			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
 				Channel channelObject = ConfigManager.getChannel(channel);
 				if (channelObject != null) {

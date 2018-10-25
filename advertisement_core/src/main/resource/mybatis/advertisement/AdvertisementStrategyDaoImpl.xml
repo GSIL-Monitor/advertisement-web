@@ -9,6 +9,7 @@
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
+		<result property="planId" column="plan_id" jdbcType="NUMERIC" />
 		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="functionId" column="function_id" jdbcType="NUMERIC" />
 		<result property="key" column="key" jdbcType="VARCHAR" />
@@ -60,6 +61,9 @@
 				<if test="probabilityId != null">
 					probability_id = #{probabilityId} and
 				</if>
+				<if test="planId != null">
+					plan_id = #{planId} and
+				</if>
 				<if test="key != null">
 					`key` = #{key} and
 				</if>
@@ -102,10 +106,10 @@
 
 	<insert id="insertAdvertisementStrategy" parameterType="AdvertisementStrategy">
 		insert into
-		tb_advertisement_strategy(advertisement_id, project_id, function_id, advertiser_id,probability_id, `key`, `value`, description, type,
+		tb_advertisement_strategy(advertisement_id, project_id, function_id, advertiser_id,probability_id,plan_id, `key`, `value`, description, type,
 		 sort, percent, status, create_time, update_time)
 		values
-		(#{advertisementId}, #{projectId}, #{functionId},#{advertiserId},#{probabilityId}, #{key}, #{value}, #{description}, #{type}, #{sort},
+		(#{advertisementId}, #{projectId}, #{functionId},#{advertiserId},#{probabilityId},#{planId}, #{key}, #{value}, #{description}, #{type}, #{sort},
 		#{percent}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="advertisementStrategyId">
 			SELECT LAST_INSERT_ID()
