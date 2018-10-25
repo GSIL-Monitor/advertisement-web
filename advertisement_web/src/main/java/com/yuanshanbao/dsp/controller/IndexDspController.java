@@ -8,9 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
@@ -28,8 +30,8 @@ public class IndexDspController {
 	// dsp请求广告接口
 	@RequestMapping("/{projectKey}/content")
 	@ResponseBody
-	public Object getContent(HttpServletRequest request, HttpServletResponse response, Instance instance,
-			String channel, @PathVariable("projectKey") String projectKey) {
+	public Object getContent(HttpServletRequest request, @RequestBody JSONObject body, HttpServletResponse response,
+			Instance instance, String channel, @PathVariable("projectKey") String projectKey) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Project project = ConstantsManager.getProjectByKey(projectKey);

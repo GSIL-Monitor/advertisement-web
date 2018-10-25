@@ -13,7 +13,7 @@ public interface BillService {
 
 	public void updateBill(Bill bill);
 
-	public void deleteBill(Bill bill);
+	public void deleteBill(Long billId);
 
 	public List<Bill> selectBill(Bill bill, PageBounds pageBounds);
 
@@ -28,4 +28,7 @@ public interface BillService {
 	public void recharge(Bill bill);
 
 	public void paymentForPlan(Plan plan);
+
+	public void combineProbabilityBill(Plan plan);
+
 }

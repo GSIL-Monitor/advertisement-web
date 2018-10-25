@@ -334,6 +334,19 @@ public class RedisServiceImpl implements RedisService {
 
 	@Override
 	@JedisWay
+	public Double increByDouble(String key, double increaseCount) {
+		try {
+			key = CommonUtil.getCacheKey(key);
+			double result = getJedis().incrByFloat(key, increaseCount);
+			return result;
+		} catch (Exception e) {
+			LoggerUtil.error("Error incrByDouble, key:" + key + " increaseCount:" + increaseCount, e);
+			return null;
+		}
+	}
+
+	@Override
+	@JedisWay
 	public Long hdel(String key, String field) {
 		try {
 			key = CommonUtil.getCacheKey(key);

@@ -25,4 +25,9 @@ public class BillDaoImpl extends BaseDaoImpl implements BillDao {
 	public List<Bill> selectBill(Bill bill, PageBounds pageBounds) {
 		return getSqlSession().selectList("bill.selectBill", bill, pageBounds);
 	}
+
+	@Override
+	public int deleteBill(Long billId) {
+		return getSqlSession().delete("bill.deleteBill", billId);
+	}
 }

@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.SortUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.model.ActivityCombine;
 import com.yuanshanbao.dsp.activity.service.ActivityCombineService;
@@ -295,7 +297,7 @@ public class ConstantsManager {
 		refreshConfigs();
 		refreshProject();
 		refreshAdvertisement();
-		// refreshChannelBidMap();
+		refreshChannelBidMap();
 	}
 
 	private void refreshTagsType() {
@@ -665,40 +667,40 @@ public class ConstantsManager {
 		channelParams.setStatus(CommonStatus.ONLINE);
 		List<Channel> channelList = channelService.selectChannels(channelParams, new PageBounds());
 		Map<String, Map<Long, BigDecimal>> tempChannelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
+		Map<Long, BigDecimal> probabilityBidMap = new TreeMap<Long, BigDecimal>();
 		for (Channel channel : channelList) {
 			Probability proParams = new Probability();
 			proParams.setChannel(channel.getKey());
 			proParams.setStatus(CommonStatus.ONLINE);
 			List<Probability> proList = probabilityService.selectProbabilitys(proParams, new PageBounds());
-			List<Long> proIds = new ArrayList<Long>();
 			for (Probability probability : proList) {
-				proIds.add(probability.getProbabilityId());
-			}
-			Map<Long, Quota> map = quotaService.selectQuotaByProbabilityId(proIds);
-			List<Quota> quotaList = (List<Quota>) map.values();
-			Collections.sort(quotaList, new Comparator<Quota>() {
-				@Override
-				public int compare(Quota o1, Quota o2) {
-					return o2.getBestBid().compareTo(o1.getBestBid());
+				Plan plan = ConfigManager.getPlanById(probability.getPlanId());
+				if (plan != null && plan.getBestBid() != null) {
+					probabilityBidMap.put(probability.getProbabilityId(), plan.getBestBid());
 				}
-			});
+			}
+			Map<Long, BigDecimal> sortMap = SortUtil.sortByValueDescending(probabilityBidMap);
 			// 为每一条计划设置价格
-			Map<Long, BigDecimal> bidMap = setPlanBid(channel, quotaList);
+			Map<Long, BigDecimal> bidMap = setPlanBid(channel, sortMap);
 			tempChannelBidMap.put(channel.getKey(), bidMap);
 		}
 		channelBidMap = tempChannelBidMap;
 	}
 
-	private Map<Long, BigDecimal> setPlanBid(Channel channel, List<Quota> quotaList) {
+	private Map<Long, BigDecimal> setPlanBid(Channel channel, Map<Long, BigDecimal> probabilityBidMap) {
 		Map<Long, BigDecimal> bidMap = new HashMap<Long, BigDecimal>();
-		int size = quotaList.size();
+		List<Long> sortIdList = new ArrayList<Long>();
+		for (Map.Entry<Long, BigDecimal> entry : probabilityBidMap.entrySet()) {
+			sortIdList.add(entry.getKey());
+		}
+		int size = sortIdList.size();
 		for (int i = 0; i < size; i++) {
 			int j = i + 1;
-			if (j > size) {
-				bidMap.put(quotaList.get(i).getProbabilityId(), channel.getUnitPrice());
+			if (j > size - 1) {
+				bidMap.put(sortIdList.get(i), channel.getUnitPrice());
 				break;
 			}
-			bidMap.put(quotaList.get(i).getProbabilityId(), quotaList.get(j).getBestBid());
+			bidMap.put(sortIdList.get(i), probabilityBidMap.get(sortIdList.get(j)));
 		}
 		return bidMap;
 	}

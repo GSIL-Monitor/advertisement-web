@@ -37,6 +37,11 @@
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
+			            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">设置创意</a>';
+			       }
+		        },{
+			    	"data": "${functionId}",
+			        "render": function ( data, type, full, meta ) {
 			            return '<a href="${rc.contextPath}/admin/strategy/strategyWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">添加策略</a>';
 			       }
 		        }];
@@ -127,6 +132,7 @@
 							<th>投放状态</th>
 							<th>查看详情</th>
 							<th>修改</th>
+							<th>设置创意</th>
 							<th>添加策略</th>
 						</tr>
 					</thead>

@@ -94,4 +94,6 @@ public interface RedisService {
 	List<String> mgetWithEnv(String[] keys);
 
 	Double increByFloat(String key, float increaseCount);
+
+	Double increByDouble(String key, double increaseCount);
 }

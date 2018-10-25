@@ -60,18 +60,6 @@
 										</td>
 									</tr>
 									<tr>
-										<td>素材：</td>
-										<td>
-											<div style="width:60%;">
-												<select name="quotaType" class="selectpicker form-control">
-													<#list creativeList as creative>
-														<option value="${creative.creativeId}">${creative.name}</option>
-													</#list>
-												</select>
-											</div>
-										</td>
-									</tr>
-									<tr>
 										<td>结算方式：</td>
 										<td>
 											<div style="width:60%;">

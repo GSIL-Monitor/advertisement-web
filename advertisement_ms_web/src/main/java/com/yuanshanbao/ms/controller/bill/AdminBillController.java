@@ -198,8 +198,8 @@ public class AdminBillController extends PaginationController {
 	}
 
 	@ResponseBody
-	@RequestMapping("/creatOrderBill")
-	public Object creatOrderBill() {
+	@RequestMapping("/createOrderBill")
+	public Object createOrderBill() {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Order order = new Order();
 		order.setStatus(CommonStatus.ONLINE);
@@ -210,6 +210,23 @@ public class AdminBillController extends PaginationController {
 			}
 		} catch (Exception e2) {
 			LoggerUtil.error("calculateCount  function -  error", e2);
+		}
+		return resultMap;
+	}
+
+	@ResponseBody
+	@RequestMapping("/combineProbabilityBill")
+	public Object combineProbabilityBill() {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Plan params = new Plan();
+		params.setStatus(PlanStatus.ONLINE);
+		List<Plan> list = planService.selectPlan(params, new PageBounds());
+		try {
+			for (Plan plan : list) {
+				billService.combineProbabilityBill(plan);
+			}
+		} catch (Exception e2) {
+			LoggerUtil.error("combineProbabilityBill  function -  error", e2);
 		}
 		return resultMap;
 	}

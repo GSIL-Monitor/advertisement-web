@@ -21,6 +21,9 @@ public class Plan {
 	private String url;
 	private String creative;
 	private Integer chargeType;
+	private BigDecimal bestBid;
+	private String allowChannelCategory;
+	private String forbidChannelCategory;
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private Integer status;
@@ -190,5 +193,29 @@ public class Plan {
 
 	public void setChargeType(Integer chargeType) {
 		this.chargeType = chargeType;
+	}
+
+	public String getAllowChannelCategory() {
+		return allowChannelCategory;
+	}
+
+	public void setAllowChannelCategory(String allowChannelCategory) {
+		this.allowChannelCategory = allowChannelCategory;
+	}
+
+	public String getForbidChannelCategory() {
+		return forbidChannelCategory;
+	}
+
+	public void setForbidChannelCategory(String forbidChannelCategory) {
+		this.forbidChannelCategory = forbidChannelCategory;
+	}
+
+	public BigDecimal getBestBid() {
+		return bestBid;
+	}
+
+	public void setBestBid(BigDecimal bestBid) {
+		this.bestBid = bestBid;
 	}
 }

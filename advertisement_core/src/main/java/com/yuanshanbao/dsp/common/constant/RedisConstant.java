@@ -316,12 +316,8 @@ public class RedisConstant {
 	}
 
 	// 计划余额消耗
-	// TODO
-	public static String getPlanBalanceCountKey(String date, Long orderId) {
-		if (StringUtils.isBlank(date)) {
-			date = DateUtils.format(new Date());
-		}
-		return getCachePrefix(PLAN_BALANCE_COUNT, date + "_" + orderId + "");
+	public static String getPlanBalanceCountKey(Long planId) {
+		return getCachePrefix(PLAN_BALANCE_COUNT, planId + "");
 	}
 
 	public static String getPlanLastBalanceCountKey(String date, Long orderId) {

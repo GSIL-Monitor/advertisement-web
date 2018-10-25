@@ -100,9 +100,14 @@ public class BillServiceImpl implements BillService {
 	}
 
 	@Override
-	public void deleteBill(Bill bill) {
-		// TODO Auto-generated method stub
+	public void deleteBill(Long billId) {
+		int result = -1;
 
+		result = billDao.deleteBill(billId);
+
+		if (result < 0) {
+			throw new BusinessException(ComRetCode.FAIL);
+		}
 	}
 
 	@Override
@@ -138,6 +143,7 @@ public class BillServiceImpl implements BillService {
 		Probability params = new Probability();
 		params.setPlanId(plan.getPlanId());
 		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
+		Double money = new Double(0);
 		for (Probability probability : list) {
 			// 总消耗
 			double nowCount = getCount(RedisConstant
@@ -150,8 +156,11 @@ public class BillServiceImpl implements BillService {
 				createBill(plan, probability, difference, BillType.DEDUCTION);
 				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
 						String.valueOf(nowCount));
+				money = money + difference;
 			}
 		}
+		checkPlanBalance(plan, money);
+		redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()), money);
 		Plan resultPlan = planService.selectPlan(plan.getPlanId());
 		if ((plan.getSpend().compareTo(new BigDecimal(0))) < 0) {
 			resultPlan.setStatus(PlanStatus.NOTFUNDS);
@@ -160,6 +169,29 @@ public class BillServiceImpl implements BillService {
 			Probability proParam = new Probability();
 			proParam.setStatus(CommonStatus.ONLINE);
 			// 把在投放的删除
+			List<Probability> probabilityList = probabilityService.selectProbabilitys(proParam, new PageBounds());
+			for (Probability pro : probabilityList) {
+				pro.setStatus(CommonStatus.OFFLINE);
+				probabilityService.updateProbability(pro);
+			}
+		}
+	}
+
+	private void checkPlanBalance(Plan plan, Double money) {
+		if (money <= 0) {
+			return;
+		}
+		Double totalAmount = redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()), money);
+		if (plan.getSpend().compareTo(new BigDecimal(totalAmount)) < 0) {
+			Plan resultPlan = new Plan();
+			resultPlan.setPlanId(plan.getPlanId());
+			resultPlan.setStatus(PlanStatus.NOTFUNDS);
+			// 把计划设置为余额不足
+			planService.updatePlan(resultPlan);
+			// 把在投放的删除
+			Probability proParam = new Probability();
+			proParam.setPlanId(plan.getPlanId());
+			proParam.setStatus(CommonStatus.ONLINE);
 			List<Probability> probabilityList = probabilityService.selectProbabilitys(proParam, new PageBounds());
 			for (Probability pro : probabilityList) {
 				pro.setStatus(CommonStatus.OFFLINE);
@@ -193,13 +225,6 @@ public class BillServiceImpl implements BillService {
 		bill.setType(type);
 		bill.setStatus(CommonStatus.ONLINE);
 		insertBill(bill);
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("planId", probability.getPlanId());
-		parameters.put("difference", bill.getAmount());
-		int result = planDao.cutPayment(parameters);
-		if (result < 0) {
-			throw new BusinessException(ComRetCode.FAIL);
-		}
 	}
 
 	private double getCount(String key) {
@@ -377,5 +402,27 @@ public class BillServiceImpl implements BillService {
 	public void payment(Order order) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void combineProbabilityBill(Plan plan) {
+		Bill billParams = new Bill();
+		billParams.setPlanId(plan.getPlanId());
+		List<Bill> list = selectBill(billParams, new PageBounds());
+		BigDecimal money = new BigDecimal(0);
+		for (Bill bill : list) {
+			money = new BigDecimal(0);
+			money = money.add(bill.getAmount());
+		}
+		if (money.compareTo(new BigDecimal(0)) > 0) {
+			Bill planBill = new Bill();
+			planBill.setAdvertiserId(plan.getAdvertiserId());
+			planBill.setAmount(money);
+			planBill.setPlanId(plan.getPlanId());
+			insertBill(planBill);
+		}
+		for (Bill bill : list) {
+			deleteBill(bill.getBillId());
+		}
 	}
 }

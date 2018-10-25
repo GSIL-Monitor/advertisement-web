@@ -11,4 +11,6 @@ public interface BillDao {
 	public int updateBill(Bill bill);
 
 	public List<Bill> selectBill(Bill bill, PageBounds pageBounds);
+
+	public int deleteBill(Long billId);
 }

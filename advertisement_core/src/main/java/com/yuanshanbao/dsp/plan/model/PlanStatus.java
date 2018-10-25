@@ -16,6 +16,8 @@ public class PlanStatus {
 	public static final String UNREVIEWED_DESCRIPTION = "未审核";
 	public static final int NOTFUNDS = 4;
 	public static final String NOTFUNDS_DESCRIPTION = "余额不足";
+	public static final int UNDERREVIEWED = 5;
+	public static final String UNDERREVIEWED_DESCRIPTION = "审核中";
 	public static final int DELETE = -1;
 	public static final String DELETE_DESCRIPTION = "已删除";
 
