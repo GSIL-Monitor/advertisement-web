@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.advertiser.service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,17 +88,28 @@ public class AdvertiserServiceImpl implements AdvertiserService {
 	@Override
 	public Map<String, Object> countAdvertiserSize(Advertiser advertiser) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<Advertiser> advertisers = this.selectAdvertiser(advertiser,new PageBounds());
+		List<Advertiser> advertisers = this.selectAdvertiser(advertiser, new PageBounds());
 		int count = 0;
-		for(Advertiser adver : advertisers){
-			if(adver.getStatusValue().equals("已冻结")){
-				count ++;
+		for (Advertiser adver : advertisers) {
+			if (adver.getStatusValue().equals("已冻结")) {
+				count++;
 			}
 		}
 		result.put("total", advertisers.size());
 		result.put("use", advertisers.size() - count);
-		result.put("down",count);
+		result.put("down", count);
 		return result;
+	}
+
+	@Override
+	public void cutPayment(Long advertiserId, BigDecimal money) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("advertiserId", advertiserId);
+		parameters.put("difference", money);
+		int result = advertiserDao.cutPayment(parameters);
+		if (result < 0) {
+			throw new BusinessException(ComRetCode.FAIL);
+		}
 	}
 
 }

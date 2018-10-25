@@ -7,6 +7,9 @@ public class Bill {
 	private Long billId;
 	private Long advertiserId;
 	private Long probabilityId;
+	private Long planId;
+	private Long orderId;
+	private String channel;
 	private BigDecimal amount;
 	private String description;
 	private Integer type;
@@ -103,6 +106,30 @@ public class Bill {
 
 	public void setProbabilityId(Long probabilityId) {
 		this.probabilityId = probabilityId;
+	}
+
+	public Long getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(Long planId) {
+		this.planId = planId;
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
 	}
 
 }

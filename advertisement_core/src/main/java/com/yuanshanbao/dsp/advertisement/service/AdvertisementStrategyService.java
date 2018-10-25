@@ -42,4 +42,6 @@ public interface AdvertisementStrategyService {
 	public void updateProbabilityStrategy(HttpServletRequest request, Long probabilityId, Long advertiserId);
 
 	void insertOrUpdateAdvertisementStrategy(AdvertisementStrategy advertisementStrategy);
+
+	public Object selectPlanStrategy(AdvertisementStrategy strategy, PageBounds pageBounds);
 }

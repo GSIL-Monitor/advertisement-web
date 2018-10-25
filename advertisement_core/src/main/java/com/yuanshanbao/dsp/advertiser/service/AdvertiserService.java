@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.advertiser.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -20,5 +21,7 @@ public interface AdvertiserService {
 	public Map<Long, Advertiser> selectAdvertiserByIds(List<Long> advertiserIds);
 
 	public Map<String, Object> countAdvertiserSize(Advertiser advertiser);
+
+	public void cutPayment(Long advertiserId, BigDecimal money);
 
 }

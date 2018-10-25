@@ -389,4 +389,10 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 			}
 		}
 	}
+
+	@Override
+	public Object selectPlanStrategy(AdvertisementStrategy strategy, PageBounds pageBounds) {
+		List<AdvertisementStrategy> list = strategyDao.selectPlanStrategy(strategy, new PageBounds());
+		return null;
+	}
 }

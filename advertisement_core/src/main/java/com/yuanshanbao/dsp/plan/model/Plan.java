@@ -1,4 +1,4 @@
-package com.yuanshanbao.dsp.probability.model;
+package com.yuanshanbao.dsp.plan.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -9,28 +9,20 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.order.model.Order;
-import com.yuanshanbao.dsp.plan.model.Plan;
 
-public class Probability {
+public class Plan {
 
-	private Long probabilityId;
-	private Long projectId;
-	private Long activityId;
-	private Long orderId;
 	private Long planId;
+	private Long projectId;
+	private Long orderId;
 	private Long advertiserId;
-	private Long positionId;
 	private BigDecimal spend;
-	private String channel;
 	private String name;
-	private Long advertisementId;
-	private Double probability;
 	private String url;
 	private String creative;
-	private Integer sort;
+	private Integer chargeType;
 	private Timestamp startTime;
 	private Timestamp endTime;
-	private Integer displayType;
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
@@ -39,15 +31,6 @@ public class Probability {
 	private Channel channelObject;
 	private Order order;
 	private Advertiser advertiser;
-	private Plan plan;
-
-	public Long getProbabilityId() {
-		return probabilityId;
-	}
-
-	public void setProbabilityId(Long probabilityId) {
-		this.probabilityId = probabilityId;
-	}
 
 	public Long getProjectId() {
 		return projectId;
@@ -55,54 +38,6 @@ public class Probability {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
-	}
-
-	public Long getActivityId() {
-		return activityId;
-	}
-
-	public void setActivityId(Long activityId) {
-		this.activityId = activityId;
-	}
-
-	public String getChannel() {
-		return channel;
-	}
-
-	public void setChannel(String channel) {
-		this.channel = channel;
-	}
-
-	public Long getAdvertisementId() {
-		return advertisementId;
-	}
-
-	public void setAdvertisementId(Long advertisementId) {
-		this.advertisementId = advertisementId;
-	}
-
-	public Long getPositionId() {
-		return positionId;
-	}
-
-	public void setPositionId(Long positionId) {
-		this.positionId = positionId;
-	}
-
-	public Integer getSort() {
-		return sort;
-	}
-
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
-
-	public Double getProbability() {
-		return probability;
-	}
-
-	public void setProbability(Double probability) {
-		this.probability = probability;
 	}
 
 	public Timestamp getStartTime() {
@@ -185,14 +120,6 @@ public class Probability {
 		this.advertiserId = advertiserId;
 	}
 
-	public Integer getDisplayType() {
-		return displayType;
-	}
-
-	public void setDisplayType(Integer displayType) {
-		this.displayType = displayType;
-	}
-
 	public Long getOrderId() {
 		return orderId;
 	}
@@ -257,11 +184,11 @@ public class Probability {
 		this.planId = planId;
 	}
 
-	public Plan getPlan() {
-		return plan;
+	public Integer getChargeType() {
+		return chargeType;
 	}
 
-	public void setPlan(Plan plan) {
-		this.plan = plan;
+	public void setChargeType(Integer chargeType) {
+		this.chargeType = chargeType;
 	}
 }

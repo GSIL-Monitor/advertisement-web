@@ -51,6 +51,7 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 
 	private static final String PAGE_VIEW = "advertisement/strategy/viewStrategy";
 	private static final String PAGE_STRATEGY = "advertisement/strategy/strategy";
+	private static final String PAGE_PLAN_STRATEGY_LIST = "advertisement/strategy/listPlanStrategy";
 
 	@Autowired
 	private AdvertisementStrategyService strategyService;
@@ -247,6 +248,28 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 			LoggerUtil.error("", e);
 		}
 		return result;
+	}
+
+	@RequestMapping("/strategyList.do")
+	public String strategyList(Long probabilityId, ModelMap modelMap, HttpServletRequest request,
+			HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
+		}
+		Map<String, String> map = ConfigManager.getStrategyMap(probabilityId);
+		request.setAttribute("strategyValue", map);
+		request.setAttribute("probabilityId", probabilityId);
+		return PAGE_PLAN_STRATEGY_LIST;
+	}
+
+	@ResponseBody
+	@RequestMapping("/strategyQuery.do")
+	public Object strategyQuery(AdvertisementStrategy strategy, ModelMap modelMap, HttpServletRequest request,
+			String range, HttpServletResponse response) {
+		Object object = strategyService.selectPlanStrategy(strategy, getPageBounds(range, request));
+		PageList pageList = (PageList) object;
+		return setPageInfo(request, response, pageList);
 	}
 
 }

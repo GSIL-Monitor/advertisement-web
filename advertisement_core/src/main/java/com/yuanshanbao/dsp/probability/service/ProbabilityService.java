@@ -43,4 +43,6 @@ public interface ProbabilityService {
 	public Probability pickSubPrize(List<Probability> probabilityList, List<Long> pickedPrizeIdList);
 
 	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds);
+
+	public Probability pickProbabilityByPlan(HttpServletRequest request, Long projectId, String channel);
 }

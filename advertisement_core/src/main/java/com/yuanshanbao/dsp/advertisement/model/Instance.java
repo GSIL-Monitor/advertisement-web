@@ -9,10 +9,12 @@ public class Instance {
 	private String deviceType;
 	private String deviceId;
 	private String mac;
+	private String ip;
 	private String coordinate;
 	private String positionKey;
 	private String province;
 	private String city;
+	private String mobile;
 
 	private String channel;
 	private Long activityId;
@@ -127,5 +129,21 @@ public class Instance {
 
 	public void setActivityId(Long activityId) {
 		this.activityId = activityId;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 }

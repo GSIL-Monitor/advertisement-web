@@ -42,6 +42,8 @@ import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.page.model.Page;
 import com.yuanshanbao.dsp.page.service.PageService;
+import com.yuanshanbao.dsp.plan.model.Plan;
+import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
@@ -90,6 +92,8 @@ public class ConstantsManager {
 	private static Map<Long, List<Probability>> probabilityMap = new HashMap<Long, List<Probability>>();
 	private static Map<Long, List<Quota>> quotaMap = new HashMap<Long, List<Quota>>();
 	private static Map<Long, List<AdvertisementStrategy>> strategyMap = new HashMap<Long, List<AdvertisementStrategy>>();
+	private static Map<String, Map<Long, BigDecimal>> channelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
+
 	private static ConstantsManager instance = null;
 
 	@Resource
@@ -148,6 +152,9 @@ public class ConstantsManager {
 
 	@Resource
 	private ActivityCombineService activityCombineService;
+
+	@Resource
+	private PlanService planService;
 
 	public static boolean validateConstants(long[] types, Long id) {
 		for (long type : types) {
@@ -288,6 +295,7 @@ public class ConstantsManager {
 		refreshConfigs();
 		refreshProject();
 		refreshAdvertisement();
+		// refreshChannelBidMap();
 	}
 
 	private void refreshTagsType() {
@@ -328,6 +336,7 @@ public class ConstantsManager {
 		ProductCategory productCategoryParam = new ProductCategory();
 		ActivityCombine acCombineParam = new ActivityCombine();
 		acCombineParam.setStatus(CommonStatus.ONLINE);
+		Plan plan = new Plan();
 
 		PageBounds pageBounds = new PageBounds();
 		ConfigManager.refreshConfig(channelService.selectChannels(channelParam, pageBounds),
@@ -340,7 +349,8 @@ public class ConstantsManager {
 				advertisementStrategyService.selectAdvertisementStrategy(strategyParam, pageBounds),
 				advertisementCategoryService.selectCategory(adCategoryParam, pageBounds),
 				productCategoryService.selectProductCategorys(productCategoryParam, pageBounds),
-				activityCombineService.selectActivityCombine(acCombineParam, pageBounds));
+				activityCombineService.selectActivityCombine(acCombineParam, pageBounds),
+				planService.selectPlan(plan, pageBounds));
 	}
 
 	private void refreshLocationMap() {
@@ -644,12 +654,17 @@ public class ConstantsManager {
 		}
 		return map.get(positionKey);
 	}
-	
-	public Map<String, Map<Long, BigDecimal>> getChannelAllBid() {
+
+	public static Map<Long, BigDecimal> getBidByChannel(String channel) {
+		Map<Long, BigDecimal> map = channelBidMap.get(channel);
+		return map;
+	}
+
+	private void refreshChannelBidMap() {
 		Channel channelParams = new Channel();
 		channelParams.setStatus(CommonStatus.ONLINE);
 		List<Channel> channelList = channelService.selectChannels(channelParams, new PageBounds());
-		Map<String, Map<Long, BigDecimal>> channelCostMap = new HashMap<String, Map<Long, BigDecimal>>();
+		Map<String, Map<Long, BigDecimal>> tempChannelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
 		for (Channel channel : channelList) {
 			Probability proParams = new Probability();
 			proParams.setChannel(channel.getKey());
@@ -669,9 +684,9 @@ public class ConstantsManager {
 			});
 			// 为每一条计划设置价格
 			Map<Long, BigDecimal> bidMap = setPlanBid(channel, quotaList);
-			channelCostMap.put(channel.getKey(), bidMap);
+			tempChannelBidMap.put(channel.getKey(), bidMap);
 		}
-		return channelCostMap;
+		channelBidMap = tempChannelBidMap;
 	}
 
 	private Map<Long, BigDecimal> setPlanBid(Channel channel, List<Quota> quotaList) {

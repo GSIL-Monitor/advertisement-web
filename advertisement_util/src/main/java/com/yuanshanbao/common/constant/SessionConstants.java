@@ -39,6 +39,8 @@ public class SessionConstants {
 
 	public static final String SESSION_ADVERTISEMENT_SHOW = "session_advertisement_show";
 
+	public static final String SESSION_PLAN_CLICK = "session_plan_click";
+
 	public static final String SESSION_PRODUCT_DETAIL_CLICK = "session_product_detail_click";
 
 	public static final String SESSION_PRODUCT_APPLY_CLICK = "session_product_apply_click";

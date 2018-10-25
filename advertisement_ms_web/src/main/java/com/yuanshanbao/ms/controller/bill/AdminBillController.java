@@ -26,7 +26,9 @@ import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
-import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.plan.model.Plan;
+import com.yuanshanbao.dsp.plan.model.PlanStatus;
+import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -53,6 +55,9 @@ public class AdminBillController extends PaginationController {
 
 	@Autowired
 	private AdvertiserService advertiserService;
+
+	@Autowired
+	private PlanService planService;
 
 	@RequestMapping("/banlanceList.do")
 	public String banlanceList() {
@@ -137,12 +142,12 @@ public class AdminBillController extends PaginationController {
 	@RequestMapping("/creatPlanBill")
 	public Object creatPlanBill() {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		Probability probability = new Probability();
-		probability.setStatus(CommonStatus.ONLINE);
-		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
+		Plan param = new Plan();
+		param.setStatus(PlanStatus.ONLINE);
+		List<Plan> list = planService.selectPlan(param, new PageBounds());
 		try {
-			for (Probability pro : list) {
-				billService.paymentForPlan(pro);
+			for (Plan plan : list) {
+				billService.paymentForPlan(plan);
 			}
 		} catch (Exception e2) {
 			LoggerUtil.error("creatPlanBill  function -  error", e2);
@@ -208,4 +213,5 @@ public class AdminBillController extends PaginationController {
 		}
 		return resultMap;
 	}
+
 }

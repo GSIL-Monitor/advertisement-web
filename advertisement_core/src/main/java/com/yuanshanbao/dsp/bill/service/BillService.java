@@ -5,7 +5,7 @@ import java.util.List;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.bill.model.Bill;
 import com.yuanshanbao.dsp.order.model.Order;
-import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface BillService {
@@ -27,5 +27,5 @@ public interface BillService {
 
 	public void recharge(Bill bill);
 
-	public void paymentForPlan(Probability probability);
+	public void paymentForPlan(Plan plan);
 }

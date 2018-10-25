@@ -23,6 +23,7 @@ import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.model.KeyValuePair;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.page.model.Page;
+import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
 
 @Service
@@ -58,10 +59,12 @@ public class ConfigManager implements ConfigConstants {
 
 	protected static Map<Long, List<ActivityCombine>> activityCombineMap = new LinkedHashMap<Long, List<ActivityCombine>>();
 
+	protected static Map<Long, Plan> planMap = new LinkedHashMap<Long, Plan>();
+
 	public static void refreshConfig(List<Channel> channels, List<Activity> activitys, List<Merchant> merchants,
 			List<Page> pages, List<Function> functions, List<Config> configs, List<Advertisement> advertisements,
 			List<AdvertisementStrategy> advertisementStrategies, List<AdvertisementCategory> advertisementCategories,
-			List<ProductCategory> productCategorys, List<ActivityCombine> activityCombines) {
+			List<ProductCategory> productCategorys, List<ActivityCombine> activityCombines, List<Plan> plans) {
 		Map<String, Channel> tempChannelMap = new LinkedHashMap<String, Channel>();
 		if (channels != null) {
 			for (Channel channel : channels) {
@@ -157,6 +160,15 @@ public class ConfigManager implements ConfigConstants {
 			}
 			activityCombineMap = tempActivityCombineMap;
 		}
+
+		Map<Long, Plan> tempPlanMap = new HashMap<Long, Plan>();
+		if (plans != null) {
+			for (Plan plan : plans) {
+				tempPlanMap.put(plan.getPlanId(), plan);
+			}
+			planMap = tempPlanMap;
+		}
+
 	}
 
 	public static void setConfigMap(Map<String, Object> resultMap, Long activityId, String channel) {
@@ -489,5 +501,9 @@ public class ConfigManager implements ConfigConstants {
 			}
 		}
 		return strategyMap;
+	}
+
+	public static Plan getPlanById(Long id) {
+		return planMap.get(id);
 	}
 }

@@ -7,11 +7,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.bill.model.Bill;
+import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.order.dao.OrderDao;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -25,13 +28,30 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private AdvertiserService advertiserService;
 
+	@Autowired
+	private BillService billService;
+
 	@Override
+	@Transactional
 	public void insertOrder(Order order) {
+		// 验证余额
+		checkAdvertiserBalance(order);
+		Bill bill = new Bill();
+		bill.setAdvertiserId(order.getAdvertiserId());
+		bill.setAmount(order.getAmount());
+		billService.insertBill(bill);
+		advertiserService.cutPayment(order.getAdvertiserId(), order.getAmount());
+
 		int result = -1;
-
 		result = orderDao.insertOrder(order);
-
 		if (result < 0) {
+			throw new BusinessException(ComRetCode.FAIL);
+		}
+	}
+
+	private void checkAdvertiserBalance(Order order) {
+		Advertiser advertiser = advertiserService.selectAdvertiser(order.getAdvertiserId());
+		if (advertiser.getBalance().compareTo(order.getAmount()) < 0) {
 			throw new BusinessException(ComRetCode.FAIL);
 		}
 	}

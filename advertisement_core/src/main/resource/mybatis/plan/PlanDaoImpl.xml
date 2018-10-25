@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="plan">
+
+	<resultMap id="planMap" type="Plan">
+		<id property="planId" column="plan_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
+		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
+		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="spend" column="spend" jdbcType="NUMERIC" />
+		<result property="creative" column="creative" jdbcType="VARCHAR" />
+		<result property="bestBid" column="best_bid" jdbcType="NUMERIC" />
+		<result property="chargeType" column="charge_type" jdbcType="NUMERIC" />
+		<result property="allowChannelCategory" column="allow_channel_category" jdbcType="VARCHAR" />
+		<result property="forbidChannelCategory" column="forbid_channel_category" jdbcType="VARCHAR" />
+		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
+		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectPlan" parameterType="Plan"
+		resultMap="planMap">
+		select
+		* from
+		tb_plan
+		<where>
+			<trim suffixOverrides="and">
+				<if test="planId != null">
+					plan_id = #{planId} and
+				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
+				</if>
+				<if test="orderId != null">
+					order_id = #{orderId} and
+				</if>
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
+				</if>
+				<if test="name != null">
+					name = #{name} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time  desc
+	</select>
+
+	<select id="selectPlanByIds" parameterType="List"
+		resultMap="planMap">
+		select
+		* from
+		tb_plan
+		<where>
+			plan_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
+
+	<insert id="insertPlan" parameterType="Plan">
+		insert into
+		tb_plan(project_id, advertiser_id,order_id,name,
+		spend,creative,best_bid,charge_type, allow_channel_category,
+		forbid_channel_category,start_time, end_time,status, 
+		create_time, update_time)
+		values
+		(#{projectId}, #{advertiserId},#{orderId}, #{name},
+		 #{spend}, #{creative}, #{bestBid},  #{chargeType},  #{allowChannelCategory}, 
+		 #{forbidChannelCategory}, #{startTime}, #{endTime}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="planId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updatePlan" parameterType="Plan">
+		update tb_plan
+		<set>
+			<trim suffixOverrides=",">
+				<if test="projectId != null">
+					project_id=#{projectId},
+				</if>
+				
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="bestBid != null">
+					best_bid=#{bestBid},
+				</if>
+				<if test="spend != null">
+					spend=#{spend},
+				</if>
+				<if test="creative != null">
+					creative=#{creative},
+				</if>
+				<if test="allowChannelCategory != null">
+					allow_channel_category=#{allowChannelCategory},
+				</if>
+				<if test="forbidChannelCategory != null">
+					forbid_channel_category=#{forbidChannelCategory},
+				</if>
+				<if test="startTime != null">
+					start_time=#{startTime},
+				</if>
+				<if test="endTime != null">
+					end_time=#{endTime},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			plan_id=#{planId}
+		</where>
+	</update>
+
+	<select id="selectPlanByOrderIds" parameterType="List"
+		resultMap="planMap">
+		select
+		* from
+		tb_plan
+		<where>
+			order_id in
+			<foreach item="id" collection="list" open="(" separator=","
+				close=")">
+				#{id}
+			</foreach>
+			and status != -1
+		</where>
+	</select>
+
+	<delete id="deletePlan" parameterType="long">
+		delete from
+		tb_plan
+		where
+		plan_id=#{planId}
+	</delete>
+
+	<update id="cutPayment" parameterType="map">
+		update tb_plan
+		set
+		spend = spend - #{amount, jdbcType=NUMERIC}
+		where
+		plan_id = #{planId, jdbcType=INTEGER} 
+	</update>
+</mapper>

@@ -63,13 +63,19 @@ public class RedisConstant {
 	private static final String ACTIVITY_COUNT = "activity_count" + COMMON_REDIS_PREFIX;
 
 	// dsp
-	public static final String PLAN_SHOW_COUNT = "plan_show_count" + COMMON_REDIS_PREFIX;
-	public static final String PLAN_CLICK_COUNT = "plan_click_count" + COMMON_REDIS_PREFIX;
-	public static final String PLAN_LAST_SHOW_COUNT = "plan_last_show_count" + COMMON_REDIS_PREFIX;
-	public static final String PLAN_LAST_CLICK_COUNT = "plan_last_click_count" + COMMON_REDIS_PREFIX;
+	public static final String PROBABILITY_SHOW_COUNT = "probability_show_count" + COMMON_REDIS_PREFIX;
+	public static final String PROBABILITY_CLICK_COUNT = "probability_click_count" + COMMON_REDIS_PREFIX;
+	public static final String PROBABILITY_LAST_SHOW_COUNT = "probability_last_show_count" + COMMON_REDIS_PREFIX;
+	public static final String PROBABILITY_LAST_CLICK_COUNT = "probability_last_click_count" + COMMON_REDIS_PREFIX;
+	// 具体消耗
+	public static final String PROBABILITY_BALANCE_COUNT = "probability_balance_count" + COMMON_REDIS_PREFIX;
+	public static final String PROBABILITY_LAST_BALANCE_COUNT = "probability_last_balance_count" + COMMON_REDIS_PREFIX;
 	// 计划余额
 	public static final String PLAN_BALANCE_COUNT = "plan_balance_count" + COMMON_REDIS_PREFIX;
 	public static final String PLAN_LAST_BALANCE_COUNT = "plan_last_balance_count" + COMMON_REDIS_PREFIX;
+
+	// 各个渠道计划的ctr
+	public static final String PROBABILITY_CHANNEL_CTR = "probability_channel_ctr" + COMMON_REDIS_PREFIX;
 
 	// token过期时间
 	public static int EXPIRE_LOGIN_TOKEN = IniCache.getIniIntValue(IniConstant.TOKEN_CACHE_TIME, 24 * 60 * 60);
@@ -279,6 +285,21 @@ public class RedisConstant {
 		return getCachePrefix(ADVERTISER_LAST_BALANCE_COUNT, date + "_" + advertiserId + "");
 	}
 
+	// 具体消耗
+	public static String getProbabilityBalanceCountKey(String date, Long probabilityId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(PROBABILITY_BALANCE_COUNT, date + "_" + probabilityId + "");
+	}
+
+	public static String getProbabilityLastBalanceCountKey(String date, Long probabilityId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(PROBABILITY_LAST_BALANCE_COUNT, date + "_" + probabilityId + "");
+	}
+
 	// 订单余额消耗
 	public static String getOrderBalanceCountKey(String date, Long orderId) {
 		if (StringUtils.isBlank(date)) {
@@ -311,33 +332,33 @@ public class RedisConstant {
 	}
 
 	// -------------------------------------------------------------------------
-	public static String getPlanClickCountKey(String date, Long probability) {
+	public static String getProbabilityClickCountKey(String date, Long probability) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
-		return getCachePrefix(PLAN_CLICK_COUNT, date + "_" + probability + "");
+		return getCachePrefix(PROBABILITY_CLICK_COUNT, date + "_" + probability + "");
 	}
 
-	public static String getPlanLastClickCountKey(String date, Long probability) {
+	public static String getProbabilityLastClickCountKey(String date, Long probability) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
-		return getCachePrefix(PLAN_LAST_CLICK_COUNT, date + "_" + probability + "");
+		return getCachePrefix(PROBABILITY_LAST_CLICK_COUNT, date + "_" + probability + "");
 	}
 
 	// -------------------------------------------------------------------------
-	public static String getPlanShowCountKey(String date, Long probability) {
+	public static String getProbabilityShowCountKey(String date, Long probability) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
-		return getCachePrefix(PLAN_SHOW_COUNT, date + "_" + probability + "");
+		return getCachePrefix(PROBABILITY_SHOW_COUNT, date + "_" + probability + "");
 	}
 
-	public static String getPlanLastShowCountKey(String date, Long probability) {
+	public static String getProbabilityLastShowCountKey(String date, Long probability) {
 		if (StringUtils.isBlank(date)) {
 			date = DateUtils.format(new Date());
 		}
-		return getCachePrefix(PLAN_LAST_SHOW_COUNT, date + "_" + probability + "");
+		return getCachePrefix(PROBABILITY_LAST_SHOW_COUNT, date + "_" + probability + "");
 	}
 
 	public static String getApplyShowCountKey() {
@@ -369,5 +390,9 @@ public class RedisConstant {
 
 	public static String getReverseShowCountKey(String key, String activityKey) {
 		return getCachePrefix(REVERSE_SHOW_COUNT, key + "_" + activityKey);
+	}
+
+	public static String getProbabilityChannelCTRKey(Long probabilityId) {
+		return getCachePrefix(PROBABILITY_CHANNEL_CTR, probabilityId + "");
 	}
 }

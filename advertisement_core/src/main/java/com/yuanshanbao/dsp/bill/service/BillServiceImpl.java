@@ -29,6 +29,10 @@ import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
+import com.yuanshanbao.dsp.plan.dao.PlanDao;
+import com.yuanshanbao.dsp.plan.model.Plan;
+import com.yuanshanbao.dsp.plan.model.PlanStatus;
+import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.probability.dao.ProbabilityDao;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
@@ -56,6 +60,7 @@ public class BillServiceImpl implements BillService {
 
 	@Autowired
 	private AdvertiserService advertiserService;
+
 	@Autowired
 	private ProbabilityService probabilityService;
 
@@ -66,10 +71,16 @@ public class BillServiceImpl implements BillService {
 	private ChannelService channelService;
 
 	@Autowired
+	private PlanService planService;
+
+	@Autowired
 	private AdvertiserDao advertiserDao;
 
 	@Autowired
 	private ProbabilityDao probabilityDao;
+
+	@Autowired
+	private PlanDao planDao;
 
 	@Override
 	public void insertBill(Bill bill) {
@@ -106,6 +117,7 @@ public class BillServiceImpl implements BillService {
 
 	@Transactional
 	@Override
+	// 广告主扣费
 	public void payment(Advertiser advertiser) {
 		// 总消耗
 		double nowCount = getCount(RedisConstant.getAdvertiserBalanceCountKey(null, advertiser.getAdvertiserId()));
@@ -121,16 +133,38 @@ public class BillServiceImpl implements BillService {
 
 	@Transactional
 	@Override
-	public void paymentForPlan(Probability probability) {
-		// 总消耗
-		double nowCount = getCount(RedisConstant.getPlanBalanceCountKey(null, probability.getProbabilityId()));
-		// 上次操作扣费时消耗的数量
-		double lastCount = getCount(RedisConstant.getPlanLastBalanceCountKey(null, probability.getProbabilityId()));
-		double difference = nowCount - lastCount;
-		if (difference > 0) {
-			createBill(probability, difference, BillType.DEDUCTION);
-			redisService.set(RedisConstant.getPlanLastBalanceCountKey(null, probability.getProbabilityId()),
-					String.valueOf(nowCount));
+	// 按计划扣费
+	public void paymentForPlan(Plan plan) {
+		Probability params = new Probability();
+		params.setPlanId(plan.getPlanId());
+		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
+		for (Probability probability : list) {
+			// 总消耗
+			double nowCount = getCount(RedisConstant
+					.getProbabilityBalanceCountKey(null, probability.getProbabilityId()));
+			// 上次操作扣费时消耗的数量
+			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
+					probability.getProbabilityId()));
+			double difference = nowCount - lastCount;
+			if (difference > 0) {
+				createBill(plan, probability, difference, BillType.DEDUCTION);
+				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
+						String.valueOf(nowCount));
+			}
+		}
+		Plan resultPlan = planService.selectPlan(plan.getPlanId());
+		if ((plan.getSpend().compareTo(new BigDecimal(0))) < 0) {
+			resultPlan.setStatus(PlanStatus.NOTFUNDS);
+			// 把计划设置为余额不足
+			planService.updatePlan(resultPlan);
+			Probability proParam = new Probability();
+			proParam.setStatus(CommonStatus.ONLINE);
+			// 把在投放的删除
+			List<Probability> probabilityList = probabilityService.selectProbabilitys(proParam, new PageBounds());
+			for (Probability pro : probabilityList) {
+				pro.setStatus(CommonStatus.OFFLINE);
+				probabilityService.updateProbability(pro);
+			}
 		}
 	}
 
@@ -150,28 +184,21 @@ public class BillServiceImpl implements BillService {
 		}
 	}
 
-	public void createBill(Probability probability, double difference, int type) {
+	public void createBill(Plan plan, Probability probability, double difference, int type) {
 		Bill bill = new Bill();
-		bill.setProbabilityId(probability.getProbabilityId());
+		bill.setPlanId(probability.getPlanId());
+		bill.setAdvertiserId(plan.getAdvertiserId());
 		bill.setAmount(BigDecimal.valueOf(difference));
+		bill.setChannel(probability.getChannel());
 		bill.setType(type);
 		bill.setStatus(CommonStatus.ONLINE);
 		insertBill(bill);
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("probabilityId", probability.getProbabilityId());
+		parameters.put("planId", probability.getPlanId());
 		parameters.put("difference", bill.getAmount());
-		int result = probabilityDao.cutPayment(parameters);
+		int result = planDao.cutPayment(parameters);
 		if (result < 0) {
 			throw new BusinessException(ComRetCode.FAIL);
-		}
-		// 对余额判断,
-		Probability resultProbability = probabilityService.selectProbability(probability.getProbabilityId());
-		if ((resultProbability.getSpend().compareTo(new BigDecimal(0))) < 0) {
-			// 计划如果多扣费了，应该再次从order表里扣费
-			Probability updateProbability = new Probability();
-			updateProbability.setProbabilityId(resultProbability.getProbabilityId());
-			updateProbability.setStatus(CommonStatus.OFFLINE);
-			probabilityService.updateProbability(updateProbability);
 		}
 	}
 
@@ -298,39 +325,50 @@ public class BillServiceImpl implements BillService {
 
 	public void calculateByPlan(String date) {
 		Map<String, Map<Long, BigDecimal>> channelCostMap = getChannelAllBid();
-		Order param = new Order();
+		Plan param = new Plan();
 		param.setStatus(CommonStatus.ONLINE);
-		List<Order> orderList = orderService.selectOrder(param, new PageBounds());
 		BigDecimal money = null;
 		Integer count = 0;
-		for (Order order : orderList) {
-			Quota quoParam = new Quota();
-			quoParam.setOrderId(order.getOrderId());
-			quoParam.setStatus(CommonStatus.ONLINE);
-			List<Quota> quoList = quotaService.selectQuota(quoParam, new PageBounds());
-			for (Quota quota : quoList) {
-				money = new BigDecimal(0);
-				QuotaOperationFactory factory = QuotaType.getCountFactory(quota.getType());
+		List<Plan> planList = planService.selectPlan(param, new PageBounds());
+		for (Plan plan : planList) {
+			Probability paramsPro = new Probability();
+			paramsPro.setPlanId(plan.getPlanId());
+			paramsPro.setStatus(CommonStatus.ONLINE);
+			List<Probability> probabilityList = probabilityService.selectProbabilitys(paramsPro, new PageBounds());
+			money = new BigDecimal(0);
+			for (Probability probability : probabilityList) {
+				count = 0;
+				QuotaOperationFactory factory = QuotaType.getCountFactory(plan.getChargeType());
 				AdvertisementOperation operation = factory.getOperation();
-				operation.setQuota(quota);
 				operation.setRedisCacheService(redisCacheService);
-				String countValue = operation.getResult();
+				String countValue = operation.getProbabilityResult();
 				// 竞价信息随时改变，因此不能按照所有数量进行计算
 				if (ValidateUtil.isNumber(countValue)) {
 					Integer currentCount = Integer.parseInt(countValue);
 					Integer lastCount = getClickOrShowCount(RedisConstant.getPlanLastBalanceCountKey(date,
-							quota.getProbabilityId()));
+							probability.getProbabilityId()));
 					count = currentCount - lastCount;
-				}
-				// 获取竞价信息
-				Map<Long, BigDecimal> proCostMap = channelCostMap.get(quota.getChannel());
-				if (proCostMap != null) {
-					if (proCostMap.get(quota.getProbabilityId()) != null) {
-						money = proCostMap.get(quota.getProbabilityId()).multiply(BigDecimal.valueOf(count));
+					// 获取竞价信息
+					Map<Long, BigDecimal> proCostMap = channelCostMap.get(probability.getChannel());
+					if (proCostMap != null) {
+						if (proCostMap.get(probability.getProbabilityId()) != null) {
+							money = proCostMap.get(probability.getProbabilityId()).multiply(BigDecimal.valueOf(count));
+							String proMoneyValue = redisService.get(RedisConstant.getProbabilityBalanceCountKey(date,
+									probability.getProbabilityId()));
+							if (ValidateUtil.isNumber(proMoneyValue)) {
+								BigDecimal proMoney = new BigDecimal(proMoneyValue);
+								proMoney = proMoney.add(money);
+								redisService.set(
+										RedisConstant.getProbabilityBalanceCountKey(date,
+												probability.getProbabilityId()), String.valueOf(proMoney));
+							} else {
+								redisService.set(
+										RedisConstant.getProbabilityBalanceCountKey(date,
+												probability.getProbabilityId()), String.valueOf(money));
+							}
+						}
 					}
 				}
-				redisService.set(RedisConstant.getPlanBalanceCountKey(date, quota.getProbabilityId()),
-						String.valueOf(money));
 			}
 		}
 	}

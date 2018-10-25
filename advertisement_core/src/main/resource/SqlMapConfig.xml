@@ -66,6 +66,7 @@
         <typeAlias type="com.yuanshanbao.dsp.order.model.Order" alias="Order"/>
         <typeAlias type="com.yuanshanbao.dsp.agency.model.Agency" alias="Agency"/>
         <typeAlias type="com.yuanshanbao.dsp.creative.model.Creative" alias="Creative"/>
+        <typeAlias type="com.yuanshanbao.dsp.plan.model.Plan" alias="Plan"/>
     </typeAliases>
 
     <mappers>
@@ -124,5 +125,6 @@
 
         <mapper resource="mybatis/agency/AgencyDaoImpl.xml"/>
         <mapper resource="mybatis/creative/CreativeDaoImpl.xml"/>
+        <mapper resource="mybatis/plan/PlanDaoImpl.xml"/>
     </mappers>
 </configuration>
