@@ -31,4 +31,6 @@ public interface BillService {
 
 	public void combineProbabilityBill(Plan plan);
 
+	public Bill selectAdvertiserConsume(Bill bill);
+
 }

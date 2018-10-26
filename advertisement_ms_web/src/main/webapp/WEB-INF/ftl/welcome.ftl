@@ -69,12 +69,12 @@ $(document).ready(function(){
                     </div>
                     <div class="widget-content nopadding">
                         <ul class="widget-lists clearfix">
-                            <li>余额：<p>${}</p></li>
-                            <li>今日消耗：<p>${}</p></li>
-                            <li>昨日消耗：<p>${}</p></li>
-                            <li>7日消费：<p>${}</p></li>
-                            <li>当月消费：<p>${}</p></li>
-                            <li>最近30天消费：<p>${}</p></li>
+                            <li>余额：<p>${balance}</p></li>
+                            <li>今日消耗：<p>${today}</p></li>
+                            <li>昨日消耗：<p>${balance}</p></li>
+                            <li>7日消费：<p>${balance}</p></li>
+                            <li>当月消费：<p>${balance}</p></li>
+                            <li>最近30天消费：<p>${balance}</p></li>
                         </ul>
                     </div>
                 </div>

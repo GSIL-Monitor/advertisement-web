@@ -32,6 +32,12 @@
 										</td>
 									</tr>
 									<tr>
+										<td style="width:20%;">投放链接：</td>
+										<td>
+											<input type="text" name="link" placeholder="广告跳转链接" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
 										<td>开始时间：</td>
 										<td>
 											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;"></td>
@@ -57,6 +63,18 @@
 										<td>当前最高出价：</td>
 										<td>
 											<input type="text" name="bestBid" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>允许投放的媒体分类：</td>
+										<td>
+											<input type="text" name="allowChannelType" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
+										<td>禁止投放的媒体分类：</td>
+										<td>
+											<input type="text" name="forbidChannelType" style="width:60%;">
 										</td>
 									</tr>
 									<tr>

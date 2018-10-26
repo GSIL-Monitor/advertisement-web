@@ -20,10 +20,12 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.creative.model.Creative;
 import com.yuanshanbao.dsp.creative.service.CreativeService;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
@@ -46,7 +48,7 @@ public class AdminPlanController extends PaginationController {
 
 	private static final String PAGE_INSERT = "advertisement/plan/insertPlan";
 
-	private static final String PAGE_UPDATE = "advertisement/advertisement/updateAdvertisement";
+	private static final String PAGE_UPDATE = "advertisement/plan/updatePlan";
 
 	private static final String PAGE_VIEW = "advertisement/advertisement/viewAdvertisement";
 	@Autowired
@@ -97,6 +99,7 @@ public class AdminPlanController extends PaginationController {
 		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("channelType", ChannelType.getTypeDescriptionMap().entrySet());
 	}
 
 	@RequestMapping("/insertWindow.do")
@@ -133,16 +136,12 @@ public class AdminPlanController extends PaginationController {
 	}
 
 	@RequestMapping("/updateWindow.do")
-	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Long orderId, Integer type,
+	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Long planId, Integer type,
 			ModelMap modelMap) {
-		Long advertiserId = null;
-		Advertiser advertiser = getBindAdvertiserByUser();
-		if (advertiser != null) {
-			advertiserId = advertiser.getAdvertiserId();
-		}
-		setProperty(request, getProjectId(request), orderId, advertiserId);
+		Plan plan = planService.selectPlan(planId);
+		request.setAttribute("itemEdit", plan);
 		modelMap.put("categories", ConfigManager.getCategoryMap());
-		return PAGE_INSERT;
+		return PAGE_UPDATE;
 	}
 
 	@ResponseBody
@@ -182,7 +181,14 @@ public class AdminPlanController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/getCreative")
 	public Object getCreative(HttpServletRequest request, HttpServletResponse response, Plan plan) {
-		return null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			Creative creative = new Creative();
+			creative.setAdvertiserId(advertiser.getAdvertiserId());
+			List<Creative> list = creativeService.selectCreative(creative, new PageBounds());
+		}
+		return resultMap;
 	}
 
 }

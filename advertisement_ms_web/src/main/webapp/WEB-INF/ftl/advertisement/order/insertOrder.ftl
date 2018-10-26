@@ -47,18 +47,6 @@
 										</td>
 									</tr>
 									<tr>
-										<td>类型：</td>
-										<td>
-											<div style="width:60%;">
-												<select name="type" class="selectpicker form-control">
-													<#list typeList as type>
-														<option value="${type.key}">${type.value}</option>
-													</#list>
-												</select>
-											</div>
-										</td>
-									</tr>
-									<tr>
 										<td>订单总预算金额：</td>
 										<td>
 											<input type="text" name="amount" style="width:60%;">

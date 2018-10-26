@@ -16,8 +16,9 @@ public class Plan {
 	private Long orderId;
 	private Long advertiserId;
 	private BigDecimal spend;
+	private String consumed;
 	private String name;
-	private String url;
+	private String link;
 	private String creative;
 	private Integer chargeType;
 	private BigDecimal bestBid;
@@ -170,14 +171,6 @@ public class Plan {
 		this.creative = creative;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 	public Long getPlanId() {
 		return planId;
 	}
@@ -216,5 +209,21 @@ public class Plan {
 
 	public void setBestBid(BigDecimal bestBid) {
 		this.bestBid = bestBid;
+	}
+
+	public String getConsumed() {
+		return consumed;
+	}
+
+	public void setConsumed(String consumed) {
+		this.consumed = consumed;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
 	}
 }

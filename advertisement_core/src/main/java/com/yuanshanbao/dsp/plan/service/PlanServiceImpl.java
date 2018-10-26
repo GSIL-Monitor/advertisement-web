@@ -95,14 +95,17 @@ public class PlanServiceImpl implements PlanService {
 		for (Plan plan : list) {
 			plan.setAdvertiser(map.get(plan.getAdvertiserId()));
 			plan.setOrder(orderMap.get(plan.getOrderId()));
+			plan.setConsumed(redisService.get(RedisConstant.getPlanBalanceCountKey(plan.getPlanId())));
 		}
 		return list;
 	}
 
 	@Override
 	public Plan selectPlan(Long planId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Long> planIds = new ArrayList<Long>();
+		planIds.add(planId);
+		Map<Long, Plan> map = selectPlanByIds(planIds);
+		return map.get(planId);
 	}
 
 	@Override

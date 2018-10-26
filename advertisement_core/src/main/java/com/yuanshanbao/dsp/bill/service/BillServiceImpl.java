@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertiser.dao.AdvertiserDao;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
@@ -211,6 +213,7 @@ public class BillServiceImpl implements BillService {
 		Bill bill = new Bill();
 		bill.setAdvertiserId(advertiser.getAdvertiserId());
 		bill.setAmount(BigDecimal.valueOf(difference));
+		bill.setDate(DateUtils.format(new Date()));
 		bill.setType(type);
 		bill.setStatus(CommonStatus.ONLINE);
 		insertBill(bill);
@@ -430,6 +433,19 @@ public class BillServiceImpl implements BillService {
 		}
 		for (Bill bill : list) {
 			deleteBill(bill.getBillId());
+		}
+	}
+
+	@Override
+	public Bill selectAdvertiserConsume(Bill bill) {
+		if (bill.getAdvertiserId() == null) {
+			return new Bill();
+		}
+		List<Bill> list = billDao.selectAdvertiserConsume(bill);
+		if (list.size() > 0) {
+			return list.get(0);
+		} else {
+			return new Bill();
 		}
 	}
 }

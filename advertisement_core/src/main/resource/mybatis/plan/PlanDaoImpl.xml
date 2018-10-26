@@ -10,6 +10,7 @@
 		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="link" column="link" jdbcType="VARCHAR" />
 		<result property="spend" column="spend" jdbcType="NUMERIC" />
 		<result property="creative" column="creative" jdbcType="VARCHAR" />
 		<result property="bestBid" column="best_bid" jdbcType="NUMERIC" />
@@ -71,12 +72,12 @@
 
 	<insert id="insertPlan" parameterType="Plan">
 		insert into
-		tb_plan(project_id, advertiser_id,order_id,name,
+		tb_plan(project_id, advertiser_id,order_id,name,link,
 		spend,creative,best_bid,charge_type, allow_channel_category,
 		forbid_channel_category,start_time, end_time,status, 
 		create_time, update_time)
 		values
-		(#{projectId}, #{advertiserId},#{orderId}, #{name},
+		(#{projectId}, #{advertiserId},#{orderId}, #{name},#{link},
 		 #{spend}, #{creative}, #{bestBid},  #{chargeType},  #{allowChannelCategory}, 
 		 #{forbidChannelCategory}, #{startTime}, #{endTime}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
@@ -92,7 +93,6 @@
 				<if test="projectId != null">
 					project_id=#{projectId},
 				</if>
-				
 				<if test="name != null">
 					name=#{name},
 				</if>

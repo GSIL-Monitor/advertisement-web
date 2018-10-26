@@ -47,13 +47,6 @@
 										</td>
 									</tr>
 									<tr>
-										<td>投放链接：</td>
-										<td>
-											<input type="text" name="link" style="width:60%;"></td>
-										</td>
-									</tr>
-									
-									<tr>
 										<td>创意类型：</td>
 										<td>
 											<div style="width:60%;">
