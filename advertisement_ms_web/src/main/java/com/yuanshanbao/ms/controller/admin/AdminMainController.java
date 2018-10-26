@@ -105,8 +105,9 @@ public class AdminMainController extends PaginationController {
 		Advertisement advertisement = new Advertisement();
 		Advertiser advertiser = new Advertiser();
 
-		advertiserMap = advertiserService.countAdvertiserSize(advertiser);
-		advertisementMap = advertisementService.countAdvertisementSize(advertisement);
+		// advertiserMap = advertiserService.countAdvertiserSize(advertiser);
+		// advertisementMap =
+		// advertisementService.countAdvertisementSize(advertisement);
 
 		for (Menu m : menus) {
 			if (!categoryNameSet.contains(m.getCategory_name())) {

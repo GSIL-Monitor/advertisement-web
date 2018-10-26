@@ -958,4 +958,22 @@ public class AdminStatisticsController extends PaginationController {
 		}
 		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(list, new Paginator()));
 	}
+
+	@ResponseBody
+	@RequestMapping("/planStatistics")
+	public Object planStatistics(Integer diffDay, String fromDay) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		if (diffDay == null) {
+			diffDay = 1;
+		}
+		if (StringUtils.isNotBlank(fromDay)) {
+			Date from = DateUtils.formatToDate(fromDay, "yyyy-MM-dd");
+			diffDay = DateUtils.getDiffDays(from, new Date());
+		}
+		for (int i = 1; i <= diffDay; i++) {
+			advertisementStatisticsService.runAndInsertPlanStatistics(i);
+		}
+		InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		return resultMap;
+	}
 }

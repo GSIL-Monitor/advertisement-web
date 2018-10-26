@@ -74,9 +74,9 @@
           	<div class="widget-title">
             	<h5>${functionTitle}列表</h5>
             	<div class="filter-box">
-            		<span>账户余额： <span style="color: #ff784f;font-size: 16px;" class="text-red">${xxx}sdffs</span></span>
+            		<span>账户余额： <span style="color: #ff784f;font-size: 16px;" class="text-red">${balance}</span></span>
             		<span>
-            			今日消耗：<span style="color: #ff784f;font-size: 16px;" class="text-red">${xxx}</span>
+            			今日消耗：<span style="color: #ff784f;font-size: 16px;" class="text-red">${balance}</span>
             		</span>
           		</div>
 				<div class="widget-content nopadding">

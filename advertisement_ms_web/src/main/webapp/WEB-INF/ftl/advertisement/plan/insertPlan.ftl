@@ -74,7 +74,7 @@
 														<option value="${type.key}">${type.value}</option>
 													</#list>
 												</select>
-												<input type="hidden" name="allowChannelType" id="allowChannelTypeVal" value="">
+												<input type="hidden" name="allowChannelCategory" id="allowChannelTypeVal">
 											</div>
 										</td>
 									</tr>
@@ -82,11 +82,12 @@
 										<td>禁止投放的媒体分类：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="forbidChannelType" class="selectpicker form-control">
+												<select multiple data-live-search="true" class="selectpicker form-control" id="forbidChannelType">
 													<#list channelTypeList as type>
 														<option value="${type.key}">${type.value}</option>
 													</#list>
 												</select>
+												<input type="hidden" name="forbidChannelCategory" id="forbidChannelTypeVal">
 											</div>
 										</td>
 									</tr>
@@ -145,7 +146,12 @@
 		$('#allowChannelType').on('changed.bs.select',function(e) {
 			var allowChannelType = $('#allowChannelType').selectpicker('val');
   			allowChannelType = allowChannelType.join(',');
-  			$('#allowChannelTypeVal').attr('val', allowChannelType);
+  			$('#allowChannelTypeVal').attr('value', allowChannelType);
+		})
+		$('#forbidChannelType').on('changed.bs.select',function(e) {
+			var forbidChannelType = $('#forbidChannelType').selectpicker('val');
+  			forbidChannelType = forbidChannelType.join(',');
+  			$('#forbidChannelTypeVal').attr('value', forbidChannelType);
 		})
 	});
 </script>

@@ -879,4 +879,54 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		return DateUtils.getDiffDays(DateUtils.formatToDate(startTime, "yyyy-MM-dd"),
 				DateUtils.formatToDate(endTime, "yyyy-MM-dd"));
 	}
+
+	@Override
+	public void runAndInsertPlanStatistics(int diffDay) {
+		String date = DateUtils.format(DateUtils.addDays(new Date(), -diffDay));
+		List<AdvertisementStatistics> list = intervalPlanStatistics(diffDay, false, null);
+		for (AdvertisementStatistics advertisementStatistics : list) {
+			advertisementStatistics.setStatus(CommonStatus.ONLINE);
+			AdvertisementStatistics param = new AdvertisementStatistics();
+			param.setAdvertisementId(advertisementStatistics.getAdvertisementId());
+			param.setChannel(advertisementStatistics.getChannel());
+			param.setType(advertisementStatistics.getType());
+			param.setDate(date);
+			param.setStatus(advertisementStatistics.getStatus());
+			List<AdvertisementStatistics> existList = selectAdvertisementStatistics(param, new PageBounds());
+			if (advertisementStatistics.getTotal() > 0) {
+				if (existList.size() > 0) {
+					advertisementStatistics.setAdvertisementStatisticsId(existList.get(0)
+							.getAdvertisementStatisticsId());
+					updateAdvertisementStatistics(advertisementStatistics);
+				} else {
+					insertAdvertisementStatistics(advertisementStatistics);
+				}
+			}
+		}
+	}
+
+	private List<AdvertisementStatistics> intervalPlanStatistics(int dateDiff, boolean fromDB, Integer dataType) {
+		String date = DateUtils.format(DateUtils.addDays(new Date(), -dateDiff));
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		Set<String> channelAndIdList = redisCacheService.smembers(RedisConstant.getAdvertisementChannelAndIdKey(date));
+		List<Probability> list = probabilityService.selectProbabilitys(new Probability(), new PageBounds());
+		for (Probability probability : list) {
+			// planDataTypeFunction(dataType, date, probability, resultList);
+		}
+		return resultList;
+	}
+
+	// private void planDataTypeFunction(Integer dataType, String date,
+	// Probability probability,
+	// List<AdvertisementStatistics> resultList) {
+	// if (dataType == null) {
+	// setPv(date, channel, resultList, advertisementId);
+	// setUv(date, channel, resultList, advertisementId);
+	// } else if (dataType.equals(AdvertisementStatisticsType.PV_DATA)) {
+	// setPv(date, channel, resultList, advertisementId);
+	// } else if (dataType.equals(AdvertisementStatisticsType.UV_DATA)) {
+	// setUv(date, channel, resultList, advertisementId);
+	// }
+	// }
+
 }

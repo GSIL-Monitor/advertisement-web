@@ -6,17 +6,17 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONObject;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -30,13 +30,12 @@ public class IndexDspController {
 	// dsp请求广告接口
 	@RequestMapping("/content")
 	@ResponseBody
-	public Object getContent(HttpServletRequest request, @RequestBody JSONObject body, HttpServletResponse response,
-			Instance instance, String channel, @PathVariable("projectKey") String projectKey) {
+	public Object getContent(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
-				Channel channelObject = ConfigManager.getChannel(channel);
+				Channel channelObject = ConfigManager.getChannel(body.getString("channel"));
 				if (channelObject != null) {
 					// Probability probability = pro
 				}
