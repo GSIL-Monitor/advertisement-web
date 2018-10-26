@@ -217,15 +217,15 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 	}
 
 	@RequestMapping("/strategyWindow.do")
-	public String strategyWindow(Long probabilityId, ModelMap modelMap, HttpServletRequest request,
+	public String strategyWindow(Long planId, ModelMap modelMap, HttpServletRequest request,
 			HttpServletResponse response) {
 		Advertiser advertiser = getBindAdvertiserByUser();
 		if (advertiser != null) {
 			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
 		}
-		Map<String, String> map = ConfigManager.getStrategyMap(probabilityId);
+		Map<String, String> map = ConfigManager.getStrategyMap(planId);
 		request.setAttribute("strategyValue", map);
-		request.setAttribute("probabilityId", probabilityId);
+		request.setAttribute("probabilityId", planId);
 		return PAGE_STRATEGY;
 	}
 

@@ -43,10 +43,10 @@
 									<tr>
 										<td>订单名称：</td>
 										<td>
-											<input type="text" name="name" style="width:60%;"></td>
+											<input type="text" name="name" placeholder="建议广告主+订单+月份+日期" style="width:60%;"></td>
 										</td>
 									</tr>
-																	<tr>
+									<tr>
 										<td>类型：</td>
 										<td>
 											<div style="width:60%;">

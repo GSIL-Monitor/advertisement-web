@@ -30,6 +30,7 @@ public class PlanStatus {
 		codeDescriptionMap.put(OFFLINE, OFFLINE_DESCRIPTION);
 		codeDescriptionMap.put(INVALID, INVALID_DESCRIPTION);
 		codeDescriptionMap.put(UNREVIEWED, UNREVIEWED_DESCRIPTION);
+		codeDescriptionMap.put(UNDERREVIEWED, UNDERREVIEWED_DESCRIPTION);
 	}
 
 	public static String getDescription(Integer code) {

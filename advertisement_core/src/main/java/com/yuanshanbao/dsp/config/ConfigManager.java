@@ -493,10 +493,10 @@ public class ConfigManager implements ConfigConstants {
 		return activityCombineMap.get(id);
 	}
 
-	public static Map<String, String> getStrategyMap(Long probabilityId) {
+	public static Map<String, String> getStrategyMap(Long planId) {
 		Map<String, String> strategyMap = new LinkedHashMap<String, String>();
 		for (AdvertisementStrategy strategy : strategyList) {
-			if (probabilityId.equals(strategy.getProbabilityId())) {
+			if (planId.equals(strategy.getProbabilityId())) {
 				strategyMap.put(strategy.getKey(), strategy.getValue());
 			}
 		}

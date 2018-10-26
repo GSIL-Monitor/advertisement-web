@@ -28,7 +28,7 @@
 									<tr>
 										<td style="width:20%;">计划名称：</td>
 										<td>
-											<input type="text" name="name" style="width:60%;">
+											<input type="text" name="name" placeholder="建议订单名称+计划名称+月份+日期" style="width:60%;">
 										</td>
 									</tr>
 									<tr>
@@ -44,7 +44,7 @@
 									<tr>
 										<td>该计划预算金额（元）：</td>
 										<td>
-											<input type="text" name="spend" style="width:60%;">
+											<input type="text" name="spend" placeholder="最高预算不得超过剩余预算" style="width:60%;">
 										</td>
 									</tr>
 									<tr>

@@ -23,7 +23,7 @@ public class BillDaoImpl extends BaseDaoImpl implements BillDao {
 
 	@Override
 	public List<Bill> selectBill(Bill bill, PageBounds pageBounds) {
-		return getSqlSession().selectList("bill.selectBill", bill, pageBounds);
+		return getSqlSession().selectList("bill.selectBills", bill, pageBounds);
 	}
 
 	@Override

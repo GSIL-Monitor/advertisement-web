@@ -26,24 +26,18 @@
 				},{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">修改</a>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">修改</a></div>';
 			       }
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/plan/list.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划详情</a>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/plan/list.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划详情</a></div>';
 			       }
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/plan/insertWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划添加</a>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/plan/insertWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划添加</a></div>';
 			       }
-
-			    },{
-					"data": "${functionId}",
-					"render": function ( data, type, full, meta ) {
-						return '<a href="${rc.contextPath}/admin/strategy/strategyWindow.do?${StrategyFunctionId}='+data+'"  class="btn btn-cyan" target="_blank">策略添加</a>';
-					}
 		}];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
 		
@@ -132,7 +126,6 @@
 							<th>修改</th>
 							<th>计划详情</th>
 							<th>添加计划</th>
-                            <th>添加策略</th>
 						</tr>
 					</thead>
 					<tbody>

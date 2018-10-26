@@ -21,17 +21,17 @@
 			    },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/${functionName}/viewWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看</a>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/viewWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看</a></div>';
 			       }
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">修改</a>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">修改</a></div>';
 			       }
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<a href="${rc.contextPath}/admin/${functionName}/delete.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">删除</a>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/delete.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">删除</a></div>';
 			       }
 		        }];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);

@@ -7,7 +7,6 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
-import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.order.model.Order;
 
 public class Plan {
@@ -100,7 +99,7 @@ public class Plan {
 	}
 
 	public String getStatusValue() {
-		return CommonStatus.getDescription(status);
+		return PlanStatus.getDescription(status);
 	}
 
 	public String getCreateTimeContent() {

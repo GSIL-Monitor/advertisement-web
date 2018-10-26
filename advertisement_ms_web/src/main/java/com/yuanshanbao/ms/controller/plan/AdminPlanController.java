@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementStatus;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
@@ -25,7 +24,6 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.creative.model.Creative;
 import com.yuanshanbao.dsp.creative.service.CreativeService;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
@@ -98,11 +96,7 @@ public class AdminPlanController extends PaginationController {
 		request.setAttribute("positionList", ConstantsManager.getPositionList(projectId));
 		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
-		request.setAttribute("statusList", AdvertisementStatus.getCodeDescriptionMap().entrySet());
-		Creative creative = new Creative();
-		creative.setAdvertiserId(advertiserId);
-		List<Creative> list = creativeService.selectCreative(creative, new PageBounds());
-		request.setAttribute("creativeList", list);
+		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
 	}
 
 	@RequestMapping("/insertWindow.do")
@@ -184,4 +178,11 @@ public class AdminPlanController extends PaginationController {
 		}
 		return resultMap;
 	}
+
+	@ResponseBody
+	@RequestMapping("/getCreative")
+	public Object getCreative(HttpServletRequest request, HttpServletResponse response, Plan plan) {
+		return null;
+	}
+
 }

@@ -47,6 +47,12 @@
 										<tr>
 											<td>年龄：</td>
 											<td>
+												<input type="radio" name="age" value="" checked>不限
+												<input type="radio" name="age" value="others">自定义
+												<span class="hidden" id="ageRange">
+													<input type="number" name="startAge" id="startAge" /><span>-</span>
+													<input type="number" name="endAge" id="endAge"/>
+												</span>
 											</td>
 										</tr>
 										<tr>
@@ -105,6 +111,15 @@
         maxCheck: 10,//默认为0，不限最多选择个数
         data: cityData
     });
+    $('input[name="age"]').on('click', function() {
+    	var val = $(this).val();
+    	console.log(val)
+    	if(val == 'others') {
+    		$('#ageRange').removeClass('hidden');
+    	} else {
+    		$('#ageRange').addClass('hidden');
+    	}
+    })
 </script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
 <@footPart />
