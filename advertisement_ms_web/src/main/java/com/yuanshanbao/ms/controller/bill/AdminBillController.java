@@ -77,17 +77,17 @@ public class AdminBillController extends PaginationController {
 	}
 
 	@RequestMapping("/list.do")
-	public String list() {
+	public String list(HttpServletRequest request) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
+		}
 		return PAGE_LIST;
 	}
 
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Bill bill, HttpServletRequest request, HttpServletResponse response) {
-		Advertiser advertiser = getBindAdvertiserByUser();
-		if (advertiser != null) {
-			bill.setAdvertiserId(advertiser.getAdvertiserId());
-		}
 		Object object = billService.selectBill(bill, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);

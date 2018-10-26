@@ -19,11 +19,13 @@
 			    },{
 			    	"data": "advertiser.companyName"
 			    },{
-			    	"data": "排期"
-			    },{
 			    	"data": "createTimeContent"
 				},{
 			    	"data": "statusValue"
+		        },{
+			    	"data": "spend"
+		        },{
+			    	"data": "spend"
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
@@ -127,9 +129,10 @@
 							<th>订单名称</th>
 							<th>计划名称</th>
 							<th>广告主</th>
-							<th>排期</th>
 							<th>创建时间</th>
 							<th>投放状态</th>
+							<th>预算</th>
+							<th>已消耗预算</th>
 							<th>查看详情</th>
 							<th>修改</th>
 							<th>设置创意</th>

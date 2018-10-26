@@ -116,7 +116,14 @@ public class BillServiceImpl implements BillService {
 	}
 
 	private List<Bill> setProperty(List<Bill> list) {
-		// TODO Auto-generated method stub
+		List<Long> advertiserIds = new ArrayList<Long>();
+		for (Bill bill : list) {
+			advertiserIds.add(bill.getAdvertiserId());
+		}
+		Map<Long, Advertiser> advertiserMap = advertiserService.selectAdvertiserByIds(advertiserIds);
+		for (Bill bill : list) {
+			bill.setAdvertiser(advertiserMap.get(bill.getAdvertiserId()));
+		}
 		return list;
 	}
 

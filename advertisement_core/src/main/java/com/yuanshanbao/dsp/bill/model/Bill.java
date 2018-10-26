@@ -3,6 +3,9 @@ package com.yuanshanbao.dsp.bill.model;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+
 public class Bill {
 	private Long billId;
 	private Long advertiserId;
@@ -19,6 +22,7 @@ public class Bill {
 
 	private String queryStartTime;
 	private String queryEndTime;
+	private Advertiser advertiser;
 
 	public Long getBillId() {
 		return billId;
@@ -130,6 +134,22 @@ public class Bill {
 
 	public void setChannel(String channel) {
 		this.channel = channel;
+	}
+
+	public String getCreateTimeContent() {
+		return DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss");
+	}
+
+	public Advertiser getAdvertiser() {
+		return advertiser;
+	}
+
+	public void setAdvertiser(Advertiser advertiser) {
+		this.advertiser = advertiser;
+	}
+
+	public String getTypeContent() {
+		return BillType.getDescription(type);
 	}
 
 }
