@@ -69,7 +69,7 @@
 										<td>允许投放的媒体分类：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="allowChannelType" class="selectpicker form-control">
+												<select name="allowChannelType" multiple data-live-search="true" class="selectpicker form-control" id="allowChannelType">
 													<#list channelTypeList as type>
 														<option value="${type.key}">${type.value}</option>
 													</#list>
@@ -141,6 +141,7 @@
 			defaultTime: '08:00',
 			format:'Y-m-d H:i'
 		});
+		// console.log($('#allowChannelType').selectpicker('val'));
 	});
 </script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
