@@ -68,13 +68,25 @@
 									<tr>
 										<td>允许投放的媒体分类：</td>
 										<td>
-											<input type="text" name="allowChannelType" style="width:60%;">
+											<div style="width:60%;">
+												<select name="allowChannelType" class="selectpicker form-control">
+													<#list channelTypeList as type>
+														<option value="${type.key}">${type.value}</option>
+													</#list>
+												</select>
+											</div>
 										</td>
 									</tr>
 									<tr>
 										<td>禁止投放的媒体分类：</td>
 										<td>
-											<input type="text" name="forbidChannelType" style="width:60%;">
+											<div style="width:60%;">
+												<select name="forbidChannelType" class="selectpicker form-control">
+													<#list channelTypeList as type>
+														<option value="${type.key}">${type.value}</option>
+													</#list>
+												</select>
+											</div>
 										</td>
 									</tr>
 									<tr>

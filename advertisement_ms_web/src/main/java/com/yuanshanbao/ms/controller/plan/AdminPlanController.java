@@ -99,7 +99,7 @@ public class AdminPlanController extends PaginationController {
 		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
-		request.setAttribute("channelType", ChannelType.getTypeDescriptionMap().entrySet());
+		request.setAttribute("channelTypeList", ChannelType.getTypeDescriptionMap().entrySet());
 	}
 
 	@RequestMapping("/insertWindow.do")
