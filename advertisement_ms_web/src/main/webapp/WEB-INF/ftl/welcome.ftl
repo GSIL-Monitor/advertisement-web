@@ -1,6 +1,17 @@
 <#include "common/core.ftl" />
 <@htmlHead title="首页"/>
 <@cssFile file=["page/welcome.css"] />
+<style>
+    .widget-lists li {
+        float: left;
+        min-width: 1rem;
+        border-right: 1px solid #ccc;
+        padding: 0 0.2rem 0;
+    }
+    .widget-lists li:last-child {
+        border: none;
+    }
+</style>
 <@sideBar />
 <script>
 $(document).ready(function(){
@@ -51,19 +62,24 @@ $(document).ready(function(){
 	</div>
     <div class="container-fluid top-container">
         <div class="row-fluid">
-            <div class="span4">
+            <div class="span12">
                 <div class="widget-box">
                     <div class="widget-title">
                         <h5 class="curr">广告主</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <div class="data-piece clearfix"><span class="fl">总数</span><span class="fr">${advertiser.total}</span></div>
-                        <div class="data-piece clearfix"><span class="fl">使用中</span><span class="fr">${advertiser.use}</span></div>
-                        <div class="data-piece clearfix"><span class="fl">冻结中</span><span class="fr">${advertiser.down}</span></div>
+                        <ul class="widget-lists clearfix">
+                            <li>余额：<p>${}</p></li>
+                            <li>今日消耗：<p>${}</p></li>
+                            <li>昨日消耗：<p>${}</p></li>
+                            <li>7日消费：<p>${}</p></li>
+                            <li>当月消费：<p>${}</p></li>
+                            <li>最近30天消费：<p>${}</p></li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="span4">
+           <#--  <div class="span12">
                 <div class="widget-box">
                     <div class="widget-title">
                         <h5 class="week">广告概况</h5>
@@ -74,7 +90,7 @@ $(document).ready(function(){
                         <div class="data-piece clearfix"><span class="fl">已失效</span><span class="fr">${advertisement.down}</span></div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="container-fluid">
