@@ -7,6 +7,7 @@
         min-width: 1rem;
         border-right: 1px solid #ccc;
         padding: 0 0.2rem 0;
+        font-size: 20px;
     }
     .widget-lists li:last-child {
         border: none;
