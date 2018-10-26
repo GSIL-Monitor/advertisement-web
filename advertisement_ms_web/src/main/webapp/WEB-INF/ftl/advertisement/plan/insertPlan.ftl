@@ -93,7 +93,7 @@
 										<td>结算方式：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="quotaType" class="selectpicker form-control">
+												<select name="chargeType" class="selectpicker form-control">
 													<#list quotaTypeList as type>
 														<option value="${type.key}">${type.value}</option>
 													</#list>
