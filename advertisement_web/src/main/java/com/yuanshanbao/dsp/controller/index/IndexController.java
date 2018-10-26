@@ -35,7 +35,7 @@ import com.yuanshanbao.paginator.domain.PageList;
 @Controller
 public class IndexController extends BaseController {
 
-	private static final String EDUCATION_APP = "education_app";
+	private static final String WANGZHUAN = "wangzhuan";
 
 	@Autowired
 	private ProductService productService;
@@ -47,7 +47,7 @@ public class IndexController extends BaseController {
 			PageBounds pageBounds, String token, Integer client) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			Activity activity = ConfigManager.getActivityByKey(EDUCATION_APP);
+			Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
 			if (activity == null) {
 				throw new BusinessException();
 			}
@@ -56,6 +56,9 @@ public class IndexController extends BaseController {
 			product.setStatus(ProductStatus.ONLINE);
 			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 					formatPageBounds(pageBounds));
+
+			//滚动列表
+
 
 			resultMap.put("productList", productList);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
