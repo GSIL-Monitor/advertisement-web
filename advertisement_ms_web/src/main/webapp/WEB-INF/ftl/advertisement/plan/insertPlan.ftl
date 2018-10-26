@@ -69,11 +69,12 @@
 										<td>允许投放的媒体分类：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="allowChannelType" multiple data-live-search="true" class="selectpicker form-control" id="allowChannelType">
+												<select multiple data-live-search="true" class="selectpicker form-control" id="allowChannelType">
 													<#list channelTypeList as type>
 														<option value="${type.key}">${type.value}</option>
 													</#list>
 												</select>
+												<input type="hidden" name="allowChannelType" id="allowChannelTypeVal" value="">
 											</div>
 										</td>
 									</tr>
@@ -141,7 +142,11 @@
 			defaultTime: '08:00',
 			format:'Y-m-d H:i'
 		});
-		// console.log($('#allowChannelType').selectpicker('val'));
+		$('#allowChannelType').on('changed.bs.select',function(e) {
+			var allowChannelType = $('#allowChannelType').selectpicker('val');
+  			allowChannelType = allowChannelType.join(',');
+  			$('#allowChannelTypeVal').attr('val', allowChannelType);
+		})
 	});
 </script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
