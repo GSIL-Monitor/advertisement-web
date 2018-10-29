@@ -49,6 +49,7 @@ import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
 import com.yuanshanbao.dsp.product.service.ProductCategoryService;
@@ -466,7 +467,9 @@ public class ConstantsManager {
 		positionListMap = tempPositionMap;
 		positionKeyMap = tempPositionKeyMap;
 
-		List<Probability> probabilityList = probabilityService.selectProbabilitys(new Probability(), new PageBounds());
+		Probability proParams = new Probability();
+		proParams.setStatus(ProbabilityStatus.ONLINE);
+		List<Probability> probabilityList = probabilityService.selectProbabilitys(proParams, new PageBounds());
 		Map<Long, List<Probability>> tempProbabilityMap = new HashMap<Long, List<Probability>>();
 		for (Probability probability : probabilityList) {
 			List<Probability> list = tempProbabilityMap.get(probability.getProjectId());

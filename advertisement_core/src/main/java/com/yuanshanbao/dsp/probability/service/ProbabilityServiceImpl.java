@@ -106,7 +106,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			probability.setActivity(activityMap.get(probability.getActivityId()));
 			probability.setChannelObject(channelMap.get(probability.getChannel()));
 			probability.setAdvertiser(advertiserMap.get(probability.getAdvertiserId()));
-			probability.setPlan(planMap.get(probability.getPlan()));
+			probability.setPlan(planMap.get(probability.getPlanId()));
 		}
 		return probabilityList;
 	}

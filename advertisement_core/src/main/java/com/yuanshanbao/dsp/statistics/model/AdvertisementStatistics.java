@@ -11,6 +11,7 @@ public class AdvertisementStatistics {
 	private Long projectId;
 	private String date;
 	private Long advertisementId;
+	private Long planId;
 	private String title;
 	private Long positionId;
 	private String positionName;
@@ -255,5 +256,13 @@ public class AdvertisementStatistics {
 
 	public void addClickCount(Integer clickCount) {
 		this.clickCount = this.clickCount + clickCount;
+	}
+
+	public Long getPlanId() {
+		return planId;
+	}
+
+	public void setPlanId(Long planId) {
+		this.planId = planId;
 	}
 }

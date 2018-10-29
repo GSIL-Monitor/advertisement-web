@@ -50,7 +50,9 @@ public class AdminPlanController extends PaginationController {
 
 	private static final String PAGE_UPDATE = "advertisement/plan/updatePlan";
 
-	private static final String PAGE_VIEW = "advertisement/advertisement/viewAdvertisement";
+	private static final String PAGE_UNREVIEW_LIST = "advertisement/plan/listUnreview";
+	
+	private static final String PAGE_REVIEW = "advertisement/plan/reviewPlan";
 	@Autowired
 	private OrderService orderService;
 
@@ -190,5 +192,49 @@ public class AdminPlanController extends PaginationController {
 		}
 		return resultMap;
 	}
+	
+	@RequestMapping("/reviewWindow.do")
+	public String reviewWindow(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertiserId = advertiser.getAdvertiserId();
+		}
+		setProperty(request, getProjectId(request), orderId, advertiserId);
+		return PAGE_UNREVIEW_LIST;
+	}
 
+	@ResponseBody
+	@RequestMapping("/reviewQuery.do")
+	public Object reviewQuery(String range, Plan plan, Order order, HttpServletRequest request, HttpServletResponse response) {	
+		plan.setStatus(PlanStatus.UNREVIEWED);
+		List<Plan> list = planService.selectPlan(plan, getPageBounds(range, request));
+		PageList pageList = (PageList) list;
+		return setPageInfo(request, response, pageList);
+	}
+	
+	@RequestMapping("/reviewDetails.do")
+	public String reviewDetails(String range, Long planId, HttpServletRequest request, HttpServletResponse response) {	
+		Plan plan = planService.selectPlan(planId);
+		request.setAttribute("itemEdit", plan);
+		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
+		return PAGE_REVIEW;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/review.do")
+	public Object review(HttpServletRequest request, HttpServletResponse response, Plan plan) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if (plan.getPlanId() == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			planService.updatePlan(plan);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("plan update function - upload image error", e2);
+		}
+		return result;
+	}
 }
