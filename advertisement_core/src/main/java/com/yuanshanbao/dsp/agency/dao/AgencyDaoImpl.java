@@ -45,8 +45,8 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
     }
 
     @Override
-    public BigDecimal getAgencyCommission(Long inviteUserId ) {
-        return getSqlSession().selectOne("agency.getSumCommission",inviteUserId);
+    public BigDecimal getAgencyBrokerage(Long inviteUserId ) {
+        return getSqlSession().selectOne("agency.getAgencyBrokerage",inviteUserId);
     }
 
     @Override

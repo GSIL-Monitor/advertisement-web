@@ -27,7 +27,6 @@ import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.model.ChannelProcedure;
-import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.channel.service.ChannelProcedureService;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.config.ConfigManager;

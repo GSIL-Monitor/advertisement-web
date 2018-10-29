@@ -15,19 +15,45 @@ public class Agency implements Serializable  {
     private String agencyName;
     private String userName;
     private Timestamp inviteTime;
-    private BigDecimal commission;
-    private Integer status;
+    private BigDecimal brokerage;
+    private Integer status;                //0:待审核 1:审核通过 2:审核未通过
+    private Long productId;
+    private String productName;
 
     public Agency(){}
 
-    public Agency(Long inviteUserId, Long userId, String agencyName, String userName, Timestamp inviteTime, BigDecimal commission, Integer status) {
+    public Agency(Long inviteUserId, Long userId, String agencyName, String userName, Timestamp inviteTime, BigDecimal brokerage, Integer status) {
         this.inviteUserId = inviteUserId;
         this.userId = userId;
         this.agencyName = agencyName;
         this.userName = userName;
         this.inviteTime = inviteTime;
-        this.commission = commission;
+        this.brokerage = brokerage;
         this.status = status;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public BigDecimal getBrokerage() {
+        return brokerage;
+    }
+
+    public void setBrokerage(BigDecimal brokerage) {
+        this.brokerage = brokerage;
     }
 
     public Long getInviteUserId() {
@@ -68,14 +94,6 @@ public class Agency implements Serializable  {
 
     public void setInviteTime(Timestamp inviteTime) {
         this.inviteTime = inviteTime;
-    }
-
-    public BigDecimal getCommission() {
-        return commission;
-    }
-
-    public void setCommission(BigDecimal commission) {
-        this.commission = commission;
     }
 
     public Integer getStatus() {

@@ -30,7 +30,9 @@ public interface AgencyService {
      * @param agency
      * @return
      */
-    BigDecimal getAgencyCommission(Long  inviteUserId);
+    BigDecimal getAgencyBrokerage(Long inviteUserId);
 
     List<Agency> selectAgencyByInviteId(Long inviteId);
+
+
 }

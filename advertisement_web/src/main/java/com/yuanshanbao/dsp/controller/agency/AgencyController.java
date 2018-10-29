@@ -42,8 +42,9 @@ public class AgencyController extends BaseController {
     @ResponseBody
     public Object getAgencyList(HttpServletRequest request, Agency agency, PageBounds pageBounds, String token) {
 
-        Map<String, Object> resultMap = new HashMap<>();
-        Map<Agency, BigDecimal> AgenyMap = new HashMap<>();
+        Map<Object, Object> resultMap = new HashMap<>();
+
+        List<Agency> twoAgencyList = null;
         try {
             //获取当前用户信息
           /*  User loginToken = tokenService.verifyLoginToken(token);
@@ -53,38 +54,40 @@ public class AgencyController extends BaseController {
             User user = userService.selectUserById(loginToken.getUserId());*/
             User user = userService.selectUserById((long) 2);
             if (user == null || user.getUserId() == 0) {
-                throw new BusinessException();
-            } else {
-                agency.setInviteUserId(user.getUserId());
-                //获得用户的代理人列表
-                List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
-                if (oneAgencyList.size() == 0)
-                    throw new BusinessException(ComRetCode.NO_AGENCY);
-                BigDecimal oneCommission = BigDecimal.valueOf(0);
-                BigDecimal twoCommission = BigDecimal.valueOf(0);
-
-                for (int i = 0; i < oneAgencyList.size(); i++) {
-                    if (oneAgencyList.get(i).getUserId() != null) {
-                        oneCommission = agencyService.getAgencyCommission(oneAgencyList.get(i).getUserId());
-                        if (oneCommission == null)
-                            oneCommission = BigDecimal.valueOf(0);
-                        agency.setInviteUserId(oneAgencyList.get(i).getUserId());
-                        List<Agency> twoAgencyList = agencyService.selectAgencys(agency, pageBounds);
-                        if (twoAgencyList.size() == 0)
-                            continue;
-                        for (int j = 0; j <=twoAgencyList.size(); j++) {
-                            twoCommission = agencyService.getAgencyCommission(twoAgencyList.get(i).getUserId());
-                            if (twoCommission == null) {
-                                twoCommission = BigDecimal.valueOf(0);
-                            }
-                        }
-                    }
-                    BigDecimal addCommission = oneCommission.add(twoCommission);
-                    AgenyMap.put(oneAgencyList.get(i), addCommission);
-                }
-
-                return AgenyMap;
+                throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
+            agency.setInviteUserId(user.getUserId());
+
+            List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
+            if (oneAgencyList.size() == 0)
+                throw new BusinessException(ComRetCode.NO_AGENCY);
+            for (Agency oneAgency : oneAgencyList) {
+                BigDecimal oneBrikerage = BigDecimal.valueOf(0);
+                BigDecimal twoBrikerage = BigDecimal.valueOf(0);
+                BigDecimal sumOneBrikerage = BigDecimal.valueOf(0);
+                BigDecimal sumTwoBrikerage = BigDecimal.valueOf(0);
+                if (oneAgency != null) {
+                    oneBrikerage = agencyService.getAgencyBrokerage(oneAgency.getUserId());
+                    if (oneBrikerage == null)
+                        oneBrikerage = BigDecimal.valueOf(0);
+                    sumOneBrikerage = sumOneBrikerage.add(oneBrikerage);
+                    agency.setInviteUserId(oneAgency.getUserId());
+                    twoAgencyList = agencyService.selectAgencys(agency, pageBounds);
+                    if (twoAgencyList.size() == 0)
+                        continue;
+                }
+                for (Agency twoAgency : twoAgencyList) {
+                    twoBrikerage = agencyService.getAgencyBrokerage(twoAgency.getUserId());
+                    if (twoBrikerage == null) {
+                        twoBrikerage = BigDecimal.valueOf(0);
+                    }
+                    sumTwoBrikerage = sumTwoBrikerage.add(twoBrikerage);
+                }
+                BigDecimal sum = sumOneBrikerage.add(sumTwoBrikerage);
+                resultMap.put(oneAgency.getUserId(), sum);
+
+            }
+
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {
@@ -107,27 +110,35 @@ public class AgencyController extends BaseController {
             User user = userService.selectUserById(loginToken.getUserId());*/
             User user = userService.selectUserById((long) 2);
             if (user == null || user.getUserId() == 0) {
-                throw new BusinessException();
+                throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
             agency.setInviteUserId(user.getUserId());
             List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
-            if (oneAgencyList.size() == 0 ){
+            if (oneAgencyList.size() == 0) {
                 throw new BusinessException(ComRetCode.NO_AGENCY);
             }
             resultMap.put("oneAgencyList", oneAgencyList);
             //一级代理列表
             for (Agency oneAgency : oneAgencyList) {
+                BigDecimal sumTwoAgencyBrokerage = BigDecimal.valueOf(0);
+                BigDecimal sumOneAgencyBrokerage = BigDecimal.valueOf(0);
+                BigDecimal oneAgencyBrokerage = agencyService.getAgencyBrokerage(oneAgency.getInviteUserId());
+                sumOneAgencyBrokerage = sumOneAgencyBrokerage.add(oneAgencyBrokerage);
                 agency.setInviteUserId(oneAgency.getUserId());
                 List<Agency> twoAgencyList = agencyService.selectAgencys(agency, pageBounds);
-                if (twoAgencyList.size() == 0)
-                    throw new BusinessException(ComRetCode.NO_AGENCY);
-                resultMap.put("twoAgencyList", twoAgencyList);
-                for (Agency twoAgency : twoAgencyList) {
-                    agency.setInviteUserId(twoAgency.getUserId());
-                    List<Agency> threeAgencyList = agencyService.selectAgencys(agency, pageBounds);
-                    resultMap.put("threeAgencyList", threeAgencyList);
+                if (twoAgencyList.size() == 0) {
+                    break;
                 }
+                for (Agency twoAgency : twoAgencyList) {
+                    BigDecimal twoAgencyBrokerage = agencyService.getAgencyBrokerage(twoAgency.getInviteUserId());
+                    sumTwoAgencyBrokerage = sumTwoAgencyBrokerage.add(twoAgencyBrokerage);
+                }
+                resultMap.put("twoAgencyList", twoAgencyList);
+                BigDecimal sumAgencyBrokerage = sumOneAgencyBrokerage.add(sumTwoAgencyBrokerage);
+                resultMap.put("brokerage", sumAgencyBrokerage);
             }
+
+
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {
@@ -135,20 +146,6 @@ public class AgencyController extends BaseController {
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
         }
         return resultMap;
-    }
-
-    public static void main(String[] args) {
-
-        List<BigDecimal> list = new ArrayList<>();
-        List<BigDecimal> bigDecimals = new ArrayList<>();
-        list.add(BigDecimal.valueOf(12));
-        list.add(BigDecimal.valueOf(12));
-        list.add(BigDecimal.valueOf(10));
-        list.add(BigDecimal.valueOf(20));
-        bigDecimals.add(BigDecimal.valueOf(12));
-        bigDecimals.add(BigDecimal.valueOf(12));
-
-
     }
 
 }

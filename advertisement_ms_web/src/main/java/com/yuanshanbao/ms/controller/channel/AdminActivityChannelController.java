@@ -17,7 +17,6 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.channel.model.Channel;
-import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.config.model.Config;
 import com.yuanshanbao.dsp.config.model.ConfigCategory;

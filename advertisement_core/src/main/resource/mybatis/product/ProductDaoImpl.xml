@@ -33,6 +33,7 @@
 		<result property="sort" column="sort" jdbcType="NUMERIC" />
 		<result property="positiveRate" column="positive_rate" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="brokerage" column="brokerage" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 	</resultMap>
@@ -42,9 +43,12 @@
 		select
 		* from
 		tb_product
+
 		<where>
+			status != -1 and
 			<trim suffixOverrides="and">
 				<if test="productId != null">
+
 					product_id= #{productId} and
 				</if>
 				<if test="activityId != null">
@@ -92,6 +96,9 @@
 				<if test="status != null">
 					status= #{status} and
 				</if>
+				<if test="brokerage != null">
+					brokerage= #{brokerage} and
+				</if>
 				<if test="authorize != null">
 					<foreach item="id" collection="authorize">
 						authorize_tags LIKE
@@ -108,7 +115,7 @@
 					min_age &lt;=#{queryAge} and max_age &gt;=#{queryAge} and
 				</if>
 			</trim>
-			and status != -1
+
 		</where>
 		order by create_time desc
 	</select>

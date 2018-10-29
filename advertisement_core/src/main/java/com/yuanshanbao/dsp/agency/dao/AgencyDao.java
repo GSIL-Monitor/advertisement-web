@@ -23,7 +23,7 @@ public interface AgencyDao {
 
     public List<Agency> selectAgencys(List<Long> IdList);
 
-    BigDecimal getAgencyCommission(Long inviteUserId);
+    BigDecimal getAgencyBrokerage(Long inviteUserId);
 
     List<Agency> selectAgencysByInviteId(Long inviteId);
 

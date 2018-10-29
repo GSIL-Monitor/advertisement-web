@@ -120,6 +120,23 @@ public class CommonUtil {
 		return bytes;
 	}
 
+	/**
+	 * 对序列号进行初始化，如果>8位则不管，如果<8位，则左补0
+	 *
+	 * @param numberToFormat
+	 * @return
+	 */
+	public static String formatSequence(long numberToFormat) {
+		DecimalFormat format = new DecimalFormat("00000000");
+		return format.format(numberToFormat);
+	}
+
+	public static String formatSubSequence(long numberToFormat) {
+		DecimalFormat format = new DecimalFormat("000000000");
+		return format.format(numberToFormat);
+	}
+
+
 	/*
 	 * 将字符数组转换为16进制字符串
 	 */

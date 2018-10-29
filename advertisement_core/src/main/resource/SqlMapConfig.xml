@@ -67,6 +67,10 @@
         <typeAlias type="com.yuanshanbao.dsp.agency.model.Agency" alias="Agency"/>
         <typeAlias type="com.yuanshanbao.dsp.creative.model.Creative" alias="Creative"/>
         <typeAlias type="com.yuanshanbao.dsp.plan.model.Plan" alias="Plan"/>
+        <typeAlias type="com.yuanshanbao.dsp.bankcard.model.BankCard" alias="BankCard"/>
+        <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacket" alias="RedPacket"/>
+        <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacketSequence" alias="redPacketSequence"/>
+        <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacketStrategy" alias="RedPacketStrategy"/>
     </typeAliases>
 
     <mappers>
@@ -126,5 +130,12 @@
         <mapper resource="mybatis/agency/AgencyDaoImpl.xml"/>
         <mapper resource="mybatis/creative/CreativeDaoImpl.xml"/>
         <mapper resource="mybatis/plan/PlanDaoImpl.xml"/>
+
+        <mapper resource="mybatis/bankcard/BankCardDaoImpl.xml"/>
+
+        <mapper resource="mybatis/redpacket/RedPacketDaoImpl.xml"/>
+        <mapper resource="mybatis/redpacket/RedPacketSequenceDaoImpl.xml"/>
+        <mapper resource="mybatis/redpacket/RedPacketStrategyDaoImpl.xml"/>
+
     </mappers>
 </configuration>

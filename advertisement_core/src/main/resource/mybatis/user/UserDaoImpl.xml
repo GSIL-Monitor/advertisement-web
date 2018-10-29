@@ -19,6 +19,7 @@
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 		<result property="inviteId" column="invite_id" jdbcType="VARCHAR" />
+		<result property="opinion" column="opinion" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<resultMap id="loginTokenMap" type="LoginToken">
@@ -92,10 +93,10 @@
 	<insert id="insertUser" parameterType="User">
 		insert into
 		tb_user_info(user_id, mobile, weixin_id, password,
-		name,avatar,invite_type, register_from, status, 
-		create_time,update_time)
+		name,user_name,opinion,avatar,invite_type, register_from, status,
+		create_time,update_time,)
 		values
-		(#{userId}, #{mobile}, #{weixinId}, #{password},#{name},
+		(#{userId}, #{mobile}, #{weixinId}, #{password},#{name},#{userName},#{opinion}
 		#{avatar}, #{inviteType},#{registerFrom}, #{status}, 
 		sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
@@ -131,6 +132,12 @@
 				</if>
 				<if test="name != null">
 					name=#{name},
+				</if>
+				<if test="userName != null">
+					user_name=#{userName},
+				</if>
+				<if test="opinion != null">
+					opinion=#{opinion},
 				</if>
 				<if test="avatar != null">
 					avatar=#{avatar},
