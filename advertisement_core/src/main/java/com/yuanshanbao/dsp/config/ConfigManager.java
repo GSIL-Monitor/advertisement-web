@@ -49,6 +49,8 @@ public class ConfigManager implements ConfigConstants {
 
 	protected static Map<String, List<AdvertisementStrategy>> advertisementStrategyMap = new LinkedHashMap<String, List<AdvertisementStrategy>>();
 
+	protected static Map<String, List<AdvertisementStrategy>> planStrategyMap = new LinkedHashMap<String, List<AdvertisementStrategy>>();
+
 	protected static Map<String, Advertisement> advertisementMap = new LinkedHashMap<String, Advertisement>();
 
 	protected static List<Advertisement> advertisementList = new ArrayList<Advertisement>();
@@ -126,6 +128,20 @@ public class ConfigManager implements ConfigConstants {
 
 			advertisementStrategyMap = tempAdvertisementStrategyMap;
 			strategyList = advertisementStrategies;
+		}
+
+		Map<String, List<AdvertisementStrategy>> tempPlanStrategyMap = new LinkedHashMap<String, List<AdvertisementStrategy>>();
+		if (advertisementStrategies != null) {
+			for (AdvertisementStrategy strategy : advertisementStrategies) {
+				List<AdvertisementStrategy> list = tempAdvertisementStrategyMap.get(strategy.getPlanId() + "");
+				if (list == null) {
+					list = new ArrayList<AdvertisementStrategy>();
+					tempAdvertisementStrategyMap.put(strategy.getPlanId() + "", list);
+				}
+				list.add(strategy);
+			}
+
+			planStrategyMap = tempPlanStrategyMap;
 		}
 
 		Map<Long, AdvertisementCategory> tempAdvertisementCategoryMap = new LinkedHashMap<Long, AdvertisementCategory>();
@@ -485,6 +501,10 @@ public class ConfigManager implements ConfigConstants {
 		return advertisementStrategyMap.get(advertisementId);
 	}
 
+	public static List<AdvertisementStrategy> getPlanStrategy(String planId) {
+		return advertisementStrategyMap.get(planId);
+	}
+
 	public static ProductCategory getProductCategory(Long id) {
 		return productCategoryMap.get(id);
 	}
@@ -493,17 +513,17 @@ public class ConfigManager implements ConfigConstants {
 		return activityCombineMap.get(id);
 	}
 
+	public static Plan getPlanById(Long id) {
+		return planMap.get(id);
+	}
+
 	public static Map<String, String> getStrategyMap(Long planId) {
 		Map<String, String> strategyMap = new LinkedHashMap<String, String>();
 		for (AdvertisementStrategy strategy : strategyList) {
-			if (planId.equals(strategy.getProbabilityId())) {
+			if (planId.equals(strategy.getPlanId())) {
 				strategyMap.put(strategy.getKey(), strategy.getValue());
 			}
 		}
 		return strategyMap;
-	}
-
-	public static Plan getPlanById(Long id) {
-		return planMap.get(id);
 	}
 }

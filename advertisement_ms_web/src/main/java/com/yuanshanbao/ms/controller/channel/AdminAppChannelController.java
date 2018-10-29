@@ -23,6 +23,7 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -64,13 +65,12 @@ public class AdminAppChannelController extends PaginationController {
 	}
 
 	@RequestMapping("/insertWindow.do")
-	public String insertWindow(String appId, HttpServletRequest request, HttpServletResponse response,
-			ModelMap modelMap) {
+	public String insertWindow(String appId, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		request.setAttribute("appId", appId);
 		setProperty(request);
 		return PAGE_INSERT;
 	}
-	
+
 	private void setProperty(HttpServletRequest request) {
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
 		request.setAttribute("showTypeList", ChannelType.getShowTypeDescriptionMap().entrySet());
@@ -142,8 +142,8 @@ public class AdminAppChannelController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/update.do")
-	public Object update(Channel channel, @RequestParam(value = "image", required = false) MultipartFile file, HttpServletRequest request,
-			@RequestParam(value = "iosFile", required = false) MultipartFile iosFile,
+	public Object update(Channel channel, @RequestParam(value = "image", required = false) MultipartFile file,
+			HttpServletRequest request, @RequestParam(value = "iosFile", required = false) MultipartFile iosFile,
 			@RequestParam(value = "androidFile", required = false) MultipartFile androidFile,
 			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
