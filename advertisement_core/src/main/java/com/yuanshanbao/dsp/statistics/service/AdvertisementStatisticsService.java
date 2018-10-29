@@ -20,6 +20,8 @@ public interface AdvertisementStatisticsService {
 
 	public void runAndInsertAdvertisementStatistics(int diffDay);
 
+	public void runAndInsertPlanStatistics(int diffDay);
+
 	public List<AdvertisementStatistics> selectAdvertisementStatisticsByLists(int diffDate, Boolean pv,
 			List<Long> advertisementIds, List<String> channels);
 

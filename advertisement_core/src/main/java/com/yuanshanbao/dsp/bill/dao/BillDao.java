@@ -13,4 +13,6 @@ public interface BillDao {
 	public List<Bill> selectBill(Bill bill, PageBounds pageBounds);
 
 	public int deleteBill(Long billId);
+
+	public List<Bill> selectAdvertiserConsume(Bill bill);
 }

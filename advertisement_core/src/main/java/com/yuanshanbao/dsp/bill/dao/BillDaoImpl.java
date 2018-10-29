@@ -30,4 +30,9 @@ public class BillDaoImpl extends BaseDaoImpl implements BillDao {
 	public int deleteBill(Long billId) {
 		return getSqlSession().delete("bill.deleteBill", billId);
 	}
+
+	@Override
+	public List<Bill> selectAdvertiserConsume(Bill bill) {
+		return getSqlSession().selectList("bill.selectAdvertiserConsumeByDate", bill);
+	}
 }

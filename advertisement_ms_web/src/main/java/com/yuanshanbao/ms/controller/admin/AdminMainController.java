@@ -37,6 +37,8 @@ import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.bill.model.Bill;
+import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.service.AdvertisementStatisticsService;
@@ -84,6 +86,8 @@ public class AdminMainController extends PaginationController {
 
 	@Autowired
 	private AdvertisementStatisticsService advertisementStatisticsService;
+	@Autowired
+	private BillService billService;
 
 	@RequestMapping("/main.do")
 	public String main(HttpServletRequest request, HttpServletResponse response) {
@@ -101,8 +105,9 @@ public class AdminMainController extends PaginationController {
 		Advertisement advertisement = new Advertisement();
 		Advertiser advertiser = new Advertiser();
 
-		advertiserMap = advertiserService.countAdvertiserSize(advertiser);
-		advertisementMap = advertisementService.countAdvertisementSize(advertisement);
+		// advertiserMap = advertiserService.countAdvertiserSize(advertiser);
+		// advertisementMap =
+		// advertisementService.countAdvertisementSize(advertisement);
 
 		for (Menu m : menus) {
 			if (!categoryNameSet.contains(m.getCategory_name())) {
@@ -112,6 +117,14 @@ public class AdminMainController extends PaginationController {
 				categorys.add(mc);
 				categoryNameSet.add(m.getCategory_name());
 			}
+		}
+		Advertiser currentAdvertiser = getBindAdvertiserByUser();
+		if (currentAdvertiser != null) {
+			Bill bill = new Bill();
+			bill.setAdvertiserId(currentAdvertiser.getAdvertiserId());
+			bill.setDate(DateUtils.format(new Date()));
+			request.setAttribute("balance", currentAdvertiser.getBalance());
+			request.setAttribute("today", billService.selectAdvertiserConsume(bill).getAmount());
 		}
 		request.setAttribute("project", projectService.selectProject(getProjectId(request)));
 		request.setAttribute("user", user);

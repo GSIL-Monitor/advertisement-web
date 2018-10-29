@@ -28,7 +28,9 @@ import com.yuanshanbao.dsp.creative.model.Creative;
 import com.yuanshanbao.dsp.creative.model.CreativeSize;
 import com.yuanshanbao.dsp.creative.model.CreativeType;
 import com.yuanshanbao.dsp.creative.service.CreativeService;
+import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
@@ -45,6 +47,12 @@ public class AdminCreativeController extends PaginationController {
 	private static final String PAGE_INSERT = "advertisement/creative/insertCreative";
 
 	private static final String PAGE_UPDATE = "advertisement/creative/updateCreative";
+	
+	private static final String PAGE_UNREVIEW_LIST = "advertisement/creative/updateCreative";
+	
+	private static final String PAGE_REVIEW = "advertisement/creative/reviewCreative";
+	
+	
 
 	@Autowired
 	private CreativeService creativeService;
@@ -165,6 +173,50 @@ public class AdminCreativeController extends PaginationController {
 			LoggerUtil.error("creative update function - upload image error", e2);
 		}
 
+		return result;
+	}
+	
+	@RequestMapping("/reviewWindow.do")
+	public String reviewWindow(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertiserId = advertiser.getAdvertiserId();
+		}
+		return PAGE_UNREVIEW_LIST;
+	}
+
+	@ResponseBody
+	@RequestMapping("/reviewQuery.do")
+	public Object reviewQuery(String range, Probability probability, Order order, HttpServletRequest request, HttpServletResponse response) {	
+		probability.setStatus(ProbabilityStatus.UNREVIEWED);
+		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
+		PageList pageList = (PageList) list;
+		return setPageInfo(request, response, pageList);
+	}
+	
+	@RequestMapping("/reviewDetails.do")
+	public String reviewDetails(String range, Long probabilityId, HttpServletRequest request, HttpServletResponse response) {	
+		Probability probability = probabilityService.selectProbability(probabilityId);
+		request.setAttribute("itemEdit", probability);
+		request.setAttribute("statusList", ProbabilityStatus.getCodeDescriptionMap().entrySet());
+		return PAGE_REVIEW;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/review.do")
+	public Object review(HttpServletRequest request, HttpServletResponse response, Probability probability) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			if (probability.getProbabilityId() == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			probabilityService.updateProbability(probability);
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("plan update function - upload image error", e2);
+		}
 		return result;
 	}
 }

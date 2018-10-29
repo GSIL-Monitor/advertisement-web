@@ -225,7 +225,7 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 		}
 		Map<String, String> map = ConfigManager.getStrategyMap(planId);
 		request.setAttribute("strategyValue", map);
-		request.setAttribute("probabilityId", planId);
+		request.setAttribute("planId", planId);
 		return PAGE_STRATEGY;
 	}
 

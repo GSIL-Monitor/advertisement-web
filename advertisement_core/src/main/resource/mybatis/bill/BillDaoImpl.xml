@@ -8,8 +8,11 @@
 		<id property="billId" column="bill_id" jdbcType="NUMERIC" />
 		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
+		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
+		<result property="planId" column="plan_id" jdbcType="NUMERIC" />
 		<result property="amount" column="amount" jdbcType="NUMERIC" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="date" column="date" jdbcType="VARCHAR" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
@@ -25,6 +28,9 @@
 			<trim suffixOverrides="and">
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId} and
+				</if>
+				<if test="date != null">
+					date = #{date} and
 				</if>
 				<if test="type != null">
 					type = #{type} and
@@ -47,9 +53,9 @@
 
 	<insert id="insertBill" parameterType="Bill">
 		insert into
-		tb_bills(advertiser_id,probability_id,amount,description, type,status, create_time, update_time)
+		tb_bills(date,advertiser_id,probability_id,order_id,plan_id,amount,description, type,status, create_time, update_time)
 		values
-		(#{advertiserId}#{probabilityId},#{amount}, #{description}, #{type},#{status},
+		(#{date},#{advertiserId},#{probabilityId},#{orderId},#{planId},#{amount}, #{description}, #{type},#{status},
 		 sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="billId">
@@ -69,11 +75,31 @@
 		</where>
 	</update>
 
-	<delete id="deleteBills" parameterType="long">
+	<delete id="deleteBill" parameterType="long">
 		delete from
 		tb_bills
 		where
 		bill_id=#{billId}
 	</delete>
 
+	<select id="selectAdvertiserConsumeByDate" parameterType="Bill"
+		resultMap="billMap">
+		select
+			advertiser_id,
+			SUM(amount) AS amount
+		from
+		tb_bills
+		<where>
+			<trim suffixOverrides="and">
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="date != null">
+					date = #{date} and
+				</if>				
+			</trim>
+			and status != -1
+		</where>
+		GROUP BY advertiser_id
+	</select>
 </mapper>

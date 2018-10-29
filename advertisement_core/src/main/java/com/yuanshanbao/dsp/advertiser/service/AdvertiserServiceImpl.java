@@ -105,7 +105,7 @@ public class AdvertiserServiceImpl implements AdvertiserService {
 	public void cutPayment(Long advertiserId, BigDecimal money) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("advertiserId", advertiserId);
-		parameters.put("difference", money);
+		parameters.put("amount", money);
 		int result = advertiserDao.cutPayment(parameters);
 		if (result < 0) {
 			throw new BusinessException(ComRetCode.FAIL);

@@ -14,8 +14,7 @@
 			    	"data": "orderId"
 			    },{
 			    	"data": "name"
-			    },
-			    {
+			    },{
 			    	"data": "advertiser.companyName"
 			    },{
 			    	"data": "amount"
@@ -75,39 +74,9 @@
             	<div class="filter-box">
 					<div class="btn-group">
             			<div class="filter-component">
-							<h6>广告名称：</h6>
-							<input type="text" name="title" id="title" placeholder="输入广告名称" />
+							<h6>订单名称：</h6>
+							<input type="text" name="title" id="title" placeholder="请输入订单名称" />
 						</div>	  
-					</div>
-					<div class="btn-group">
-            			<div style="width:60%;">
-							<h6>广告主名称：</h6>
-							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
-								<#list advertiserList as advertiser>
-									<option value="${advertiser.advertiserId}">${advertiser.companyName}</option>
-								</#list>
-							</select>
-						</div>
-					</div>
-					<div class="btn-group">
-            			<div style="width:60%;">
-							<h6>广告类型：</h6>
-							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
-								<#list typeList as type>
-									<option value="${type.key}">${type.value}</option>
-								</#list>
-							</select>
-						</div>
-					</div>
-					<div class="btn-group">
-            			<div style="width:60%;">
-							<h6>广告状态：</h6>
-							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
-								<#list statusList as status>
-									<option value="${status.key}">${status.value}</option>
-								</#list>
-							</select>
-						</div>
 					</div>
 					<div class="btn btn-green" id="queryButton">确定</div>
 					<div class="btn btn-white" id="queryReset">重置</div>

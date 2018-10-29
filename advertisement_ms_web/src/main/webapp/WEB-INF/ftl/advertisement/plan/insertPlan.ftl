@@ -32,6 +32,12 @@
 										</td>
 									</tr>
 									<tr>
+										<td style="width:20%;">投放链接：</td>
+										<td>
+											<input type="text" name="link" placeholder="广告跳转链接" style="width:60%;">
+										</td>
+									</tr>
+									<tr>
 										<td>开始时间：</td>
 										<td>
 											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;"></td>
@@ -60,10 +66,36 @@
 										</td>
 									</tr>
 									<tr>
+										<td>允许投放的媒体分类：</td>
+										<td>
+											<div style="width:60%;">
+												<select multiple data-live-search="true" class="selectpicker form-control" id="allowChannelType">
+													<#list channelTypeList as type>
+														<option value="${type.key}">${type.value}</option>
+													</#list>
+												</select>
+												<input type="hidden" name="allowChannelCategory" id="allowChannelTypeVal">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>禁止投放的媒体分类：</td>
+										<td>
+											<div style="width:60%;">
+												<select multiple data-live-search="true" class="selectpicker form-control" id="forbidChannelType">
+													<#list channelTypeList as type>
+														<option value="${type.key}">${type.value}</option>
+													</#list>
+												</select>
+												<input type="hidden" name="forbidChannelCategory" id="forbidChannelTypeVal">
+											</div>
+										</td>
+									</tr>
+									<tr>
 										<td>结算方式：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="quotaType" class="selectpicker form-control">
+												<select name="chargeType" class="selectpicker form-control">
 													<#list quotaTypeList as type>
 														<option value="${type.key}">${type.value}</option>
 													</#list>
@@ -111,6 +143,16 @@
 			defaultTime: '08:00',
 			format:'Y-m-d H:i'
 		});
+		$('#allowChannelType').on('changed.bs.select',function(e) {
+			var allowChannelType = $('#allowChannelType').selectpicker('val');
+  			allowChannelType = allowChannelType.join(',');
+  			$('#allowChannelTypeVal').attr('value', allowChannelType);
+		})
+		$('#forbidChannelType').on('changed.bs.select',function(e) {
+			var forbidChannelType = $('#forbidChannelType').selectpicker('val');
+  			forbidChannelType = forbidChannelType.join(',');
+  			$('#forbidChannelTypeVal').attr('value', forbidChannelType);
+		})
 	});
 </script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />

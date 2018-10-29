@@ -13,6 +13,7 @@ public class Bill {
 	private Long planId;
 	private Long orderId;
 	private String channel;
+	private String date;
 	private BigDecimal amount;
 	private String description;
 	private Integer type;
@@ -150,6 +151,14 @@ public class Bill {
 
 	public String getTypeContent() {
 		return BillType.getDescription(type);
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 }

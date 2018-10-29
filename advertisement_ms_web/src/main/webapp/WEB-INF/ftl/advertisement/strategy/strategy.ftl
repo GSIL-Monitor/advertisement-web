@@ -26,7 +26,7 @@
 		<hr>
 			<div class="row-fluid">
 				<form action="${rc.contextPath}/admin/${functionName}/updateProbabilityStrategy.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-					<input type="hidden" name="probabilityId" value="${probabilityId}">不限
+					<input type="hidden" name="planId" value="${planId}">
 					<div>
 						<div class="widget-box">
 							<div class="widget-title">

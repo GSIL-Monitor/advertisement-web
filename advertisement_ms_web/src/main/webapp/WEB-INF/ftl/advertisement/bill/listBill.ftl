@@ -71,25 +71,29 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
         <div class="widget-box">
-          	<div class="widget-title"></span>
+          	<div class="widget-title">
             	<h5>${functionTitle}列表</h5>
             	<div class="filter-box">
-          	</div>
-			<div class="widget-content nopadding">
-				<table class="table table-bordered data-table" id="dataTable">
-					<thead>
-						<tr>
-							<th>时间</th>
-							<th>广告主名称</th>
-							<th>金额(元)</th>
-							<th>类型</th>
-							<th>备注</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-			</div>
+            		<span>账户余额： <span style="color: #ff784f;font-size: 16px;" class="text-red">${balance}</span></span>
+            		<span>
+            			今日消耗：<span style="color: #ff784f;font-size: 16px;" class="text-red">${balance}</span>
+            		</span>
+          		</div>
+				<div class="widget-content nopadding">
+					<table class="table table-bordered data-table" id="dataTable">
+						<thead>
+							<tr>
+								<th>时间</th>
+								<th>广告主名称</th>
+								<th>金额(元)</th>
+								<th>类型</th>
+								<th>备注</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

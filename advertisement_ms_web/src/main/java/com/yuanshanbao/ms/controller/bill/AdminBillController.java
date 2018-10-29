@@ -81,6 +81,7 @@ public class AdminBillController extends PaginationController {
 		Advertiser advertiser = getBindAdvertiserByUser();
 		if (advertiser != null) {
 			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
+			request.setAttribute("balance", advertiser.getBalance());
 		}
 		return PAGE_LIST;
 	}
