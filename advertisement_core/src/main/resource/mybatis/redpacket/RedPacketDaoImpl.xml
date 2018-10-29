@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RedPacket">
+
+	<resultMap id="redPacketMap" type="RedPacket">
+		<id property="redPacketId" column="red_packet_id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="NUMERIC" />
+		<result property="strategyId" column="strategy_id" jdbcType="NUMERIC" />
+		<result property="balance" column="balance" jdbcType="NUMERIC" />
+		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
+		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="selectRedPacket" parameterType="RedPacket" resultMap="redPacketMap">
+		select
+		* from
+		tb_red_packet t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="redPacketId != null">
+					red_packet_id=#{redPacketId} and
+				</if>
+				<if test="userId != null">
+					user_id=#{userId} and
+				</if>
+				<if test="strategyId != null">
+					strategy_id=#{strategyId} and
+				</if>
+				<if test="status != null">
+					status=#{status} and
+				</if>
+				<if test="statusList != null">
+					status in
+					<foreach item="status" collection="statusList" open="(" separator="," close=")">
+						#{status}
+					</foreach>
+				</if>
+			</trim>
+			and status!=-1
+		</where>
+		order by end_time
+	</select>
+
+	<select id="selectShowRedPacketCount" parameterType="String" resultType="Integer">
+		select
+		count(*) from
+		tb_red_packet t
+		where user_id=#{userId} and (status=1 or status=0)
+	</select>
+	
+	<select id="selectRedPacketById" parameterType="Map" resultMap="redPacketMap">
+		select
+		* from
+		tb_red_packet t
+		where red_packet_id=#{redPacketId} and user_id=#{userId} and status!=-1
+		<if test="isLock == true">
+            for update
+        </if>
+	</select>
+
+	<insert id="insertRedPacket" parameterType="RedPacket">
+		insert into
+		tb_red_packet(user_id, strategy_id, balance, start_time, end_time, status, create_time,update_time)
+		values
+		(#{userId}, #{strategyId}, #{balance}, #{starTime}, #{endTime}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="redPacketId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateRedPacket" parameterType="RedPacket">
+		update tb_red_packet
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id=#{userId},
+				</if>
+				<if test="strategyId != null">
+					strategy_id=#{strategyId},
+				</if>
+				<if test="balance != null">
+					balance=#{balance},
+				</if>
+				<if test="startTime != null">
+					start_time=#{startTime},
+				</if>
+				<if test="endTime != null">
+					end_time=#{endTime},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			red_packet_id=#{redPacketId}
+		</where>
+	</update>
+
+	<delete id="deleteRedPacket" parameterType="RedPacket">
+		delete from tb_red_packet
+		<where>
+			red_packet_id=#{redPacketId}
+		</where>
+	</delete>
+
+</mapper>

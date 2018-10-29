@@ -10,14 +10,16 @@
 		<result property="agencyName" column="agency_name" jdbcType="VARCHAR" />
 		<result property="userName" column="user_name" jdbcType="VARCHAR" />
 		<result property="inviteTime" column="invite_time" jdbcType="TIMESTAMP" />
-		<result property="commission" column="commission" jdbcType="NUMERIC" />
+		<result property="brokerage" column="brokerage" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="productName" column="product_name" jdbcType="NUMERIC" />
 	</resultMap>
 
 <!--查询直推总佣金-->
-	<select id="getSumCommission" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
+	<select id="getAgencyBrokerage" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
 		select
-		sum(commission) from
+		sum(brokerage) from
 		tb_agency
 		where
 			invite_user_id =#{inviteUserId}
@@ -53,12 +55,19 @@
 				<if test="inviteTime != null">
 					invite_time= #{inviteTime} and
 				</if>
-				<if test="commission != null"> and
-					commission= #{commission}
+				<if test="brokerage != null"> and
+					brokerage= #{brokerage}
+				</if>
+				<if test="productId != null"> and
+					product_id= #{productId}
+				</if>
+				<if test="productName != null"> and
+					product_name= #{productName}
 				</if>
 				<if test="status != null"> and
 					status= #{status}
 				</if>
+
 			</trim>
 
 		</where>
@@ -67,9 +76,9 @@
 
 	<insert id="insertAgency" parameterType="Agency">
 		insert into
-		tb_agency(user_id,invite_user_id,user_name,invite_name,commission,invite_time,status)
+		tb_agency(user_id,invite_user_id,user_name,invite_name,brokerage,product_id,product_name,invite_time,status)
 		values
-		(#{userId}, #{inviteUserId}, #{userName}, #{invateName},#{commission},
+		(#{userId}, #{inviteUserId}, #{userName}, #{invateName},#{brokerage},#{productId},#{productName},
 		#{inviteTime},#{status})
 		<selectKey resultType="java.lang.Long" order="AFTER"
 				   keyProperty="userId">

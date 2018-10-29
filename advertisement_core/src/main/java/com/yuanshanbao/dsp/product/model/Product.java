@@ -99,6 +99,8 @@ public class Product {
 	private Timestamp updateTime;
 
 	private Merchant merchant;
+
+	private BigDecimal brokerage;
 	/**
 	 * 查询排序条件
 	 */
@@ -110,6 +112,15 @@ public class Product {
 
 	// ~ Get and Set Methods
 	// =================================================================================
+
+
+	public BigDecimal getBrokerage() {
+		return brokerage;
+	}
+
+	public void setBrokerage(BigDecimal brokerage) {
+		this.brokerage = brokerage;
+	}
 
 	public Long getProductId() {
 		return productId;

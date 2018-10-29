@@ -285,6 +285,15 @@ public class ComRetCode {
 	public static final int NO_AGENCY = 807;
 	public static final String NO_AGENCY_DESC = "抱歉，还没有代理人";
 
+	/* 808,银行卡格式错误 */
+	public static final int BANK_CAED_ERRO = 808;
+	public static final String BANK_CAED_ERRO_DESC = "请输入正确的银行卡号";
+
+
+	/* 809,提交的意见不能为空 */
+	public static final int NO_OPIOION = 809;
+	public static final String NO_OPIOION_DESC = "内容不能为空";
+
 	public static Map<Integer, String> retCodeMap = new LinkedHashMap<Integer, String>();
 
 	static {

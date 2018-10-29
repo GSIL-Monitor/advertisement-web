@@ -23,7 +23,6 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.app.model.AppType;
 import com.yuanshanbao.dsp.channel.model.Channel;
-import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;

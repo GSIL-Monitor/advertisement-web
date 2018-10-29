@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="RedPacketStrategy">
+
+	<resultMap id="redPacketStrategyMap" type="RedPacketStrategy">
+		<id property="strategyId" column="strategy_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="amount" column="amount" jdbcType="NUMERIC" />
+		<result property="condition" column="condition" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
+		<result property="scope" column="scope" jdbcType="VARCHAR" />
+		<result property="delayTime" column="delay_time" jdbcType="NUMERIC" />
+		<result property="validTime" column="valid_time" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectRedPacketStrategy" parameterType="RedPacketStrategy" resultMap="redPacketStrategyMap">
+		select
+		* from
+		tb_red_packet_strategy t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="strategyId != null">
+					strategy_id=#{strategyId} and
+				</if>
+				<if test="activityId != null">
+					activity_id=#{activityId} and
+				</if>
+				<if test="type != null">
+					type=#{type} and
+				</if>
+				<if test="scope != null">
+					scope=#{scope} and
+				</if>
+				<if test="status != null">
+					status=#{status} and
+				</if>
+			</trim>
+			and status!=-1
+		</where>
+	</select>
+	
+	<select id="selectRedPacketStrategyByIds" parameterType="List" resultMap="redPacketStrategyMap">
+		select
+		* from
+		tb_red_packet_strategy
+		<where>
+			strategy_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+
+	<insert id="insertRedPacketStrategy" parameterType="RedPacketStrategy">
+		insert into
+		tb_red_packet_strategy(activity_id, name, description, amount, condition, type, scope, delay_time, valid_time, status, create_time,update_time)
+		values
+		(#{activityId}, #{name}, #{description}, #{amount}, #{condition}, #{type}, #{scope}, #{delayTime}, #{validTime}, #{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="redPacketStrategyId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<update id="updateRedPacketStrategy" parameterType="RedPacketStrategy">
+		update tb_red_packet_strategy
+		<set>
+			<trim suffixOverrides=",">
+				<if test="activityId != null">
+					activity_id=#{activityId},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="description != null">
+					description=#{description},
+				</if>
+				<if test="amount != null">
+					amount=#{amount},
+				</if>
+				<if test="condition != null">
+					condition=#{condition},
+				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
+				<if test="scope != null">
+					scope=#{scope},
+				</if>
+				<if test="delayTime != null">
+					delay_time=#{delayTime},
+				</if>
+				<if test="validTime != null">
+					valid_time=#{validTime},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			strategy_id=#{strategyId}
+		</where>
+	</update>
+
+	<delete id="deleteRedPacketStrategy" parameterType="RedPacketStrategy">
+		delete from tb_red_packet_strategy
+		<where>
+			strategy_id=#{strategyId}
+		</where>
+	</delete>
+
+</mapper>

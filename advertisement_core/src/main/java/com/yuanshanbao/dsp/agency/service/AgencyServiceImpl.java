@@ -58,11 +58,11 @@ public class AgencyServiceImpl implements  AgencyService {
     }
 
     @Override
-    public BigDecimal getAgencyCommission(Long inviteUserId) {
+    public BigDecimal getAgencyBrokerage(Long inviteUserId) {
         if (inviteUserId == null && inviteUserId == 0)
             throw new BusinessException();
 
-        return agencyDao.getAgencyCommission(inviteUserId);
+        return agencyDao.getAgencyBrokerage(inviteUserId);
     }
 
     @Override

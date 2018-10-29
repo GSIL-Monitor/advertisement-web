@@ -29,6 +29,15 @@ public class User implements Serializable {
 	private BaseInfo baseInfo;
 	private Long inviteUserId;
 	private String identity;
+	private String opinion;
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
+	}
 
 	public String getIdentity() {
 		return identity;

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yuanshanbao.common.ret.ComRet;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import org.apache.commons.codec.binary.Base64;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -314,7 +316,7 @@ public class UserController extends BaseController {
 	 * @param request
 	 * @param appId
 	 * @param tempToken
-	 * @param user
+     * @param user
 	 * @return
 	 */
 	@ResponseBody
@@ -368,6 +370,36 @@ public class UserController extends BaseController {
 		}
 
 	}
+
+    /**
+     * 添加手机号
+     */
+    @ResponseBody
+    @RequestMapping("/mobile")
+    public Object addMobile(HttpServletRequest request,String appId, String params ){
+        Map<String , Object > resultMap = new HashMap<>();
+        try{
+            Map<String, String> parameterMap = appService.decryptParameters(appId, params);
+            String mobile = parameterMap.get("mobile");
+            String smsCode = parameterMap.get("smsCode");
+            String userIp = JSPHelper.getRemoteAddr(request);
+            smsCodeService.validateSmsCode(mobile,smsCode,"",userIp);
+            if (StringUtil.isEmpty(mobile) && !ValidateUtil.isPhoneNo(mobile)) {
+                throw new BusinessException(ComRetCode.WRONG_MOBILE);
+            }
+            User user = new User();
+            user.setMobile(mobile);
+            userService.insertUser(user);
+            InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
+
+        }catch (BusinessException e) {
+            InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
+            return resultMap;
+        }
+        return resultMap;
+    }
+
+
 	/**
 	 * 添加身份证信息
 	 *
@@ -391,6 +423,34 @@ public class UserController extends BaseController {
 		}
 		return  resultMap;
 	}
+
+	/**
+	 *
+	 * 提交意见
+	 */
+	@RequestMapping("/commitOpinion")
+	@ResponseBody
+	public Object commitOpinion(HttpServletRequest request , String token, @RequestParam (" opinion") String opinion) {
+		Map<String ,Object> resultMap = new HashMap<>();
+		try{
+            User loginToken = tokenService.verifyLoginToken(token);
+            if (loginToken == null)
+                throw new BusinessException(ComRetCode.NOT_LOGIN);
+            if (StringUtil.isEmpty(opinion))
+                throw new BusinessException(ComRetCode.NO_OPIOION);
+            User user = new User();
+            user.setOpinion(opinion);
+            user.setUserId(loginToken.getUserId());
+            userService.updateUser(user);
+            InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
+
+        }catch (Exception e) {
+			LoggerUtil.error("[register] exception: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+		}
+		return resultMap;
+	}
+
 
 	/**
 	 * 渠道注册
