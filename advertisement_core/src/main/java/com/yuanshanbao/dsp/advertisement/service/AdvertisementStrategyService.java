@@ -39,7 +39,7 @@ public interface AdvertisementStrategyService {
 
 	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list);
 
-	public void updateProbabilityStrategy(HttpServletRequest request, Long probabilityId, Long advertiserId);
+	public void updatePlanStrategy(HttpServletRequest request, Long probabilityId, Long advertiserId);
 
 	void insertOrUpdateAdvertisementStrategy(AdvertisementStrategy advertisementStrategy);
 

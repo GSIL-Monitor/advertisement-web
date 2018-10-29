@@ -231,7 +231,7 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/updateProbabilityStrategy.do")
-	public Object strategy(Long probabilityId, Long advertiserId, Function function, HttpServletRequest request,
+	public Object strategy(Long planId, Long advertiserId, Function function, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
@@ -239,7 +239,7 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 
-			strategyService.updateProbabilityStrategy(request, probabilityId, advertiserId);
+			strategyService.updatePlanStrategy(request, planId, advertiserId);
 			// AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

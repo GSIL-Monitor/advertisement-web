@@ -519,7 +519,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		Map<Long, Double> scoreMap = new HashMap<Long, Double>();
 		for (Long probabilityId : bidMap.keySet()) {
 			String ctrValue = redisService.get(RedisConstant.getProbabilityChannelCTRKey(probabilityId));
-			if (ctrValue == null || !ValidateUtil.isNumber(ctrValue)) {
+			if (ctrValue == null || !ValidateUtil.isDouble(ctrValue)) {
 				return probabilityId;
 			} else {
 				Double ctr = Double.valueOf(ctrValue);

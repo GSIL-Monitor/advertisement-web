@@ -11,14 +11,15 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.dsp.advertisement.model.Instance;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -35,14 +36,14 @@ public class IndexDspController {
 	private ProbabilityService probabilityService;
 
 	// dsp请求广告接口
-	@RequestMapping("/content")
+	@RequestMapping(value = "/content", method = RequestMethod.POST)
 	@ResponseBody
-	public Object getContent(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
+	public Object getContent(HttpServletRequest request, HttpServletResponse response, @RequestBody Instance instance) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
-				Channel channelObject = ConfigManager.getChannel(body.getString("channel"));
+				Channel channelObject = ConfigManager.getChannel(instance.getChannel());
 				if (channelObject != null) {
 					List<Probability> seatBid = probabilityService.pickProbabilityByPlan(request,
 							project.getProjectId(), null);
@@ -60,15 +61,14 @@ public class IndexDspController {
 	}
 
 	// 广告点击
-	@RequestMapping("/ad/show")
+	@RequestMapping(value = "/ad/show", method = RequestMethod.POST)
 	@ResponseBody
-	public Object adShow(HttpServletRequest request, HttpServletResponse response, String userId, String pId,
-			String channel, @PathVariable("projectKey") String projectKey) {
+	public Object adShow(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
-				Channel channelObject = ConfigManager.getChannel(channel);
+				Channel channelObject = ConfigManager.getChannel(null);
 				if (channelObject != null) {
 
 				}
@@ -85,15 +85,14 @@ public class IndexDspController {
 	}
 
 	// 广告点击
-	@RequestMapping("/{projectKey}/ad/click")
+	@RequestMapping(value = "/ad/click", method = RequestMethod.POST)
 	@ResponseBody
-	public Object adClick(HttpServletRequest request, HttpServletResponse response, String userId,
-			String advertisementId, String channel, @PathVariable("projectKey") String projectKey) {
+	public Object adClick(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
-				Channel channelObject = ConfigManager.getChannel(channel);
+				Channel channelObject = ConfigManager.getChannel(null);
 				if (channelObject != null) {
 
 				}

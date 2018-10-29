@@ -355,8 +355,8 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	}
 
 	@Override
-	public void updateProbabilityStrategy(HttpServletRequest request, Long probabilityId, Long advertiserId) {
-		Map<String, String> map = ConfigManager.getStrategyMap(probabilityId);
+	public void updatePlanStrategy(HttpServletRequest request, Long planId, Long advertiserId) {
+		Map<String, String> map = ConfigManager.getStrategyMap(planId);
 		Map<Integer, String> keysMap = AdvertisementStrategyType.getStrategyKeyMap();
 		Collection<String> keys = keysMap.values();
 		for (String key : keys) {
@@ -367,7 +367,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 			}
 			if (!params.equals(map.get(key))) {
 				AdvertisementStrategy strategy = new AdvertisementStrategy();
-				strategy.setProbabilityId(probabilityId);
+				strategy.setProbabilityId(planId);
 				strategy.setKey(key);
 				List<AdvertisementStrategy> strategyList = selectAdvertisementStrategy(strategy, new PageBounds());
 				for (AdvertisementStrategy exist : strategyList) {

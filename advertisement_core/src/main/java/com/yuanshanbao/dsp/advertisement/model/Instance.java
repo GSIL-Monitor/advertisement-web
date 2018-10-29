@@ -15,6 +15,11 @@ public class Instance {
 	private String province;
 	private String city;
 	private String mobile;
+	private String ua;
+	private Integer connectiontype;
+	private String carrier;
+	private Integer w;
+	private Integer h;
 
 	private String channel;
 	private Long activityId;
@@ -146,4 +151,45 @@ public class Instance {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
+
+	public String getUa() {
+		return ua;
+	}
+
+	public void setUa(String ua) {
+		this.ua = ua;
+	}
+
+	public Integer getConnectiontype() {
+		return connectiontype;
+	}
+
+	public void setConnectiontype(Integer connectiontype) {
+		this.connectiontype = connectiontype;
+	}
+
+	public String getCarrier() {
+		return carrier;
+	}
+
+	public void setCarrier(String carrier) {
+		this.carrier = carrier;
+	}
+
+	public Integer getW() {
+		return w;
+	}
+
+	public void setW(Integer w) {
+		this.w = w;
+	}
+
+	public Integer getH() {
+		return h;
+	}
+
+	public void setH(Integer h) {
+		this.h = h;
+	}
+
 }

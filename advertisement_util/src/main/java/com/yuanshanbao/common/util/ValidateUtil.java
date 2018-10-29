@@ -219,6 +219,17 @@ public class ValidateUtil {
 		}
 	}
 
+	public static boolean isDouble(String str) {
+		if (isEmpty(str))
+			return false;
+		try {
+			Float.parseFloat(str);
+			return true;
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+	}
+
 	/**
 	 * 校验long类型的数据。
 	 * 
