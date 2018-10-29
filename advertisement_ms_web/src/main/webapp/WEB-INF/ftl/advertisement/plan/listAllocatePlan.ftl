@@ -9,23 +9,25 @@
 		dataTable.ajax.reload();
 	}
 	$(document).ready(function(){
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/reviewQuery.do?orderId=${orderId}";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?orderId=${orderId}";
 		dataTableConfig.columns = [{
-			    	"data": "probabilityId"
+			    	"data": "planId"
 			    },{
 			    	"data": "order.name"
 			    },{
-			    	"data": "plan.name"
+			    	"data": "name"
 			    },{
 			    	"data": "advertiser.companyName"
 			    },{
-			    	"data": "channel"
-			    },{
 			    	"data": "createTimeContent"
 				},{
+			    	"data": "statusValue"
+		        },{
+			    	"data": "spend"
+		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/reviewDetails.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">审核</a></div>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/allocatePlanWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">设置媒体</a></div>';
 			       }
 		        }];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -78,7 +80,9 @@
 							<th>计划名称</th>
 							<th>广告主</th>
 							<th>创建时间</th>
-							<th>审核</th>
+							<th>投放状态</th>
+							<th>预算</th>
+							<th>投放</th>
 						</tr>
 					</thead>
 					<tbody>

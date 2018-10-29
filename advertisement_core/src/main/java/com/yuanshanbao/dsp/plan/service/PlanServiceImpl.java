@@ -125,7 +125,7 @@ public class PlanServiceImpl implements PlanService {
 		if (planIds == null || planIds.size() == 0) {
 			return map;
 		}
-		List<Plan> list = planDao.selectPlanByIds(planIds);
+		List<Plan> list = setProperty(planDao.selectPlanByIds(planIds));
 
 		for (Plan param : list) {
 			map.put(param.getPlanId(), param);

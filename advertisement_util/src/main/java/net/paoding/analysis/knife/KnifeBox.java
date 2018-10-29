@@ -68,7 +68,7 @@ public class KnifeBox implements Knife {
 			this.knives[i] = (Knife) iter.next();
 		}
 	}
-	
+
 	public void setKnives(Knife[] knives) {
 		if (knives == null) {
 			knives = new Knife[0];

@@ -20,7 +20,9 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.model.ChannelType;
+import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -33,10 +35,12 @@ import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -51,8 +55,13 @@ public class AdminPlanController extends PaginationController {
 	private static final String PAGE_UPDATE = "advertisement/plan/updatePlan";
 
 	private static final String PAGE_UNREVIEW_LIST = "advertisement/plan/listUnreview";
-	
+
 	private static final String PAGE_REVIEW = "advertisement/plan/reviewPlan";
+
+	private static final String PAGE_ALLOCATE_LIST = "advertisement/plan/listAllocatePlan";
+
+	private static final String PAGE_ALLOCATE_PLAN = "advertisement/plan/allocatePlan";
+
 	@Autowired
 	private OrderService orderService;
 
@@ -71,6 +80,9 @@ public class AdminPlanController extends PaginationController {
 	@Autowired
 	private PlanService planService;
 
+	@Autowired
+	private ChannelService channelService;
+
 	@RequestMapping("/list.do")
 	public String list(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
 		Advertiser advertiser = getBindAdvertiserByUser();
@@ -81,6 +93,7 @@ public class AdminPlanController extends PaginationController {
 		return PAGE_LIST;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Plan plan, Order order, HttpServletRequest request, HttpServletResponse response) {
@@ -192,7 +205,7 @@ public class AdminPlanController extends PaginationController {
 		}
 		return resultMap;
 	}
-	
+
 	@RequestMapping("/reviewWindow.do")
 	public String reviewWindow(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
 		Advertiser advertiser = getBindAdvertiserByUser();
@@ -205,21 +218,22 @@ public class AdminPlanController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/reviewQuery.do")
-	public Object reviewQuery(String range, Plan plan, Order order, HttpServletRequest request, HttpServletResponse response) {	
+	public Object reviewQuery(String range, Plan plan, Order order, HttpServletRequest request,
+			HttpServletResponse response) {
 		plan.setStatus(PlanStatus.UNREVIEWED);
 		List<Plan> list = planService.selectPlan(plan, getPageBounds(range, request));
 		PageList pageList = (PageList) list;
 		return setPageInfo(request, response, pageList);
 	}
-	
+
 	@RequestMapping("/reviewDetails.do")
-	public String reviewDetails(String range, Long planId, HttpServletRequest request, HttpServletResponse response) {	
+	public String reviewDetails(String range, Long planId, HttpServletRequest request, HttpServletResponse response) {
 		Plan plan = planService.selectPlan(planId);
 		request.setAttribute("itemEdit", plan);
 		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
 		return PAGE_REVIEW;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/review.do")
 	public Object review(HttpServletRequest request, HttpServletResponse response, Plan plan) {
@@ -234,6 +248,43 @@ public class AdminPlanController extends PaginationController {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
 			LoggerUtil.error("plan update function - upload image error", e2);
+		}
+		return result;
+	}
+
+	@RequestMapping("/planList.do")
+	public String planList(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			advertiserId = advertiser.getAdvertiserId();
+		}
+		setProperty(request, getProjectId(request), orderId, advertiserId);
+		return PAGE_ALLOCATE_LIST;
+	}
+
+	@RequestMapping("/allocatePlanWindow.do")
+	public String allocatePlanWindow(Long planId, String channel, HttpServletRequest request,
+			HttpServletResponse response, ModelMap modelMap) {
+		Channel params = new Channel();
+		List<Channel> list = channelService.selectChannels(params, new PageBounds());
+		request.setAttribute("channelList", list);
+		request.setAttribute("planId", planId);
+		return PAGE_ALLOCATE_PLAN;
+	}
+
+	public Object allowPlan(HttpServletRequest request, HttpServletResponse response, Probability probability) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			// Plan plan = ConfigManager.getPlanById(probability.getPlanId());
+			probability.setProjectId(getProjectId(request));
+			probability.setStatus(ProbabilityStatus.UNREVIEWED);
+			probabilityService.insertProbability(probability);
+			AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("probability insert function - reload error", e2);
 		}
 		return result;
 	}

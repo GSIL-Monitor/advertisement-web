@@ -476,7 +476,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 
 	// 查找计划并展示
 	@Override
-	public Probability pickProbabilityByPlan(HttpServletRequest request, Long projectId, String channel) {
+	public List<Probability> pickProbabilityByPlan(HttpServletRequest request, Long projectId, String channel) {
+		List<Probability> resultList = new ArrayList<Probability>();
 		Map<Long, Probability> probabilitymap = selectPlanFromCache(request, projectId, channel);
 		Map<Long, BigDecimal> bidMap = ConstantsManager.getBidByChannel(channel);
 		Long probabilityId = dealWithCTRAndBid(bidMap);
@@ -485,7 +486,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		}
 		Probability probability = probabilitymap.get(probabilityId);
 		Plan plan = ConfigManager.getPlanById(probability.getPlanId());
-		return null;
+		resultList.add(probability);
+		return resultList;
 	}
 
 	public Map<Long, Probability> selectPlanFromCache(HttpServletRequest request, Long projectId, String channelKey) {

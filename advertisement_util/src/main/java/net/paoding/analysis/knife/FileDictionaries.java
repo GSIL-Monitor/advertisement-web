@@ -107,8 +107,7 @@ public class FileDictionaries implements Dictionaries {
 	public FileDictionaries() {
 	}
 
-	public FileDictionaries(String dicHome, String skipPrefix,
-			String noiseCharactor, String noiseWord, String unit,
+	public FileDictionaries(String dicHome, String skipPrefix, String noiseCharactor, String noiseWord, String unit,
 			String confucianFamilyName, String combinatorics, String charsetName, int maxWordLen) {
 		this.dicHome = dicHome;
 		this.skipPrefix = skipPrefix;
@@ -203,8 +202,7 @@ public class FileDictionaries implements Dictionaries {
 	public synchronized Dictionary getVocabularyDictionary() {
 		if (vocabularyDictionary == null) {
 			// 大概有5639个字有词语，故取0x2fff=x^13>8000>8000*0.75=6000>5639
-			vocabularyDictionary = new HashBinaryDictionary(
-					getVocabularyWords(), 0x2fff, 0.75f);
+			vocabularyDictionary = new HashBinaryDictionary(getVocabularyWords(), 0x2fff, 0.75f);
 			Dictionary noiseWordsDic = getNoiseWordsDictionary();
 			for (int i = 0; i < noiseWordsDic.size(); i++) {
 				Hit hit = vocabularyDictionary.search(noiseWordsDic.get(i), 0, noiseWordsDic.get(i).length());
@@ -219,7 +217,7 @@ public class FileDictionaries implements Dictionaries {
 					hit.getWord().setNoiseCharactor();
 				}
 			}
-			
+
 		}
 		return vocabularyDictionary;
 	}
@@ -231,8 +229,7 @@ public class FileDictionaries implements Dictionaries {
 	 */
 	public synchronized Dictionary getConfucianFamilyNamesDictionary() {
 		if (confucianFamilyNamesDictionary == null) {
-			confucianFamilyNamesDictionary = new BinaryDictionary(
-					getConfucianFamilyNames());
+			confucianFamilyNamesDictionary = new BinaryDictionary(getConfucianFamilyNames());
 		}
 		return confucianFamilyNamesDictionary;
 	}
@@ -244,8 +241,7 @@ public class FileDictionaries implements Dictionaries {
 	 */
 	public synchronized Dictionary getNoiseCharactorsDictionary() {
 		if (noiseCharactorsDictionary == null) {
-			noiseCharactorsDictionary = new HashBinaryDictionary(
-					getNoiseCharactors(), 256, 0.75f);
+			noiseCharactorsDictionary = new HashBinaryDictionary(getNoiseCharactors(), 256, 0.75f);
 		}
 		return noiseCharactorsDictionary;
 	}
@@ -276,15 +272,13 @@ public class FileDictionaries implements Dictionaries {
 
 	public synchronized Dictionary getCombinatoricsDictionary() {
 		if (combinatoricsDictionary == null) {
-			combinatoricsDictionary = new BinaryDictionary(
-					getCombinatoricsWords());
+			combinatoricsDictionary = new BinaryDictionary(getCombinatoricsWords());
 		}
 		return combinatoricsDictionary;
 	}
 
-	
 	private Detector detector;
-	
+
 	public synchronized void startDetecting(int interval, DifferenceListener l) {
 		if (detector != null || interval < 0) {
 			return;
@@ -299,7 +293,6 @@ public class FileDictionaries implements Dictionaries {
 		this.detector = detector;
 	}
 
-
 	public synchronized void stopDetecting() {
 		if (detector == null) {
 			return;
@@ -307,7 +300,7 @@ public class FileDictionaries implements Dictionaries {
 		detector.setStop();
 		detector = null;
 	}
-	
+
 	/**
 	 * 
 	 * @param dicName
@@ -317,8 +310,8 @@ public class FileDictionaries implements Dictionaries {
 		String dicName = dicPath.substring(0, index);
 		if (allWords != null) {
 			try {
-				Map/* <String, Set<String>> */temp = FileWordsReader
-						.readWords(dicHome + dicPath, charsetName, maxWordLen);
+				Map/* <String, Set<String>> */temp = FileWordsReader.readWords(dicHome + dicPath, charsetName,
+						maxWordLen);
 				allWords.put(dicName, temp.values().iterator().next());
 			} catch (FileNotFoundException e) {
 				// 如果源文件已经被删除了，则表示该字典不要了
@@ -403,8 +396,7 @@ public class FileDictionaries implements Dictionaries {
 	protected Word[] getDictionaryWords(String dicNameRelativeDicHome) {
 		Map dics;
 		try {
-			dics = FileWordsReader.readWords(dicHome + "/"
-					+ dicNameRelativeDicHome + ".dic", charsetName, maxWordLen);
+			dics = FileWordsReader.readWords(dicHome + "/" + dicNameRelativeDicHome + ".dic", charsetName, maxWordLen);
 		} catch (IOException e) {
 			throw toRuntimeException(e);
 		}
@@ -442,8 +434,7 @@ public class FileDictionaries implements Dictionaries {
 	// ---------------------------------------
 
 	protected final boolean isSkipForVacabulary(String dicNameRelativeDicHome) {
-		return dicNameRelativeDicHome.startsWith(skipPrefix)
-				|| dicNameRelativeDicHome.indexOf("/" + skipPrefix) != -1;
+		return dicNameRelativeDicHome.startsWith(skipPrefix) || dicNameRelativeDicHome.indexOf("/" + skipPrefix) != -1;
 	}
 
 	protected boolean isUnitDicFile(String dicName) {

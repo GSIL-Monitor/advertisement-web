@@ -196,22 +196,18 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		// 针对计划进行处理
 		for (Probability prob : list) {
 			// 取出广告策略
-			List<AdvertisementStrategy> advertisementStrategyList = ConfigManager.getAdvertisementStrategy(prob
-					.getAdvertisementId() + "");
-			for (AdvertisementStrategy as : advertisementStrategyList) {
-				// 如果策略不属于该计划
-				if (!prob.getProbabilityId().equals(as.getProbabilityId())) {
-					break;
-				}
+			Map<String, String> strategyMap = ConfigManager.getStrategyMap(prob.getPlanId());
+			for (Map.Entry<String, String> entry : strategyMap.entrySet()) {
 				ipRegionList = new ArrayList<AdvertisementStrategy>();
 				deviceTypeList = new ArrayList<AdvertisementStrategy>();
-				if (as.getType() != null) {
-					if (as.getType().equals(AdvertisementStrategyType.IP_REGION)) {
-						ipRegionList.add(as);
-					} else if (as.getType().equals(AdvertisementStrategyType.DEVICETYPE)) {
-						deviceTypeList.add(as);
-					}
-				}
+				// if
+				// (AdvertisementStrategyType.IP_REGION_KEY.equals(entry.getKey()))
+				// {
+				// ipRegionList.add(as);
+				// } else if
+				// (as.getType().equals(AdvertisementStrategyType.DEVICETYPE)) {
+				// deviceTypeList.add(as);
+				// }
 			}
 			boolean strategyPass = judgeStrategy(request, ipRegionList, deviceTypeList);
 			if (strategyPass) {

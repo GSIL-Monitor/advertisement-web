@@ -1,7 +1,6 @@
 package com.yuanshanbao.ms.controller.probablity;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,12 +21,11 @@ import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
-import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
 @RequestMapping("/admin/probability")
-public class AdminProbabilityController extends PaginationController{
+public class AdminProbabilityController extends PaginationController {
 	private static final String PAGE_LIST = "advertisement/plan/listPlan";
 
 	private static final String PAGE_INSERT = "advertisement/plan/insertPlan";
@@ -35,12 +33,12 @@ public class AdminProbabilityController extends PaginationController{
 	private static final String PAGE_UPDATE = "advertisement/plan/updatePlan";
 
 	private static final String PAGE_REVIEW = "advertisement/probability/reviewProbability";
-	
+
 	private static final String PAGE_UNREVIEW_LIST = "advertisement/probability/listUnreview";
-	
+
 	@Autowired
 	private ProbabilityService probabilityService;
-	
+
 	@RequestMapping("/reviewWindow.do")
 	public String reviewWindow(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
 		Advertiser advertiser = getBindAdvertiserByUser();
@@ -52,21 +50,23 @@ public class AdminProbabilityController extends PaginationController{
 
 	@ResponseBody
 	@RequestMapping("/reviewQuery.do")
-	public Object reviewQuery(String range, Probability probability, Order order, HttpServletRequest request, HttpServletResponse response) {	
+	public Object reviewQuery(String range, Probability probability, Order order, HttpServletRequest request,
+			HttpServletResponse response) {
 		probability.setStatus(ProbabilityStatus.UNREVIEWED);
-		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
-		PageList pageList = (PageList) list;
+		Object object = probabilityService.selectProbabilitys(probability, getPageBounds(range, request));
+		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
 	}
-	
+
 	@RequestMapping("/reviewDetails.do")
-	public String reviewDetails(String range, Long probabilityId, HttpServletRequest request, HttpServletResponse response) {	
+	public String reviewDetails(String range, Long probabilityId, HttpServletRequest request,
+			HttpServletResponse response) {
 		Probability probability = probabilityService.selectProbability(probabilityId);
 		request.setAttribute("itemEdit", probability);
 		request.setAttribute("statusList", ProbabilityStatus.getCodeDescriptionMap().entrySet());
 		return PAGE_REVIEW;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/review.do")
 	public Object review(HttpServletRequest request, HttpServletResponse response, Probability probability) {

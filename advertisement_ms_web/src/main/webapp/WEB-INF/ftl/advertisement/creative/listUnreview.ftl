@@ -11,15 +11,11 @@
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/reviewQuery.do?orderId=${orderId}";
 		dataTableConfig.columns = [{
-			    	"data": "probabilityId"
-			    },{
-			    	"data": "order.name"
-			    },{
-			    	"data": "plan.name"
+			    	"data": "creativeId"
 			    },{
 			    	"data": "advertiser.companyName"
 			    },{
-			    	"data": "channel"
+			    	"data": "imageUrl"
 			    },{
 			    	"data": "createTimeContent"
 				},{
@@ -74,9 +70,8 @@
 					<thead>
 						<tr>
 							<th>ID</th>
-							<th>订单名称</th>
-							<th>计划名称</th>
 							<th>广告主</th>
+							<th>图片链接</th>
 							<th>创建时间</th>
 							<th>审核</th>
 						</tr>

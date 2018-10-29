@@ -22,15 +22,14 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
-import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.creative.model.Creative;
 import com.yuanshanbao.dsp.creative.model.CreativeSize;
+import com.yuanshanbao.dsp.creative.model.CreativeStatus;
 import com.yuanshanbao.dsp.creative.model.CreativeType;
 import com.yuanshanbao.dsp.creative.service.CreativeService;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.probability.model.Probability;
-import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
@@ -47,12 +46,10 @@ public class AdminCreativeController extends PaginationController {
 	private static final String PAGE_INSERT = "advertisement/creative/insertCreative";
 
 	private static final String PAGE_UPDATE = "advertisement/creative/updateCreative";
-	
-	private static final String PAGE_UNREVIEW_LIST = "advertisement/creative/updateCreative";
-	
+
+	private static final String PAGE_UNREVIEW_LIST = "advertisement/creative/listUnreview";
+
 	private static final String PAGE_REVIEW = "advertisement/creative/reviewCreative";
-	
-	
 
 	@Autowired
 	private CreativeService creativeService;
@@ -77,7 +74,6 @@ public class AdminCreativeController extends PaginationController {
 		return PAGE_LIST;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Creative creative, HttpServletRequest request, HttpServletResponse response) {
@@ -117,7 +113,7 @@ public class AdminCreativeController extends PaginationController {
 				creative.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
 			}
 			validateParameters(creative);
-			creative.setStatus(CommonStatus.ONLINE);
+			creative.setStatus(CreativeStatus.UNREVIEWED);
 			creativeService.insertCreative(creative);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -175,7 +171,7 @@ public class AdminCreativeController extends PaginationController {
 
 		return result;
 	}
-	
+
 	@RequestMapping("/reviewWindow.do")
 	public String reviewWindow(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
 		Advertiser advertiser = getBindAdvertiserByUser();
@@ -187,30 +183,31 @@ public class AdminCreativeController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/reviewQuery.do")
-	public Object reviewQuery(String range, Probability probability, Order order, HttpServletRequest request, HttpServletResponse response) {	
-		probability.setStatus(ProbabilityStatus.UNREVIEWED);
-		List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
-		PageList pageList = (PageList) list;
+	public Object reviewQuery(String range, Creative creative, Order order, HttpServletRequest request,
+			HttpServletResponse response) {
+		creative.setStatus(CreativeStatus.UNREVIEWED);
+		Object object = creativeService.selectCreative(creative, getPageBounds(range, request));
+		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
 	}
-	
+
 	@RequestMapping("/reviewDetails.do")
-	public String reviewDetails(String range, Long probabilityId, HttpServletRequest request, HttpServletResponse response) {	
-		Probability probability = probabilityService.selectProbability(probabilityId);
-		request.setAttribute("itemEdit", probability);
-		request.setAttribute("statusList", ProbabilityStatus.getCodeDescriptionMap().entrySet());
+	public String reviewDetails(String range, Long creativeId, HttpServletRequest request, HttpServletResponse response) {
+		Creative creative = creativeService.selectCreative(creativeId);
+		request.setAttribute("itemEdit", creative);
+		request.setAttribute("statusList", CreativeStatus.getCodeDescriptionMap().entrySet());
 		return PAGE_REVIEW;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/review.do")
-	public Object review(HttpServletRequest request, HttpServletResponse response, Probability probability) {
+	public Object review(HttpServletRequest request, HttpServletResponse response, Creative creative) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
-			if (probability.getProbabilityId() == null) {
+			if (creative.getCreativeId() == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			probabilityService.updateProbability(probability);
+			creativeService.updateCreative(creative);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

@@ -14,7 +14,7 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<form action="${rc.contextPath}/admin/${functionName}/insert.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-				<input type="hidden" name="orderId" value="${orderId}" style="width:60%;">
+				<input type="hidden" name="planId" value="${planId}" style="width:60%;">
 				<input type="hidden" name="advertiserId" value="${advertiserId}" style="width:60%;">
 				<div class="span12">
 					<div class="widget-box">
@@ -26,78 +26,12 @@
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
 									<tr>
-										<td style="width:20%;">计划名称：</td>
-										<td>
-											<input type="text" name="name" placeholder="建议订单名称+计划名称+月份+日期" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td style="width:20%;">投放链接：</td>
-										<td>
-											<input type="text" name="link" placeholder="广告跳转链接" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td>开始时间：</td>
-										<td>
-											<input type="text" name="startTimeValue" id="startTimeValue" style="width:60%;"></td>
-									</tr>
-									<tr>
-										<td>结束时间：</td>
-										<td>
-											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;"></td>
-									</tr>
-									<tr>
-										<td>该计划预算金额（元）：</td>
-										<td>
-											<input type="text" name="spend" placeholder="最高预算不得超过剩余预算" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td>投放总量：</td>
-										<td>
-											<input type="text" name="count" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td>出价：</td>
-										<td>
-											<input type="text" name="bestBid" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td>允许投放的媒体分类：</td>
+										<td>选择媒体：</td>
 										<td>
 											<div style="width:60%;">
-												<select multiple data-live-search="true" class="selectpicker form-control" id="allowChannelType">
-													<#list channelTypeList as type>
-														<option value="${type.key}">${type.value}</option>
-													</#list>
-												</select>
-												<input type="hidden" name="allowChannelCategory" id="allowChannelTypeVal">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>禁止投放的媒体分类：</td>
-										<td>
-											<div style="width:60%;">
-												<select multiple data-live-search="true" class="selectpicker form-control" id="forbidChannelType">
-													<#list channelTypeList as type>
-														<option value="${type.key}">${type.value}</option>
-													</#list>
-												</select>
-												<input type="hidden" name="forbidChannelCategory" id="forbidChannelTypeVal">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>结算方式：</td>
-										<td>
-											<div style="width:60%;">
-												<select name="chargeType" class="selectpicker form-control">
-													<#list quotaTypeList as type>
-														<option value="${type.key}">${type.value}</option>
+												<select name="channel" class="selectpicker form-control">
+													<#list channelList as channel>
+														<option value="${channel.key}">${channel.name}</option>
 													</#list>
 												</select>
 											</div>

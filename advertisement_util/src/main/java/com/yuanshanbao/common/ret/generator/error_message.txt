@@ -77,3 +77,10 @@ CONFIG_NO_SMS_FORMAT_ERROR_DESC = 请联系管理员配置不校验手机号
 
 ORDER_MOBILE_HAS_EXIST_ERROR_DESC=您填写的手机号已经在近期领取过赠险
 
+NO_BANK_CARD_DESC = 您还没有添加银行卡
+NO_IDENTITY_DESC = 您还没有实名认证
+NO_USERNAME_DESC = 姓名与上一次不一致
+NO_AGENCY_DESC = 抱歉，还没有代理人
+BANK_CAED_ERRO_DESC = 请输入正确的银行卡号
+NO_OPIOION_DESC = 内容不能为空
+

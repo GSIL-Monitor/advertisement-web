@@ -1,5 +1,5 @@
 <#include "core.ftl" />
-<@htmlHead title="${itemEdit.typeContent}${functionTitle}详情"/>
+<@htmlHead title="${functionTitle}详情"/>
 <@headerPart />
 <@topHeaderMenu />
 <@sideBar />
@@ -59,10 +59,6 @@
 				<input type="hidden" name="orderId" value="${itemEdit.planId}" style="width:60%;">
 				<div class="span12">
 					<div class="widget-box">
-						<div class="widget-title">
-							<span class="icon"><i class="icon-th"></i>
-							</span>
-						</div>
 						<div class="widget-content nopadding">
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
@@ -75,7 +71,13 @@
 									<tr>
 										<td style="width:20%;">备注：</td>
 										<td>
-											<input type="text" name="link" placeholder="请填写备注" style="width:60%;">
+											<div style="width:60%;">
+												<select name="size" class="selectpicker form-control">
+													<#list statusList as status>
+														<option value="${status.key}">${status.value}</option>
+													</#list>
+												</select>
+											</div>
 										</td>
 									</tr>
 									<tr>
@@ -91,4 +93,5 @@
 			</form>
 </div>
 <@footPart />
+<@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
 <@htmlFoot />

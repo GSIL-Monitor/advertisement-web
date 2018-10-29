@@ -1,5 +1,5 @@
 <#include "core.ftl" />
-<@htmlHead title="${itemEdit.typeContent}${functionTitle}详情"/>
+<@htmlHead title="${functionTitle}详情"/>
 <@headerPart />
 <@topHeaderMenu />
 <@sideBar />
@@ -52,13 +52,10 @@
 							</table>
 						</div>
 				<form action="${rc.contextPath}/admin/${functionName}/review.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-				<input type="hidden" name="orderId" value="${itemEdit.planId}" style="width:60%;">
-				<div class="span12">
+				<input type="hidden" name="planId" value="${itemEdit.planId}" style="width:60%;">
+				<div>
 					<div class="widget-box">
-						<div class="widget-title">
-							<span class="icon"><i class="icon-th"></i>
-							</span>
-						</div>
+						
 						<div class="widget-content nopadding">
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
@@ -99,4 +96,5 @@
 	
 </div>
 <@footPart />
+<@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
 <@htmlFoot />
