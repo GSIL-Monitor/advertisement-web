@@ -12,7 +12,8 @@ public class Creative {
 	private String description;
 	private String link;
 	private String imageUrl;
-	private Integer size;
+	private Integer width;
+	private Integer height;
 	private Integer type;
 	private Integer status;
 	private Timestamp createTime;
@@ -90,14 +91,6 @@ public class Creative {
 		this.imageUrl = imageUrl;
 	}
 
-	public Integer getSize() {
-		return size;
-	}
-
-	public void setSize(Integer size) {
-		this.size = size;
-	}
-
 	public Integer getType() {
 		return type;
 	}
@@ -130,11 +123,23 @@ public class Creative {
 		this.updateTime = updateTime;
 	}
 
-	public String getSizeContent() {
-		return CreativeSize.getDescription(size);
-	}
-
 	public String getTypeContent() {
 		return CreativeType.getDescription(type);
+	}
+
+	public Integer getWidth() {
+		return width;
+	}
+
+	public void setWidth(Integer width) {
+		this.width = width;
+	}
+
+	public Integer getHeight() {
+		return height;
+	}
+
+	public void setHeight(Integer height) {
+		this.height = height;
 	}
 }

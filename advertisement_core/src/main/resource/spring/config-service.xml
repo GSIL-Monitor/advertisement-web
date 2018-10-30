@@ -13,6 +13,7 @@
 	<!-- 开机加载相关基础信息 -->
 	<bean id="iniBean" class="com.yuanshanbao.dsp.core.IniBean" init-method="init"></bean>
     <bean id="constantsBean" class="com.yuanshanbao.dsp.common.constant.ConstantsManager" init-method="init"></bean>
+    <bean id="dspConstantsBean" class="com.yuanshanbao.dsp.common.constant.DspConstantsManager" init-method="init"></bean>
 	<bean id="serverLogBean" class="com.yuanshanbao.dsp.common.service.ServerLogServiceImpl" init-method="init"></bean>
 	
 	<context:annotation-config/>

@@ -76,6 +76,8 @@ public class Channel {
 	 */
 	private Integer allocateType;
 	private Integer independent;
+	private Integer width;
+	private Integer height;
 	/**
 	 * 创建时间
 	 */
@@ -293,6 +295,22 @@ public class Channel {
 
 	public void setUnitPrice(BigDecimal unitPrice) {
 		this.unitPrice = unitPrice;
+	}
+
+	public Integer getWidth() {
+		return width;
+	}
+
+	public void setWidth(Integer width) {
+		this.width = width;
+	}
+
+	public Integer getHeight() {
+		return height;
+	}
+
+	public void setHeight(Integer height) {
+		this.height = height;
 	}
 
 }

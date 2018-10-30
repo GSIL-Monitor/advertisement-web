@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.AESUtils;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.plan.model.Plan;
@@ -26,6 +28,8 @@ import com.yuanshanbao.dsp.quota.service.QuotaService;
 @RequestMapping({ "/j", "/i/j" })
 public class RedirectJumper extends BaseController {
 
+	public static final String PLAN_ENCRYPT_KEY = "aadecfe68c1c06a7";
+
 	@Autowired
 	private AdvertisementService advertisementService;
 
@@ -33,17 +37,13 @@ public class RedirectJumper extends BaseController {
 	private QuotaService quotaService;
 
 	@RequestMapping("/common")
-	public String common(HttpServletRequest request, ModelMap modelMap, String id, String position, String channel) {
-		addPlanClickCount(request, id, channel);
-		// Advertisement advertisement = ConfigManager.getAdvertisement(id);
+	public String common(HttpServletRequest request, ModelMap modelMap, String id, String channel) {
+		String pidValue = AESUtils.decrypt(PLAN_ENCRYPT_KEY, id);
 		// 获取计划链接
-		Plan plan = new Plan();
+		Plan plan = ConfigManager.getPlanById(Long.valueOf(pidValue));
 		if (plan != null) {
-			// if (StringUtils.isNotBlank(probability.getUrl())) {
-			// String adUrl = probability.getUrl();
-			// return redirect(adUrl);
-			// }
-			// modelMap.put("url", advertisement.getLink());
+			addPlanClickCount(request, id, channel);
+			return redirect(plan.getLink());
 		}
 		return "/web/activity/common/jump";
 	}
@@ -112,13 +112,11 @@ public class RedirectJumper extends BaseController {
 		if (StringUtils.isBlank(clickValue)) {
 			request.getSession().setAttribute(sessionKey, "true");
 			if (StringUtils.isNotBlank(channel)) {
-				redisCacheService.incr(RedisConstant.getAdvertisementClickCountUVKey(null, id, channel));
+				redisCacheService.incr(RedisConstant.getPlanClickLocalCountUVKey(null, id, channel));
 			}
 		}
 		if (StringUtils.isNotBlank(channel)) {
-			request.getSession().setAttribute(SessionConstants.SESSION_USER_FROM, channel);
-			redisCacheService.sadd(RedisConstant.getAdvertisementChannelAndIdKey(), id + ":" + channel);
-			redisCacheService.incr(RedisConstant.getAdvertisementClickCountPVKey(null, id, channel));
+			redisCacheService.incr(RedisConstant.getPlanClickLocalCountPVKey(null, id, channel));
 		}
 	}
 }

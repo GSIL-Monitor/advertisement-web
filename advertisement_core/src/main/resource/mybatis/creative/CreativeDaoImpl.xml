@@ -14,7 +14,8 @@
 		<result property="description" column="name" jdbcType="VARCHAR" />
 		<result property="link" column="link" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
-		<result property="size" column="size" jdbcType="NUMERIC" />
+		<result property="width" column="width" jdbcType="NUMERIC" />
+		<result property="height" column="height" jdbcType="NUMERIC" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
@@ -58,11 +59,11 @@
 		insert into
 		tb_creative( advertiser_id, advertisement_id, probability_id, 
 		name,title,description,link,image_url,
-		size,type,status,create_time, update_time)
+		width,height,type,status,create_time, update_time)
 		values
 		( #{advertiserId}, #{advertisementId}, #{probabilityId},
 		#{name}, #{title}, #{description}, #{link}, #{imageUrl},
-		#{size}, #{type}, #{status}, sysdate(), sysdate())
+		#{width},#{height}, #{type}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="creativeId">
 			SELECT LAST_INSERT_ID()
@@ -94,8 +95,11 @@
 				<if test="type != null">
 					type=#{type},
 				</if>
-				<if test="size != null">
-					size=#{size},
+				<if test="width != null">
+					width=#{width},
+				</if>
+				<if test="height != null">
+					height=#{height},
 				</if>
 				update_time=sysdate(),
 			</trim>

@@ -14,12 +14,12 @@ public class AdvertisementDetails {
 		super();
 	}
 
-	public AdvertisementDetails(String planKey, Creative creative) {
+	public AdvertisementDetails(String planKey, Creative creative, String channel) {
 		this.pId = planKey;
 		this.title = creative.getTitle();
 		this.description = creative.getDescription();
 		this.imageUrl = creative.getImageUrl();
-		this.clickUrl = setUrlByKey(planKey);
+		this.clickUrl = setUrlByKey(planKey, channel);
 	}
 
 	public String getImageUrl() {
@@ -62,7 +62,7 @@ public class AdvertisementDetails {
 		this.clickUrl = clickUrl;
 	}
 
-	private String setUrlByKey(String planKey) {
-		return "t.huhad.com/common.html" + planKey;
+	private String setUrlByKey(String planKey, String channel) {
+		return "t.huhad.com/i/j/common.html?id=" + planKey + "&channel=" + channel;
 	}
 }

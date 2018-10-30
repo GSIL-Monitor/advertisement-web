@@ -49,4 +49,7 @@ public interface ProbabilityService {
 
 	public List<AdvertisementDetails> pickProbabilityByPlan(HttpServletRequest request, Long projectId,
 			Channel channelObject, Instance instance);
+
+	public void recordPlanCount(String pId, String channel, boolean isClick);
+
 }

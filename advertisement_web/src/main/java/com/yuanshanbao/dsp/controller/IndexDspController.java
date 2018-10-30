@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,17 +61,25 @@ public class IndexDspController {
 		return resultMap;
 	}
 
-	// 广告点击
+	// 广告曝光
 	@RequestMapping(value = "/ad/show", method = RequestMethod.POST)
 	@ResponseBody
 	public Object adShow(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+			String channel = (String) body.get("channel");
+			String pId = (String) body.get("pId");
+			if (channel != null && StringUtils.isEmpty(channel)) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			if (pId != null && StringUtils.isEmpty(pId)) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
 				Channel channelObject = ConfigManager.getChannel(null);
 				if (channelObject != null) {
-
+					probabilityService.recordPlanCount(pId, channel, true);
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
@@ -90,11 +99,19 @@ public class IndexDspController {
 	public Object adClick(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+			String channel = (String) body.get("channel");
+			String pId = (String) body.get("pId");
+			if (channel != null && StringUtils.isEmpty(channel)) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			if (pId != null && StringUtils.isEmpty(pId)) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
 				Channel channelObject = ConfigManager.getChannel(null);
 				if (channelObject != null) {
-
+					probabilityService.recordPlanCount(pId, channel, true);
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

@@ -48,12 +48,14 @@ public class RedisConstant {
 	public static final String ADVERTISEMENT_SHOW_COUNT_UV = "advertisement_show_count_uv" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT_PV = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String ADVERTISEMENT_CLICK_COUNT_UV = "advertisement_click_count_uv" + COMMON_REDIS_PREFIX;
-	
+
 	public static final String PLAN_SHOW_COUNT_PV = "plan_show_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String PLAN_SHOW_COUNT_UV = "plan_show_count_uv" + COMMON_REDIS_PREFIX;
 	public static final String PLAN_CLICK_COUNT_PV = "plan_click_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String PLAN_CLICK_COUNT_UV = "plan_click_count_uv" + COMMON_REDIS_PREFIX;
-	
+	public static final String PLAN_CLICK_LOCAL_COUNT_UV = "plan_click_local_count_uv" + COMMON_REDIS_PREFIX;
+	public static final String PLAN_CLICK_LOCAL_COUNT_PV = "plan_click_local_count_pv" + COMMON_REDIS_PREFIX;
+
 	private static final String PRODUCT_APPLY_COUNT = "product_apply_count" + COMMON_REDIS_PREFIX;
 
 	public static final String ADVERTISEMENT_ACTIVITY_SHOW_COUNT_PV = "advertisement_activity_show_count_pv"
@@ -230,7 +232,7 @@ public class RedisConstant {
 		}
 		return getCachePrefix(ADVERTISEMENT_CLICK_COUNT_UV, date + "_" + advertisementId + "_" + channel);
 	}
-	
+
 	// -------------------------------------------------------------------------------------------------------------------------------
 	public static String getPlanShowCountPVKey(String date, String planId, String channel) {
 		if (StringUtils.isBlank(date)) {
@@ -260,6 +262,21 @@ public class RedisConstant {
 		return getCachePrefix(PLAN_CLICK_COUNT_UV, date + "_" + planId + "_" + channel);
 	}
 
+	// -----------------------------本地统计---------------------------
+	public static String getPlanClickLocalCountPVKey(String date, String planId, String channel) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(PLAN_CLICK_LOCAL_COUNT_PV, date + "_" + planId + "_" + channel);
+	}
+
+	public static String getPlanClickLocalCountUVKey(String date, String planId, String channel) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(PLAN_CLICK_LOCAL_COUNT_UV, date + "_" + planId + "_" + channel);
+	}
+
 	// 渠道下广告
 	public static String getAdvertisementChannelAndIdKey() {
 		return getAdvertisementChannelAndIdKey(DateUtils.format(new Date()));
@@ -268,7 +285,7 @@ public class RedisConstant {
 	public static String getAdvertisementChannelAndIdKey(String date) {
 		return getCachePrefix(ADVERTISEMENT_CHANNEL_AND_ID, date);
 	}
-	
+
 	// 渠道下广告
 	public static String getPlanChannelAndIdKey() {
 		return getPlanChannelAndIdKey(DateUtils.format(new Date()));

@@ -22,10 +22,10 @@ import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
-public class DspConstantManager {
+public class DspConstantsManager {
 
 	private static Map<String, Map<Long, BigDecimal>> channelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
-	private static DspConstantManager instance = null;
+	private static DspConstantsManager instance = null;
 
 	@Resource
 	private RedisService redisService;
@@ -104,7 +104,7 @@ public class DspConstantManager {
 		for (int i = 0; i < size; i++) {
 			int j = i + 1;
 			if (j > size - 1) {
-				bidMap.put(probabilityIdList.get(i), channel.getUnitPrice());
+				bidMap.put(probabilityIdList.get(i), probabilityBidMap.get(probabilityIdList.get(i)));
 				break;
 			}
 			bidMap.put(

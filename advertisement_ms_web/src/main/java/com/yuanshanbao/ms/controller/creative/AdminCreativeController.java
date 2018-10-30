@@ -1,9 +1,11 @@
 package com.yuanshanbao.ms.controller.creative;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -109,9 +111,15 @@ public class AdminCreativeController extends PaginationController {
 			MultipartFile image) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
+			BufferedImage bufferedImage = ImageIO.read(image.getInputStream());
+			if (bufferedImage == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
 			if (image != null && !image.isEmpty()) {
 				creative.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
 			}
+			creative.setWidth(bufferedImage.getWidth());
+			creative.setHeight(bufferedImage.getHeight());
 			validateParameters(creative);
 			creative.setStatus(CreativeStatus.UNREVIEWED);
 			creativeService.insertCreative(creative);

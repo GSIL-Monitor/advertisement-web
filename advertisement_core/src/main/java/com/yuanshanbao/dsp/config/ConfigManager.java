@@ -502,7 +502,7 @@ public class ConfigManager implements ConfigConstants {
 	}
 
 	public static List<AdvertisementStrategy> getPlanStrategy(String planId) {
-		return advertisementStrategyMap.get(planId);
+		return planStrategyMap.get(planId);
 	}
 
 	public static ProductCategory getProductCategory(Long id) {

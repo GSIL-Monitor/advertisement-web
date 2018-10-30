@@ -33,7 +33,7 @@ import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
-import com.yuanshanbao.dsp.common.constant.DspConstantManager;
+import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -490,7 +490,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		if (probabilitymap.size() <= 0) {
 			return resultList;
 		}
-		Map<Long, BigDecimal> bidMap = DspConstantManager.getBidByChannel(channelObject.getKey());
+		Map<Long, BigDecimal> bidMap = DspConstantsManager.getBidByChannel(channelObject.getKey());
 		Long probabilityId = dealWithCTRAndBid(bidMap);
 		if (probabilityId == null) {
 			return resultList;
@@ -512,9 +512,14 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			for (String creativeId : creativeList) {
 				resultCreative = ConstantsManager.getCreativeById(Long.valueOf(creativeId));
 				// 判断素材与媒体尺寸大小是否相等
+				if (resultCreative.getWidth().equals(channelObject.getWidth())
+						&& resultCreative.getHeight().equals(channelObject.getHeight())) {
+					break;
+				}
 			}
 			String planKey = getEncryptPlanKey(plan);
-			AdvertisementDetails advertisementDetails = new AdvertisementDetails(planKey, resultCreative);
+			AdvertisementDetails advertisementDetails = new AdvertisementDetails(planKey, resultCreative,
+					channelObject.getKey());
 			resultList.add(advertisementDetails);
 		} catch (Exception e) {
 			LoggerUtil.error("getContent", e);
@@ -543,6 +548,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		if (list == null || list.size() == 0) {
 			return resultMap;
 		}
+
+		// 查找媒体下计划
 		List<Probability> channelList = new ArrayList<Probability>();
 		for (Probability probability : list) {
 			if (channelKey.equals(probability.getChannel())) {
@@ -550,7 +557,23 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			}
 		}
 
-		List<Probability> result = advertisementStrategyService.getAvailableProbabilityList(request, channelList,
+		List<Probability> availableList = new ArrayList<Probability>();
+		for (Probability probability : channelList) {
+			Plan plan = ConfigManager.getPlanById(probability.getPlanId());
+			if (plan.getStartTime() != null) {
+				if (plan.getStartTime().after(new Date())) {
+					continue;
+				}
+			}
+			if (plan.getEndTime() != null) {
+				if (plan.getEndTime().before(new Date())) {
+					continue;
+				}
+			}
+			availableList.add(probability);
+		}
+
+		List<Probability> result = advertisementStrategyService.getAvailableProbabilityList(request, availableList,
 				instance);
 
 		for (Probability probability : result) {
@@ -592,4 +615,13 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return resultProbabilityId;
 	}
 
+	@Override
+	public void recordPlanCount(String pId, String channel, boolean isClick) {
+		String planId = AESUtils.decrypt(PLAN_ENCRYPT_KEY, pId);
+		if (isClick) {
+			redisService.incr(RedisConstant.getPlanClickCountPVKey(null, planId, channel));
+		} else {
+			redisService.incr(RedisConstant.getPlanShowCountPVKey(null, planId, channel));
+		}
+	}
 }

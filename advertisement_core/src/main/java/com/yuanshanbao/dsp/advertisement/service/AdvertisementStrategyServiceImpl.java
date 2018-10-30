@@ -197,6 +197,10 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		for (Probability prob : list) {
 			// 取出广告策略
 			List<AdvertisementStrategy> strategyList = ConfigManager.getPlanStrategy(prob.getPlanId() + "");
+			if (strategyList == null || strategyList.size() == 0) {
+				resultList.add(prob);
+				continue;
+			}
 			for (AdvertisementStrategy advertisementStrategy : strategyList) {
 				ipRegionList = new ArrayList<AdvertisementStrategy>();
 				deviceTypeList = new ArrayList<AdvertisementStrategy>();

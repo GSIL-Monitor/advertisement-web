@@ -59,18 +59,6 @@
 										</td>
 									</tr>
 									<tr>
-										<td>素材尺寸：</td>
-										<td>
-											<div style="width:60%;">
-												<select name="size" class="selectpicker form-control">
-													<#list sizeList as size>
-														<option value="${size.key}">${size.value}</option>
-													</#list>
-												</select>
-											</div>
-										</td>
-									</tr>
-									<tr>
 										<td>图片：</td>
 										<td>
 											<input type="file" name="image" style="width:60%;">
