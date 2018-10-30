@@ -1,0 +1,7 @@
+package com.yuanshanbao.dsp.earnings.service;
+
+/**
+ * Created by Administrator on 2018/10/29.
+ */
+public interface EarningsService {
+}
