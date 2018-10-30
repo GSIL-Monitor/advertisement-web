@@ -143,5 +143,6 @@
         <mapper resource="mybatis/earnings/EarningsDaoImpl.xml"/>
         <mapper resource="mybatis/withdrawdeposit/WithdrawDepositDaoImpl.xml"/>
         <mapper resource="mybatis/level/LevelDaoImpl.xml"/>
+        <mapper resource="mybatis/message/MessageDaoImpl.xml"/>
     </mappers>
 </configuration>
