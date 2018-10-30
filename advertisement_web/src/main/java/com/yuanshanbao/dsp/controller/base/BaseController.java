@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yuanshanbao.dsp.user.service.TokenService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +93,9 @@ public class BaseController {
 	@Autowired
 	private ProductService productService;
 
+
+	@Autowired
+	private TokenService tokenService;
 	public Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
@@ -130,6 +134,20 @@ public class BaseController {
 		}
 		return user;
 	}
+
+	protected User getLoginUser(String token) {
+		User loginToken = tokenService.verifyLoginToken(token);
+		if (loginToken == null) {
+			throw new BusinessException();
+		}
+		User user = userService.selectUserById(loginToken.getUserId());
+		if (user == null || user.getUserId() == 0) {
+			throw new BusinessException(ComRetCode.NOT_LOGIN);
+
+		}
+		return user;
+	}
+
 
 	protected boolean checkRepeatPostRequest(HttpServletRequest request) {
 		String token = request.getParameter(POST_UNIQUE_TOKEN);

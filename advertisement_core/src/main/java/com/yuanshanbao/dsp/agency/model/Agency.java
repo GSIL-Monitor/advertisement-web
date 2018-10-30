@@ -9,7 +9,6 @@ import java.sql.Timestamp;
  */
 public class Agency implements Serializable  {
     private static final long serialVersionUID = 4165445835251317169L;
-
     private Long inviteUserId;
     private Long userId;
     private String agencyName;

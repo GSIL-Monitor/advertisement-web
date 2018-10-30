@@ -1,9 +1,12 @@
 package com.yuanshanbao.dsp.controller.agency;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
@@ -28,7 +31,7 @@ import java.util.Map;
  * Created by Administrator on 2018/10/22.
  */
 @Controller
-@RequestMapping("/agency")
+@RequestMapping("/i/agency")
 public class AgencyController extends BaseController {
 
     @Autowired
@@ -47,32 +50,31 @@ public class AgencyController extends BaseController {
 
         try {
             //获取当前用户信息
-          /*  User loginToken = tokenService.verifyLoginToken(token);
-            if (loginToken == null) {
-                throw new BusinessException();
-            }
-            User user = userService.selectUserById(loginToken.getUserId());*/
-            User user = userService.selectUserById((long) 2);
+            User user = getLoginUser(token);
             if (user == null || user.getUserId() == 0) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
-
             }
             agency.setInviteUserId(user.getUserId());
             List<Agency> agencyList = agencyService.selectAgencys(agency, pageBounds);
             List<AgencyVo> agencyVoList = new ArrayList<>();
-            for (Agency agen : agencyList) {
+            for (Agency agen: agencyList){
                 AgencyVo agencyVo = new AgencyVo();
                 agency.setInviteUserId(agen.getUserId());
                 BigDecimal brokerages = agencyService.getBrokerages(agency, pageBounds);
                 agencyVo.setInviteUserId(agen.getUserId());
                 agencyVo.setUserName(agen.getUserName());
                 agencyVo.setProductName(agen.getProductName());
-                agencyVo.setInviteTime(agen.getInviteTime());
-                agencyVo.setStatus(agen.getStatus());
+                agencyVo.setInviteTime(DateUtils.format(agen.getInviteTime(),DateUtils.DEFAULT_DATE_FORMAT));
+                if (agen.getStatus() ==AgencyStatus.ONCHECK)
+                    agencyVo.setStatus(AgencyStatus.ONCHECK_DESCRIPTION);
+                if (agen.getStatus() ==AgencyStatus.OFFCHECK)
+                    agencyVo.setStatus(AgencyStatus.OFFCHECK_DESCRIPTION);
+                if (agen.getStatus() ==AgencyStatus.NOCKECK)
+                    agencyVo.setStatus(AgencyStatus.NOCKECK_DESCRIPTION);
                 agencyVo.setBrokerage(brokerages);
                 agencyVoList.add(agencyVo);
             }
-            resultMap.put("agencyLlist", agencyVoList);
+            resultMap.put("agencyLlist",agencyVoList);
 
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -85,16 +87,10 @@ public class AgencyController extends BaseController {
 
     @RequestMapping("/award")
     @ResponseBody
-    public Object getAwardList(HttpServletRequest request, Agency agency, PageBounds pageBounds) {
+    public Object getAwardList(HttpServletRequest request, Agency agency, PageBounds pageBounds,String token) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
-            //获取当前用户信息
-          /*  User loginToken = tokenService.verifyLoginToken(token);
-            if (loginToken == null) {
-                throw new BusinessException();
-            }
-            User user = userService.selectUserById(loginToken.getUserId());*/
-            User user = userService.selectUserById((long) 2);
+            User user = getLoginUser(token);
             if (user == null || user.getUserId() == 0) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
@@ -105,10 +101,18 @@ public class AgencyController extends BaseController {
             List<Agency> twoAgencyList = new ArrayList<>();
             for (Agency agen : oneAgencyList) {
                 agency.setInviteUserId(agen.getUserId());
-                twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
+                 twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
+            }
+            List<AgencyVo> agencyVoList = new ArrayList<>();
+            for (Agency agen : oneAgencyList){
+                AgencyVo agencyVo = new AgencyVo();
+                agencyVo.setUserName(agen.getUserName());
+                agencyVo.setInviteTime(DateUtils.format(agen.getInviteTime(),DateUtils.DEFAULT_DATE_FORMAT));
+                agencyVo.setUserId(agen.getUserId());
+                agencyVo.setBrokerage(agen.getBrokerage());
             }
             resultMap.put("oneAgencyList", oneAgencyList);
-            resultMap.put("twoAgencyList", twoAgencyList);
+            resultMap.put("twoAgencyList",twoAgencyList);
             resultMap.put("brokerage", brokerages);
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

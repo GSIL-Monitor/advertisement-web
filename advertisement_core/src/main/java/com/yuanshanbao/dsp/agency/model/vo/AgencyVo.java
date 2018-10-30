@@ -11,9 +11,9 @@ public class AgencyVo {
     private Long userId;
     private String agencyName;
     private String userName;
-    private Timestamp inviteTime;
+    private String inviteTime;
     private BigDecimal brokerage;
-    private Integer status;                //0:待审核 1:审核通过 2:审核未通过
+    private String status;                //0:待审核 1:审核通过 2:审核未通过
     private Long productId;
     private String productName;
 
@@ -49,11 +49,11 @@ public class AgencyVo {
         this.userName = userName;
     }
 
-    public Timestamp getInviteTime() {
+    public String getInviteTime() {
         return inviteTime;
     }
 
-    public void setInviteTime(Timestamp inviteTime) {
+    public void setInviteTime(String inviteTime) {
         this.inviteTime = inviteTime;
     }
 
@@ -65,11 +65,11 @@ public class AgencyVo {
         this.brokerage = brokerage;
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

@@ -7,6 +7,8 @@ import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.earnings.service.EarningsService;
 import com.yuanshanbao.dsp.level.model.Level;
+import com.yuanshanbao.dsp.level.model.vo.LevelStatus;
+import com.yuanshanbao.dsp.level.model.vo.LevelVo;
 import com.yuanshanbao.dsp.level.service.LevelService;
 import com.yuanshanbao.dsp.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,35 +45,31 @@ public class LevelController extends BaseController{
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
 
             }
-
+            LevelVo levelVo = new LevelVo();
             if (user.getMobile() == null){
-               level.setStatus(0);
-               resultMap.put("levelStatus",level);
+                levelVo.setStatus(LevelStatus.NULL_DESCRIPTION);
+               resultMap.put("levelStatus",levelVo);
             }else {
-                level.setStatus(1);
-                resultMap.put("levelStatus",level);
-
+                levelVo.setStatus(LevelStatus.ONLEVEL_DESCRIPTION);
+                resultMap.put("levelStatus",levelVo);
             }
             int countProuctId = earningsService.selectCountProuctIds(user.getUserId());
 
             if (countProuctId > 0 && countProuctId <10){
-                level.setStatus(1);
+                levelVo.setStatus(LevelStatus.ONLEVEL_DESCRIPTION);
                 level.setCountCard(10 - countProuctId);
-                resultMap.put("levelStatus",level);
+                resultMap.put("levelStatus",levelVo);
             }else if (countProuctId == 10){
-                level.setStatus(2);
+                levelVo.setStatus(LevelStatus.OFFLEVEL_DESCRIPTION);
                 level.setCountCard(50 - countProuctId);
-                resultMap.put("levelStatus",level);
+                resultMap.put("levelStatus",levelVo);
             }else if (countProuctId > 10 && countProuctId< 50){
-                level.setStatus(2);
-
-                resultMap.put("levelStatus",level);
+                levelVo.setStatus(LevelStatus.OFFLEVEL_DESCRIPTION);
+                resultMap.put("levelStatus",levelVo);
             }else {
-                level.setStatus(3);
-                resultMap.put("levelStatus",level);
+                levelVo.setStatus(LevelStatus.LEVEL_DESCRIPTION);
+                resultMap.put("levelStatus",levelVo);
             }
-
-
         }catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {

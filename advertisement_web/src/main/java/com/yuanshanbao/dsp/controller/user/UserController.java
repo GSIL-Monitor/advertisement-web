@@ -538,7 +538,7 @@ public class UserController extends BaseController {
 		Agency agency = new Agency();
 		agency.setInviteUserId(user.getInviteUserId());
 		agency.setUserId(user.getUserId());
-		agency.setUserName(user.getName());
+		agency.setUserName(user.getUserName());
 		agency.setAgencyName(inviteUser.getName());
 		agencyService.insertAgency(agency);
 

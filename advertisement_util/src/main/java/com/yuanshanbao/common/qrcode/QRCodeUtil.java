@@ -54,7 +54,8 @@ public class QRCodeUtil {
 		response.setHeader("Cache-Control", "private,no-cache,no-store");
 		response.setDateHeader("Expires", 0);
 		response.setContentType("image/" + picFormat + "; charset=gbk");
-		// 目前只有天下3是32位深，其他游戏都是24位深，BufferedImage.TYPE_INT_RGB
+		// 目前只有天下3是32位深，其他游戏都是24位深，BufferedImage.
+
 		MatrixToImageWriter.writeToStream(bitMatrix, picFormat,
 				response.getOutputStream(), DEFAULT_BIT_MAP);
 	}
