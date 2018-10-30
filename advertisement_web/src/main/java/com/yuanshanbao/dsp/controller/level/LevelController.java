@@ -43,6 +43,7 @@ public class LevelController extends BaseController{
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
 
             }
+
             if (user.getMobile() == null){
                level.setStatus(0);
                resultMap.put("levelStatus",level);
@@ -63,12 +64,13 @@ public class LevelController extends BaseController{
                 resultMap.put("levelStatus",level);
             }else if (countProuctId > 10 && countProuctId< 50){
                 level.setStatus(2);
-                level.setCountCard(50 - countProuctId);
+
                 resultMap.put("levelStatus",level);
             }else {
                 level.setStatus(3);
                 resultMap.put("levelStatus",level);
             }
+
 
         }catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
