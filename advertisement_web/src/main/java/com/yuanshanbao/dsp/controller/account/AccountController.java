@@ -9,6 +9,8 @@ import com.yuanshanbao.common.util.VerifyIdcard;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.earnings.model.Earnings;
+import com.yuanshanbao.dsp.earnings.service.EarningsService;
 import com.yuanshanbao.dsp.payment.PaymentInterfaceService;
 import com.yuanshanbao.dsp.redpacket.model.RedPacket;
 import com.yuanshanbao.dsp.redpacket.model.RedPacketStatus;
@@ -17,6 +19,8 @@ import com.yuanshanbao.dsp.redpacket.service.RedPacketService;
 import com.yuanshanbao.dsp.sms.service.VerifyCodeService;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.service.TokenService;
+import com.yuanshanbao.dsp.withdrawdeposit.model.WithdrawDeposit;
+import com.yuanshanbao.dsp.withdrawdeposit.service.WithdrawDepositService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +60,12 @@ public class AccountController extends BaseController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private EarningsService earningService;
+
+    @Autowired
+    private WithdrawDepositService withdrawDepositServcie;
+
     @RequestMapping("/balance")
     @ResponseBody
     public Object getBalance(String token) {
@@ -77,6 +87,61 @@ public class AccountController extends BaseController {
         }
         return resultMap;
     }
+
+    /**
+     * 收益记录
+     * @param token
+     * @return
+     */
+    @RequestMapping("/earnings")
+    @ResponseBody
+    public Object getEarnings(String token ,  Earnings earnings , PageBounds pageBounds) {
+        Map<String, Object> resultMap = new HashMap<>();
+        try {
+            User loginToken = tokenService.verifyLoginToken(token);
+            if (loginToken == null) {
+                throw new BusinessException(ComRetCode.NOT_LOGIN);
+            }
+            List<Earnings> earningsList= earningService.selectEarnings(earnings, pageBounds);
+            resultMap.put("earningsList",earningsList);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+        } catch (BusinessException e) {
+            InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+        } catch (Exception e) {
+            LoggerUtil.error("[orderDetail]: ", e);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+        }
+        return resultMap;
+    }
+
+
+    /**
+     * 提现记录
+     * @param token
+     * @return
+     */
+    @RequestMapping("/withdrawDeposit")
+    @ResponseBody
+    public Object getWithdrawDeposit(String token, WithdrawDeposit withdrawDeposit ,PageBounds pageBounds) {
+        Map<String, Object> resultMap = new HashMap<>();
+        try {
+            User loginToken = tokenService.verifyLoginToken(token);
+            if (loginToken == null) {
+                throw new BusinessException(ComRetCode.NOT_LOGIN);
+            }
+            withdrawDeposit.setUserId(loginToken.getUserId());
+            List<WithdrawDeposit> withdrawDepositList = withdrawDepositServcie.selectWithdrawDeposits(withdrawDeposit, pageBounds);
+            resultMap.put("withdrawDepositList",withdrawDepositList);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+        } catch (BusinessException e) {
+            InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+        } catch (Exception e) {
+            LoggerUtil.error("[orderDetail]: ", e);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+        }
+        return resultMap;
+    }
+
 
     @RequestMapping("/checkChargePay")
     @ResponseBody

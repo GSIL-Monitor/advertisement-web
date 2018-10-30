@@ -19,19 +19,40 @@
 <!--查询直推总佣金-->
 	<select id="getAgencyBrokerage" parameterType="java.lang.Long" resultType="java.math.BigDecimal">
 		select
-		sum(brokerage) from
+		sum(brokerage) as brokerage from
 		tb_agency
 		where
 			invite_user_id =#{inviteUserId}
 
 	</select>
 
-<!--	<select id="selectAgencysByInviteId" parameterType="java.lang.Long" resultMap="agencyMap">
+	<!-- 佣金 -->
+	<select id="selectAgencyByIds" parameterType="List" resultType="java.math.BigDecimal">
 		select
-		* from
+		sum(brokerage) as brokerage from
 		tb_agency
-		invite_id = #{inviteId}
-	</select>-->
+		<where>
+			invite_user_id in
+			<foreach item="inviteUserId" collection="list" open="(" separator=","
+					 close=")">
+				#{inviteUserId}
+			</foreach>
+		</where>
+		group by invite_user_id
+	</select>
+
+	<select id="getSumBrokerage" parameterType="List" resultType="java.math.BigDecimal">
+		select
+		sum(brokerage) from
+		tb_agency
+		<where>
+			invite_user_id in
+			<foreach item="inviteUserId" collection="list" open="(" separator=","
+					 close=")">
+				#{inviteUserId}
+			</foreach>
+		</where>
+	</select>
 
 	<!-- 查询sql -->
 	<select id="selectAgencys" parameterType="Agency" resultMap="agencyMap">

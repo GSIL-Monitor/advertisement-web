@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.message.dao;
 
 import com.yuanshanbao.dsp.merchant.model.Merchant;
+import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 import java.util.List;
@@ -9,11 +10,11 @@ import java.util.List;
  * Created by Administrator on 2018/10/26.
  */
 public interface MessageDao {
-    public List<Merchant> selectMerchants(Merchant merchant, PageBounds pageBounds);
+    public List<Message> selectMessages(Message message, PageBounds pageBounds);
 
-    public int insertMerchant(Merchant merchant);
+    public int insertMessage(Message message);
 
-    public int deleteMerchant(Long merchantId);
+    public int deleteMessage(Long  messageId);
 
-    public int updateMerchant(Merchant merchant);
+    public int updateMessage(Message message);
 }

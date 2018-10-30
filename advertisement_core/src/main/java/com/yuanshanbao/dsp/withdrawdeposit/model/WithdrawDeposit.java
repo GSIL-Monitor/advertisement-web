@@ -1,4 +1,4 @@
-package com.yuanshanbao.dsp.withdraweposit.model;
+package com.yuanshanbao.dsp.withdrawdeposit.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

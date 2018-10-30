@@ -1,8 +1,10 @@
 package com.yuanshanbao.dsp.message.service;
 
 import com.yuanshanbao.dsp.merchant.model.Merchant;
+import com.yuanshanbao.dsp.message.dao.MessageDao;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.paginator.domain.PageBounds;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,25 +14,26 @@ import java.util.List;
  */
 @Service
 public class MessageServiceImpl implements MessageService {
-
+    @Autowired
+    private MessageDao messageDao;
 
     @Override
-    public List<Merchant> selectMerchants(Message message, PageBounds pageBounds) {
-        return null;
+    public List<Message> selectMessages(Message message, PageBounds pageBounds) {
+        return messageDao.selectMessages(message,pageBounds);
     }
 
     @Override
-    public int insertMerchant(Merchant merchant) {
+    public int insertMessage(Message message) {
         return 0;
     }
 
     @Override
-    public int deleteMerchant(Long merchantId) {
+    public int deleteMessage(Long messageId) {
         return 0;
     }
 
     @Override
-    public int updateMerchant(Merchant merchant) {
+    public int updateMessage(Message message) {
         return 0;
     }
 }

@@ -1,6 +1,6 @@
-package com.yuanshanbao.dsp.withdraweposit.service;
+package com.yuanshanbao.dsp.withdrawdeposit.service;
 
-import com.yuanshanbao.dsp.withdraweposit.model.WithdrawDeposit;
+import com.yuanshanbao.dsp.withdrawdeposit.model.WithdrawDeposit;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 import java.util.List;

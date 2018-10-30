@@ -1,7 +1,7 @@
-package com.yuanshanbao.dsp.withdraweposit.dao;
+package com.yuanshanbao.dsp.earnings.dao;
 
 import com.yuanshanbao.dsp.base.dao.BaseDaoImpl;
-import com.yuanshanbao.dsp.withdraweposit.model.WithdrawDeposit;
+import com.yuanshanbao.dsp.earnings.model.Earnings;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import org.springframework.stereotype.Repository;
 
@@ -11,25 +11,26 @@ import java.util.List;
  * Created by Administrator on 2018/10/26.
  */
 @Repository
-public class MessageDaoImpl extends BaseDaoImpl implements WithdrawDepositDao {
+public class EarningsDaoImpl extends BaseDaoImpl implements EarningsDao {
+
 
     @Override
-    public List<WithdrawDeposit> selectWithdrawDeposits(WithdrawDeposit withdrawDeposit, PageBounds pageBounds) {
+    public List<Earnings> selectEarnings(Earnings earnings, PageBounds pageBounds) {
         return null;
     }
 
     @Override
-    public int insertWithdrawDeposit(WithdrawDeposit message) {
+    public int insertEarnings(Earnings message) {
         return 0;
     }
 
     @Override
-    public int deleteWithdrawDeposit(Long id) {
+    public int deleteEarnings(Long id) {
         return 0;
     }
 
     @Override
-    public int updateWithdrawDeposit(WithdrawDeposit withdrawDeposit) {
+    public int updateEarnings(Earnings withdrawDeposit) {
         return 0;
     }
 }

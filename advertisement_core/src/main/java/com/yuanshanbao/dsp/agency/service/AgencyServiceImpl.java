@@ -12,25 +12,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2018/10/22.
  */
 @Service
-public class AgencyServiceImpl implements  AgencyService {
+public class AgencyServiceImpl implements AgencyService {
 
     @Autowired
     private AgencyDao agencyDao;
 
     @Override
     public List<Agency> selectAgencys(Agency agency, PageBounds pageBounds) {
-        return agencyDao.selectAgencys(agency,pageBounds);
+        return agencyDao.selectAgencys(agency, pageBounds);
     }
 
     @Override
     public Agency selectAgency(Long inviteId) {
-        if (inviteId == null ){
+        if (inviteId == null) {
             throw new BusinessException(ComRetCode.FAIL);
         }
         return agencyDao.selectAgency(inviteId);
@@ -59,6 +60,8 @@ public class AgencyServiceImpl implements  AgencyService {
 
     @Override
     public BigDecimal getAgencyBrokerage(Long inviteUserId) {
+
+
         if (inviteUserId == null && inviteUserId == 0)
             throw new BusinessException();
 
@@ -67,9 +70,72 @@ public class AgencyServiceImpl implements  AgencyService {
 
     @Override
     public List<Agency> selectAgencyByInviteId(Long inviteId) {
-        if (inviteId> 0){
+        if (inviteId > 0) {
             agencyDao.selectAgencysByInviteId(inviteId);
         }
         return null;
     }
+
+    @Override
+    public List<Agency> getAgencyBrokerages(List<Long> agencyList) {
+        if (agencyList == null) {
+            return null;
+        }
+
+        //一级代理佣金
+        List<Agency> oneAgencyList = agencyDao.selectAgencysByInviteUserIds(agencyList);
+
+
+        return oneAgencyList;
+    }
+
+    @Override
+    public BigDecimal getSumBrokerage(List<Long> inviteUserIds) {
+        if (inviteUserIds == null) {
+            return null;
+        }
+
+        return agencyDao.getSumBrokerage(inviteUserIds);
+    }
+
+    @Override
+    public BigDecimal getBrokerages(Agency agency, PageBounds pageBounds) {
+
+        List<Agency> oneAgencyList = agencyDao.selectAgencys(agency, pageBounds);
+
+        List<Long> oneInviteUserIds = new ArrayList<>();
+        List<Long> twoInviteUserIds = new ArrayList<>();
+        BigDecimal oneAgencyBrokerage = BigDecimal.valueOf(0);
+        BigDecimal twoAgencyBrokerage = BigDecimal.valueOf(0);
+        for (Agency agencyIds : oneAgencyList) {
+            if (oneAgencyList.size() == 0){
+                break;
+            }
+            oneInviteUserIds.add(agencyIds.getUserId());
+        }
+        if (oneInviteUserIds.size() != 0){
+            oneAgencyBrokerage = agencyDao.getSumBrokerage(oneInviteUserIds);
+        }
+        List<Agency> twoAgencyList = new ArrayList<>();
+        for (Agency agen : oneAgencyList) {
+            if (oneAgencyList.size() == 0){
+                break;
+            }
+            agency.setInviteUserId(agen.getUserId());
+            twoAgencyList = agencyDao.selectAgencys(agency, new PageBounds());
+            for (Agency agencyIds : twoAgencyList) {
+                twoInviteUserIds.add(agencyIds.getUserId());
+            }
+        }
+        if (twoInviteUserIds.size() != 0){
+            twoAgencyBrokerage = agencyDao.getSumBrokerage(twoInviteUserIds);
+            if (twoAgencyBrokerage == null){
+                twoAgencyBrokerage = BigDecimal.valueOf(0);
+            }
+        }
+        BigDecimal sumAgencyBrokerage = oneAgencyBrokerage.add(twoAgencyBrokerage);
+        return sumAgencyBrokerage;
+    }
+
+
 }

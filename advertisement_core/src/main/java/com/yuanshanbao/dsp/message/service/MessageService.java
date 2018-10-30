@@ -10,11 +10,11 @@ import java.util.List;
  * Created by Administrator on 2018/10/26.
  */
 public interface MessageService {
-    public List<Merchant> selectMerchants(Message message, PageBounds pageBounds);
+    public List<Message> selectMessages(Message message, PageBounds pageBounds);
 
-    public int insertMerchant(Merchant merchant);
+    public int insertMessage(Message message);
 
-    public int deleteMerchant(Long merchantId);
+    public int deleteMessage(Long  messageId);
 
-    public int updateMerchant(Merchant merchant);
+    public int updateMessage(Message message);
 }

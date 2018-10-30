@@ -9,8 +9,35 @@ public class Message {
     private Long Id;
     private Long userId;
     private String description;
-    private Timestamp create_time;
+    private Timestamp createTime;
     private Long productId;
+    private String  title;
+    private String bigTitle;
+    private String details;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getBigTitle() {
+        return bigTitle;
+    }
+
+    public void setBigTitle(String bigTitle) {
+        this.bigTitle = bigTitle;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
     public Long getProductId() {
         return productId;
@@ -44,11 +71,11 @@ public class Message {
         this.description = description;
     }
 
-    public Timestamp getCreate_time() {
-        return create_time;
+    public Timestamp getCreateTime() {
+        return createTime;
     }
 
-    public void setCreate_time(Timestamp create_time) {
-        this.create_time = create_time;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 }

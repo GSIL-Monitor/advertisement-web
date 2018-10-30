@@ -1,4 +1,4 @@
-package com.yuanshanbao.dsp.withdraweposit.model;
+package com.yuanshanbao.dsp.earnings.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 /**
  * Created by Administrator on 2018/10/26.
  */
-public class WithdrawDeposit {
+public class Earnings {
     private Long Id;
     private Long userId;
     private String description;

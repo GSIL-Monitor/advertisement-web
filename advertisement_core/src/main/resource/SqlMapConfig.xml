@@ -71,6 +71,7 @@
         <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacket" alias="RedPacket"/>
         <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacketSequence" alias="redPacketSequence"/>
         <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacketStrategy" alias="RedPacketStrategy"/>
+        <typeAlias type="com.yuanshanbao.dsp.message.model.Message" alias="Message"/>
     </typeAliases>
 
     <mappers>
@@ -136,6 +137,7 @@
         <mapper resource="mybatis/redpacket/RedPacketDaoImpl.xml"/>
         <mapper resource="mybatis/redpacket/RedPacketSequenceDaoImpl.xml"/>
         <mapper resource="mybatis/redpacket/RedPacketStrategyDaoImpl.xml"/>
+        <mapper resource="mybatis/message/MessageDaoImpl.xml"/>
 
     </mappers>
 </configuration>

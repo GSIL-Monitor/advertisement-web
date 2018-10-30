@@ -2,100 +2,51 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="Location">
+<mapper namespace="message">
 
-	<resultMap id="locationMap" type="Location">
-		<id property="locationId" column="location_id" jdbcType="NUMERIC" />
-		<result property="code" column="code" jdbcType="VARCHAR" />
-		<result property="name" column="name" jdbcType="VARCHAR" />
-		<result property="shortName" column="short_name" jdbcType="VARCHAR" />
-		<result property="type" column="type" jdbcType="NUMERIC" />
-		<result property="parentCode" column="parent_code" jdbcType="VARCHAR" />
-		<result property="status" column="status" jdbcType="NUMERIC" />
+	<resultMap id="messageMap" type="Message">
+		<id property="id" column="id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="NUMERIC" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="bigTitle" column="big_title" jdbcType="VARCHAR" />
+		<result property="details" column="details" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
-		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+
 	</resultMap>
 
 	<!-- 简历sql -->
-	<select id="selectLocation" parameterType="Location" resultMap="locationMap">
+	<select id="selectMessage" parameterType="Message" resultMap="messageMap">
 		select
 		* from
-		tb_location t
+		tb_user_message
 		<where>
 			<trim suffixOverrides="and">
-				<if test="locationId != null">
-					location_id=#{locationId} and
+				<if test="id != null">
+					id=#{id} and
 				</if>
-				<if test="code != null">
-					code = #{code} and
+				<if test="userId != null">
+					user_id = #{userId} and
 				</if>
-				<if test="status != null">
-					status = #{status} and
+				<if test="productId != null">
+					product_id = #{productId} and
+				</if>
+				<if test="title != null">
+					title = #{title} and
+				</if>
+				<if test="bigTitle != null">
+					big_title = #{bigTitle} and
+				</if>
+				<if test="details != null">
+					details = #{details} and
+				</if>
+				<if test="description != null">
+					description = #{description} and
 				</if>
 			</trim>
-			and status != -1
 		</where>
 		order by create_time desc
 	</select>
-
-	<select id="selectLocationByIds" parameterType="List" resultMap="locationMap">
-		select
-		* from
-		tb_location t
-		<where>
-			location_id in
-			<foreach item="id" collection="list" open="(" separator="," close=")">
-				#{id}
-			</foreach>
-		</where>
-	</select>
-
-	<insert id="insertLocation" parameterType="Location">
-		insert into
-		tb_location(code, name, short_name, type, parent_code,  
-		status, create_time, update_time)
-		values
-		(#{code}, #{name}, #{shortName}, #{type}, #{parentCode}, 
-		#{status}, sysdate(), sysdate())
-		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="locationId">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
-	</insert>
-
-	<update id="updateLocation" parameterType="Location">
-		update tb_location
-		<set>
-			<trim suffixOverrides=",">
-				<if test="code != null">
-					code=#{code},
-				</if>
-				<if test="name != null">
-					name=#{name},
-				</if>
-				<if test="shortName != null">
-					short_name=#{shortName},
-				</if>
-				<if test="type != null">
-					type=#{type},
-				</if>
-				<if test="parentCode != null">
-					parent_code=#{parentCode},
-				</if>
-				<if test="status != null">
-					status=#{status},
-				</if>
-				update_time=sysdate(),
-			</trim>
-		</set>
-		<where>
-			location_id=#{locationId}
-		</where>
-	</update>
-
-	<delete id="deleteLocation" parameterType="long">
-		delete from tb_location
-		where
-		location_id=#{locationId}
-	</delete>
 
 </mapper>

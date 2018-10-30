@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Administrator on 2018/10/26.
  */
 @Service
-public class MessageServiceImpl implements WithdrawDepositService {
+public class WithdrawDepositServiceImpl implements WithdrawDepositService {
 
     @Override
     public List<WithdrawDeposit> selectWithdrawDeposits(WithdrawDeposit withdrawDeposit, PageBounds pageBounds) {

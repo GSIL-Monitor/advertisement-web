@@ -1,6 +1,6 @@
-package com.yuanshanbao.dsp.withdraweposit.dao;
+package com.yuanshanbao.dsp.earnings.dao;
 
-import com.yuanshanbao.dsp.withdraweposit.model.WithdrawDeposit;
+import com.yuanshanbao.dsp.earnings.model.Earnings;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 import java.util.List;
@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * Created by Administrator on 2018/10/26.
  */
-public interface WithdrawDepositDao {
-    public List<WithdrawDeposit> selectWithdrawDeposits(WithdrawDeposit withdrawDeposit, PageBounds pageBounds);
+public interface EarningsDao {
+    public List<Earnings> selectEarnings(Earnings earnings, PageBounds pageBounds);
 
-    public int insertWithdrawDeposit(WithdrawDeposit message);
+    public int insertEarnings(Earnings message);
 
-    public int deleteWithdrawDeposit(Long id);
+    public int deleteEarnings(Long id);
 
-    public int updateWithdrawDeposit(WithdrawDeposit withdrawDeposit);
+    public int updateEarnings(Earnings withdrawDeposit);
 }
