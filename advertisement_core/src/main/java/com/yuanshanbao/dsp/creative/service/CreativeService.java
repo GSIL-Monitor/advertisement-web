@@ -19,4 +19,7 @@ public interface CreativeService {
 
 	public List<Long> selectCreativeIds(Creative creative);
 
+	public List<Creative> selectCreativesByIds(Long advertiserId, String creativeIds, Boolean isSelect,
+			PageBounds pageBounds);
+
 }

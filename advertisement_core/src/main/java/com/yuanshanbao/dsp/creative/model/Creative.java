@@ -2,6 +2,8 @@ package com.yuanshanbao.dsp.creative.model;
 
 import java.sql.Timestamp;
 
+import com.yuanshanbao.common.util.DateUtils;
+
 public class Creative {
 	private Long creativeId;
 	private Long advertiserId;
@@ -116,6 +118,10 @@ public class Creative {
 
 	public Timestamp getCreateTime() {
 		return createTime;
+	}
+
+	public String getCreateTimeContent() {
+		return DateUtils.format(createTime, DateUtils.DATE_FORMAT_YYYYMMDD_HHMMSS);
 	}
 
 	public void setCreateTime(Timestamp createTime) {

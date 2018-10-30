@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.creative.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -29,5 +30,11 @@ public class CreativeDaoImpl extends BaseDaoImpl implements CreativeDao {
 	public int updateCreative(Creative creative) {
 		return getSqlSession().update("creative.updateCreative", creative);
 	}
+
+	@Override
+	public List<Creative> selectCreativesByIds(Map<String, Object> parameters, PageBounds pageBounds) {
+		return getSqlSession().selectList("creative.selectCreativesByIds", parameters, pageBounds);
+	}
+
 
 }
