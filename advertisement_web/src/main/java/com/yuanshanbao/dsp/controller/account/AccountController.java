@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/account")
+@RequestMapping("/i/account")
 public class AccountController extends BaseController {
 
     private static final String BILL_LIST_KEY = "billList";

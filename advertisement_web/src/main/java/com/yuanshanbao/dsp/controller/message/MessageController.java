@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by Administrator on 2018/10/29.
  */
 @Controller
-@RequestMapping("/message")
+@RequestMapping("/i/message")
 public class MessageController extends BaseController{
     @Autowired
     private MessageService messageService;
