@@ -30,6 +30,7 @@ import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.common.constant.DspConstantManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -479,7 +480,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	public List<Probability> pickProbabilityByPlan(HttpServletRequest request, Long projectId, String channel) {
 		List<Probability> resultList = new ArrayList<Probability>();
 		Map<Long, Probability> probabilitymap = selectPlanFromCache(request, projectId, channel);
-		Map<Long, BigDecimal> bidMap = ConstantsManager.getBidByChannel(channel);
+		Map<Long, BigDecimal> bidMap = DspConstantManager.getBidByChannel(channel);
 		Long probabilityId = dealWithCTRAndBid(bidMap);
 		if (probabilityId == null) {
 			return null;

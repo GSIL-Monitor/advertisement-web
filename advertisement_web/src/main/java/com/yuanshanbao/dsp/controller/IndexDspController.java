@@ -46,7 +46,7 @@ public class IndexDspController {
 				Channel channelObject = ConfigManager.getChannel(instance.getChannel());
 				if (channelObject != null) {
 					List<Probability> seatBid = probabilityService.pickProbabilityByPlan(request,
-							project.getProjectId(), null);
+							project.getProjectId(), instance.getChannel());
 					resultMap.put("seatBid", seatBid);
 				}
 			}
