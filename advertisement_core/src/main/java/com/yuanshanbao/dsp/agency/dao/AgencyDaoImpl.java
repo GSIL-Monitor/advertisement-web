@@ -1,11 +1,14 @@
 package com.yuanshanbao.dsp.agency.dao;
 
+import com.alibaba.fastjson.support.odps.udf.CodecCheck;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.base.dao.BaseDaoImpl;
+import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,5 +55,21 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
     @Override
     public List<Agency> selectAgencysByInviteId(Long inviteId) {
         return getSqlSession().selectList("agency.selectAgencysByInviteId",inviteId);
+    }
+
+    @Override
+    public List<Agency> selectAgencysByInviteUserIds(List<Long> inviteUserIds) {
+        if (inviteUserIds == null || inviteUserIds.size() == 0) {
+            return new ArrayList<Agency>();
+        }
+        return getSqlSession().selectList("agency.selectAgencyByIds",inviteUserIds);
+    }
+
+    @Override
+    public BigDecimal getSumBrokerage(List<Long> inviteUserIds) {
+        if (inviteUserIds.size() == 0){
+            return null;
+        }
+        return getSqlSession().selectOne("agency.getSumBrokerage", inviteUserIds);
     }
 }

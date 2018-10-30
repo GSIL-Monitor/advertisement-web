@@ -53,7 +53,7 @@ import com.yuanshanbao.paginator.domain.Paginator;
 @Controller
 @RequestMapping({ "/product", "/i/product" })
 public class ProductController extends BaseController {
-	private static final String EDUCATION_APP = "education_app";
+	private static final String WANGZHUAN = "wangzhuan";
 
 	@Autowired
 	private ProductService productService;
@@ -67,7 +67,7 @@ public class ProductController extends BaseController {
 			String token, HttpServletResponse response, ModelMap modelMap) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			Activity activity = ConfigManager.getActivityByKey(EDUCATION_APP);
+			Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
 			if (activity == null) {
 				throw new BusinessException();
 			}

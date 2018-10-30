@@ -8,6 +8,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yuanshanbao.common.util.CommonUtil;
+import com.yuanshanbao.dsp.merchant.model.Merchant;
+import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,12 +64,13 @@ public class IndexController extends BaseController {
 			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 					formatPageBounds(pageBounds));
 
-			//滚动列表
+			//滚动消息列表
+			Message message = new Message();
+			message.setProductId(activity.getActivityId());
+            List<Message> messageList  = messageService.selectMessages(message, new PageBounds());
 
-
-
-
-			resultMap.put("productList", productList);
+            resultMap.put("messageList",messageList);
+            resultMap.put("productList", productList);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

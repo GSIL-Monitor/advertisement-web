@@ -28,4 +28,12 @@ public interface AgencyDao {
     List<Agency> selectAgencysByInviteId(Long inviteId);
 
 
+    /**
+     * ids
+     * @return
+     * @param inviteUserIds
+     */
+    List<Agency> selectAgencysByInviteUserIds(List<Long> inviteUserIds);
+
+    BigDecimal getSumBrokerage(List<Long> inviteUserIds);
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="message">
+
+	<resultMap id="messageMap" type="Message">
+		<id property="id" column="id" jdbcType="NUMERIC" />
+		<result property="userId" column="user_id" jdbcType="NUMERIC" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="bigTitle" column="big_title" jdbcType="VARCHAR" />
+		<result property="details" column="details" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectMessage" parameterType="Message" resultMap="messageMap">
+		select
+		* from
+		tb_user_message
+		<where>
+			<trim suffixOverrides="and">
+				<if test="id != null">
+					id=#{id} and
+				</if>
+				<if test="userId != null">
+					user_id = #{userId} and
+				</if>
+				<if test="productId != null">
+					product_id = #{productId} and
+				</if>
+				<if test="title != null">
+					title = #{title} and
+				</if>
+				<if test="bigTitle != null">
+					big_title = #{bigTitle} and
+				</if>
+				<if test="details != null">
+					details = #{details} and
+				</if>
+				<if test="description != null">
+					description = #{description} and
+				</if>
+			</trim>
+		</where>
+		order by create_time desc
+	</select>
+
+</mapper>

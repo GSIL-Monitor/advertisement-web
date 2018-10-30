@@ -71,6 +71,10 @@
         <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacket" alias="RedPacket"/>
         <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacketSequence" alias="redPacketSequence"/>
         <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacketStrategy" alias="RedPacketStrategy"/>
+        <typeAlias type="com.yuanshanbao.dsp.message.model.Message" alias="Message"/>
+        <typeAlias type="com.yuanshanbao.dsp.earnings.model.Earnings" alias="Earnings"/>
+        <typeAlias type="com.yuanshanbao.dsp.withdrawdeposit.model.WithdrawDeposit" alias="WithdrawDeposit"/>
+        <typeAlias type="com.yuanshanbao.dsp.level.model.Level" alias="Level"/>
     </typeAliases>
 
     <mappers>
@@ -136,6 +140,8 @@
         <mapper resource="mybatis/redpacket/RedPacketDaoImpl.xml"/>
         <mapper resource="mybatis/redpacket/RedPacketSequenceDaoImpl.xml"/>
         <mapper resource="mybatis/redpacket/RedPacketStrategyDaoImpl.xml"/>
-
+        <mapper resource="mybatis/earnings/EarningsDaoImpl.xml"/>
+        <mapper resource="mybatis/withdrawdeposit/WithdrawDepositDaoImpl.xml"/>
+        <mapper resource="mybatis/level/LevelDaoImpl.xml"/>
     </mappers>
 </configuration>

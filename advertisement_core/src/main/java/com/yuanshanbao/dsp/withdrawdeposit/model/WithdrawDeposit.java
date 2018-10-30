@@ -1,42 +1,26 @@
-package com.yuanshanbao.dsp.message.model;
+package com.yuanshanbao.dsp.withdrawdeposit.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
  * Created by Administrator on 2018/10/26.
  */
-public class Message {
+public class WithdrawDeposit {
     private Long Id;
     private Long userId;
     private String description;
     private Timestamp createTime;
     private Long productId;
-    private String  title;
-    private String bigTitle;
-    private String details;
+    private BigDecimal money;
 
-    public String getTitle() {
-        return title;
+
+    public BigDecimal getMoney() {
+        return money;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBigTitle() {
-        return bigTitle;
-    }
-
-    public void setBigTitle(String bigTitle) {
-        this.bigTitle = bigTitle;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
+    public void setMoney(BigDecimal money) {
+        this.money = money;
     }
 
     public Long getProductId() {
