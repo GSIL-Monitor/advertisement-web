@@ -1,8 +1,6 @@
 package com.yuanshanbao.dsp.advertisement.model.vo;
 
-import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.creative.model.Creative;
-import com.yuanshanbao.dsp.plan.model.Plan;
 
 public class AdvertisementDetails {
 
@@ -11,15 +9,19 @@ public class AdvertisementDetails {
 	private String description;
 	private String imageUrl;
 	private String clickUrl;
+
 	public AdvertisementDetails() {
 		super();
 	}
 
-	public AdvertisementDetails(Plan plan,Creative creative) {
-		this.pId = String.valueOf(plan.getPlanId());
-		
+	public AdvertisementDetails(String planKey, Creative creative) {
+		this.pId = planKey;
+		this.title = creative.getTitle();
+		this.description = creative.getDescription();
+		this.imageUrl = creative.getImageUrl();
+		this.clickUrl = setUrlByKey(planKey);
 	}
-	
+
 	public String getImageUrl() {
 		return imageUrl;
 	}
@@ -58,5 +60,9 @@ public class AdvertisementDetails {
 
 	public void setClickUrl(String clickUrl) {
 		this.clickUrl = clickUrl;
+	}
+
+	private String setUrlByKey(String planKey) {
+		return "t.huhad.com/common.html" + planKey;
 	}
 }

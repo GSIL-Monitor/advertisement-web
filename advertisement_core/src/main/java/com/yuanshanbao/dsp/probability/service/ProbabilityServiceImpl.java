@@ -18,12 +18,15 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.AESUtils;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementDisplayType;
+import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementDetails;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
@@ -34,6 +37,7 @@ import com.yuanshanbao.dsp.common.constant.DspConstantManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.creative.model.Creative;
 import com.yuanshanbao.dsp.location.service.IpLocationService;
 import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.plan.model.Plan;
@@ -49,6 +53,7 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
 public class ProbabilityServiceImpl implements ProbabilityService {
+	public static final String PLAN_ENCRYPT_KEY = "aadecfe68c1c06a7";
 
 	@Autowired
 	private ProbabilityDao probabilityDao;
@@ -477,21 +482,58 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 
 	// 查找计划并展示
 	@Override
-	public List<Probability> pickProbabilityByPlan(HttpServletRequest request, Long projectId, String channel) {
-		List<Probability> resultList = new ArrayList<Probability>();
-		Map<Long, Probability> probabilitymap = selectPlanFromCache(request, projectId, channel);
-		Map<Long, BigDecimal> bidMap = DspConstantManager.getBidByChannel(channel);
+	public List<AdvertisementDetails> pickProbabilityByPlan(HttpServletRequest request, Long projectId,
+			Channel channelObject, Instance instance) {
+		List<AdvertisementDetails> resultList = new ArrayList<AdvertisementDetails>();
+		Map<Long, Probability> probabilitymap = selectPlanFromCache(request, projectId, channelObject.getKey(),
+				instance);
+		if (probabilitymap.size() <= 0) {
+			return resultList;
+		}
+		Map<Long, BigDecimal> bidMap = DspConstantManager.getBidByChannel(channelObject.getKey());
 		Long probabilityId = dealWithCTRAndBid(bidMap);
 		if (probabilityId == null) {
-			return null;
+			return resultList;
 		}
 		Probability probability = probabilitymap.get(probabilityId);
-		Plan plan = ConfigManager.getPlanById(probability.getPlanId());
-		resultList.add(probability);
+		resultList = getContent(probability, channelObject);
 		return resultList;
 	}
 
-	public Map<Long, Probability> selectPlanFromCache(HttpServletRequest request, Long projectId, String channelKey) {
+	private List<AdvertisementDetails> getContent(Probability probability, Channel channelObject) {
+		List<AdvertisementDetails> resultList = new ArrayList<AdvertisementDetails>();
+		try {
+			Plan plan = ConfigManager.getPlanById(probability.getPlanId());
+			Creative resultCreative = new Creative();
+			if (StringUtils.isEmpty(plan.getCreative())) {
+				return resultList;
+			}
+			String[] creativeList = plan.getCreative().split(",");
+			for (String creativeId : creativeList) {
+				resultCreative = ConstantsManager.getCreativeById(Long.valueOf(creativeId));
+				// 判断素材与媒体尺寸大小是否相等
+			}
+			String planKey = getEncryptPlanKey(plan);
+			AdvertisementDetails advertisementDetails = new AdvertisementDetails(planKey, resultCreative);
+			resultList.add(advertisementDetails);
+		} catch (Exception e) {
+			LoggerUtil.error("getContent", e);
+		}
+		return resultList;
+	}
+
+	private String getEncryptPlanKey(Plan plan) {
+		String planKey = "";
+		try {
+			planKey = AESUtils.encrypt(PLAN_ENCRYPT_KEY, plan.getPlanId().toString());
+		} catch (Exception e) {
+			LoggerUtil.error("encryptPlanId", e);
+		}
+		return planKey;
+	}
+
+	public Map<Long, Probability> selectPlanFromCache(HttpServletRequest request, Long projectId, String channelKey,
+			Instance instance) {
 		Map<Long, Probability> resultMap = new HashMap<Long, Probability>();
 		if (projectId == null || channelKey == null) {
 			return resultMap;
@@ -501,45 +543,51 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		if (list == null || list.size() == 0) {
 			return resultMap;
 		}
-
-		List<Probability> result = advertisementStrategyService.getAvailableProbabilityList(request, list);
-
-		for (Probability probability : result) {
+		List<Probability> channelList = new ArrayList<Probability>();
+		for (Probability probability : list) {
 			if (channelKey.equals(probability.getChannel())) {
-				resultMap.put(probability.getProbabilityId(), probability);
-			} else {
-				break;
+				channelList.add(probability);
 			}
 		}
+
+		List<Probability> result = advertisementStrategyService.getAvailableProbabilityList(request, channelList,
+				instance);
+
+		for (Probability probability : result) {
+			resultMap.put(probability.getProbabilityId(), probability);
+		}
+
 		return resultMap;
 	}
 
 	private Long dealWithCTRAndBid(Map<Long, BigDecimal> bidMap) {
 		Long resultProbabilityId = null;
-		Double score = new Double(0);
-		Map<Long, Double> scoreMap = new HashMap<Long, Double>();
-		for (Long probabilityId : bidMap.keySet()) {
-			String ctrValue = redisService.get(RedisConstant.getProbabilityChannelCTRKey(probabilityId));
-			if (ctrValue == null || !ValidateUtil.isDouble(ctrValue)) {
-				return probabilityId;
-			} else {
-				Double ctr = Double.valueOf(ctrValue);
-				score = ctr * bidMap.get(probabilityId).doubleValue();
-				scoreMap.put(probabilityId, score);
+		try {
+			Double score = new Double(0);
+			Map<Long, Double> scoreMap = new HashMap<Long, Double>();
+			for (Long probabilityId : bidMap.keySet()) {
+				String ctrValue = redisService.get(RedisConstant.getProbabilityChannelCTRKey(probabilityId));
+				if (ctrValue == null || !ValidateUtil.isDouble(ctrValue)) {
+					return probabilityId;
+				} else {
+					Double ctr = Double.valueOf(ctrValue);
+					score = ctr * bidMap.get(probabilityId).doubleValue();
+					scoreMap.put(probabilityId, score);
+				}
 			}
-		}
-		if (scoreMap.size() <= 0) {
-			return null;
-		}
+			if (scoreMap.size() <= 0) {
+				return null;
+			}
 
-		Double tempScore = new Double(0);
-		for (Map.Entry<Long, Double> entry : scoreMap.entrySet()) {
-			if (entry.getKey() != null && entry.getValue() > tempScore) {
-				resultProbabilityId = entry.getKey();
-				tempScore = entry.getValue();
-			} else {
-				break;
+			Double tempScore = new Double(0);
+			for (Map.Entry<Long, Double> entry : scoreMap.entrySet()) {
+				if (entry.getValue() > tempScore) {
+					resultProbabilityId = entry.getKey();
+					tempScore = entry.getValue();
+				}
 			}
+		} catch (Exception e) {
+			LoggerUtil.error("dealWithCTRAndBid", e);
 		}
 		return resultProbabilityId;
 	}

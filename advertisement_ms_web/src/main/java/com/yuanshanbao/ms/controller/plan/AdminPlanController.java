@@ -28,6 +28,7 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.creative.model.Creative;
+import com.yuanshanbao.dsp.creative.model.CreativeStatus;
 import com.yuanshanbao.dsp.creative.service.CreativeService;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
@@ -48,6 +49,8 @@ import com.yuanshanbao.paginator.domain.PageList;
 @RequestMapping("/admin/plan")
 public class AdminPlanController extends PaginationController {
 
+	public static final String PLAN_ENCRYPT_KEY = "aadecfe68c1c06a7";
+
 	private static final String PAGE_LIST = "advertisement/plan/listPlan";
 
 	private static final String PAGE_INSERT = "advertisement/plan/insertPlan";
@@ -61,6 +64,8 @@ public class AdminPlanController extends PaginationController {
 	private static final String PAGE_ALLOCATE_LIST = "advertisement/plan/listAllocatePlan";
 
 	private static final String PAGE_ALLOCATE_PLAN = "advertisement/plan/allocatePlan";
+
+	private static final String PAGE_SELECT_CREATIVE = "advertisement/plan/selectCreative";
 
 	@Autowired
 	private OrderService orderService;
@@ -193,15 +198,34 @@ public class AdminPlanController extends PaginationController {
 		return resultMap;
 	}
 
-	@ResponseBody
-	@RequestMapping("/getCreative")
-	public Object getCreative(HttpServletRequest request, HttpServletResponse response, Plan plan) {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+	@RequestMapping("/setCreativeWindow.do")
+	public String setCreativeWindow(Long planId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
 		Advertiser advertiser = getBindAdvertiserByUser();
 		if (advertiser != null) {
 			Creative creative = new Creative();
 			creative.setAdvertiserId(advertiser.getAdvertiserId());
+			creative.setStatus(CreativeStatus.ONLINE);
 			List<Creative> list = creativeService.selectCreative(creative, new PageBounds());
+			request.setAttribute("creativeList", list);
+			request.setAttribute("planId", planId);
+		}
+		return PAGE_SELECT_CREATIVE;
+	}
+
+	@ResponseBody
+	@RequestMapping("/setCreative")
+	public Object getCreative(HttpServletRequest request, HttpServletResponse response, Plan plan) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			if (plan.getPlanId() == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			plan.setStatus(PlanStatus.UNREVIEWED);
+			planService.updatePlan(plan);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("plan setCreative", e2);
 		}
 		return resultMap;
 	}

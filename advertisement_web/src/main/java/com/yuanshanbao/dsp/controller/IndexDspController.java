@@ -20,11 +20,11 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementDetails;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.project.model.Project;
 
@@ -45,8 +45,8 @@ public class IndexDspController {
 			if (project != null) {
 				Channel channelObject = ConfigManager.getChannel(instance.getChannel());
 				if (channelObject != null) {
-					List<Probability> seatBid = probabilityService.pickProbabilityByPlan(request,
-							project.getProjectId(), instance.getChannel());
+					List<AdvertisementDetails> seatBid = probabilityService.pickProbabilityByPlan(request,
+							project.getProjectId(), channelObject, instance);
 					resultMap.put("seatBid", seatBid);
 				}
 			}
@@ -100,7 +100,6 @@ public class IndexDspController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
-
 		} catch (Exception e) {
 			LoggerUtil.error("[adClick dsp]: ", e);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);

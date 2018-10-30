@@ -5,6 +5,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementDetails;
+import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
@@ -44,5 +47,6 @@ public interface ProbabilityService {
 
 	public List<Probability> selectProbabilityByOrderIds(List<Long> orderIds);
 
-	public List<Probability> pickProbabilityByPlan(HttpServletRequest request, Long projectId, String channel);
+	public List<AdvertisementDetails> pickProbabilityByPlan(HttpServletRequest request, Long projectId,
+			Channel channelObject, Instance instance);
 }

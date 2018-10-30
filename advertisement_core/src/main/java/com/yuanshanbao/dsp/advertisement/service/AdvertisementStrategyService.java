@@ -37,7 +37,8 @@ public interface AdvertisementStrategyService {
 	public List<Long> getAvailableAdvertisementList(List<Long> advertisementIdList,
 			List<AdvertisementStrategy> stagtegyList, Instance instrance);
 
-	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list);
+	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list,
+			Instance instance);
 
 	public void updatePlanStrategy(HttpServletRequest request, Long probabilityId, Long advertiserId);
 

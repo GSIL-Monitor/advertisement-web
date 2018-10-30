@@ -1,6 +1,5 @@
 package com.yuanshanbao.dsp.common.constant;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,6 +36,8 @@ import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.ConfigService;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
+import com.yuanshanbao.dsp.creative.model.Creative;
+import com.yuanshanbao.dsp.creative.service.CreativeService;
 import com.yuanshanbao.dsp.location.model.Location;
 import com.yuanshanbao.dsp.location.service.LocationService;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
@@ -94,7 +95,7 @@ public class ConstantsManager {
 	private static Map<Long, List<Probability>> probabilityMap = new HashMap<Long, List<Probability>>();
 	private static Map<Long, List<Quota>> quotaMap = new HashMap<Long, List<Quota>>();
 	private static Map<Long, List<AdvertisementStrategy>> strategyMap = new HashMap<Long, List<AdvertisementStrategy>>();
-	private static Map<String, Map<Long, BigDecimal>> channelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
+	private static Map<Long, Creative> creativeIdMap = new HashMap<Long, Creative>();
 
 	private static ConstantsManager instance = null;
 
@@ -160,6 +161,9 @@ public class ConstantsManager {
 
 	@Resource
 	private PlanService planService;
+
+	@Resource
+	private CreativeService creativeService;
 
 	public static boolean validateConstants(long[] types, Long id) {
 		for (long type : types) {
@@ -506,6 +510,13 @@ public class ConstantsManager {
 			list.add(strategy);
 		}
 		strategyMap = tempStrategyMap;
+
+		List<Creative> creativeList = creativeService.selectCreative(new Creative(), new PageBounds());
+		Map<Long, Creative> tempCreativeIdMap = new LinkedHashMap<Long, Creative>();
+		for (Creative creative : creativeList) {
+			tempCreativeIdMap.put(creative.getCreativeId(), creative);
+		}
+		creativeIdMap = tempCreativeIdMap;
 	}
 
 	public static Map<Long, TagsType> getTagsTypeMap() {
@@ -651,6 +662,10 @@ public class ConstantsManager {
 
 	public static List<AdvertisementStrategy> getStrategyList(Long projectId) {
 		return strategyMap.get(projectId);
+	}
+
+	public static Creative getCreativeById(Long creativeId) {
+		return creativeIdMap.get(creativeId);
 	}
 
 	public static Position getPositionByKey(Long projectId, String positionKey) {

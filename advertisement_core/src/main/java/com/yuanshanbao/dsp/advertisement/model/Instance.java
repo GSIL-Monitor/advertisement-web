@@ -7,6 +7,7 @@ public class Instance {
 	private String gender;
 	private String age;
 	private String deviceType;
+	private String os;
 	private String deviceId;
 	private String mac;
 	private String ip;
@@ -190,6 +191,14 @@ public class Instance {
 
 	public void setH(Integer h) {
 		this.h = h;
+	}
+
+	public String getOs() {
+		return os;
+	}
+
+	public void setOs(String os) {
+		this.os = os;
 	}
 
 }

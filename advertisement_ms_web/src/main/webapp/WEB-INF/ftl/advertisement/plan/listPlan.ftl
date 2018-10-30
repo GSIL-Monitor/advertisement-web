@@ -39,7 +39,7 @@
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">设置创意</a></div>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/setCreativeWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">设置创意</a></div>';
 			       }
 		        },{
 			    	"data": "${functionId}",

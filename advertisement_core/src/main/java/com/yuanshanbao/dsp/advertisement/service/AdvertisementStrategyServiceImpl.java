@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementStrategyDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
@@ -189,7 +188,8 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	}
 
 	@Override
-	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list) {
+	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list,
+			Instance instance) {
 		List<AdvertisementStrategy> ipRegionList = new ArrayList<AdvertisementStrategy>();
 		List<AdvertisementStrategy> deviceTypeList = new ArrayList<AdvertisementStrategy>();
 		List<Probability> resultList = new ArrayList<Probability>();
@@ -206,7 +206,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 					deviceTypeList.add(advertisementStrategy);
 				}
 			}
-			boolean strategyPass = judgeStrategy(request, ipRegionList, deviceTypeList);
+			boolean strategyPass = judgeStrategy(request, ipRegionList, deviceTypeList, instance);
 			if (strategyPass) {
 				resultList.add(prob);
 			}
@@ -215,16 +215,19 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	}
 
 	private boolean judgeStrategy(HttpServletRequest request, List<AdvertisementStrategy> ipRegionList,
-			List<AdvertisementStrategy> deviceTypeList) {
-		if (checkIpRegion(request, ipRegionList) && checkDeviceType(request, deviceTypeList)) {
+			List<AdvertisementStrategy> deviceTypeList, Instance instance) {
+		if (checkIpRegion(request, ipRegionList, instance) && checkDeviceType(request, deviceTypeList, instance)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	private boolean checkDeviceType(HttpServletRequest request, List<AdvertisementStrategy> list) {
+	private boolean checkDeviceType(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
 		boolean strategyPass = true;
+		if (StringUtils.isEmpty(instance.getOs())) {
+			return strategyPass;
+		}
 		if (list != null) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
 
@@ -233,12 +236,15 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return strategyPass;
 	}
 
-	private boolean checkIpRegion(HttpServletRequest request, List<AdvertisementStrategy> list) {
+	private boolean checkIpRegion(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
 		boolean strategyPass = true;
+		if (StringUtils.isEmpty(instance.getIp())) {
+			return strategyPass;
+		}
 		if (list != null) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
 				if (advertisementStrategy.getType().equals(AdvertisementStrategyType.REGION)) {
-					Location location = ipLocationService.queryIpLocation(JSPHelper.getRemoteAddr(request));
+					Location location = ipLocationService.queryIpLocation(instance.getIp());
 					Location configLocation = ConstantsManager.getLocationByCode(advertisementStrategy.getValue());
 					// 配置了该地域，该地域即可通过
 					if (location != null && configLocation != null && !configLocation.contains(location.getCode())) {
