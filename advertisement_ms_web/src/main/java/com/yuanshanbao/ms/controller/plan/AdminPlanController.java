@@ -28,7 +28,6 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.creative.model.Creative;
-import com.yuanshanbao.dsp.creative.model.CreativeStatus;
 import com.yuanshanbao.dsp.creative.service.CreativeService;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
@@ -200,16 +199,21 @@ public class AdminPlanController extends PaginationController {
 
 	@RequestMapping("/setCreativeWindow.do")
 	public String setCreativeWindow(Long planId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
-		Advertiser advertiser = getBindAdvertiserByUser();
-		if (advertiser != null) {
-			Creative creative = new Creative();
-			creative.setAdvertiserId(advertiser.getAdvertiserId());
-			creative.setStatus(CreativeStatus.ONLINE);
-			List<Creative> list = creativeService.selectCreative(creative, new PageBounds());
-			request.setAttribute("creativeList", list);
-			request.setAttribute("planId", planId);
-		}
+		request.setAttribute("planId", planId);
 		return PAGE_SELECT_CREATIVE;
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryCreative.do")
+	public Object queryCreative(HttpServletRequest request, HttpServletResponse response, Long planId, Boolean isSelect) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		PageList<Creative> list = new PageList<Creative>();
+		if (advertiser != null) {
+			Plan plan = planService.selectPlan(planId);
+			list = (PageList<Creative>) creativeService.selectCreativesByIds(advertiser.getAdvertiserId(),
+					plan.getCreative(), isSelect, getPageBounds(request));
+		}
+		return setPageInfo(request, response, list);
 	}
 
 	@ResponseBody
