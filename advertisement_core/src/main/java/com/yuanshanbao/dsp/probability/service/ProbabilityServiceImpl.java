@@ -37,8 +37,8 @@ import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
-import com.yuanshanbao.dsp.creative.model.Creative;
 import com.yuanshanbao.dsp.location.service.IpLocationService;
+import com.yuanshanbao.dsp.material.model.Material;
 import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.plan.service.PlanService;
@@ -504,21 +504,21 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		List<AdvertisementDetails> resultList = new ArrayList<AdvertisementDetails>();
 		try {
 			Plan plan = ConfigManager.getPlanById(probability.getPlanId());
-			Creative resultCreative = new Creative();
-			if (StringUtils.isEmpty(plan.getCreative())) {
+			Material resultMaterial = new Material();
+			if (StringUtils.isEmpty(plan.getMaterial())) {
 				return resultList;
 			}
-			String[] creativeList = plan.getCreative().split(",");
+			String[] creativeList = plan.getMaterial().split(",");
 			for (String creativeId : creativeList) {
-				resultCreative = ConstantsManager.getCreativeById(Long.valueOf(creativeId));
+				resultMaterial = ConstantsManager.getMaterialById(Long.valueOf(creativeId));
 				// 判断素材与媒体尺寸大小是否相等
-				if (resultCreative.getWidth().equals(channelObject.getWidth())
-						&& resultCreative.getHeight().equals(channelObject.getHeight())) {
+				if (resultMaterial.getWidth().equals(channelObject.getWidth())
+						&& resultMaterial.getHeight().equals(channelObject.getHeight())) {
 					break;
 				}
 			}
 			String planKey = getEncryptPlanKey(plan);
-			AdvertisementDetails advertisementDetails = new AdvertisementDetails(planKey, resultCreative,
+			AdvertisementDetails advertisementDetails = new AdvertisementDetails(planKey, resultMaterial,
 					channelObject.getKey());
 			resultList.add(advertisementDetails);
 		} catch (Exception e) {

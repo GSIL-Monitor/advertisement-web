@@ -36,10 +36,10 @@ import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.ConfigService;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
-import com.yuanshanbao.dsp.creative.model.Creative;
-import com.yuanshanbao.dsp.creative.service.CreativeService;
 import com.yuanshanbao.dsp.location.model.Location;
 import com.yuanshanbao.dsp.location.service.LocationService;
+import com.yuanshanbao.dsp.material.model.Material;
+import com.yuanshanbao.dsp.material.service.MaterialService;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.page.model.Page;
@@ -96,7 +96,7 @@ public class ConstantsManager {
 	private static Map<Long, List<Probability>> probabilityMap = new HashMap<Long, List<Probability>>();
 	private static Map<Long, List<Quota>> quotaMap = new HashMap<Long, List<Quota>>();
 	private static Map<Long, List<AdvertisementStrategy>> strategyMap = new HashMap<Long, List<AdvertisementStrategy>>();
-	private static Map<Long, Creative> creativeIdMap = new HashMap<Long, Creative>();
+	private static Map<Long, Material> materialIdMap = new HashMap<Long, Material>();
 
 	private static ConstantsManager instance = null;
 
@@ -164,7 +164,7 @@ public class ConstantsManager {
 	private PlanService planService;
 
 	@Resource
-	private CreativeService creativeService;
+	private MaterialService materialService;
 
 	public static boolean validateConstants(long[] types, Long id) {
 		for (long type : types) {
@@ -513,12 +513,12 @@ public class ConstantsManager {
 		}
 		strategyMap = tempStrategyMap;
 
-		List<Creative> creativeList = creativeService.selectCreative(new Creative(), new PageBounds());
-		Map<Long, Creative> tempCreativeIdMap = new LinkedHashMap<Long, Creative>();
-		for (Creative creative : creativeList) {
-			tempCreativeIdMap.put(creative.getCreativeId(), creative);
+		List<Material> materialList = materialService.selectMaterial(new Material(), new PageBounds());
+		Map<Long, Material> tempMaterialIdMap = new LinkedHashMap<Long, Material>();
+		for (Material material : materialList) {
+			tempMaterialIdMap.put(material.getMaterialId(), material);
 		}
-		creativeIdMap = tempCreativeIdMap;
+		materialIdMap = tempMaterialIdMap;
 	}
 
 	public static Map<Long, TagsType> getTagsTypeMap() {
@@ -666,8 +666,8 @@ public class ConstantsManager {
 		return strategyMap.get(projectId);
 	}
 
-	public static Creative getCreativeById(Long creativeId) {
-		return creativeIdMap.get(creativeId);
+	public static Material getMaterialById(Long materialId) {
+		return materialIdMap.get(materialId);
 	}
 
 	public static Position getPositionByKey(Long projectId, String positionKey) {

@@ -1,6 +1,6 @@
 package com.yuanshanbao.dsp.advertisement.model.vo;
 
-import com.yuanshanbao.dsp.creative.model.Creative;
+import com.yuanshanbao.dsp.material.model.Material;
 
 public class AdvertisementDetails {
 
@@ -14,7 +14,7 @@ public class AdvertisementDetails {
 		super();
 	}
 
-	public AdvertisementDetails(String planKey, Creative creative, String channel) {
+	public AdvertisementDetails(String planKey, Material creative, String channel) {
 		this.pId = planKey;
 		this.title = creative.getTitle();
 		this.description = creative.getDescription();

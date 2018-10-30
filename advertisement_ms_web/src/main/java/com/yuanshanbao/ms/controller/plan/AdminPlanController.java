@@ -27,8 +27,8 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.creative.model.Creative;
-import com.yuanshanbao.dsp.creative.service.CreativeService;
+import com.yuanshanbao.dsp.material.model.Material;
+import com.yuanshanbao.dsp.material.service.MaterialService;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.plan.model.Plan;
@@ -64,7 +64,7 @@ public class AdminPlanController extends PaginationController {
 
 	private static final String PAGE_ALLOCATE_PLAN = "advertisement/plan/allocatePlan";
 
-	private static final String PAGE_SELECT_CREATIVE = "advertisement/plan/selectCreative";
+	private static final String PAGE_SELECT_CREATIVE = "advertisement/plan/selectMaterial";
 
 	@Autowired
 	private OrderService orderService;
@@ -79,7 +79,7 @@ public class AdminPlanController extends PaginationController {
 	private QuotaService quotaService;
 
 	@Autowired
-	private CreativeService creativeService;
+	private MaterialService materialService;
 
 	@Autowired
 	private PlanService planService;
@@ -197,28 +197,28 @@ public class AdminPlanController extends PaginationController {
 		return resultMap;
 	}
 
-	@RequestMapping("/setCreativeWindow.do")
-	public String setCreativeWindow(Long planId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
+	@RequestMapping("/setMaterialWindow.do")
+	public String setMaterialWindow(Long planId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
 		request.setAttribute("planId", planId);
 		return PAGE_SELECT_CREATIVE;
 	}
 
 	@ResponseBody
-	@RequestMapping("/queryCreative.do")
-	public Object queryCreative(HttpServletRequest request, HttpServletResponse response, Long planId, Boolean isSelect) {
+	@RequestMapping("/queryMaterial.do")
+	public Object queryMaterial(HttpServletRequest request, HttpServletResponse response, Long planId, Boolean isSelect) {
 		Advertiser advertiser = getBindAdvertiserByUser();
-		PageList<Creative> list = new PageList<Creative>();
+		PageList<Material> list = new PageList<Material>();
 		if (advertiser != null) {
 			Plan plan = planService.selectPlan(planId);
-			list = (PageList<Creative>) creativeService.selectCreativesByIds(advertiser.getAdvertiserId(),
-					plan.getCreative(), isSelect, getPageBounds(request));
+			list = (PageList<Material>) materialService.selectMaterialsByIds(advertiser.getAdvertiserId(),
+					plan.getMaterial(), isSelect, getPageBounds(request));
 		}
 		return setPageInfo(request, response, list);
 	}
 
 	@ResponseBody
-	@RequestMapping("/setCreative")
-	public Object getCreative(HttpServletRequest request, HttpServletResponse response, Plan plan) {
+	@RequestMapping("/setMaterial")
+	public Object getMaterial(HttpServletRequest request, HttpServletResponse response, Plan plan) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if (plan.getPlanId() == null) {
@@ -229,7 +229,7 @@ public class AdminPlanController extends PaginationController {
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
-			LoggerUtil.error("plan setCreative", e2);
+			LoggerUtil.error("plan setMaterial", e2);
 		}
 		return resultMap;
 	}

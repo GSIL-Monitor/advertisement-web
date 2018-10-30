@@ -2,10 +2,10 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="creative">
+<mapper namespace="material">
 
-	<resultMap id="creativeMap" type="Creative">
-		<id property="creativeId" column="creative_id" jdbcType="NUMERIC" />
+	<resultMap id="materialMap" type="Material">
+		<id property="materialId" column="material_id" jdbcType="NUMERIC" />
 		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
@@ -22,15 +22,15 @@
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 	</resultMap>
 
-	<select id="selectCreative" parameterType="Creative"
-		resultMap="creativeMap">
+	<select id="selectMaterial" parameterType="Material"
+		resultMap="materialMap">
 		select
 		* from
-		tb_creative
+		tb_material
 		<where>
 			<trim suffixOverrides="and">
-				<if test="creativeId != null">
-					creative_id = #{creativeId} and
+				<if test="materialId != null">
+					material_id = #{materialId} and
 				</if>
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId} and
@@ -50,22 +50,22 @@
 		order by create_time desc
 	</select>
 	
-	<select id="selectCreativesByIds" parameterType="Map"
-		resultMap="creativeMap">
+	<select id="selectMaterialsByIds" parameterType="Map"
+		resultMap="materialMap">
 		select
 		* from
-		tb_creative
+		tb_material
 		<where>
 			advertiser_id = #{advertiserId} and status = #{status}
-			<if test="creativeIdList != null"> 
+			<if test="materialIdList != null"> 
 				and
-				<if test="isSelect = null">
-				creativeId not in
+				<if test="isSelect == null">
+				material_id not in
 				</if>
 				<if test="isSelect != null">
-				creativeId in
+				material_id in
 				</if>
-				<foreach item="id" collection="creativeIdList" open="(" separator=","
+				<foreach item="id" collection="materialIdList" open="(" separator=","
 					close=")">
 					#{id}
 				</foreach>
@@ -75,9 +75,9 @@
 	</select>
 
 
-	<insert id="insertCreative" parameterType="Creative">
+	<insert id="insertMaterial" parameterType="Material">
 		insert into
-		tb_creative( advertiser_id, advertisement_id, probability_id, 
+		tb_material( advertiser_id, advertisement_id, probability_id, 
 		name,title,description,link,image_url,
 		width,height,type,status,create_time, update_time)
 		values
@@ -85,13 +85,13 @@
 		#{name}, #{title}, #{description}, #{link}, #{imageUrl},
 		#{width},#{height}, #{type}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
-			keyProperty="creativeId">
+			keyProperty="materialId">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>
 
-	<update id="updateCreative" parameterType="Creative">
-		update tb_creative
+	<update id="updateMaterial" parameterType="Material">
+		update tb_material
 		<set>
 			<trim suffixOverrides=",">
 				<if test="advertiserId != null">
@@ -125,16 +125,16 @@
 			</trim>
 		</set>
 		<where>
-			creative_id=#{creativeId}
+			material_id=#{materialId}
 		</where>
 	</update>
 
 
-	<delete id="deleteCreative" parameterType="long">
+	<delete id="deleteMaterial" parameterType="long">
 		delete from
-		tb_creative
+		tb_material
 		where
-		creative_id=#{creativeId}
+		material_id=#{materialId}
 	</delete>
 
 </mapper>

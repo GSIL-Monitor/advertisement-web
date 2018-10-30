@@ -12,7 +12,7 @@
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="link" column="link" jdbcType="VARCHAR" />
 		<result property="spend" column="spend" jdbcType="NUMERIC" />
-		<result property="creative" column="creative" jdbcType="VARCHAR" />
+		<result property="material" column="material" jdbcType="VARCHAR" />
 		<result property="bestBid" column="best_bid" jdbcType="NUMERIC" />
 		<result property="chargeType" column="charge_type" jdbcType="NUMERIC" />
 		<result property="allowChannelCategory" column="allow_channel_category" jdbcType="VARCHAR" />
@@ -73,12 +73,12 @@
 	<insert id="insertPlan" parameterType="Plan">
 		insert into
 		tb_plan(project_id, advertiser_id,order_id,name,link,
-		spend,creative,best_bid,charge_type, allow_channel_category,
+		spend,material,best_bid,charge_type, allow_channel_category,
 		forbid_channel_category,start_time, end_time,status, 
 		create_time, update_time)
 		values
 		(#{projectId}, #{advertiserId},#{orderId}, #{name},#{link},
-		 #{spend}, #{creative}, #{bestBid},  #{chargeType},  #{allowChannelCategory}, 
+		 #{spend}, #{material}, #{bestBid},  #{chargeType},  #{allowChannelCategory}, 
 		 #{forbidChannelCategory}, #{startTime}, #{endTime}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="planId">
@@ -102,8 +102,8 @@
 				<if test="spend != null">
 					spend=#{spend},
 				</if>
-				<if test="creative != null">
-					creative=#{creative},
+				<if test="material != null">
+					material=#{material},
 				</if>
 				<if test="allowChannelCategory != null">
 					allow_channel_category=#{allowChannelCategory},

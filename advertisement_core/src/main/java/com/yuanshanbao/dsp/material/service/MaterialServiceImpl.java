@@ -1,4 +1,4 @@
-package com.yuanshanbao.dsp.creative.service;
+package com.yuanshanbao.dsp.material.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,22 +13,22 @@ import org.springframework.stereotype.Repository;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.dsp.core.CommonStatus;
-import com.yuanshanbao.dsp.creative.dao.CreativeDao;
-import com.yuanshanbao.dsp.creative.model.Creative;
+import com.yuanshanbao.dsp.material.dao.MaterialDao;
+import com.yuanshanbao.dsp.material.model.Material;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
 @Repository
-public class CreativeServiceImpl implements CreativeService {
+public class MaterialServiceImpl implements MaterialService {
 
 	@Autowired
-	private CreativeDao creativeDao;
+	private MaterialDao materialDao;
 
 	@Override
-	public void insertCreative(Creative creative) {
+	public void insertMaterial(Material material) {
 		int result = -1;
 
-		result = creativeDao.insertCreative(creative);
+		result = materialDao.insertMaterial(material);
 
 		if (result < 0) {
 			throw new BusinessException(ComRetCode.FAIL);
@@ -36,22 +36,10 @@ public class CreativeServiceImpl implements CreativeService {
 	}
 
 	@Override
-	public void updateCreative(Creative creative) {
+	public void updateMaterial(Material material) {
 		int result = -1;
 
-		result = creativeDao.updateCreative(creative);
-
-		if (result < 0) {
-			throw new BusinessException(ComRetCode.FAIL);
-		}
-
-	}
-
-	@Override
-	public void deleteCreative(Creative creative) {
-		int result = -1;
-
-		result = creativeDao.deleteCreative(creative);
+		result = materialDao.updateMaterial(material);
 
 		if (result < 0) {
 			throw new BusinessException(ComRetCode.FAIL);
@@ -60,45 +48,57 @@ public class CreativeServiceImpl implements CreativeService {
 	}
 
 	@Override
-	public List<Creative> selectCreative(Creative creative, PageBounds pageBounds) {
-		return setProperty(creativeDao.selectCreatives(creative, pageBounds));
+	public void deleteMaterial(Material material) {
+		int result = -1;
+
+		result = materialDao.deleteMaterial(material);
+
+		if (result < 0) {
+			throw new BusinessException(ComRetCode.FAIL);
+		}
 
 	}
 
 	@Override
-	public List<Creative> selectCreativesByIds(Long advertiserId, String creativeIds, Boolean isSelect,
+	public List<Material> selectMaterial(Material material, PageBounds pageBounds) {
+		return setProperty(materialDao.selectMaterials(material, pageBounds));
+
+	}
+
+	@Override
+	public List<Material> selectMaterialsByIds(Long advertiserId, String materialIds, Boolean isSelect,
 			PageBounds pageBounds) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		if (StringUtils.isNotBlank(creativeIds)) {
-			parameters.put("creativeIdList", Arrays.asList(creativeIds.split(",")));
+		if (StringUtils.isNotBlank(materialIds)) {
+			parameters.put("materialIdList", Arrays.asList(materialIds.split(",")));
 		} else if (isSelect != null && isSelect) {
-			return new PageList<Creative>();
+			return new PageList<Material>();
 		}
 		parameters.put("advertiserId", advertiserId);
 		if (isSelect != null && isSelect) {
 			parameters.put("isSelect", isSelect);
 		}
 		parameters.put("status", CommonStatus.ONLINE);
-		return setProperty(creativeDao.selectCreativesByIds(parameters, pageBounds));
+		return setProperty(materialDao.selectMaterialsByIds(parameters, pageBounds));
 
 	}
 
-	private List<Creative> setProperty(List<Creative> list) {
+	private List<Material> setProperty(List<Material> list) {
 		return list;
 	}
 
 	@Override
-	public Creative selectCreative(Long creativeId) {
+	public Material selectMaterial(Long materialId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Long> selectCreativeIds(Creative creative) {
+	public List<Long> selectMaterialIds(Material material) {
 		List<Long> resultList = new ArrayList<Long>();
-		List<Creative> list = selectCreative(creative, new PageBounds());
-		for (Creative parma : list) {
-			resultList.add(parma.getCreativeId());
+		List<Material> list = selectMaterial(material, new PageBounds());
+		for (Material parma : list) {
+			resultList.add(parma.getMaterialId());
 		}
 		return resultList;
 	}

@@ -65,7 +65,7 @@
         <typeAlias type="com.yuanshanbao.dsp.apply.model.Apply" alias="Apply"/>
         <typeAlias type="com.yuanshanbao.dsp.order.model.Order" alias="Order"/>
         <typeAlias type="com.yuanshanbao.dsp.agency.model.Agency" alias="Agency"/>
-        <typeAlias type="com.yuanshanbao.dsp.creative.model.Creative" alias="Creative"/>
+        <typeAlias type="com.yuanshanbao.dsp.material.model.Material" alias="Material"/>
         <typeAlias type="com.yuanshanbao.dsp.plan.model.Plan" alias="Plan"/>
         <typeAlias type="com.yuanshanbao.dsp.bankcard.model.BankCard" alias="BankCard"/>
         <typeAlias type="com.yuanshanbao.dsp.redpacket.model.RedPacket" alias="RedPacket"/>
@@ -132,7 +132,7 @@
         <mapper resource="mybatis/order/OrderDaoImpl.xml"/>
 
         <mapper resource="mybatis/agency/AgencyDaoImpl.xml"/>
-        <mapper resource="mybatis/creative/CreativeDaoImpl.xml"/>
+        <mapper resource="mybatis/material/MaterialDaoImpl.xml"/>
         <mapper resource="mybatis/plan/PlanDaoImpl.xml"/>
 
         <mapper resource="mybatis/bankcard/BankCardDaoImpl.xml"/>

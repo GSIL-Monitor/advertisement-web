@@ -1,11 +1,11 @@
-package com.yuanshanbao.dsp.creative.model;
+package com.yuanshanbao.dsp.material.model;
 
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
 
-public class Creative {
-	private Long creativeId;
+public class Material {
+	private Long materialId;
 	private Long advertiserId;
 	private Long advertisementId;
 	private Long probabilityId;
@@ -21,12 +21,12 @@ public class Creative {
 	private Timestamp createTime;
 	private Timestamp updateTime;
 
-	public Long getCreativeId() {
-		return creativeId;
+	public Long getMaterialId() {
+		return materialId;
 	}
 
-	public void setCreativeId(Long creativeId) {
-		this.creativeId = creativeId;
+	public void setMaterialId(Long materialId) {
+		this.materialId = materialId;
 	}
 
 	public Long getAdvertiserId() {
@@ -130,7 +130,7 @@ public class Creative {
 	}
 
 	public String getTypeContent() {
-		return CreativeType.getDescription(type);
+		return MaterialType.getDescription(type);
 	}
 
 	public Integer getWidth() {

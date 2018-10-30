@@ -19,7 +19,7 @@ public class Plan {
 	private String consumed;
 	private String name;
 	private String link;
-	private String creative;
+	private String material;
 	private Integer chargeType;
 	private BigDecimal bestBid;
 	private String allowChannelCategory;
@@ -163,12 +163,12 @@ public class Plan {
 		this.advertiser = advertiser;
 	}
 
-	public String getCreative() {
-		return creative;
+	public String getMaterial() {
+		return material;
 	}
 
-	public void setCreative(String creative) {
-		this.creative = creative;
+	public void setMaterial(String material) {
+		this.material = material;
 	}
 
 	public Long getPlanId() {

@@ -1,9 +1,9 @@
-package com.yuanshanbao.dsp.creative.model;
+package com.yuanshanbao.dsp.material.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CreativeStatus {
+public class MaterialStatus {
 	protected static Map<Integer, String> codeDescriptionMap = new LinkedHashMap<Integer, String>();
 
 	public static final int ONLINE = 1;
