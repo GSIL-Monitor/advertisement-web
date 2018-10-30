@@ -33,4 +33,9 @@ public class EarningsDaoImpl extends BaseDaoImpl implements EarningsDao {
     public int updateEarnings(Earnings withdrawDeposit) {
         return 0;
     }
+
+    @Override
+    public int selectCountProuctIds(Long userId) {
+        return getSqlSession().selectOne("earnings.getCountProductId",userId);
+    }
 }

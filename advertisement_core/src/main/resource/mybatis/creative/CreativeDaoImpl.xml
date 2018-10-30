@@ -22,7 +22,6 @@
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 	</resultMap>
 
-	<!-- 简历sql -->
 	<select id="selectCreative" parameterType="Creative"
 		resultMap="creativeMap">
 		select
@@ -50,6 +49,30 @@
 				</if>
 			</trim>
 			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+	
+	<select id="selectCreativesByIds" parameterType="Map"
+		resultMap="creativeMap">
+		select
+		* from
+		tb_creative
+		<where>
+			advertiser_id = #{advertiserId} and status = #{status}
+			<if test="creativeIdList != null"> 
+				and
+				<if test="isSelect = null">
+				creativeId not in
+				</if>
+				<if test="isSelect != null">
+				creativeId in
+				</if>
+				<foreach item="id" collection="creativeIdList" open="(" separator=","
+					close=")">
+					#{id}
+				</foreach>
+			</if>
 		</where>
 		order by create_time desc
 	</select>

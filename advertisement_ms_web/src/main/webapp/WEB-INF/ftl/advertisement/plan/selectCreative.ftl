@@ -1,93 +1,145 @@
 <#include "core.ftl" />
-<@htmlHead title="添加${functionTitle}"/>
+<@htmlHead title="${functionTitle}列表"/>
 <@sideBar />
+<script>
+$(document).ready(function(){
+	dataTableConfig.ajax = "${rc.contextPath}/admin/plan/queryCreative.do?planId=${planId}&isSelect=false";
+	dataTableConfig.columns = [
+	    {
+	    	"data": "id",
+	        "render": function ( data, type, full, meta ) {
+	        	return '<input type="checkbox" name="unselectCreative" value="'+data+'" />';
+	        }
+	    },{
+      		"data": "name"
+      	},{
+      		"data": "title"
+    	},{
+	      	"data": "description"
+	    },{
+	      	"data": "imageUrl",
+	      	"render": function ( data, type, full, meta ) {
+	        	return '<img src="'+data+'" style="max-height: 100px;"/>';
+	        }
+	    },{
+	      	"data": "createTimeValue"
+	    }];
+	
+	$('#unselectTable').DataTable(dataTableConfig);
+	
+	dataTableConfig = initConfig();
+	dataTableConfig.ajax = "${rc.contextPath}/admin/plan/queryCreative.do?planId=${planId}&isSelect=true";
+	dataTableConfig.columns = [
+	    {
+	    	"data": "id",
+	        "render": function ( data, type, full, meta ) {
+	        	return '<input type="checkbox" name="selectCreative" value="'+data+'" />';
+	        }
+	    },{
+      		"data": "name"
+      	},{
+      		"data": "title"
+    	},{
+	      	"data": "description"
+	    },{
+	      	"data": "imageUrl",
+	      	"render": function ( data, type, full, meta ) {
+	        	return '<img src="'+data+'" />';
+	        }
+	    },{
+	      	"data": "createTimeValue"
+	    }];
+	$('#selectTable').DataTable(dataTableConfig);
+	
+});
+
+function addSelectRights() {
+	var rightIds = "";
+	$("input[name='unselectCreative']").each(function(checkbox){
+		var checked = $(this).is(':checked');
+		if (checked) {
+			if (rightIds != "") {
+	        	rightIds = rightIds + "," + $(this).val();
+	        } else {
+	        	rightIds = $(this).val();
+	        }
+        }
+	})
+	sendAjax('${rc.contextPath}/admin/user/insertUserGroups.do?username=${username}&groupIds=' + rightIds);
+}
+
+function deleteSelectRights() {
+	var rightIds = "";
+	$("input[name='selectCreative']").each(function(){
+		var checked = $(this).is(':checked');
+		if (checked) {
+			if (rightIds != "") {
+	        	rightIds = rightIds + "," + $(this).val();
+	        } else {
+	        	rightIds = $(this).val();
+	        }
+		}
+	})
+	sendAjax('${rc.contextPath}/admin/user/deleteUserGroups.do?username=${username}&groupIds=' + rightIds);
+}
+</script>
 <div id="content">
 	<@headerPart />
 	<div id="content-header">
 		<div id="breadcrumb">
-			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
-				${functionTitle}管理
-			</a>
-			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">${functionTitle}管理</a>
-		</div>
-	</div>
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<form action="${rc.contextPath}/admin/${functionName}/setCreative.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-				<input type="hidden" name="planId" value="${planId}" style="width:60%;">
-				<div class="span12">
-					<div class="widget-box">
-						<div class="widget-title">
-							<span class="icon"><i class="icon-th"></i>
-							</span>
-						</div>
-						<div class="widget-content nopadding">
-							<table class="table table-bordered table-striped" id="">
-								<tbody>
-									<tr>
-										<td>素材：</td>
-										<td>
-											<div style="width:60%;">
-												<select name="creative" class="selectpicker form-control">
-													<#list creativeList as creative>
-														<option value="${creative.id}">${creative.name}</option>
-													</#list>
-												</select>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" style="text-align:center">
-											<input type="submit" name="" value="提交" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();">
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-<script>
-	$(function() {
-		timer('#startTimeValue');
-		$('#startTimeValue').datetimepicker({
-			maxDate:0,
-			onShow:function( ct ){
-				this.setOptions({
-					maxDate:$('#endTimeValue').val()?$('#endTimeValue').val():false
-				})
-			},
-			step: 15,
-			defaultTime: '08:00',
-			format:'Y-m-d H:i'
-		});
-		timer('#endTimeValue');
-		$('#endTimeValue').datetimepicker({
-			minDate:0,
-			onShow:function( ct ){
-				this.setOptions({
-					minDate:$('#startTimeValue').val()?$('#startTimeValue').val():false
-				})
-			},
-			step: 15,
-			defaultTime: '08:00',
-			format:'Y-m-d H:i'
-		});
-		$('#allowChannelType').on('changed.bs.select',function(e) {
-			var allowChannelType = $('#allowChannelType').selectpicker('val');
-  			allowChannelType = allowChannelType.join(',');
-  			$('#allowChannelTypeVal').attr('value', allowChannelType);
-		})
-		$('#forbidChannelType').on('changed.bs.select',function(e) {
-			var forbidChannelType = $('#forbidChannelType').selectpicker('val');
-  			forbidChannelType = forbidChannelType.join(',');
-  			$('#forbidChannelTypeVal').attr('value', forbidChannelType);
-		})
-	});
-</script>
-<@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
+			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a> 
+			<a href="#" class="current">${functionTitle}列表</a>
+      </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+    	<span style="float:right;margin:3px 8px 10px 0"><a href="javascript:;" class="btn btn-green" onclick="addSelectRights()">添加</a></span>
+        <div class="widget-box">
+          <div class="widget-title">
+            <h5>未选创意</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table" id="unselectTable">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>名称</th>
+                  <th>标题</th>
+                  <th>描述</th>
+                  <th>图片</th>
+                  <th>创建日期</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <span style="float:right;margin:3px 8px 10px 0"><a href="javascript:;"  class="btn btn-red" onclick="deleteSelectRights()">删除</a></span>
+        <div class="widget-box">
+          <div class="widget-title">
+            <h5>已选创意</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table" id="selectTable">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>名称</th>
+                  <th>标题</th>
+                  <th>描述</th>
+                  <th>图片</th>
+                  <th>创建日期</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<@resultTipDialog retUrl="${rc.contextPath}/admin/user/updateUserGroupsWindow.do?username=${username}" />
 <@footPart />
 <@htmlFoot />
