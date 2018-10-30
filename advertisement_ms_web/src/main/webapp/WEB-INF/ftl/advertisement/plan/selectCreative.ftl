@@ -6,7 +6,7 @@ $(document).ready(function(){
 	dataTableConfig.ajax = "${rc.contextPath}/admin/plan/queryCreative.do?planId=${planId}&isSelect=false";
 	dataTableConfig.columns = [
 	    {
-	    	"data": "id",
+	    	"data": "creativeId",
 	        "render": function ( data, type, full, meta ) {
 	        	return '<input type="checkbox" name="unselectCreative" value="'+data+'" />';
 	        }
@@ -31,7 +31,7 @@ $(document).ready(function(){
 	dataTableConfig.ajax = "${rc.contextPath}/admin/plan/queryCreative.do?planId=${planId}&isSelect=true";
 	dataTableConfig.columns = [
 	    {
-	    	"data": "id",
+	    	"data": "creativeId",
 	        "render": function ( data, type, full, meta ) {
 	        	return '<input type="checkbox" name="selectCreative" value="'+data+'" />';
 	        }
@@ -65,7 +65,7 @@ function addSelectRights() {
 	        }
         }
 	})
-	sendAjax('${rc.contextPath}/admin/user/insertUserGroups.do?username=${username}&groupIds=' + rightIds);
+	sendAjax('${rc.contextPath}/admin/plan/update.do?planId=${planId}&creative=' + rightIds);
 }
 
 function deleteSelectRights() {
@@ -88,7 +88,7 @@ function deleteSelectRights() {
 	<div id="content-header">
 		<div id="breadcrumb">
 			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a> 
-			<a href="#" class="current">${functionTitle}列表</a>
+			<a href="#" class="current">设置创意列表</a>
       </div>
   </div>
   <div class="container-fluid">

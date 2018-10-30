@@ -37,10 +37,7 @@
 				</if>
 				<if test="name != null">
 					name like CONCAT(CONCAT('%', #{name}),'%') and
-				</if>
-				<if test="size != null">
-					size = #{size} and
-				</if>
+				</if>	
 				<if test="status != null">
 					status = #{status} and
 				</if>
