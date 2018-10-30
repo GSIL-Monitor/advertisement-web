@@ -16,4 +16,6 @@ public interface EarningsDao {
     public int deleteEarnings(Long id);
 
     public int updateEarnings(Earnings withdrawDeposit);
+
+    int selectCountProuctIds(Long userId);
 }

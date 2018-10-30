@@ -18,7 +18,7 @@
 		resultMap="earningsMap">
 		select
 		* from
-		tb_order
+		tb_user_earnings
 		<where>
 			<trim suffixOverrides="and">
 				<if test="id != null">
@@ -39,6 +39,12 @@
 			</trim>
 		</where>
 		order by create_time desc
+	</select>
+
+	<select id="getCountProductId" resultType="java.lang.Integer">
+		select count(product_id)
+		from tb_user_earnings
+		where user_id =#{userId}
 	</select>
 
 
