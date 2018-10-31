@@ -19,7 +19,7 @@ public class LevelDaoImpl extends BaseDaoImpl implements LevelDao {
     }
 
     @Override
-    public Agency selectLevel(Long id) {
+    public Level selectLevel(Long id) {
         return getSqlSession().selectOne("level.getLevelByUserId",id);
     }
 
