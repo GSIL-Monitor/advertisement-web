@@ -4,19 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.yuanshanbao.common.util.CommonUtil;
-import com.yuanshanbao.dsp.merchant.model.Merchant;
+import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
@@ -29,9 +26,7 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
 import com.yuanshanbao.dsp.product.model.ProductStatus;
-import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
-import com.yuanshanbao.paginator.domain.Order;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -46,6 +41,9 @@ public class IndexController extends BaseController {
 
 	@Autowired
 	private MessageService messageService;
+
+	@Autowired
+	private AppService appService;
 
 	// 客户端首页
 	@RequestMapping("/home")
@@ -63,12 +61,24 @@ public class IndexController extends BaseController {
 			product.setStatus(ProductStatus.ONLINE);
 			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 					formatPageBounds(pageBounds));
-
 			//滚动消息列表
 			Message message = new Message();
 			message.setProductId(activity.getActivityId());
             List<Message> messageList  = messageService.selectMessages(message, new PageBounds());
+			String channel = appService.getAppChannel(request.getParameter("appId"));
+			String appKey = getAppKey(request);
+			Long activityId = null;
+			if (activity != null) {
+				activityId = activity.getActivityId();
+			}
+			List<ProductCategory> productCategorys = new ArrayList<ProductCategory>();
+			String ids = ConfigManager.getConfigValue(activityId, channel, appKey,
+					ConfigConstants.PRODUCT_CATEGORY_INDEX_CONFIG);
+			productCategorys = ConfigManager.getProductCategoryList(ids);
 
+			resultMap.put("productCategorys", productCategorys);
+			resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
+			setAdvertisement(client, resultMap, channel, appKey, activityId, AdvertisementPosition.ADVERTISEMENT_INDEX);
             resultMap.put("messageList",messageList);
             resultMap.put("productList", productList);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

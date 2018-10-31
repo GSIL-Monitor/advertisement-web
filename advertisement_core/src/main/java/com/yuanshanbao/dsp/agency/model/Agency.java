@@ -1,7 +1,11 @@
 package com.yuanshanbao.dsp.agency.model;
 
+import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 
 /**
@@ -19,17 +23,7 @@ public class Agency implements Serializable  {
     private Long productId;
     private String productName;
 
-    public Agency(){}
 
-    public Agency(Long inviteUserId, Long userId, String agencyName, String userName, Timestamp inviteTime, BigDecimal brokerage, Integer status) {
-        this.inviteUserId = inviteUserId;
-        this.userId = userId;
-        this.agencyName = agencyName;
-        this.userName = userName;
-        this.inviteTime = inviteTime;
-        this.brokerage = brokerage;
-        this.status = status;
-    }
 
     public Long getProductId() {
         return productId;
@@ -47,9 +41,8 @@ public class Agency implements Serializable  {
         this.productName = productName;
     }
 
-    public BigDecimal getBrokerage() {
-        return brokerage;
-    }
+
+
 
     public void setBrokerage(BigDecimal brokerage) {
         this.brokerage = brokerage;
@@ -87,17 +80,29 @@ public class Agency implements Serializable  {
         this.userName = userName;
     }
 
-    public Timestamp getInviteTime() {
-        return inviteTime;
-    }
-
     public void setInviteTime(Timestamp inviteTime) {
         this.inviteTime = inviteTime;
     }
 
-    public Integer getStatus() {
-        return status;
+    public  String getInviteTimeValue(){
+        return DateUtils.format(inviteTime,DateUtils.DEFAULT_DATE_FORMAT);
     }
+
+
+    public String getStatusValue(){
+        if (status == AgencyStatus.ONCHECK)
+            return AgencyStatus.getDescription(AgencyStatus.ONCHECK);
+        if (status ==AgencyStatus.OFFCHECK)
+            return AgencyStatus.getDescription(AgencyStatus.OFFCHECK);
+        if (status ==AgencyStatus.NOCKECK)
+            return AgencyStatus.getDescription(AgencyStatus.NOCKECK);
+
+        return null;
+    }
+    public BigDecimal getBrokerageValue() {
+        return brokerage.setScale(2, RoundingMode.HALF_UP);
+    }
+
 
     public void setStatus(Integer status) {
         this.status = status;

@@ -15,7 +15,7 @@ public class WithdrawDepositDaoImpl extends BaseDaoImpl implements WithdrawDepos
 
     @Override
     public List<WithdrawDeposit> selectWithdrawDeposits(WithdrawDeposit withdrawDeposit, PageBounds pageBounds) {
-        return null;
+        return getSqlSession().selectList("withdrawDeposit.selectWithdrawDeposit",withdrawDeposit,pageBounds);
     }
 
     @Override

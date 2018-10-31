@@ -32,12 +32,7 @@ public class MessageController extends BaseController{
     public  Object getMessage(HttpServletRequest request, String  token , Message message){
         Map<String, Object> resultMap = new HashMap<>();
         try {
-            //获取当前用户信息
-          /*  User loginToken = tokenService.verifyLoginToken(token);
-            if (loginToken == null) {
-                throw new BusinessException();
-            }
-            User user = userService.selectUserById(loginToken.getUserId());*/
+//            User loginUser = getLoginUser(token);
             User user = userService.selectUserById((long) 2);
             if (user == null || user.getUserId() == 0) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);

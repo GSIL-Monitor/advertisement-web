@@ -16,7 +16,7 @@ public class EarningsDaoImpl extends BaseDaoImpl implements EarningsDao {
 
     @Override
     public List<Earnings> selectEarnings(Earnings earnings, PageBounds pageBounds) {
-        return null;
+        return getSqlSession().selectList("earnings.selectEarnings",earnings,pageBounds);
     }
 
     @Override

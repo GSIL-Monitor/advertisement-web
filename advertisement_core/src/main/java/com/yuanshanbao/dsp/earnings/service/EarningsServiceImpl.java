@@ -17,7 +17,7 @@ public class EarningsServiceImpl implements EarningsService{
     private EarningsDao earningsDao;
     @Override
     public List<Earnings> selectEarnings(Earnings earnings, PageBounds pageBounds) {
-        return null;
+        return earningsDao.selectEarnings(earnings, pageBounds);
     }
 
     @Override

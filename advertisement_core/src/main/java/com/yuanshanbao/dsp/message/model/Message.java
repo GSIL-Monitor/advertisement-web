@@ -1,12 +1,14 @@
 package com.yuanshanbao.dsp.message.model;
 
+import com.yuanshanbao.common.util.DateUtils;
+
 import java.sql.Timestamp;
 
 /**
  * Created by Administrator on 2018/10/26.
  */
 public class Message {
-	private Long Id;
+	private Long messageId;
 	private Long userId;
 	private String description;
 	private Timestamp createTime;
@@ -47,12 +49,12 @@ public class Message {
 		this.productId = productId;
 	}
 
-	public Long getId() {
-		return Id;
+	public Long getMessageId() {
+		return messageId;
 	}
 
-	public void setId(Long id) {
-		Id = id;
+	public void setMessageId(Long messageId) {
+		messageId = messageId;
 	}
 
 	public Long getUserId() {
@@ -73,6 +75,10 @@ public class Message {
 
 	public Timestamp getCreateTime() {
 		return createTime;
+	}
+
+	public  String getCreateTimeValue(){
+		return DateUtils.format(createTime,DateUtils.DEFAULT_DATE_FORMAT);
 	}
 
 	public void setCreateTime(Timestamp createTime) {
