@@ -90,14 +90,7 @@ public class Agency implements Serializable  {
 
 
     public String getStatusValue(){
-        if (status == AgencyStatus.ONCHECK)
-            return AgencyStatus.getDescription(AgencyStatus.ONCHECK);
-        if (status ==AgencyStatus.OFFCHECK)
-            return AgencyStatus.getDescription(AgencyStatus.OFFCHECK);
-        if (status ==AgencyStatus.NOCKECK)
-            return AgencyStatus.getDescription(AgencyStatus.NOCKECK);
-
-        return null;
+            return AgencyStatus.getDescription(status);
     }
     public BigDecimal getBrokerageValue() {
         return brokerage.setScale(2, RoundingMode.HALF_UP);

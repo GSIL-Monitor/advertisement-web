@@ -73,17 +73,8 @@ public class Level implements Serializable  {
         return status;
     }
     public String getStatusValue(){
-        if (status == LevelStatus.ONLEVEL)
-            return LevelStatus.getDescription(LevelStatus.ONLEVEL);
-        if (status ==LevelStatus.OFFLEVEL)
-            return LevelStatus.getDescription(LevelStatus.OFFLEVEL);
-        if (status ==LevelStatus.LEVEL)
-            return LevelStatus.getDescription(LevelStatus.LEVEL);
-        if (status ==LevelStatus.NULL)
-            return LevelStatus.getDescription(LevelStatus.NULL);
+        return LevelStatus.getDescription(status);
 
-
-        return null;
     }
 
     public void setStatus(Integer status) {
