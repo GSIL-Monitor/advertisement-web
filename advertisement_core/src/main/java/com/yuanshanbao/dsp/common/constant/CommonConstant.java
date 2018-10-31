@@ -64,7 +64,7 @@ public class CommonConstant {
 	public static final String AUDIT_SALES_TICKETS = "salenum";
 	public static final String AUDIT_AWARD_TICKETS = "awardnum";
 
-	public static final String PAYMENT_PLATFROM_NAME = "cp";
+	public static final String PAYMENT_PLATFROM_NAME = "wz";
 
 	public static final String THIRD_CPS_MZ = "meizu";
 
