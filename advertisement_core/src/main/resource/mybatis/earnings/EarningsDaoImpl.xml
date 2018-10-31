@@ -5,7 +5,7 @@
 <mapper namespace="earnings">
 
 	<resultMap id="earningsMap" type="Earnings">
-		<id property="id" column="id" jdbcType="NUMERIC" />
+		<id property="earningId" column="earning_id" jdbcType="NUMERIC" />
 		<result property="userId" column="user_id" jdbcType="NUMERIC" />
 		<result property="money" column="money" jdbcType="NUMERIC" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
@@ -21,8 +21,8 @@
 		tb_user_earnings
 		<where>
 			<trim suffixOverrides="and">
-				<if test="id != null">
-					id = #{id} and
+				<if test="earningId != null">
+					earning_id = #{earningId} and
 				</if>
 				<if test="userId != null">
 					user_id = #{userId} and

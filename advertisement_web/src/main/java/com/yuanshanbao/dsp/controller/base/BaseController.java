@@ -312,15 +312,17 @@ public class BaseController {
 				return AppType.RUIDAI;
 			} else if (AppType.XINGDAI_SHORT.equals(appKey)) {
 				return AppType.XINGDAI;
+			}else if (AppType.WANGZHUAN_SHORT.equals(appKey)){
+				return AppType.WANGZHUAN;
 			}
 		} else {
 			String appId = request.getParameter("appId");
 			appKey = appService.getAppKey(appId);
-			if (StringUtils.isNotBlank(appKey) && (appKey.equals(AppType.XINGDAI) || appKey.equals(AppType.RUIDAI))) {
+			if (StringUtils.isNotBlank(appKey) && (appKey.equals(AppType.XINGDAI) || appKey.equals(AppType.RUIDAI)) || appKey.equals(AppType.WANGZHUAN)) {
 				return appKey;
 			}
 		}
-		return "xiaoketang";
+		return "wangzhuan";
 	}
 
 	protected void setAdvertisement(Integer client, Map<String, Object> resultMap, String channel, String appKey,

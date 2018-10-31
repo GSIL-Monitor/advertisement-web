@@ -1,5 +1,8 @@
 package com.yuanshanbao.dsp.level.model;
 
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.level.model.vo.LevelStatus;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -68,6 +71,19 @@ public class Level implements Serializable  {
 
     public Integer getStatus() {
         return status;
+    }
+    public String getStatusValue(){
+        if (status == LevelStatus.ONLEVEL)
+            return LevelStatus.getDescription(LevelStatus.ONLEVEL);
+        if (status ==LevelStatus.OFFLEVEL)
+            return LevelStatus.getDescription(LevelStatus.OFFLEVEL);
+        if (status ==LevelStatus.LEVEL)
+            return LevelStatus.getDescription(LevelStatus.LEVEL);
+        if (status ==LevelStatus.NULL)
+            return LevelStatus.getDescription(LevelStatus.NULL);
+
+
+        return null;
     }
 
     public void setStatus(Integer status) {

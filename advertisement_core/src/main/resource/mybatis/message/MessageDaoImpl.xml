@@ -5,7 +5,7 @@
 <mapper namespace="message">
 
 	<resultMap id="messageMap" type="Message">
-		<id property="id" column="id" jdbcType="NUMERIC" />
+		<id property="messageId" column="message_id" jdbcType="NUMERIC" />
 		<result property="userId" column="user_id" jdbcType="NUMERIC" />
 		<result property="title" column="title" jdbcType="VARCHAR" />
 		<result property="bigTitle" column="big_title" jdbcType="VARCHAR" />
@@ -23,8 +23,8 @@
 		tb_user_message
 		<where>
 			<trim suffixOverrides="and">
-				<if test="id != null">
-					id=#{id} and
+				<if test="messageId != null">
+					message_id=#{messageId} and
 				</if>
 				<if test="userId != null">
 					user_id = #{userId} and

@@ -2,10 +2,8 @@ package com.yuanshanbao.dsp.agency.service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,30 +75,13 @@ public class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
-    public List<Agency> getAgencyBrokerages(List<Long> agencyList) {
-        if (agencyList == null) {
-            return null;
-        }
-
-        //一级代理佣金
-        List<Agency> oneAgencyList = agencyDao.selectAgencysByInviteUserIds(agencyList);
-
-
-        return oneAgencyList;
-    }
-
-    @Override
-    public BigDecimal getSumBrokerage(List<Long> inviteUserIds) {
-        if (inviteUserIds == null) {
-            return null;
-        }
-
-        return agencyDao.getSumBrokerage(inviteUserIds);
-    }
-
-    @Override
     public BigDecimal getBrokerages(Agency agency, PageBounds pageBounds) {
+        return getSumBrokerage(agency,pageBounds);
+    }
 
+
+
+    public BigDecimal getSumBrokerage(Agency agency, PageBounds pageBounds) {
         List<Agency> oneAgencyList = agencyDao.selectAgencys(agency, pageBounds);
 
         List<Long> oneInviteUserIds = new ArrayList<>();

@@ -35,9 +35,7 @@ public interface AgencyService {
     List<Agency> selectAgencyByInviteId(Long inviteId);
 
 
-    List<Agency> getAgencyBrokerages(List<Long> agencyList);
-
-    BigDecimal getSumBrokerage(List<Long> inviteUserIds);
 
     BigDecimal getBrokerages(Agency agency, PageBounds pageBounds);
+
 }

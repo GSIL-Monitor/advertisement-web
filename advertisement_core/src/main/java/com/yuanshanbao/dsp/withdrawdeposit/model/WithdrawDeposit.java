@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  * Created by Administrator on 2018/10/26.
  */
 public class WithdrawDeposit {
-    private Long Id;
+    private Long withdrawId;
     private Long userId;
     private String description;
     private Timestamp createTime;
@@ -31,12 +31,12 @@ public class WithdrawDeposit {
         this.productId = productId;
     }
 
-    public Long getId() {
-        return Id;
+    public Long getWithdrawId() {
+        return withdrawId;
     }
 
-    public void setId(Long id) {
-        Id = id;
+    public void setWithdrawId(Long withdrawId) {
+        withdrawId = withdrawId;
     }
 
     public Long getUserId() {

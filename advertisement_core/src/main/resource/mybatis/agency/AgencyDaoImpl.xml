@@ -46,10 +46,10 @@
 		sum(brokerage) from
 		tb_agency
 		<where>
-			invite_user_id in
-			<foreach item="inviteUserId" collection="list" open="(" separator=","
+			user_id in
+			<foreach item="userId" collection="list" open="(" separator=","
 					 close=")">
-				#{inviteUserId}
+				#{userId}
 			</foreach>
 		</where>
 	</select>
@@ -88,9 +88,7 @@
 				<if test="status != null"> and
 					status= #{status}
 				</if>
-
 			</trim>
-
 		</where>
 		order by invite_time desc
 	</select>

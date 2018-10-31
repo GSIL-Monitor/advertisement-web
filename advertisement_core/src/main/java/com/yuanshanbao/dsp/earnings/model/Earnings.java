@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  * Created by Administrator on 2018/10/26.
  */
 public class Earnings {
-    private Long Id;
+    private Long earningId;
     private Long userId;
     private String description;
     private Timestamp createTime;
@@ -31,12 +31,12 @@ public class Earnings {
         this.productId = productId;
     }
 
-    public Long getId() {
-        return Id;
+    public Long getEarningId() {
+        return earningId;
     }
 
-    public void setId(Long id) {
-        Id = id;
+    public void setEarningId(Long earningId) {
+        earningId = earningId;
     }
 
     public Long getUserId() {
