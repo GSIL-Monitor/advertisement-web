@@ -35,24 +35,24 @@ public class LevelController extends BaseController{
         try {
             //获取当前用户信息
             User user = getLoginUser(token);
-            Agency agency = levelService.selectLevel(user.getUserId());
+            Level leve = levelService.selectLevel(user.getUserId());
             if (user.getMobile() == null){
 
-               resultMap.put("levelStatus",agency.getStatusValue());
+               resultMap.put("levelStatus",leve.getStatusValue());
             }else {
-                resultMap.put("levelStatus",agency.getStatusValue());
+                resultMap.put("levelStatus",leve.getStatusValue());
             }
             int countProuctId = earningsService.selectCountProuctIds(user.getUserId());
             if (countProuctId > 0 && countProuctId <10){
                 level.setCountCard(10 - countProuctId);
-                resultMap.put("levelStatus",agency.getStatusValue());
+                resultMap.put("levelStatus",leve.getStatusValue());
             }else if (countProuctId == 10){
                 level.setCountCard(50 - countProuctId);
-                resultMap.put("levelStatus",agency.getStatusValue());
+                resultMap.put("levelStatus",leve.getStatusValue());
             }else if (countProuctId > 10 && countProuctId< 50){
-                resultMap.put("levelStatus",agency.getStatusValue());
+                resultMap.put("levelStatus",leve.getStatusValue());
             }else {
-                resultMap.put("levelStatus",agency.getStatusValue());
+                resultMap.put("levelStatus",leve.getStatusValue());
             }
         }catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
