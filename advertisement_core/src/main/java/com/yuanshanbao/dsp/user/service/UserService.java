@@ -51,4 +51,6 @@ public interface UserService {
 
 	public Map<String, BaseInfo> selectBaseInfoByIds(List<String> userIdList);
 
+	public void updateUserBaseInfoIfNotExists(User user, String name, String avatar, String gender);
+
 }

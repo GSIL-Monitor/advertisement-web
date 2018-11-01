@@ -6,9 +6,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yuanshanbao.common.ret.ComRet;
-import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.agency.service.AgencyService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,9 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.DataFormat;
+import com.yuanshanbao.common.util.HttpsUtil;
 import com.yuanshanbao.common.util.JSPHelper;
+import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.MD5Util;
 import com.yuanshanbao.common.util.RandomUtil;
@@ -33,6 +32,8 @@ import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.common.util.VerifyFormatUtil;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -168,7 +169,7 @@ public class UserController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/smsLogin")
 	public Map<String, Object> smsLogin(HttpServletRequest request, HttpServletResponse response, String appId,
-			String params) {
+			String params, String token) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
@@ -182,11 +183,16 @@ public class UserController extends BaseController {
 			try {
 				smsCodeService.validateSmsCode(mobile, smsCode, "", userIp);
 				User user = userService.selectUserByMobile(mobile);
+				User tokenUser = getLoginUser(token);
 				LoginToken loginToken = null;
 				if (user != null) {
 					if (user.getStatus() != null && user.getStatus() == UserStatus.LOCK) {
 						throw new BusinessException(ComRetCode.USER_LOCKED);
 					}
+				} else if (tokenUser != null) {
+					tokenUser.setMobile(mobile);
+					user = tokenUser;
+					userService.updateUser(tokenUser);
 				} else {
 					user = new User();
 					user.setMobile(mobile);
@@ -216,6 +222,7 @@ public class UserController extends BaseController {
 			return resultMap;
 		}
 	}
+
 	@ResponseBody
 	@RequestMapping("/weixinLogin")
 	public Map<String, Object> weixinLogin(HttpServletRequest request, HttpServletResponse response, String appId,
@@ -250,6 +257,84 @@ public class UserController extends BaseController {
 			loginToken.setUser(user);
 			setSession(request, loginToken.getToken(), user);
 			resultMap.put("loginToken", loginToken);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+			return resultMap;
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
+			return resultMap;
+		} catch (Exception e) {
+			LoggerUtil.error("[weixinLogin] exception: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			return resultMap;
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("/xcxLogin")
+	public Map<String, Object> xcxLogin(HttpServletRequest request, HttpServletResponse response, String appId,
+			String params) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
+			String code = parameterMap.get("code");
+			String from = parameterMap.get("from");
+
+			String result = HttpsUtil.doGet("https://api.weixin.qq.com/sns/jscode2session",
+					"appid=wx247089cd9836b291&secret=ec4ad30b402df511b43f58dac3c8cd0a&js_code=" + code
+							+ "&grant_type=authorization_code", "UTF-8", 30000, 30000);
+			OauthGetTokenResponse tokenResponse = JacksonUtil.json2pojo(result, OauthGetTokenResponse.class);
+			if (tokenResponse == null) {
+				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
+			}
+			String unionId = tokenResponse.getUnionid();
+			if (StringUtils.isBlank(unionId)) {
+				unionId = tokenResponse.getOpenid();
+			}
+			boolean register = false;
+			User user = userService.selectUserByWeixinId(unionId);
+			if (user == null) {
+				user = new User();
+				user.setWeixinId(unionId);
+				user.setRegisterFrom(from);
+				user.setStatus(UserStatus.NORMAL);
+				userService.insertUser(user);
+				register = true;
+			}
+			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "",
+					JSPHelper.getRemoteAddr(request));
+			loginToken.setRegister(register);
+			loginToken.setUser(user);
+			setSession(request, loginToken.getToken(), user);
+			resultMap.put("loginToken", loginToken);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+			return resultMap;
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
+			return resultMap;
+		} catch (Exception e) {
+			LoggerUtil.error("[weixinLogin] exception: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			return resultMap;
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping("/xcxUpdateUserInfo")
+	public Map<String, Object> xcxUpdateUserInfo(HttpServletRequest request, HttpServletResponse response,
+			String appId, String token, String params) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			User user = getLoginUser(token);
+			if (user == null) {
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
+			}
+			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
+			String name = parameterMap.get("name");
+			String avatar = parameterMap.get("avatar");
+			String gender = parameterMap.get("gender");
+
+			userService.updateUserBaseInfoIfNotExists(user, name, avatar, gender);
+			request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 			return resultMap;
 		} catch (BusinessException e) {
@@ -316,7 +401,7 @@ public class UserController extends BaseController {
 	 * @param request
 	 * @param appId
 	 * @param tempToken
-     * @param user
+	 * @param user
 	 * @return
 	 */
 	@ResponseBody
@@ -334,13 +419,13 @@ public class UserController extends BaseController {
 
 			// 4.校验短信
 			try {
-			/*	if (StringUtils.isBlank(password)) {
-					password = RandomUtil.generateNumberString(8);
-				}
-				if (!VerifyFormatUtil.verifyPasswdFormat(password)) {
-					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.WRONG_PASSOWRD);
-					return resultMap;
-				}*/
+				/*
+				 * if (StringUtils.isBlank(password)) { password =
+				 * RandomUtil.generateNumberString(8); } if
+				 * (!VerifyFormatUtil.verifyPasswdFormat(password)) {
+				 * InterfaceRetCode.setAppCodeDesc(resultMap,
+				 * ComRetCode.WRONG_PASSOWRD); return resultMap; }
+				 */
 				User user = userService.selectUserByMobile(mobile);
 				if (user != null) {
 					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.USER_EXIST);
@@ -371,34 +456,33 @@ public class UserController extends BaseController {
 
 	}
 
-    /**
-     * 添加手机号
-     */
-    @ResponseBody
-    @RequestMapping("/mobile")
-    public Object addMobile(HttpServletRequest request,String appId, String params ){
-        Map<String , Object > resultMap = new HashMap<>();
-        try{
-            Map<String, String> parameterMap = appService.decryptParameters(appId, params);
-            String mobile = parameterMap.get("mobile");
-            String smsCode = parameterMap.get("smsCode");
-            String userIp = JSPHelper.getRemoteAddr(request);
-            smsCodeService.validateSmsCode(mobile,smsCode,"",userIp);
-            if (StringUtil.isEmpty(mobile) && !ValidateUtil.isPhoneNo(mobile)) {
-                throw new BusinessException(ComRetCode.WRONG_MOBILE);
-            }
-            User user = new User();
-            user.setMobile(mobile);
-            userService.insertUser(user);
-            InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
+	/**
+	 * 添加手机号
+	 */
+	@ResponseBody
+	@RequestMapping("/mobile")
+	public Object addMobile(HttpServletRequest request, String appId, String params) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
+			String mobile = parameterMap.get("mobile");
+			String smsCode = parameterMap.get("smsCode");
+			String userIp = JSPHelper.getRemoteAddr(request);
+			smsCodeService.validateSmsCode(mobile, smsCode, "", userIp);
+			if (StringUtil.isEmpty(mobile) && !ValidateUtil.isPhoneNo(mobile)) {
+				throw new BusinessException(ComRetCode.WRONG_MOBILE);
+			}
+			User user = new User();
+			user.setMobile(mobile);
+			userService.insertUser(user);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
-        }catch (BusinessException e) {
-            InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
-            return resultMap;
-        }
-        return resultMap;
-    }
-
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
+			return resultMap;
+		}
+		return resultMap;
+	}
 
 	/**
 	 * 添加身份证信息
@@ -410,18 +494,18 @@ public class UserController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
-            String identityNumber = parameterMap.get("identityNumber");
-            String userName = parameterMap.get("userName");
-            if (!ValidateUtil.isIdentityNo(identityNumber)){
-                InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.IDNO_FORMAT_ERROR);
-                return resultMap;
-            }
+			String identityNumber = parameterMap.get("identityNumber");
+			String userName = parameterMap.get("userName");
+			if (!ValidateUtil.isIdentityNo(identityNumber)) {
+				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.IDNO_FORMAT_ERROR);
+				return resultMap;
+			}
 
-        }catch (BusinessException e) {
+		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
 			return resultMap;
 		}
-		return  resultMap;
+		return resultMap;
 	}
 
 	/**
@@ -430,27 +514,26 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping("/commitOpinion")
 	@ResponseBody
-	public Object commitOpinion(HttpServletRequest request , String token, @RequestParam (" opinion") String opinion) {
-		Map<String ,Object> resultMap = new HashMap<>();
-		try{
-            User loginToken = tokenService.verifyLoginToken(token);
-            if (loginToken == null)
-                throw new BusinessException(ComRetCode.NOT_LOGIN);
-            if (StringUtil.isEmpty(opinion))
-                throw new BusinessException(ComRetCode.NO_OPIOION);
-            User user = new User();
-            user.setOpinion(opinion);
-            user.setUserId(loginToken.getUserId());
-            userService.updateUser(user);
-            InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
+	public Object commitOpinion(HttpServletRequest request, String token, @RequestParam(" opinion") String opinion) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			User loginToken = tokenService.verifyLoginToken(token);
+			if (loginToken == null)
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
+			if (StringUtil.isEmpty(opinion))
+				throw new BusinessException(ComRetCode.NO_OPIOION);
+			User user = new User();
+			user.setOpinion(opinion);
+			user.setUserId(loginToken.getUserId());
+			userService.updateUser(user);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
-        }catch (Exception e) {
+		} catch (Exception e) {
 			LoggerUtil.error("[register] exception: ", e);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;
 	}
-
 
 	/**
 	 * 渠道注册
@@ -533,8 +616,8 @@ public class UserController extends BaseController {
 		userService.insertOrUpdateUser(user);
 		user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 		userService.updateUser(user);
-        User inviteUser = userService.selectUserById(user.getInviteUserId());
-        //邀请记录
+		User inviteUser = userService.selectUserById(user.getInviteUserId());
+		// 邀请记录
 		Agency agency = new Agency();
 		agency.setInviteUserId(user.getInviteUserId());
 		agency.setUserId(user.getUserId());
@@ -678,7 +761,6 @@ public class UserController extends BaseController {
 		}
 
 	}
-
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(buildUser("3f7aec7e68f3c8cd", "jiaduobao", "13051678321", "123456", "2427"));

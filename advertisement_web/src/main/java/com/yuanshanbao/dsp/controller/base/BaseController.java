@@ -93,7 +93,6 @@ public class BaseController {
 	@Autowired
 	private ProductService productService;
 
-
 	@Autowired
 	private TokenService tokenService;
 	public Logger logger = LoggerFactory.getLogger(getClass());
@@ -136,19 +135,18 @@ public class BaseController {
 	}
 
 	protected User getLoginUser(String token) {
-//		User loginToken = tokenService.verifyLoginToken(token);
-//		if (loginToken == null) {
-//			throw new BusinessException();
-//		}
-//		User user = userService.selectUserById(loginToken.getUserId());
-		User user = userService.selectUserById(2L);
+		User loginToken = tokenService.verifyLoginToken(token);
+		if (loginToken == null) {
+			throw new BusinessException();
+		}
+		User user = userService.selectUserById(loginToken.getUserId());
+//		User user = userService.selectUserById(2L);
 		if (user == null || user.getUserId() == 0) {
 			throw new BusinessException(ComRetCode.NOT_LOGIN);
 
 		}
 		return user;
 	}
-
 
 	protected boolean checkRepeatPostRequest(HttpServletRequest request) {
 		String token = request.getParameter(POST_UNIQUE_TOKEN);
@@ -312,13 +310,15 @@ public class BaseController {
 				return AppType.RUIDAI;
 			} else if (AppType.XINGDAI_SHORT.equals(appKey)) {
 				return AppType.XINGDAI;
-			}else if (AppType.WANGZHUAN_SHORT.equals(appKey)){
+			} else if (AppType.WANGZHUAN_SHORT.equals(appKey)) {
 				return AppType.WANGZHUAN;
 			}
 		} else {
 			String appId = request.getParameter("appId");
 			appKey = appService.getAppKey(appId);
-			if (StringUtils.isNotBlank(appKey) && (appKey.equals(AppType.XINGDAI) || appKey.equals(AppType.RUIDAI)) || appKey.equals(AppType.WANGZHUAN)) {
+			if (StringUtils.isNotBlank(appKey)
+					&& (appKey.equals(AppType.XINGDAI) || appKey.equals(AppType.RUIDAI) || appKey
+							.equals(AppType.WANGZHUAN))) {
 				return appKey;
 			}
 		}

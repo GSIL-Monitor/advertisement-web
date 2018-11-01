@@ -11,6 +11,7 @@ public interface WeixinService {
 
 	public static final String CONFIG_SERVICE = "service";
 	public static final String CONFIG_APP = "app";
+	public static final String CONFIG_WZXCX = "wzxcx";
 
 	public abstract boolean hasSubscribe(User user);
 

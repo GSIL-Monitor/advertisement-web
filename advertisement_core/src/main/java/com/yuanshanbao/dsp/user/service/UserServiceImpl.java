@@ -61,15 +61,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	@Override
 	public void insertUser(User user) {
-		int result = -1;
-		if (StringUtils.isNotBlank(user.getWeixinId())) {
-			IndexUser indexUser = new IndexUser();
-			indexUser.setOpenId(user.getWeixinId());
-			indexUser.setType(IndexUserType.WEIXIN);
-			indexUser.setUserId(user.getUserId());
-			indexUserDao.insertIndexUser(indexUser);
-		}
-		result = userDao.insertUser(user);
+		int result = userDao.insertUser(user);
 		if (result < 0) {
 			throw new BusinessException(ComRetCode.FAIL);
 		}
@@ -371,6 +363,29 @@ public class UserServiceImpl implements UserService {
 		User user = new User();
 		user.setUserId(Long.valueOf(userId));
 		return selectUser(user);
+	}
+
+	@Override
+	public void updateUserBaseInfoIfNotExists(User user, String name, String avatar, String gender) {
+		BaseInfo baseInfo = selectBaseInfo(user.getUserId() + "");
+		if (baseInfo == null) {
+			baseInfo = new BaseInfo();
+			baseInfo.setUserId(user.getUserId() + "");
+			baseInfo.setStatus(CommonStatus.ONLINE);
+		}
+		if (StringUtils.isBlank(baseInfo.getName())) {
+			baseInfo.setName(name);
+		}
+		if (StringUtils.isBlank(baseInfo.getAvatar())) {
+			baseInfo.setAvatar(avatar);
+		}
+		if (baseInfo.getGender() == null) {
+			if (ValidateUtil.isNumber(gender) && !"0".equals(gender)) {
+				baseInfo.setGender(Long.parseLong(gender));
+			}
+		}
+
+		insertOrUpdateBaseInfo(baseInfo);
 	}
 
 }

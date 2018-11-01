@@ -2,6 +2,7 @@ package com.yuanshanbao.dsp.controller.account;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.DataFormat;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.RequestUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
@@ -24,6 +25,7 @@ import com.yuanshanbao.dsp.withdrawdeposit.service.WithdrawDepositService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,7 +77,7 @@ public class AccountController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = getLoginUser(token);
-			if (user == null) {
+			if (user == null || StringUtils.isBlank(user.getMobile())) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
 			resultMap.putAll(paymentInterfaceService.queryBalance(String.valueOf(user.getUserId())));
@@ -233,6 +235,9 @@ public class AccountController extends BaseController {
 			if (loginToken == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
+			if (StringUtils.isNotBlank(loginToken.getMobile())) {
+				resultMap.put("mobile", DataFormat.hiddenMobile(loginToken.getMobile()));
+			}
 			Map<String, Object> map = paymentInterfaceService.queryIdentity(String.valueOf(loginToken.getUserId()));
 			resultMap.putAll(map);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
@@ -247,22 +252,16 @@ public class AccountController extends BaseController {
 
 	@RequestMapping("/verifyIdentity")
 	@ResponseBody
-	public Object verifyIdentity(HttpServletRequest request, String appId, String params) {
+	public Object verifyIdentity(HttpServletRequest request, String appId, String params, String token) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
-			String token = parameterMap.get("token");
-			String mobile = parameterMap.get("mobile");
 			String name = parameterMap.get("name");
 			String identityCard = parameterMap.get("identityCard");
-			String smsCode = parameterMap.get("smsCode");
 
-			User loginToken = tokenService.verifyLoginToken(token);
-			if (loginToken == null) {
+			User loginToken = getLoginUser(token);
+			if (loginToken == null || StringUtils.isBlank(loginToken.getMobile())) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
-			}
-			if (!ValidateUtil.isPhoneNo(mobile)) {
-				throw new BusinessException(ComRetCode.MOBILE_FORMAT_ERROR);
 			}
 			if (!ValidateUtil.isChineseName(name)) {
 				throw new BusinessException(ComRetCode.NAME_FORMAT_ERROR);
@@ -271,9 +270,8 @@ public class AccountController extends BaseController {
 				throw new BusinessException(ComRetCode.IDNO_FORMAT_ERROR);
 			}
 			String userIp = RequestUtil.getRemoteAddr(request);
-			verifyCodeService.validateSmsCode(mobile, smsCode, "", userIp);
 			Map<String, Object> map = paymentInterfaceService.verifyIdentity(String.valueOf(loginToken.getUserId()),
-					mobile, name, identityCard, userIp);
+					loginToken.getMobile(), name, identityCard, userIp);
 			resultMap.putAll(map);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
