@@ -42,6 +42,8 @@ public interface WeixinService {
 	public GetUserInfoResponse getUserInfo(String weixinType, String token, String openId);
 
 	public String getAppId(String key);
+	
+	public String getAppSecret(String key);
 
 	public byte[] dealQRCode(String key, String scene, String page);
 

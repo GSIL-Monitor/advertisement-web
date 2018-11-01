@@ -279,8 +279,10 @@ public class UserController extends BaseController {
 			String code = parameterMap.get("code");
 			String from = parameterMap.get("from");
 
-			String result = HttpsUtil.doGet("https://api.weixin.qq.com/sns/jscode2session",
-					"appid=wx247089cd9836b291&secret=ec4ad30b402df511b43f58dac3c8cd0a&js_code=" + code
+			String result = HttpsUtil.doGet(
+					"https://api.weixin.qq.com/sns/jscode2session",
+					"appid=" + weixinService.getAppId(WeixinService.CONFIG_WZXCX) + "&secret="
+							+ weixinService.getAppSecret(WeixinService.CONFIG_WZXCX) + "&js_code=" + code
 							+ "&grant_type=authorization_code", "UTF-8", 30000, 30000);
 			OauthGetTokenResponse tokenResponse = JacksonUtil.json2pojo(result, OauthGetTokenResponse.class);
 			if (tokenResponse == null) {

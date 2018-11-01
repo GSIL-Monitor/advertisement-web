@@ -61,6 +61,7 @@ public class WeixinServiceImpl implements WeixinService {
 	private Map<String, TemplateAPI> templateApiMap = new HashMap<>();
 	private Map<String, JsAPI> jsApiMap = new HashMap<>();
 	private Map<String, String> appIdMap = new HashMap<>();
+	private Map<String, String> appSecretMap = new HashMap<>();
 	private Map<String, ApiConfig> apiConfigMap = new HashMap<>();
 
 	@PostConstruct
@@ -79,6 +80,7 @@ public class WeixinServiceImpl implements WeixinService {
 			templateApiMap.put(configSegs[i], templateApi);
 			jsApiMap.put(configSegs[i], jsApi);
 			appIdMap.put(configSegs[i], appIdSegs[i]);
+			appSecretMap.put(configSegs[i], appSecretSegs[i]);
 			apiConfigMap.put(configSegs[i], apiConfig);
 		}
 	}
@@ -337,6 +339,14 @@ public class WeixinServiceImpl implements WeixinService {
 		return appIdMap.get(key);
 	}
 
+	@Override
+	public String getAppSecret(String key) {
+		if (StringUtils.isBlank(key)) {
+			return appSecretMap.get(CONFIG_SERVICE);
+		}
+		return appSecretMap.get(key);
+	}
+
 	public byte[] dealQRCode(String key, String scene, String page) {
 		ApiConfig apiConfig = apiConfigMap.get(key);
 		String accessToken = apiConfig.getAccessToken();
@@ -358,4 +368,5 @@ public class WeixinServiceImpl implements WeixinService {
 		}
 		return null;
 	}
+
 }
