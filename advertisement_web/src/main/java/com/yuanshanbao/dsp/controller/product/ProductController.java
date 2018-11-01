@@ -1,11 +1,17 @@
 package com.yuanshanbao.dsp.controller.product;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +44,9 @@ import com.yuanshanbao.dsp.product.model.ProductCategory;
 import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.model.vo.ProductVo;
 import com.yuanshanbao.dsp.product.service.ProductService;
+import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.tags.model.TagsSearchType;
+import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.Order;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -196,8 +204,8 @@ public class ProductController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/detail")
-	public Object detail(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,@RequestParam("productId") Long productId,
-			String token) {
+	public Object detail(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
+			@RequestParam("productId") Long productId, String token) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if (productId == null) {
@@ -207,15 +215,17 @@ public class ProductController extends BaseController {
 			if (product == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-            String brandFeature = product.getBrandFeature();
+			String brandFeature = product.getBrandFeature();
 
-            Map<String, String> brandFeatureMap = productService.getBrandFeatureMap(brandFeature);
-            resultMap.put("brandFeatureMap",brandFeatureMap);
-            product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
+			// Map<String, String> brandFeatureMap =
+			// productService.getBrandFeatureMap(brandFeature);
+			List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
+			resultMap.put("brandFeatureList", featureList);
+			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
-            List<TagsVo> recommendTagsList = vo.getRecommendTagsList();
+			List<TagsVo> recommendTagsList = vo.getRecommendTagsList();
 
-            checkApplyStatus(token, vo);
+			checkApplyStatus(token, vo);
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
 			// }

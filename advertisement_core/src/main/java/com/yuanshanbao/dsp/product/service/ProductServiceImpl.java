@@ -1,11 +1,14 @@
 package com.yuanshanbao.dsp.product.service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.map.LinkedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,7 @@ import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.product.dao.ProductDao;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
@@ -192,22 +196,27 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Map<String, String> getBrandFeatureMap(String brandFeature) {
+	public List<Tags> getBrandFeatureMap(String brandFeature) {
+		List<Tags> resultlist = new ArrayList<Tags>();
 
-		Map<String ,String> brandFeatureMap = new LinkedMap();
-		if (brandFeature == null){
-			brandFeatureMap.put("brandFeature",brandFeature);
-			return brandFeatureMap;
+		// Map<String, String> brandFeatureMap = new LinkedMap();
+		if (brandFeature == null) {
+			// brandFeatureMap.put("brandFeature", brandFeature);
+			return resultlist;
 		}
 		String[] splitBrandFeature = brandFeature.split(" ");
-		List<String> arrayList =  Arrays.asList(splitBrandFeature);
-		for (int i= 0; i<arrayList.size(); i++){
+		List<String> arrayList = Arrays.asList(splitBrandFeature);
+		for (int i = 0; i < arrayList.size(); i++) {
 			List<String> splitBrandList = new ArrayList<>();
 			String[] split = arrayList.get(i).split(":");
 			splitBrandList = Arrays.asList(split);
-			brandFeatureMap.put(splitBrandList.get(0),splitBrandList.get(1));
+			Tags tags = new Tags();
+			tags.setName(splitBrandList.get(0));
+			tags.setValue(splitBrandList.get(1));
+			resultlist.add(tags);
+			// brandFeatureMap.put(splitBrandList.get(0),
+			// splitBrandList.get(1));
 		}
-		return brandFeatureMap;
+		return resultlist;
 	}
-
 }
