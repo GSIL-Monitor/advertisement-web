@@ -1,15 +1,11 @@
 package com.yuanshanbao.dsp.weixin.service;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
 
 import net.sf.json.JSONObject;
 
@@ -356,10 +352,6 @@ public class WeixinServiceImpl implements WeixinService {
 			param.put("scene", scene);
 			param.put("page", page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
-			ByteArrayInputStream bais = new ByteArrayInputStream(byteArr);
-			BufferedImage bi1 = ImageIO.read(bais);
-			File w2 = new File("E://QQ.jpg");// 可以是jpg,png,gif格式
-			ImageIO.write(bi1, "jpg", w2);// 不管输出什么格式图片，此处不需改动
 			return byteArr;
 		} catch (Exception e) {
 			LoggerUtil.error("[bxm_nofity]", e);
