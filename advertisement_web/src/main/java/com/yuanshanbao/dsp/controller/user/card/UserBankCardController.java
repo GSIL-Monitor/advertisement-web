@@ -24,6 +24,7 @@ import com.yuanshanbao.paginator.domain.PageList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -95,6 +96,27 @@ public class UserBankCardController extends BaseController{
         return  resultMap;
     }
 
+    @RequestMapping("/applyCard")
+    @ResponseBody
+    public Object applyCard(HttpServletRequest request ,BankCard card ,String token ,@RequestParam("productId") Long productId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        User loginToken = tokenService.verifyLoginToken(token);
+        try {
+            User user = userService.selectUserById(loginToken.getUserId());
+            resultMap.put("user",user);
+            if (productId != null){
+                Product product = productService.selectProduct(productId);
+                resultMap.put("queryUrl",product.getQueryUrl());
+            }
+        }catch (BusinessException e) {
+            InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+        } catch (Exception e) {
+            LoggerUtil.error("[productList error:]", e);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+        }
+        return resultMap;
+    }
+
     @RequestMapping("/insert")
     @ResponseBody
     public Object insertCard(HttpServletRequest request ,BankCard card ,String token){
@@ -111,11 +133,7 @@ public class UserBankCardController extends BaseController{
                 InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NOT_LOGIN);
                 return resultMap;
             }
-           //验证是否实名
-            if (StringUtil.isEmpty(user.getIdentity())){
-                InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.NO_IDENTITY);
-                return  resultMap;
-            }
+
             //添加卡
             String userName = request.getParameter("userName");
             String cardNumber = request.getParameter("cardNumber");

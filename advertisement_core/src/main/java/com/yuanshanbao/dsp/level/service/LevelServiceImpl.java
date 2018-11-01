@@ -24,7 +24,7 @@ public class LevelServiceImpl  implements  LevelService{
     }
 
     @Override
-    public Agency selectLevel(Long id) {
+    public Level selectLevel(Long id) {
         if (id == null){
             throw  new BusinessException(ComRetCode.NOT_LOGIN);
         }

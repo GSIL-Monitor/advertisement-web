@@ -5,7 +5,7 @@
 <mapper namespace="level">
 
 	<resultMap id="levelMap" type="Level">
-		<id property="userId" column="activity_id" jdbcType="NUMERIC" />
+		<id property="userId" column="user_id" jdbcType="NUMERIC" />
         <result property="userName" column="user_name" jdbcType="VARCHAR"/>
         <result property="image" column="image" jdbcType="VARCHAR"/>
 		<result property="status" column="status" jdbcType="NUMERIC" />

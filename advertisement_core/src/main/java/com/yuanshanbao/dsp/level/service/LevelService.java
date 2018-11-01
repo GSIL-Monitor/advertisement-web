@@ -12,7 +12,7 @@ import java.util.List;
 public interface LevelService {
     public List<Level> selectLevels(Level level, PageBounds pageBounds);
 
-    Agency selectLevel(Long id);
+    Level selectLevel(Long id);
 
     public int insertLevel(Level level);
 
