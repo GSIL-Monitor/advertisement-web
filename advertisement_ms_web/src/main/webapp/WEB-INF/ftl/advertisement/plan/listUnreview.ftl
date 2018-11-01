@@ -11,15 +11,13 @@
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/reviewQuery.do?orderId=${orderId}";
 		dataTableConfig.columns = [{
-			    	"data": "probabilityId"
+			    	"data": "planId"
 			    },{
 			    	"data": "order.name"
 			    },{
 			    	"data": "plan.name"
 			    },{
 			    	"data": "advertiser.companyName"
-			    },{
-			    	"data": "channel"
 			    },{
 			    	"data": "createTimeContent"
 				},{

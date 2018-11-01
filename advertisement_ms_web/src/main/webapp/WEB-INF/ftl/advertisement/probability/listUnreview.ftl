@@ -13,11 +13,11 @@
 		dataTableConfig.columns = [{
 			    	"data": "probabilityId"
 			    },{
-			    	"data": "order.name"
+			    	"data": "plan.order.name"
 			    },{
 			    	"data": "plan.name"
 			    },{
-			    	"data": "advertiser.companyName"
+			    	"data": "plan.advertiser.companyName"
 			    },{
 			    	"data": "createTimeContent"
 				},{

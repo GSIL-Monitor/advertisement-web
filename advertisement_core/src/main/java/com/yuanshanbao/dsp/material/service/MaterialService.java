@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.material.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.yuanshanbao.dsp.material.model.Material;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -22,4 +23,5 @@ public interface MaterialService {
 	public List<Material> selectMaterialsByIds(Long advertiserId, String materialIds, Boolean isSelect,
 			PageBounds pageBounds);
 
+	public Map<Long, Material> selectMaterialByIds(List<Long> materialIds);
 }

@@ -11,7 +11,7 @@
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/reviewQuery.do?orderId=${orderId}";
 		dataTableConfig.columns = [{
-			    	"data": "creativeId"
+			    	"data": "materialId"
 			    },{
 			    	"data": "advertiser.companyName"
 			    },{

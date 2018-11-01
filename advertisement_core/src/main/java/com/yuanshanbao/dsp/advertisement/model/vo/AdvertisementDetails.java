@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.advertisement.model.vo;
 
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.material.model.Material;
 
 public class AdvertisementDetails {
@@ -14,11 +15,11 @@ public class AdvertisementDetails {
 		super();
 	}
 
-	public AdvertisementDetails(String planKey, Material creative, String channel) {
+	public AdvertisementDetails(String planKey, Material material, String channel) {
 		this.pId = planKey;
-		this.title = creative.getTitle();
-		this.description = creative.getDescription();
-		this.imageUrl = creative.getImageUrl();
+		this.title = material.getTitle();
+		this.description = material.getDescription();
+		this.imageUrl = material.getImageUrl();
 		this.clickUrl = setUrlByKey(planKey, channel);
 	}
 
@@ -63,6 +64,6 @@ public class AdvertisementDetails {
 	}
 
 	private String setUrlByKey(String planKey, String channel) {
-		return "t.huhad.com/i/j/common.html?id=" + planKey + "&channel=" + channel;
+		return CommonConstant.advertisement_HOST + "/i/j/common.html?id=" + planKey + "&channel=" + channel;
 	}
 }

@@ -15,6 +15,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -22,8 +23,8 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 @Controller
 @RequestMapping("/internal/server")
 public class ServerController extends BaseController {
-	
-	@Resource(name="iniBean")
+
+	@Resource(name = "iniBean")
 	private IniBean iniBean;
 
 	@ResponseBody
@@ -39,6 +40,22 @@ public class ServerController extends BaseController {
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 			LoggerUtil.error("[FavoriteController-add: error]", e);
+		}
+		return resultMap;
+	}
+
+	@ResponseBody
+	@RequestMapping("/refreshDspConstants")
+	public Object refreshDspConstants(HttpServletRequest request, ModelMap modelMap) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			DspConstantsManager.refresh();
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			LoggerUtil.error("[refreshDspConstants: error]", e);
 		}
 		return resultMap;
 	}

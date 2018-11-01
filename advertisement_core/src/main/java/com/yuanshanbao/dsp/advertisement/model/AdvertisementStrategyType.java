@@ -27,9 +27,9 @@ public class AdvertisementStrategyType {
 	public static final String NETWORK_WAY_DESCRIPTION = "联网方式";
 	public static final String NETWORK_WAY_KEY = "netWorkStrategy";
 
-	public static final Integer T_MOBILE = 5;
-	public static final String T_MOBILE_DESCRIPTION = "运营商";
-	public static final String T_MOBILE_KEY = "tMobileStrategy";
+	public static final Integer CARRIER = 5;
+	public static final String CARRIER_DESCRIPTION = "运营商";
+	public static final String CARRIER_KEY = "tMobileStrategy";
 
 	public static final Integer GENDER = 5;
 	public static final String GENDER_DESCRIPTION = "性别";
@@ -45,6 +45,7 @@ public class AdvertisementStrategyType {
 		typeDescriptionMap.put(AGE, AGE_DESCRIPTION);
 		typeDescriptionMap.put(DEVICETYPE, DEVICETYPE_DESCRIPTION);
 		typeDescriptionMap.put(IP_REGION, IP_REGION_DESCRIPTION);
+		typeDescriptionMap.put(CARRIER, CARRIER_DESCRIPTION);
 	}
 
 	private static void initStragegyKeyMap() {
@@ -52,7 +53,7 @@ public class AdvertisementStrategyType {
 		strategyKeyMap.put(DEVICETYPE, DEVICETYPE_KEY);
 		strategyKeyMap.put(AGE, AGE_KEY);
 		strategyKeyMap.put(NETWORK_WAY, NETWORK_WAY_KEY);
-		strategyKeyMap.put(T_MOBILE, T_MOBILE_KEY);
+		strategyKeyMap.put(CARRIER, CARRIER_KEY);
 		strategyKeyMap.put(GENDER, GENDER_KEY);
 	}
 

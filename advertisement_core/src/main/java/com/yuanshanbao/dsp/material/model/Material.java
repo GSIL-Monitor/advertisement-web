@@ -109,6 +109,10 @@ public class Material {
 		this.status = status;
 	}
 
+	public String getStatusValue() {
+		return MaterialStatus.getDescription(status);
+	}
+
 	public Timestamp getCreateTime() {
 		return createTime;
 	}
@@ -147,5 +151,9 @@ public class Material {
 
 	public void setHeight(Integer height) {
 		this.height = height;
+	}
+
+	public String getSizeContent() {
+		return width + "*" + height;
 	}
 }

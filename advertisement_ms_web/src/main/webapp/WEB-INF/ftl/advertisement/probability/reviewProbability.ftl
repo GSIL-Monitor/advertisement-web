@@ -22,15 +22,15 @@
 								<tbody>
 									<tr>
 										<td>订单名称：</td>
-										<td>${itemEdit.order.name}</td>
+										<td>${itemEdit.plan.order.name}</td>
 									</tr>
 									<tr>
 										<td>广告主名称：</td>
-										<td>${itemEdit.advertiser.companyName}</td>
+										<td>${itemEdit.plan.advertiser.companyName}</td>
 									</tr>
 									<tr>
 										<td>计划名称：</td>
-										<td>${itemEdit.name}</td>
+										<td>${itemEdit.plan.name}</td>
 									</tr>
 									<tr>
 										<td>投放渠道：</td>
@@ -45,7 +45,7 @@
 			</div>
 	</div>
 	<form action="${rc.contextPath}/admin/${functionName}/review.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-				<input type="hidden" name="orderId" value="${itemEdit.planId}" style="width:60%;">
+				<input type="hidden" name="probabilityId" value="${itemEdit.probabilityId}" style="width:60%;">
 				<div class="span12">
 					<div class="widget-box">
 						<div class="widget-title">

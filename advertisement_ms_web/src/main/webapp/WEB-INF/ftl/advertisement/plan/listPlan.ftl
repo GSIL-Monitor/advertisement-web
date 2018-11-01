@@ -34,17 +34,17 @@
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">修改</a></div>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-yellow" target="_blank">修改</a></div>';
 			       }
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/setCreativeWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">设置创意</a></div>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/setMaterialWindow.do?${functionId}='+data+'"  class="btn btn-green" target="_blank">设置创意</a></div>';
 			       }
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/strategy/strategyWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">添加策略</a></div>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/strategy/strategyWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">添加定向</a></div>';
 			       }
 		        }];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -80,7 +80,7 @@
             	<div class="filter-box">
 					<div class="btn-group">
             			<div class="filter-component">
-							<h6>计划名称：</h6>
+							<h6>搜索：</h6>
 							<input type="text" name="title" id="title" placeholder="请输入计划名称" />
 						</div>	  
 					</div>
@@ -103,7 +103,7 @@
 							<th>查看详情</th>
 							<th>修改</th>
 							<th>设置创意</th>
-							<th>添加策略</th>
+							<th>定向</th>
 						</tr>
 					</thead>
 					<tbody>

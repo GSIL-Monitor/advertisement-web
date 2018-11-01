@@ -89,8 +89,10 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	public Material selectMaterial(Long materialId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Long> materialIds = new ArrayList<Long>();
+		materialIds.add(materialId);
+		Map<Long, Material> map = selectMaterialByIds(materialIds);
+		return map.get(materialId);
 	}
 
 	@Override
@@ -103,4 +105,18 @@ public class MaterialServiceImpl implements MaterialService {
 		return resultList;
 	}
 
+	@Override
+	public Map<Long, Material> selectMaterialByIds(List<Long> materialIds) {
+
+		Map<Long, Material> map = new HashMap<Long, Material>();
+		if (materialIds == null || materialIds.size() == 0) {
+			return map;
+		}
+		List<Material> list = materialDao.selectMaterialByIds(materialIds);
+
+		for (Material param : list) {
+			map.put(param.getMaterialId(), param);
+		}
+		return map;
+	}
 }

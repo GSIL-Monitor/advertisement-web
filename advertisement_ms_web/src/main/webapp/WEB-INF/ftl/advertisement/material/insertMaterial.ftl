@@ -8,7 +8,7 @@
 			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
 				${functionTitle}管理
 			</a>
-			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">${functionTitle}管理</a>
+			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">新建${functionTitle}</a>
 		</div>
 	</div>
 	<div class="container-fluid">
@@ -43,7 +43,7 @@
 									<tr>
 										<td>创意名称：</td>
 										<td>
-											<input type="text" name="name" style="width:60%;"></td>
+											<input type="text" name="name" placeholder="请输入创意名称"  style="width:60%;"></td>
 										</td>
 									</tr>
 									<tr>

@@ -25,7 +25,7 @@
 				},{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">修改</a></div>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-yellow" target="_blank">修改</a></div>';
 			       }
 		        },{
 			    	"data": "${functionId}",
@@ -35,7 +35,7 @@
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/plan/insertWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">计划添加</a></div>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/plan/insertWindow.do?${functionId}='+data+'"  class="btn btn-green" target="_blank">计划添加</a></div>';
 			       }
 		}];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -74,7 +74,7 @@
             	<div class="filter-box">
 					<div class="btn-group">
             			<div class="filter-component">
-							<h6>订单名称：</h6>
+							<h6>搜索：</h6>
 							<input type="text" name="title" id="title" placeholder="请输入订单名称" />
 						</div>	  
 					</div>

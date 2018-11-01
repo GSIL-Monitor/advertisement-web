@@ -8,15 +8,15 @@
 			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
 				${functionTitle}管理
 			</a>
-			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">${functionTitle}管理</a>
+			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">新建${functionTitle}</a>
 		</div>
 	</div>
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<form action="${rc.contextPath}/admin/${functionName}/insert.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-				<input type="hidden" name="orderId" value="${orderId}" style="width:60%;">
-				<input type="hidden" name="advertiserId" value="${advertiserId}" style="width:60%;">
-				<div class="span12">
+				<input type="hidden" name="orderId" value="${orderId}">
+				<input type="hidden" name="advertiserId" value="${advertiserId}">
+				<div>
 					<div class="widget-box">
 						<div class="widget-title">
 							<span class="icon"><i class="icon-th"></i>
@@ -51,12 +51,6 @@
 										<td>该计划预算金额（元）：</td>
 										<td>
 											<input type="text" name="spend" placeholder="最高预算不得超过剩余预算" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td>投放总量：</td>
-										<td>
-											<input type="text" name="count" style="width:60%;">
 										</td>
 									</tr>
 									<tr>

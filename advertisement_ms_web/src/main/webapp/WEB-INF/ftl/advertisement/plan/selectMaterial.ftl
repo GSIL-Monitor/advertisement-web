@@ -3,12 +3,12 @@
 <@sideBar />
 <script>
 $(document).ready(function(){
-	dataTableConfig.ajax = "${rc.contextPath}/admin/plan/queryCreative.do?planId=${planId}&isSelect=false";
+	dataTableConfig.ajax = "${rc.contextPath}/admin/plan/queryMaterial.do?planId=${planId}&isSelect=false";
 	dataTableConfig.columns = [
 	    {
-	    	"data": "creativeId",
+	    	"data": "materialId",
 	        "render": function ( data, type, full, meta ) {
-	        	return '<input type="checkbox" name="unselectCreative" value="'+data+'" />';
+	        	return '<input type="checkbox" name="unselectMaterial" value="'+data+'" />';
 	        }
 	    },{
       		"data": "name"
@@ -28,12 +28,12 @@ $(document).ready(function(){
 	$('#unselectTable').DataTable(dataTableConfig);
 	
 	dataTableConfig = initConfig();
-	dataTableConfig.ajax = "${rc.contextPath}/admin/plan/queryCreative.do?planId=${planId}&isSelect=true";
+	dataTableConfig.ajax = "${rc.contextPath}/admin/plan/queryMaterial.do?planId=${planId}&isSelect=true";
 	dataTableConfig.columns = [
 	    {
-	    	"data": "creativeId",
+	    	"data": "materialId",
 	        "render": function ( data, type, full, meta ) {
-	        	return '<input type="checkbox" name="selectCreative" value="'+data+'" />';
+	        	return '<input type="checkbox" name="selectMaterial" value="'+data+'" />';
 	        }
 	    },{
       		"data": "name"
@@ -44,7 +44,7 @@ $(document).ready(function(){
 	    },{
 	      	"data": "imageUrl",
 	      	"render": function ( data, type, full, meta ) {
-	        	return '<img src="'+data+'" />';
+	        	return '<img src="'+data+'" style="max-height: 100px;"/>';
 	        }
 	    },{
 	      	"data": "createTimeValue"
@@ -55,7 +55,7 @@ $(document).ready(function(){
 
 function addSelectRights() {
 	var rightIds = "";
-	$("input[name='unselectCreative']").each(function(checkbox){
+	$("input[name='unselectMaterial']").each(function(checkbox){
 		var checked = $(this).is(':checked');
 		if (checked) {
 			if (rightIds != "") {
@@ -65,12 +65,12 @@ function addSelectRights() {
 	        }
         }
 	})
-	sendAjax('${rc.contextPath}/admin/plan/update.do?planId=${planId}&creative=' + rightIds);
+	sendAjax('${rc.contextPath}/admin/plan/addMaterial.do?planId=${planId}&material=' + rightIds);
 }
 
 function deleteSelectRights() {
 	var rightIds = "";
-	$("input[name='selectCreative']").each(function(){
+	$("input[name='selectMaterial']").each(function(){
 		var checked = $(this).is(':checked');
 		if (checked) {
 			if (rightIds != "") {
@@ -80,7 +80,7 @@ function deleteSelectRights() {
 	        }
 		}
 	})
-	sendAjax('${rc.contextPath}/admin/user/deleteUserGroups.do?username=${username}&groupIds=' + rightIds);
+	sendAjax('${rc.contextPath}/admin/plan/deleteMaterial.do?planId=${planId}&material=' + rightIds);
 }
 </script>
 <div id="content">
@@ -140,6 +140,6 @@ function deleteSelectRights() {
       </div>
     </div>
   </div>
-<@resultTipDialog retUrl="${rc.contextPath}/admin/user/updateUserGroupsWindow.do?username=${username}" />
+<@resultTipDialog retUrl="${rc.contextPath}/admin/plan/setMaterialWindow.do?planId=${planId}" />
 <@footPart />
 <@htmlFoot />

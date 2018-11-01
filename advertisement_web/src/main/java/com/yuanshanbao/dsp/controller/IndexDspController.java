@@ -69,17 +69,17 @@ public class IndexDspController {
 		try {
 			String channel = (String) body.get("channel");
 			String pId = (String) body.get("pId");
-			if (channel != null && StringUtils.isEmpty(channel)) {
+			if (StringUtils.isEmpty(channel)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			if (pId != null && StringUtils.isEmpty(pId)) {
+			if (StringUtils.isEmpty(pId)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
-				Channel channelObject = ConfigManager.getChannel(null);
+				Channel channelObject = ConfigManager.getChannel(channel);
 				if (channelObject != null) {
-					probabilityService.recordPlanCount(pId, channel, true);
+					probabilityService.recordPlanCount(pId, channel, false);
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
@@ -101,15 +101,15 @@ public class IndexDspController {
 		try {
 			String channel = (String) body.get("channel");
 			String pId = (String) body.get("pId");
-			if (channel != null && StringUtils.isEmpty(channel)) {
+			if (StringUtils.isEmpty(channel)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			if (pId != null && StringUtils.isEmpty(pId)) {
+			if (StringUtils.isEmpty(pId)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
-				Channel channelObject = ConfigManager.getChannel(null);
+				Channel channelObject = ConfigManager.getChannel(channel);
 				if (channelObject != null) {
 					probabilityService.recordPlanCount(pId, channel, true);
 				}

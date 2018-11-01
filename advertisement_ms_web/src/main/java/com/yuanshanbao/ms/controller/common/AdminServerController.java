@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.HttpUtil;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
@@ -51,6 +52,27 @@ public class AdminServerController extends PaginationController {
 		refresh("server_ips_confirm");
 		InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping("/refreshDsp.do")
+	public Object refreshDsp(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Map<String, String> result = new HashMap<String, String>();
+		refreshDsp("server_ips_confirm");
+		InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		return result;
+	}
+
+	public static void refreshDsp(String key) throws Exception {
+		String serverIps = IniBean.getIniValue(key);
+		String[] segs = serverIps.split(",");
+		for (String ip : segs) {
+			if (!ip.contains(":")) {
+				ip = ip + ":8080";
+			}
+			HttpUtil.sendGetRequest("http://" + ip + "/internal/server/refreshDspConstants.html");
+		}
+		DspConstantsManager.refresh();
 	}
 
 	public static void refresh(String key) throws Exception {

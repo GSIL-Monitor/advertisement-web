@@ -1,6 +1,9 @@
 package com.yuanshanbao.ms.controller.plan;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
@@ -40,7 +44,6 @@ import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
-import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -64,7 +67,7 @@ public class AdminPlanController extends PaginationController {
 
 	private static final String PAGE_ALLOCATE_PLAN = "advertisement/plan/allocatePlan";
 
-	private static final String PAGE_SELECT_CREATIVE = "advertisement/plan/selectMaterial";
+	private static final String PAGE_SELECT_MATERIAL = "advertisement/plan/selectMaterial";
 
 	@Autowired
 	private OrderService orderService;
@@ -139,6 +142,7 @@ public class AdminPlanController extends PaginationController {
 	public Object insert(HttpServletRequest request, HttpServletResponse response, Plan plan, String orderId) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
+			validateParameters(plan);
 			if (StringUtils.isBlank(orderId)) {
 				throw new BusinessException(ComRetCode.FAIL);
 			}
@@ -200,7 +204,7 @@ public class AdminPlanController extends PaginationController {
 	@RequestMapping("/setMaterialWindow.do")
 	public String setMaterialWindow(Long planId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
 		request.setAttribute("planId", planId);
-		return PAGE_SELECT_CREATIVE;
+		return PAGE_SELECT_MATERIAL;
 	}
 
 	@ResponseBody
@@ -214,24 +218,6 @@ public class AdminPlanController extends PaginationController {
 					plan.getMaterial(), isSelect, getPageBounds(request));
 		}
 		return setPageInfo(request, response, list);
-	}
-
-	@ResponseBody
-	@RequestMapping("/setMaterial")
-	public Object getMaterial(HttpServletRequest request, HttpServletResponse response, Plan plan) {
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		try {
-			if (plan.getPlanId() == null) {
-				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
-			}
-			plan.setStatus(PlanStatus.UNREVIEWED);
-			planService.updatePlan(plan);
-		} catch (BusinessException e) {
-			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
-		} catch (Exception e2) {
-			LoggerUtil.error("plan setMaterial", e2);
-		}
-		return resultMap;
 	}
 
 	@RequestMapping("/reviewWindow.do")
@@ -300,20 +286,94 @@ public class AdminPlanController extends PaginationController {
 		return PAGE_ALLOCATE_PLAN;
 	}
 
-	public Object allowPlan(HttpServletRequest request, HttpServletResponse response, Probability probability) {
+	@ResponseBody
+	@RequestMapping("/allocatePlan.do")
+	public Object allocatePlan(HttpServletRequest request, HttpServletResponse response, Probability probability) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
-			// Plan plan = ConfigManager.getPlanById(probability.getPlanId());
+			validateParameters(probability);
+			Plan plan = ConfigManager.getPlanById(probability.getPlanId());
 			probability.setProjectId(getProjectId(request));
 			probability.setStatus(ProbabilityStatus.UNREVIEWED);
+			probability.setOrderId(plan.getOrderId());
 			probabilityService.insertProbability(probability);
-			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+			LoggerUtil.info("allocatePlan, 分配详情信息={},操作人员={}", JacksonUtil.obj2json(probability), getCurrentUser()
+					.getUsername());
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
-			LoggerUtil.error("probability insert function - reload error", e2);
+			LoggerUtil.error("allocatePlan insert function - reload error", e2);
 		}
 		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping("/addMaterial.do")
+	public Object addMaterial(HttpServletRequest request, HttpServletResponse response, Long planId, String material) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			if (planId == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Plan plan = planService.selectPlan(planId);
+			if (plan.getMaterial() != null && StringUtils.isNotEmpty(plan.getMaterial())) {
+				String resultMaterial = plan.getMaterial();
+				String[] selectMaterial = material.split(",");
+				for (String id : selectMaterial) {
+					resultMaterial = resultMaterial + "," + id;
+				}
+				plan.setMaterial(resultMaterial);
+			} else {
+				plan.setMaterial(material);
+			}
+			planService.updatePlan(plan);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("plan setMaterial", e2);
+		}
+		return resultMap;
+	}
+
+	@ResponseBody
+	@RequestMapping("/deleteMaterial.do")
+	public Object deleteMaterial(HttpServletRequest request, HttpServletResponse response, Long planId, String material) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			if (planId == null || StringUtils.isEmpty(material)) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Plan plan = planService.selectPlan(planId);
+			List<String> selectedList = Arrays.asList(plan.getMaterial().split(","));
+			selectedList = new ArrayList<String>(selectedList);
+			List<String> deletedList = Arrays.asList(material.split(","));
+			deletedList = new ArrayList<String>(deletedList);
+			Iterator<String> it = selectedList.iterator();
+			while (it.hasNext()) {
+				String id = it.next();
+				if (deletedList.contains(id)) {
+					it.remove();
+				}
+			}
+			StringBuffer resultMaterial = new StringBuffer();
+			for (String id : selectedList) {
+				resultMaterial.append(",");
+				resultMaterial.append(id);
+			}
+			if (selectedList.size() > 0) {
+				resultMaterial.deleteCharAt(0);
+			}
+			plan.setMaterial(resultMaterial.toString());
+			// plan.setStatus(PlanStatus.UNREVIEWED);
+			planService.updatePlan(plan);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("plan setMaterial", e2);
+		}
+		return resultMap;
 	}
 }

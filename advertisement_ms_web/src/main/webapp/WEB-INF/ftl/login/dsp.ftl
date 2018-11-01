@@ -10,7 +10,7 @@
         <div class="main-bg"></div>
         <div class="title"></div>
         <form id="loginform" class="login-form" action="${rc.contextPath}/login.do" method="POST">
-            <p class="welcome">欢迎使用dsp广告平台</p>
+            <p class="welcome">欢迎使用蚂蚁智投广告平台</p>
             <div class="control-group">
                 <i class="user"></i>
                 <input type="text" id="username" name="username" placeholder="用户名" />

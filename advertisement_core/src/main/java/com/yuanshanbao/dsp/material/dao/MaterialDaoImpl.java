@@ -36,4 +36,9 @@ public class MaterialDaoImpl extends BaseDaoImpl implements MaterialDao {
 		return getSqlSession().selectList("material.selectMaterialsByIds", parameters, pageBounds);
 	}
 
+	@Override
+	public List<Material> selectMaterialByIds(List<Long> materialIds) {
+		return getSqlSession().selectList("material.selectMaterialByIds", materialIds);
+	}
+
 }
