@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
@@ -31,4 +32,5 @@ public interface ProductService {
 
 	public String getApplyInterface(Product product, User user, HttpServletRequest request);
 
+	public List<Tags> getBrandFeatureMap(String brandFeature);
 }

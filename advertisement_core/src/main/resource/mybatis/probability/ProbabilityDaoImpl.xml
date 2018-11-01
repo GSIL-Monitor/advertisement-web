@@ -57,6 +57,9 @@
 				<if test="channel != null">
 					channel = #{channel} and
 				</if>
+				<if test="planId != null">
+					plan_id = #{planId} and
+				</if>
 				<if test="name != null">
 					name = #{name} and
 				</if>

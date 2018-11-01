@@ -25,28 +25,16 @@
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
 									<tr>
-										<td>订单名称：</td>
-										<td>${itemEdit.order.name}</td>
-									</tr>
-									<tr>
-										<td>广告主名称：</td>
-										<td>${itemEdit.advertiser.companyName}</td>
-									</tr>
-									<tr>
-										<td>计划名称：</td>
+										<td>素材名称：</td>
 										<td>${itemEdit.name}</td>
 									</tr>
 									<tr>
-										<td>投放链接：</td>
-										<td>${itemEdit.link}</td>
+										<td>图片：</td>
+										<td><img src="${itemEdit.imageUrl}" style="max-height: 100px;"/></td>
 									</tr>
 									<tr>
-										<td>出价：</td>
-										<td>${itemEdit.bestBid}</td>
-									</tr>
-									<tr>
-										<td>预算：</td>
-										<td>${itemEdit.spend}</td>
+										<td>尺寸：</td>
+										<td>${itemEdit.sizeContent}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -56,23 +44,17 @@
 			</div>
 	</div>
 	<form action="${rc.contextPath}/admin/${functionName}/review.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
-				<input type="hidden" name="orderId" value="${itemEdit.planId}" style="width:60%;">
+				<input type="hidden" name="materialId" value="${itemEdit.materialId}" style="width:60%;">
 				<div class="span12">
 					<div class="widget-box">
 						<div class="widget-content nopadding">
 							<table class="table table-bordered table-striped" id="">
 								<tbody>
 									<tr>
-										<td style="width:20%;">状态：</td>
-										<td>
-											<input type="text" name="name" placeholder="建议订单名称+计划名称+月份+日期" style="width:60%;">
-										</td>
-									</tr>
-									<tr>
-										<td style="width:20%;">备注：</td>
+										<td style="width:20%;">选择状态：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="size" class="selectpicker form-control">
+												<select name="status" class="selectpicker form-control">
 													<#list statusList as status>
 														<option value="${status.key}">${status.value}</option>
 													</#list>

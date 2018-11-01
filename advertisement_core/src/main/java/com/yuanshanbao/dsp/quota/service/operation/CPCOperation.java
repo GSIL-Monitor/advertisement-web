@@ -15,8 +15,8 @@ public class CPCOperation extends AdvertisementOperation {
 
 	@Override
 	public String getProbabilityResult() {
-		// TODO Auto-generated method stub
-		return null;
+		return redisCacheService.get(RedisConstant.getPlanClickCountPVKey(null, this.getProbability().getPlanId() + "",
+				this.getProbability().getChannel()));
 	}
 
 }

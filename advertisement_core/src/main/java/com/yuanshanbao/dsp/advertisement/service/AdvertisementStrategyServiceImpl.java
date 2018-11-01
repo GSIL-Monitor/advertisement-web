@@ -192,6 +192,10 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 			Instance instance) {
 		List<AdvertisementStrategy> ipRegionList = new ArrayList<AdvertisementStrategy>();
 		List<AdvertisementStrategy> deviceTypeList = new ArrayList<AdvertisementStrategy>();
+		List<AdvertisementStrategy> netWayList = new ArrayList<AdvertisementStrategy>();
+		List<AdvertisementStrategy> carrierList = new ArrayList<AdvertisementStrategy>();
+		List<AdvertisementStrategy> ageList = new ArrayList<AdvertisementStrategy>();
+		List<AdvertisementStrategy> genderList = new ArrayList<AdvertisementStrategy>();
 		List<Probability> resultList = new ArrayList<Probability>();
 		// 针对计划进行处理
 		for (Probability prob : list) {
@@ -204,13 +208,26 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 			for (AdvertisementStrategy advertisementStrategy : strategyList) {
 				ipRegionList = new ArrayList<AdvertisementStrategy>();
 				deviceTypeList = new ArrayList<AdvertisementStrategy>();
+				netWayList = new ArrayList<AdvertisementStrategy>();
+				carrierList = new ArrayList<AdvertisementStrategy>();
+				ageList = new ArrayList<AdvertisementStrategy>();
+				genderList = new ArrayList<AdvertisementStrategy>();
 				if (AdvertisementStrategyType.IP_REGION_KEY.equals(advertisementStrategy.getKey())) {
 					ipRegionList.add(advertisementStrategy);
 				} else if (AdvertisementStrategyType.DEVICETYPE_KEY.equals(advertisementStrategy.getKey())) {
 					deviceTypeList.add(advertisementStrategy);
+				} else if (AdvertisementStrategyType.NETWORK_WAY_KEY.equals(advertisementStrategy.getKey())) {
+					netWayList.add(advertisementStrategy);
+				} else if (AdvertisementStrategyType.CARRIER_KEY.equals(advertisementStrategy.getKey())) {
+					carrierList.add(advertisementStrategy);
+				} else if (AdvertisementStrategyType.AGE_KEY.equals(advertisementStrategy.getKey())) {
+					ageList.add(advertisementStrategy);
+				} else if (AdvertisementStrategyType.GENDER_KEY.equals(advertisementStrategy.getKey())) {
+					genderList.add(advertisementStrategy);
 				}
 			}
-			boolean strategyPass = judgeStrategy(request, ipRegionList, deviceTypeList, instance);
+			boolean strategyPass = judgeStrategy(request, ipRegionList, deviceTypeList, netWayList, carrierList,
+					ageList, genderList, instance);
 			if (strategyPass) {
 				resultList.add(prob);
 			}
@@ -219,12 +236,81 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	}
 
 	private boolean judgeStrategy(HttpServletRequest request, List<AdvertisementStrategy> ipRegionList,
-			List<AdvertisementStrategy> deviceTypeList, Instance instance) {
-		if (checkIpRegion(request, ipRegionList, instance) && checkDeviceType(request, deviceTypeList, instance)) {
+			List<AdvertisementStrategy> deviceTypeList, List<AdvertisementStrategy> netWayList,
+			List<AdvertisementStrategy> carrierList, List<AdvertisementStrategy> ageList,
+			List<AdvertisementStrategy> genderList, Instance instance) {
+		if (checkIpRegion(request, ipRegionList, instance) && checkDeviceType(request, deviceTypeList, instance)
+				&& checkCarrier(request, carrierList, instance) && checkAge(request, ageList, instance)
+				&& checkNetWay(request, netWayList, instance) && checkGender(request, genderList, instance)) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	private boolean checkGender(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+		boolean strategyPass = true;
+		if (StringUtils.isEmpty(instance.getGender())) {
+			return strategyPass;
+		}
+		if (list != null) {
+			for (AdvertisementStrategy advertisementStrategy : list) {
+				if (instance.getGender().equals(advertisementStrategy.getValue())) {
+					return strategyPass;
+				}
+			}
+		}
+		strategyPass = false;
+		return strategyPass;
+	}
+
+	private boolean checkNetWay(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+		boolean strategyPass = true;
+		if (instance.getConnectiontype() != null) {
+			return strategyPass;
+		}
+		if (list != null) {
+			for (AdvertisementStrategy advertisementStrategy : list) {
+				if (instance.getConnectiontype().equals(advertisementStrategy.getValue())) {
+					return strategyPass;
+				}
+			}
+		}
+		strategyPass = false;
+		return strategyPass;
+	}
+
+	// TODO
+	private boolean checkAge(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+		boolean strategyPass = true;
+		if (StringUtils.isEmpty(instance.getAge())) {
+			return strategyPass;
+		}
+		if (list != null && list.size() > 0) {
+			for (AdvertisementStrategy advertisementStrategy : list) {
+				if (instance.getOs().equals(advertisementStrategy.getValue())) {
+					return strategyPass;
+				}
+			}
+		}
+		strategyPass = false;
+		return strategyPass;
+	}
+
+	private boolean checkCarrier(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+		boolean strategyPass = true;
+		if (StringUtils.isEmpty(instance.getCarrier())) {
+			return strategyPass;
+		}
+		if (list != null && list.size() > 0) {
+			for (AdvertisementStrategy advertisementStrategy : list) {
+				if (instance.getCarrier().equals(advertisementStrategy.getValue())) {
+					return strategyPass;
+				}
+			}
+		}
+		strategyPass = false;
+		return strategyPass;
 	}
 
 	private boolean checkDeviceType(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
@@ -232,11 +318,14 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		if (StringUtils.isEmpty(instance.getOs())) {
 			return strategyPass;
 		}
-		if (list != null) {
+		if (list != null && list.size() > 0) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-
+				if (instance.getOs().equals(advertisementStrategy.getValue())) {
+					return strategyPass;
+				}
 			}
 		}
+		strategyPass = false;
 		return strategyPass;
 	}
 
@@ -245,7 +334,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		if (StringUtils.isEmpty(instance.getIp())) {
 			return strategyPass;
 		}
-		if (list != null) {
+		if (list != null && list.size() > 0) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
 				if (advertisementStrategy.getType().equals(AdvertisementStrategyType.REGION)) {
 					Location location = ipLocationService.queryIpLocation(instance.getIp());
@@ -377,7 +466,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 			}
 			if (!params.equals(map.get(key))) {
 				AdvertisementStrategy strategy = new AdvertisementStrategy();
-				strategy.setProbabilityId(planId);
+				strategy.setPlanId(planId);
 				strategy.setKey(key);
 				List<AdvertisementStrategy> strategyList = selectAdvertisementStrategy(strategy, new PageBounds());
 				for (AdvertisementStrategy exist : strategyList) {

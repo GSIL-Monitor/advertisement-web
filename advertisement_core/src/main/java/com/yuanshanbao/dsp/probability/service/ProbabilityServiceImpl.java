@@ -510,10 +510,12 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			}
 			String[] creativeList = plan.getMaterial().split(",");
 			for (String creativeId : creativeList) {
-				resultMaterial = ConstantsManager.getMaterialById(Long.valueOf(creativeId));
 				// 判断素材与媒体尺寸大小是否相等
-				if (resultMaterial.getWidth().equals(channelObject.getWidth())
-						&& resultMaterial.getHeight().equals(channelObject.getHeight())) {
+				Material material = ConstantsManager.getMaterialById(Long.valueOf(creativeId));
+				if (material != null
+						&& (material.getWidth().equals(channelObject.getWidth()) && material.getHeight().equals(
+								channelObject.getHeight()))) {
+					resultMaterial = material;
 					break;
 				}
 			}

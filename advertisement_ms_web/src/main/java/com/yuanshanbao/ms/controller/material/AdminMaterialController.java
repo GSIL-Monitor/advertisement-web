@@ -24,6 +24,7 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
+import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.material.model.Material;
 import com.yuanshanbao.dsp.material.model.MaterialStatus;
@@ -40,20 +41,20 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
-@RequestMapping("/admin/creative")
+@RequestMapping("/admin/material")
 public class AdminMaterialController extends PaginationController {
-	private static final String PAGE_LIST = "advertisement/creative/listMaterial";
+	private static final String PAGE_LIST = "advertisement/material/listMaterial";
 
-	private static final String PAGE_INSERT = "advertisement/creative/insertMaterial";
+	private static final String PAGE_INSERT = "advertisement/material/insertMaterial";
 
-	private static final String PAGE_UPDATE = "advertisement/creative/updateMaterial";
+	private static final String PAGE_UPDATE = "advertisement/material/updateMaterial";
 
-	private static final String PAGE_UNREVIEW_LIST = "advertisement/creative/listUnreview";
+	private static final String PAGE_UNREVIEW_LIST = "advertisement/material/listUnreview";
 
-	private static final String PAGE_REVIEW = "advertisement/creative/reviewMaterial";
+	private static final String PAGE_REVIEW = "advertisement/material/reviewMaterial";
 
 	@Autowired
-	private MaterialService creativeService;
+	private MaterialService materialService;
 
 	@Autowired
 	private AdvertiserService advertiserService;
@@ -77,8 +78,8 @@ public class AdminMaterialController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/query.do")
-	public Object query(String range, Material creative, HttpServletRequest request, HttpServletResponse response) {
-		Object object = creativeService.selectMaterial(creative, getPageBounds(range, request));
+	public Object query(String range, Material material, HttpServletRequest request, HttpServletResponse response) {
+		Object object = materialService.selectMaterial(material, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
 	}
@@ -105,7 +106,7 @@ public class AdminMaterialController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(HttpServletRequest request, HttpServletResponse response, Material creative,
+	public Object insert(HttpServletRequest request, HttpServletResponse response, Material material,
 			MultipartFile image) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
@@ -114,32 +115,32 @@ public class AdminMaterialController extends PaginationController {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			if (image != null && !image.isEmpty()) {
-				creative.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
+				material.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
 			}
-			creative.setWidth(bufferedImage.getWidth());
-			creative.setHeight(bufferedImage.getHeight());
-			validateParameters(creative);
-			creative.setStatus(MaterialStatus.UNREVIEWED);
-			creativeService.insertMaterial(creative);
+			material.setWidth(bufferedImage.getWidth());
+			material.setHeight(bufferedImage.getHeight());
+			validateParameters(material);
+			material.setStatus(MaterialStatus.UNREVIEWED);
+			materialService.insertMaterial(material);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
-			LoggerUtil.error("creative insert function - upload image error", e2);
+			LoggerUtil.error("material insert function - upload image error", e2);
 		}
 
 		return result;
 	}
 
 	@RequestMapping("/updateWindow.do")
-	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Material creative,
+	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Material material,
 			Probability probability, Quota quota) {
 		String isDisplay = "false";
-		List<Material> list = creativeService.selectMaterial(creative, new PageBounds());
+		List<Material> list = materialService.selectMaterial(material, new PageBounds());
 		List<Probability> proList = probabilityService.selectProbabilitys(probability, new PageBounds());
 		List<Quota> quotaList = quotaService.selectQuota(quota, new PageBounds());
 		if (list != null && list.size() >= 0) {
-			creative = list.get(0);
+			material = list.get(0);
 		}
 		if (proList != null && proList.size() == 1) {
 			if (quotaList != null && quotaList.size() == 1) {
@@ -153,7 +154,7 @@ public class AdminMaterialController extends PaginationController {
 		// setProperty(request, getProjectId(request), advertiserId);
 		request.setAttribute("categories", ConfigManager.getCategoryMap());
 		request.setAttribute("tagsList", ConstantsManager.getTagsList(ConstantsManager.ADVERTISEMENT));
-		request.setAttribute("itemEdit", creative);
+		request.setAttribute("itemEdit", material);
 		request.setAttribute("probability", probability);
 		request.setAttribute("quota", quota);
 		return PAGE_UPDATE;
@@ -161,18 +162,18 @@ public class AdminMaterialController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/update.do")
-	public Object update(Material creative, String prizeDesc, HttpServletRequest request, HttpServletResponse response) {
+	public Object update(Material material, String prizeDesc, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			validateParameters(creative);
-			creativeService.updateMaterial(creative);
+			validateParameters(material);
+			materialService.updateMaterial(material);
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
-			LoggerUtil.error("creative update function - upload image error", e2);
+			LoggerUtil.error("material update function - upload image error", e2);
 		}
 
 		return result;
@@ -189,37 +190,62 @@ public class AdminMaterialController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/reviewQuery.do")
-	public Object reviewQuery(String range, Material creative, Order order, HttpServletRequest request,
+	public Object reviewQuery(String range, Material material, Order order, HttpServletRequest request,
 			HttpServletResponse response) {
-		creative.setStatus(MaterialStatus.UNREVIEWED);
-		Object object = creativeService.selectMaterial(creative, getPageBounds(range, request));
+		material.setStatus(MaterialStatus.UNREVIEWED);
+		Object object = materialService.selectMaterial(material, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
 	}
 
 	@RequestMapping("/reviewDetails.do")
-	public String reviewDetails(String range, Long creativeId, HttpServletRequest request, HttpServletResponse response) {
-		Material creative = creativeService.selectMaterial(creativeId);
-		request.setAttribute("itemEdit", creative);
+	public String reviewDetails(String range, Long materialId, HttpServletRequest request, HttpServletResponse response) {
+		Material material = materialService.selectMaterial(materialId);
+		request.setAttribute("itemEdit", material);
 		request.setAttribute("statusList", MaterialStatus.getCodeDescriptionMap().entrySet());
 		return PAGE_REVIEW;
 	}
 
 	@ResponseBody
 	@RequestMapping("/review.do")
-	public Object review(HttpServletRequest request, HttpServletResponse response, Material creative) {
+	public Object review(HttpServletRequest request, HttpServletResponse response, Material material) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
-			if (creative.getMaterialId() == null) {
+			if (material.getMaterialId() == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			creativeService.updateMaterial(creative);
+			materialService.updateMaterial(material);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
 			LoggerUtil.error("plan update function - upload image error", e2);
 		}
+		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping("/delete.do")
+	public Object delete(Long materialId, HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		try {
+
+			if (materialId == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Material material = new Material();
+			material.setStatus(CommonStatus.OFFLINE);
+			material.setMaterialId(materialId);
+			materialService.updateMaterial(material);
+			AdminServerController.refreshConfirm();
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("advertisement update function - upload image error", e2);
+		}
+
 		return result;
 	}
 }

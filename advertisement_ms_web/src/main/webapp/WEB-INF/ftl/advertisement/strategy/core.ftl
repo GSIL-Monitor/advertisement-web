@@ -1,4 +1,4 @@
 <#include "/common/core.ftl" />
 <#assign functionName="strategy"/>
-<#assign functionTitle="广告"/>
+<#assign functionTitle="定向"/>
 <#assign functionId="advertisementStrategyId"/>

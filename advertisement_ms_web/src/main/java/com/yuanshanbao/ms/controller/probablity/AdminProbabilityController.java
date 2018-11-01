@@ -21,6 +21,7 @@ import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageList;
 
 @Controller
@@ -76,6 +77,7 @@ public class AdminProbabilityController extends PaginationController {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			probabilityService.updateProbability(probability);
+			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

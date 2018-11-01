@@ -11,7 +11,7 @@
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
 		dataTableConfig.columns = [{
-			    	"data": "creativeId"
+			    	"data": "materialId"
 			    },{
 			    	"data": "name"
 			    },{
@@ -19,19 +19,11 @@
 			    },{
 			    	"data": "sizeContent"
 			    },{
-			    	"data": "${functionId}",
+			    	"data": "statusValue"
+			    },{
+			    	"data": "imageUrl",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/viewWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看</a></div>';
-			       }
-		        },{
-			    	"data": "${functionId}",
-			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">修改</a></div>';
-			       }
-		        },{
-			    	"data": "${functionId}",
-			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/delete.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">删除</a></div>';
+			            return '<div class="list-btn"><a href="'+data+'"  class="btn btn-green" target="_blank">查看</a></div>';
 			       }
 		        }];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
@@ -71,16 +63,6 @@
 					<div class="btn-group">
             			<div style="width:60%;">
 							<h6>素材类型：</h6>
-							<select name="size" id="size" class="selectpicker form-control">
-								<#list sizeList as size>
-									<option value="${size.key}">${size.value}</option>
-								</#list>
-							</select>
-						</div>
-					</div>
-					<div class="btn-group">
-            			<div style="width:60%;">
-							<h6>素材类型：</h6>
 							<select name="type" id="type" class="selectpicker form-control">
 								<#list typeList as type>
 									<option value="${type.key}">${type.value}</option>
@@ -100,9 +82,8 @@
 							<th>创意名称</th>
 							<th>创意类型</th>
 							<th>素材尺寸</th>
-							<th>查看</th>
-							<th>修改</th>
-							<th>删除</th>
+							<th>状态</th>
+							<th>查看图片</th>
 						</tr>
 					</thead>
 					<tbody>

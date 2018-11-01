@@ -24,6 +24,7 @@ import com.yuanshanbao.paginator.domain.PageList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,11 +39,11 @@ import java.util.*;
  */
 @RequestMapping("/card")
 @Controller
-public class UserBankCardController extends BaseController{
+public class UserBankCardController extends BaseController {
 
     private static final String EDUCATION_APP = "education_app";
     private final String BANK_CARD_URL = "https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo=";
-    private final String BANK_URL_END ="cardBinCheck=true";
+    private final String BANK_URL_END = "cardBinCheck=true";
     private final String BANK_LOGO_URL = "https://apimg.alipay.com/combo.png?d=cashier&t=";
     @Autowired
     private BankCardService bankCardService;
@@ -58,10 +59,10 @@ public class UserBankCardController extends BaseController{
 
     @ResponseBody
     @RequestMapping("list")
-    public Object listCard(HttpServletRequest request , BankCard card, PageBounds pageBounds ,String token){
+    public Object listCard(HttpServletRequest request, BankCard card, PageBounds pageBounds, String token) {
         Map<String, Object> resultMap = new HashMap<>();
         List<BankCard> bankCardList = new ArrayList<>();
-        try{
+        try {
 
             //获取当前用户信息
             User loginToken = tokenService.verifyLoginToken(token);
@@ -76,33 +77,54 @@ public class UserBankCardController extends BaseController{
             //查询是否有银行卡
             card.setUserId(user.getUserId());
             List<BankCard> bankCards = bankCardService.selectBankCards(card, pageBounds);
-            if (bankCards.size() == 0 ) {
+            if (bankCards.size() == 0) {
                 InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NO_BANK_CARD);
                 return resultMap;
             }
-            for (BankCard bankCard : bankCards){
-                bankCard.getCardNumber().replace(bankCard.getCardNumber().substring(0, 11),"**** **** ****");
+            for (BankCard bankCard : bankCards) {
+                bankCard.getCardNumber().replace(bankCard.getCardNumber().substring(0, 11), "**** **** ****");
                 bankCardList.add(bankCard);
             }
-            resultMap.put("bankCards",bankCardList);
+            resultMap.put("bankCards", bankCardList);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
-        }catch (BusinessException e) {
+        } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {
             LoggerUtil.error("[productList error:]", e);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
         }
-        return  resultMap;
+        return resultMap;
+    }
+
+    @RequestMapping("/applyCard")
+    @ResponseBody
+    public Object applyCard(HttpServletRequest request, BankCard card, String token, @RequestParam("productId") Long productId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        User loginToken = tokenService.verifyLoginToken(token);
+        try {
+            User user = userService.selectUserById(loginToken.getUserId());
+            resultMap.put("user", user);
+            if (productId != null) {
+                Product product = productService.selectProduct(productId);
+                resultMap.put("queryUrl", product.getQueryUrl());
+            }
+        } catch (BusinessException e) {
+            InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+        } catch (Exception e) {
+            LoggerUtil.error("[productList error:]", e);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+        }
+        return resultMap;
     }
 
     @RequestMapping("/insert")
     @ResponseBody
-    public Object insertCard(HttpServletRequest request ,BankCard card ,String token){
+    public Object insertCard(HttpServletRequest request, BankCard card, String token) {
         Map<String, Object> resultMap = new HashMap<>();
-        StringBuffer stringBuffer  = new StringBuffer();
+        StringBuffer stringBuffer = new StringBuffer();
         try {
             //获取当前用户信息
-           User loginToken = tokenService.verifyLoginToken(token);
+            User loginToken = tokenService.verifyLoginToken(token);
             if (loginToken == null) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
@@ -111,25 +133,21 @@ public class UserBankCardController extends BaseController{
                 InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NOT_LOGIN);
                 return resultMap;
             }
-           //验证是否实名
-            if (StringUtil.isEmpty(user.getIdentity())){
-                InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.NO_IDENTITY);
-                return  resultMap;
-            }
+
             //添加卡
             String userName = request.getParameter("userName");
             String cardNumber = request.getParameter("cardNumber");
             String smsCode = request.getParameter("code");
             String userIp = JSPHelper.getRemoteAddr(request);
             //与第一次添加姓名一致
-            if (!(StringUtil.isEmpty(user.getUserName()) || userName.equals(user.getUserName()))){
-                InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.NO_USERNAME);
+            if (!(StringUtil.isEmpty(user.getUserName()) || userName.equals(user.getUserName()))) {
+                InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NO_USERNAME);
                 return resultMap;
             }
-            verifyCodeService.validateSmsCode(loginToken.getMobile(),smsCode,"",userIp);
+            verifyCodeService.validateSmsCode(loginToken.getMobile(), smsCode, "", userIp);
             //验证银行卡是否合法
-            if (!ValidateUtil.isBankCardNo(cardNumber)){
-                InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.BANK_CAED_ERRO);
+            if (!ValidateUtil.isBankCardNo(cardNumber)) {
+                InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.BANK_CAED_ERRO);
                 return resultMap;
             }
             //获取银行卡归属
@@ -140,7 +158,7 @@ public class UserBankCardController extends BaseController{
             card.setUserName(userName);
             bankCardService.insertBankCard(card);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
-        }catch (BusinessException e) {
+        } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {
             LoggerUtil.error("[productList error:]", e);
@@ -151,14 +169,14 @@ public class UserBankCardController extends BaseController{
 
     @ResponseBody
     @RequestMapping("/card")
-    public Object card (HttpServletRequest request, String token ){
+    public Object card(HttpServletRequest request, String token) {
         Map<String, Object> resultMap = new HashMap<>();
-        try{
+        try {
             User loginToken = tokenService.verifyLoginToken(token);
             if (loginToken == null)
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             User user = userService.selectUserById(loginToken.getUserId());
-            resultMap.put("user",user);
+            resultMap.put("user", user);
             Activity activity = ConfigManager.getActivityByKey(EDUCATION_APP);
             if (activity == null) {
                 throw new BusinessException();
@@ -168,15 +186,15 @@ public class UserBankCardController extends BaseController{
             product.setActivityId(activity.getActivityId());
             product.setStatus(ProductStatus.ONLINE);
             PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
-                  new PageBounds());
+                    new PageBounds());
             resultMap.put("productList", productList);
-        }catch (BusinessException e) {
+        } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {
             LoggerUtil.error("[productList error:]", e);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
         }
-        return  resultMap;
+        return resultMap;
     }
 
 }

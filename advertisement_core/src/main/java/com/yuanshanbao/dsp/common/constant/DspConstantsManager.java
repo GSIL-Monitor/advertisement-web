@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.annotation.Resource;
 
@@ -55,17 +54,23 @@ public class DspConstantsManager {
 		channelParams.setStatus(CommonStatus.ONLINE);
 		List<Channel> channelList = channelService.selectChannels(channelParams, new PageBounds());
 		Map<String, Map<Long, BigDecimal>> tempChannelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
-		Map<Long, BigDecimal> probabilityBidMap = new TreeMap<Long, BigDecimal>();
 		for (Channel channel : channelList) {
+			Map<Long, BigDecimal> probabilityBidMap = new HashMap<Long, BigDecimal>();
 			Probability proParams = new Probability();
 			proParams.setChannel(channel.getKey());
 			proParams.setStatus(CommonStatus.ONLINE);
 			List<Probability> proList = probabilityService.selectProbabilitys(proParams, new PageBounds());
+			if (proList == null || proList.size() == 0) {
+				continue;
+			}
 			for (Probability probability : proList) {
 				Plan plan = ConfigManager.getPlanById(probability.getPlanId());
 				if (plan != null && plan.getBestBid() != null) {
 					probabilityBidMap.put(probability.getProbabilityId(), plan.getBestBid());
 				}
+			}
+			if (probabilityBidMap.size() == 0) {
+				continue;
 			}
 			Map<Long, BigDecimal> sortMap = SortUtil.sortByValueDescending(probabilityBidMap);
 			// 为每一条计划设置价格

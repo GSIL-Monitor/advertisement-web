@@ -24,6 +24,14 @@ public class CommonConstant {
 	public final static String APPLICATION_TYPE_IOS = "iOS";
 	public final static String APPLICATION_TYPE_ANDROID = "android";
 
+	public final static String GENDER_MAN = "M";
+	public final static String GENDER_FEMALE = "F";
+
+	public final static String CARRIER_WIFI = "wifi";
+	public final static String CARRIER_LIANTONG = "中国联通";
+	public final static String CARRIER_YIDONG = "中国移动";
+	public final static String CARRIER_DIANXIN = "中国电信";
+
 	public final static String SPACE_SPLIT_STR = " ";
 	public final static String PERCENT_SPLIT_STR = "%";
 	public final static String COMMON_SPLIT_STR = "_";
@@ -93,7 +101,7 @@ public class CommonConstant {
 	public static final String APPLY_SHARD_TYPE = "applyShardType";
 	public static final String APPLY_SHARD_BY = "userId";
 	public static final String APPLY_TABLE_NAME = "tb_apply";
-	
+
 	public static final String APPLY_INFO_SHARD_TYPE = "applyInfoShardType";
 	public static final String APPLY_INFO_SHARD_BY_MOBILE = "mobile";
 	public static final String APPLY_INFO_TABLE_NAME = "tb_apply_info";
@@ -112,7 +120,7 @@ public class CommonConstant {
 	public final static String BEAN_NAME_WEIGHT = "weight";
 
 	public static final String[] COLORS = { "#809CFF", "#FFB858", "#57C8FF", "#5AE3D6", "#FF894E", "#FF7FC7" };
-	
+
 	// tableShard
 	public static final String SHARD_BY_USER_ID = "userId";
 	public static final String SHARD_BY_GAME_ID = "gameId";

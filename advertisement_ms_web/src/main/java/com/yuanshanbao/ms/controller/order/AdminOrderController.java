@@ -19,6 +19,8 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -50,6 +52,9 @@ public class AdminOrderController extends PaginationController {
 
 	@Autowired
 	private AdvertiserService advertiserService;
+
+	@Autowired
+	private RedisService redisService;
 
 	@Autowired
 	private ProbabilityService probabilityService;
@@ -108,6 +113,7 @@ public class AdminOrderController extends PaginationController {
 			order.setProjectId(getProjectId(request));
 			order.setStatus(CommonStatus.ONLINE);
 			orderService.insertOrder(order);
+			redisService.set(RedisConstant.getOrderInitCountKey(order.getOrderId()), order.getAmount().toString());
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

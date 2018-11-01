@@ -13,7 +13,7 @@
 	</div>
 	<div class="container-fluid">
 		<div class="row-fluid">
-			<form action="${rc.contextPath}/admin/${functionName}/insert.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
+			<form action="${rc.contextPath}/admin/${functionName}/allocatePlan.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
 				<input type="hidden" name="planId" value="${planId}" style="width:60%;">
 				<input type="hidden" name="advertiserId" value="${advertiserId}" style="width:60%;">
 				<div class="span12">

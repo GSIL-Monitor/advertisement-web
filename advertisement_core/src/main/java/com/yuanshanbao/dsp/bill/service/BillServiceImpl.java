@@ -26,6 +26,7 @@ import com.yuanshanbao.dsp.bill.model.Bill;
 import com.yuanshanbao.dsp.bill.model.BillType;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -169,20 +170,27 @@ public class BillServiceImpl implements BillService {
 			}
 		}
 		checkPlanBalance(plan, money);
-		redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()), money);
-		Plan resultPlan = planService.selectPlan(plan.getPlanId());
-		if ((plan.getSpend().compareTo(new BigDecimal(0))) < 0) {
-			resultPlan.setStatus(PlanStatus.NOTFUNDS);
-			// 把计划设置为余额不足
-			planService.updatePlan(resultPlan);
-			Probability proParam = new Probability();
-			proParam.setStatus(CommonStatus.ONLINE);
+		checkOrderBalance(plan, money);
+	}
+
+	private void checkOrderBalance(Plan plan, Double money) {
+		if (money <= 0) {
+			return;
+		}
+		Double totalAmount = redisService
+				.increByDouble(RedisConstant.getOrderBalanceCountKey(plan.getOrderId()), money);
+		Double initAmount = Double.valueOf(redisService.get(RedisConstant.getOrderInitCountKey(plan.getOrderId())));
+		if (initAmount < totalAmount) {
 			// 把在投放的删除
+			Probability proParam = new Probability();
+			proParam.setOrderId(plan.getOrderId());
+			proParam.setStatus(CommonStatus.ONLINE);
 			List<Probability> probabilityList = probabilityService.selectProbabilitys(proParam, new PageBounds());
 			for (Probability pro : probabilityList) {
 				pro.setStatus(CommonStatus.OFFLINE);
 				probabilityService.updateProbability(pro);
 			}
+
 		}
 	}
 
@@ -359,9 +367,8 @@ public class BillServiceImpl implements BillService {
 	}
 
 	public void calculateByPlan(String date) {
-		Map<String, Map<Long, BigDecimal>> channelCostMap = getChannelAllBid();
 		Plan param = new Plan();
-		param.setStatus(CommonStatus.ONLINE);
+		param.setStatus(PlanStatus.ONLINE);
 		BigDecimal money = null;
 		Integer count = 0;
 		List<Plan> planList = planService.selectPlan(param, new PageBounds());
@@ -375,6 +382,7 @@ public class BillServiceImpl implements BillService {
 				count = 0;
 				QuotaOperationFactory factory = QuotaType.getCountFactory(plan.getChargeType());
 				AdvertisementOperation operation = factory.getOperation();
+				operation.setProbability(probability);
 				operation.setRedisCacheService(redisCacheService);
 				String countValue = operation.getProbabilityResult();
 				// 竞价信息随时改变，因此不能按照所有数量进行计算
@@ -384,10 +392,11 @@ public class BillServiceImpl implements BillService {
 							probability.getProbabilityId()));
 					count = currentCount - lastCount;
 					// 获取竞价信息
-					Map<Long, BigDecimal> proCostMap = channelCostMap.get(probability.getChannel());
+					Map<Long, BigDecimal> proCostMap = DspConstantsManager.getBidByChannel(probability.getChannel());
 					if (proCostMap != null) {
 						if (proCostMap.get(probability.getProbabilityId()) != null) {
-							money = proCostMap.get(probability.getProbabilityId()).multiply(BigDecimal.valueOf(count));
+							BigDecimal unitPrice = getUnitPrice(plan, probability, proCostMap);
+							money = unitPrice.multiply(BigDecimal.valueOf(count));
 							String proMoneyValue = redisService.get(RedisConstant.getProbabilityBalanceCountKey(date,
 									probability.getProbabilityId()));
 							if (ValidateUtil.isNumber(proMoneyValue)) {
@@ -406,6 +415,17 @@ public class BillServiceImpl implements BillService {
 				}
 			}
 		}
+	}
+
+	private BigDecimal getUnitPrice(Plan plan, Probability probability, Map<Long, BigDecimal> proCostMap) {
+		BigDecimal bestBid = proCostMap.get(probability.getProbabilityId());
+		BigDecimal unitPrice = new BigDecimal(0);
+		if (QuotaType.CPM.equals(plan.getChargeType())) {
+			unitPrice = bestBid.divide(new BigDecimal(1000));
+		} else {
+			unitPrice = bestBid;
+		}
+		return unitPrice;
 	}
 
 	@Override

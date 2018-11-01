@@ -238,7 +238,6 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 			if (function == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-
 			strategyService.updatePlanStrategy(request, planId, advertiserId);
 			// AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);

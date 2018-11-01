@@ -44,6 +44,8 @@ public class Product {
 
 	private String bigImageUrl;
 
+	private String queryUrl;
+
 	private String detailImageUrl;
 
 	private String featureTags;
@@ -113,6 +115,14 @@ public class Product {
 	// ~ Get and Set Methods
 	// =================================================================================
 
+
+	public String getQueryUrl() {
+		return queryUrl;
+	}
+
+	public void setQueryUrl(String queryUrl) {
+		this.queryUrl = queryUrl;
+	}
 
 	public BigDecimal getBrokerage() {
 		return brokerage;

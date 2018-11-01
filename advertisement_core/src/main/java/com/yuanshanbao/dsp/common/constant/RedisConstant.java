@@ -33,7 +33,7 @@ public class RedisConstant {
 	private static final String ADVERTISER_LAST_BALANCE_COUNT = "advertiser_last_balance_count" + COMMON_REDIS_PREFIX;
 
 	public static final String ORDER_BALANCE_COUNT = "order_balance_count" + COMMON_REDIS_PREFIX;
-	private static final String ORDER_LAST_BALANCE_COUNT = "order_last_balance_count" + COMMON_REDIS_PREFIX;
+	private static final String ORDER_INIT_BALANCE_COUNT = "order_init_balance_count" + COMMON_REDIS_PREFIX;
 
 	public static final String QUOTA_COUNT = "quota_count" + COMMON_REDIS_PREFIX;
 	public static final String REVERSE_SHOW_COUNT = "reverse_show_count" + COMMON_REDIS_PREFIX;
@@ -362,18 +362,12 @@ public class RedisConstant {
 	}
 
 	// 订单余额消耗
-	public static String getOrderBalanceCountKey(String date, Long orderId) {
-		if (StringUtils.isBlank(date)) {
-			date = DateUtils.format(new Date());
-		}
-		return getCachePrefix(ORDER_BALANCE_COUNT, date + "_" + orderId + "");
+	public static String getOrderBalanceCountKey(Long orderId) {
+		return getCachePrefix(ORDER_BALANCE_COUNT, orderId + "");
 	}
 
-	public static String getOrderLastBalanceCountKey(String date, Long orderId) {
-		if (StringUtils.isBlank(date)) {
-			date = DateUtils.format(new Date());
-		}
-		return getCachePrefix(ORDER_LAST_BALANCE_COUNT, date + "_" + orderId + "");
+	public static String getOrderInitCountKey(Long orderId) {
+		return getCachePrefix(ORDER_INIT_BALANCE_COUNT, orderId + "");
 	}
 
 	// 计划余额消耗

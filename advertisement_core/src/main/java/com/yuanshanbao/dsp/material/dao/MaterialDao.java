@@ -18,4 +18,6 @@ public interface MaterialDao {
 
 	public List<Material> selectMaterialsByIds(Map<String, Object> parameters, PageBounds pageBounds);
 
+	public List<Material> selectMaterialByIds(List<Long> materialIds);
+
 }
