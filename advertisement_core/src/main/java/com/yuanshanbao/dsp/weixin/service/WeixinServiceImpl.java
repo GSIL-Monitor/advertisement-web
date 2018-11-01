@@ -1,11 +1,17 @@
 package com.yuanshanbao.dsp.weixin.service;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +30,7 @@ import com.github.sd4324530.fastweixin.api.response.OauthGetTokenResponse;
 import com.github.sd4324530.fastweixin.message.TemplateMsg;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.HttpUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.PropertyUtil;
 import com.yuanshanbao.dsp.common.model.Alarm;
@@ -58,6 +65,7 @@ public class WeixinServiceImpl implements WeixinService {
 	private Map<String, TemplateAPI> templateApiMap = new HashMap<>();
 	private Map<String, JsAPI> jsApiMap = new HashMap<>();
 	private Map<String, String> appIdMap = new HashMap<>();
+	private Map<String, ApiConfig> apiConfigMap = new HashMap<>();
 
 	@PostConstruct
 	public void init() {
@@ -75,6 +83,7 @@ public class WeixinServiceImpl implements WeixinService {
 			templateApiMap.put(configSegs[i], templateApi);
 			jsApiMap.put(configSegs[i], jsApi);
 			appIdMap.put(configSegs[i], appIdSegs[i]);
+			apiConfigMap.put(configSegs[i], apiConfig);
 		}
 	}
 
@@ -332,4 +341,29 @@ public class WeixinServiceImpl implements WeixinService {
 		return appIdMap.get(key);
 	}
 
+	public byte[] dealQRCode(String key, String scene, String page) {
+		ApiConfig apiConfig = apiConfigMap.get(key);
+		String accessToken = apiConfig.getAccessToken();
+		byte[] result = getQrCode(scene, page, accessToken);
+		return result;
+
+	}
+
+	private byte[] getQrCode(String scene, String page, String accessToken) {
+		try {
+			String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + accessToken;
+			JSONObject param = new JSONObject();
+			param.put("scene", scene);
+			param.put("page", page);
+			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
+			ByteArrayInputStream bais = new ByteArrayInputStream(byteArr);
+			BufferedImage bi1 = ImageIO.read(bais);
+			File w2 = new File("E://QQ.jpg");// 可以是jpg,png,gif格式
+			ImageIO.write(bi1, "jpg", w2);// 不管输出什么格式图片，此处不需改动
+			return byteArr;
+		} catch (Exception e) {
+			LoggerUtil.error("[bxm_nofity]", e);
+		}
+		return null;
+	}
 }
