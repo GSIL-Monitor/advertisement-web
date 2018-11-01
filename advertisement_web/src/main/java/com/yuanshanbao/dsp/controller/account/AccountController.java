@@ -307,14 +307,13 @@ public class AccountController extends BaseController {
 
 	@RequestMapping("/bindBankCard")
 	@ResponseBody
-	public Object bindBankCard(HttpServletRequest request, String appId, String params) {
+	public Object bindBankCard(HttpServletRequest request, String appId, String params, String token) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
-			String token = parameterMap.get("token");
 			String bankCardNumber = parameterMap.get("bankCardNumber");
 
-			User loginToken = tokenService.verifyLoginToken(token);
+			User loginToken = getLoginUser(token);
 			if (loginToken == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
@@ -333,10 +332,12 @@ public class AccountController extends BaseController {
 
 	@RequestMapping("/withdraw")
 	@ResponseBody
-	public Object withdraw(HttpServletRequest request, @RequestParam String token, String withdrawAmount) {
+	public Object withdraw(HttpServletRequest request, String appId, String params, String token) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User loginToken = tokenService.verifyLoginToken(token);
+			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
+			String withdrawAmount = parameterMap.get("withdrawAmount");
+			User loginToken = getLoginUser(token);
 			if (loginToken == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
