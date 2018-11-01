@@ -523,7 +523,6 @@ public class UserController extends BaseController {
 			if (StringUtil.isEmpty(opinion))
 				throw new BusinessException(ComRetCode.NO_OPIOION);
 			User user = new User();
-			user.setOpinion(opinion);
 			user.setUserId(loginToken.getUserId());
 			userService.updateUser(user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
