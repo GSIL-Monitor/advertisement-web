@@ -216,20 +216,22 @@ public class ProductController extends BaseController {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			String brandFeature = product.getBrandFeature();
+            String schoolTime = product.getSchoolTime();
+            String[] splitSchoolTime = schoolTime.split(",");
 
-			// Map<String, String> brandFeatureMap =
+            // Map<String, String> brandFeatureMap =
 			// productService.getBrandFeatureMap(brandFeature);
 			List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
 			resultMap.put("brandFeatureList", featureList);
 			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
 			List<TagsVo> recommendTagsList = vo.getRecommendTagsList();
-
 			checkApplyStatus(token, vo);
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
 			// }
 			resultMap.put("product", vo);
+            resultMap.put("activitt", splitSchoolTime);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
