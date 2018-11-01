@@ -318,7 +318,7 @@ public class BaseController {
 		} else {
 			String appId = request.getParameter("appId");
 			appKey = appService.getAppKey(appId);
-			if (StringUtils.isNotBlank(appKey) && (appKey.equals(AppType.XINGDAI) || appKey.equals(AppType.RUIDAI)) || appKey.equals(AppType.WANGZHUAN)) {
+			if (StringUtils.isNotBlank(appKey) &&((appKey.equals(AppType.XINGDAI) || appKey.equals(AppType.RUIDAI)) || appKey.equals(AppType.WANGZHUAN))) {
 				return appKey;
 			}
 		}

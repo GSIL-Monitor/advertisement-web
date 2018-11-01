@@ -1,13 +1,11 @@
 package com.yuanshanbao.dsp.product.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.map.LinkedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -191,6 +189,25 @@ public class ProductServiceImpl implements ProductService {
 		// return handler.getApplyInterface();
 		// }
 		return product.getApplyInterface();
+	}
+
+	@Override
+	public Map<String, String> getBrandFeatureMap(String brandFeature) {
+
+		Map<String ,String> brandFeatureMap = new LinkedMap();
+		if (brandFeature == null){
+			brandFeatureMap.put("brandFeature",brandFeature);
+			return brandFeatureMap;
+		}
+		String[] splitBrandFeature = brandFeature.split(" ");
+		List<String> arrayList =  Arrays.asList(splitBrandFeature);
+		for (int i= 0; i<arrayList.size(); i++){
+			List<String> splitBrandList = new ArrayList<>();
+			String[] split = arrayList.get(i).split(":");
+			splitBrandList = Arrays.asList(split);
+			brandFeatureMap.put(splitBrandList.get(0),splitBrandList.get(1));
+		}
+		return brandFeatureMap;
 	}
 
 }

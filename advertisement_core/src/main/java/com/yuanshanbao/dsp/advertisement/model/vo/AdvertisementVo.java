@@ -123,6 +123,9 @@ public class AdvertisementVo {
 	}
 
 	public String getStatusValue() {
-		return CommonStatus.getDescription(probability.getStatus());
+		if (probability == null){
+			return CommonStatus.getDescription(CommonStatus.ONLINE);
+		}
+		 return CommonStatus.getDescription(probability.getStatus());
 	}
 }

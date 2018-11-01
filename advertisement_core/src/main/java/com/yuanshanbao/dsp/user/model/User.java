@@ -21,31 +21,15 @@ public class User implements Serializable {
 	private String name;
 	private String avatar;
 	private Integer inviteType;
+	private Long inviteUserId;
 	private Integer status;
 	private Integer userType;
 	private Timestamp createTime;
 	private Timestamp updateTime;
 
 	private BaseInfo baseInfo;
-	private Long inviteUserId;
-	private String identity;
-	private String opinion;
 
-	public String getOpinion() {
-		return opinion;
-	}
 
-	public void setOpinion(String opinion) {
-		this.opinion = opinion;
-	}
-
-	public String getIdentity() {
-		return identity;
-	}
-
-	public void setIdentity(String identity) {
-		this.identity = identity;
-	}
 
 	public Long getInviteUserId() {
 		return inviteUserId;
