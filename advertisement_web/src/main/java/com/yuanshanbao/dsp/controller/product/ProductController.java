@@ -216,12 +216,8 @@ public class ProductController extends BaseController {
                 throw new BusinessException(ComRetCode.WRONG_PARAMETER);
             }
             String brandFeature = product.getBrandFeature();
-            String schoolTime = product.getSchoolTime();
-            if (schoolTime == null) {
-                schoolTime = "";
-            }
+            String [] schoolTime = product.getSchoolTimeValue();
 
-            String[] splitSchoolTime = schoolTime.split(",");
             // Map<String, String> brandFeatureMap =
             // productService.getBrandFeatureMap(brandFeature);
             List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
@@ -234,7 +230,7 @@ public class ProductController extends BaseController {
             // vo.setApplyInterface(null);
             // }
             resultMap.put("product", vo);
-            resultMap.put("activitt", splitSchoolTime);
+            resultMap.put("activity", schoolTime);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

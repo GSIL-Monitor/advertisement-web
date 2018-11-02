@@ -455,9 +455,12 @@ public class Product {
 		this.detailImageTags = detailImageTags;
 	}
 
-	public String getSchoolTime() {
-		return schoolTime;
+
+	public String [] getSchoolTimeValue(){
+		 String [] getValue= schoolTime.split(",");
+		 return getValue;
 	}
+
 
 	public void setSchoolTime(String schoolTime) {
 		this.schoolTime = schoolTime;
@@ -507,4 +510,7 @@ public class Product {
 		this.deliverOrderUrl = deliverOrderUrl;
 	}
 
+    public String getSchoolTime() {
+	    return  schoolTime;
+    }
 }

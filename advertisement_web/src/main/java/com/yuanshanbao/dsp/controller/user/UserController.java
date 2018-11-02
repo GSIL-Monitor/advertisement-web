@@ -416,6 +416,7 @@ public class UserController extends BaseController {
 			String password = parameterMap.get("password");
 			String smsCode = parameterMap.get("smsCode"); // 验证码
 			String inviteCode = parameterMap.get("inviteCode");
+			String inviteUserId = parameterMap.get("inviteUserId");
 			String registerFrom = parameterMap.get("from");
 			String userIp = JSPHelper.getRemoteAddr(request);
 
@@ -437,6 +438,7 @@ public class UserController extends BaseController {
 				user = new User();
 				user.setMobile(mobile);
 				user.setRegisterFrom(registerFrom);
+				user.setInviteUserId(Long.valueOf(inviteUserId));
 				user.setStatus(UserStatus.NORMAL);
 				generateUser(user, password, inviteCode);
 				LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "", userIp);

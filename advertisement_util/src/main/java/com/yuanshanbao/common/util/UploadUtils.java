@@ -151,6 +151,19 @@ public class UploadUtils {
 		// return getFtpUtil().upload(file, path, 1);
 		ossUtils.putObject(content, length, path);
 	}
+	public static String uploadBytes(InputStream content, long length, String suffixPath) throws IOException {
+		// return getFtpUtil().upload(file, path, 1);
+
+		String baseUrl = OSS_HOST_FILES;
+		if (FTP_AVATAR.equals(suffixPath) || FTP_COMPANY_LOGO.equals(suffixPath)
+				|| FTP_COMPANY_IMAGE.equals(suffixPath)
+				) {
+			baseUrl = OSS_HOST_IMAGES;
+		}
+		String path = suffixPath;
+		ossUtils.putObject(content, length, path);
+		return baseUrl + "/" + path;
+	}
 
 	public static String getHttpUrl() {
 		return httpUrl;

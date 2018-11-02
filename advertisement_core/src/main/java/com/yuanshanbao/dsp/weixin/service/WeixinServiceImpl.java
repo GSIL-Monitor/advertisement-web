@@ -61,7 +61,6 @@ public class WeixinServiceImpl implements WeixinService {
 	private Map<String, TemplateAPI> templateApiMap = new HashMap<>();
 	private Map<String, JsAPI> jsApiMap = new HashMap<>();
 	private Map<String, String> appIdMap = new HashMap<>();
-	private Map<String, String> appSecretMap = new HashMap<>();
 	private Map<String, ApiConfig> apiConfigMap = new HashMap<>();
 
 	@PostConstruct
@@ -80,7 +79,6 @@ public class WeixinServiceImpl implements WeixinService {
 			templateApiMap.put(configSegs[i], templateApi);
 			jsApiMap.put(configSegs[i], jsApi);
 			appIdMap.put(configSegs[i], appIdSegs[i]);
-			appSecretMap.put(configSegs[i], appSecretSegs[i]);
 			apiConfigMap.put(configSegs[i], apiConfig);
 		}
 	}
@@ -341,10 +339,7 @@ public class WeixinServiceImpl implements WeixinService {
 
 	@Override
 	public String getAppSecret(String key) {
-		if (StringUtils.isBlank(key)) {
-			return appSecretMap.get(CONFIG_SERVICE);
-		}
-		return appSecretMap.get(key);
+		return null;
 	}
 
 	public byte[] dealQRCode(String key, String scene, String page) {
@@ -361,6 +356,13 @@ public class WeixinServiceImpl implements WeixinService {
 			JSONObject param = new JSONObject();
 			param.put("scene", scene);
 			param.put("page", page);
+			param.put("width", 430);
+			param.put("auto_color", false);
+			Map<String,Object> line_color = new HashMap<>();
+			line_color.put("r", 0);
+			line_color.put("g", 0);
+			line_color.put("b", 0);
+			param.put("line_color", line_color);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
 			return byteArr;
 		} catch (Exception e) {
@@ -368,5 +370,4 @@ public class WeixinServiceImpl implements WeixinService {
 		}
 		return null;
 	}
-
 }
