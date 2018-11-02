@@ -16,6 +16,8 @@ import com.yuanshanbao.dsp.bankcard.service.BankCardService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.information.service.InformationService;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.service.ProductService;
@@ -31,16 +33,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.smartcardio.Card;
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.*;
 
 
 /**
  * Created by Administrator on 2018/10/23.
  */
-@RequestMapping("/card")
+@RequestMapping("/i/bankCard")
 @Controller
 public class UserBankCardController extends BaseController {
 
@@ -61,6 +60,8 @@ public class UserBankCardController extends BaseController {
     private ProductService productService;
     @Autowired
     private AgencyService agencyService;
+    @Autowired
+    private InformationService informationService;
 
     @ResponseBody
     @RequestMapping("list")
@@ -103,37 +104,46 @@ public class UserBankCardController extends BaseController {
 
     @RequestMapping("/applyCard")
     @ResponseBody
-    public Object applyCard(HttpServletRequest request, BankCard card, @RequestParam("productId") Long productId,@RequestParam("name") String name,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
+    public Object applyCard(HttpServletRequest request, BankCard card, @RequestParam("productId") Long productId,@RequestParam("userName") String userName,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             if (!ValidateUtil.isPhoneNo(mobile)){
                 throw  new BusinessException(ComRetCode.WRONG_MOBILE);
             }
-            User user = userService.selectUserByMobile(mobile);
+            Information queryInfomation = new Information();
+            queryInfomation.setName(userName);
+            queryInfomation.setMobile(mobile);
+            Information queryInformation = informationService.selectInformationByMobile(mobile);
             Product product = productService.selectProduct(productId);
-            if (user == null){
+            if (queryInformation == null){
                 //添加用户
-                User insertUser = new User();
-                insertUser.setUserName(name);
-                insertUser.setMobile(mobile);
-                insertUser.setInviteUserId(Long.valueOf(inviteUserId));
-                userService.insertUser(insertUser);
+                Information information = new Information();
+                information.setName(userName);
+                information.setMobile(mobile);
+                information.setUserId(Long.valueOf(inviteUserId));  //邀请人ID
+                informationService.insertInformation(information);
             }else {
-              if (!name.equals(user.getUserName())){
-                  throw new BusinessException(ComRetCode.USER_EXIST);
+              if (!userName.equals(queryInformation.getName())){
+                  throw new BusinessException(ComRetCode.NO_USERNAME);
               }
             }
-            User userByMobile = userService.selectUserByMobile(mobile);
+            Information informations = informationService.selectInformationByMobile(mobile);
             Agency agency = new Agency();
-            agency.setUserId(userByMobile.getUserId());
-            agency.setInviteUserId(userByMobile.getInviteUserId());
+            agency.setUserId(informations.getInformationId());
+            agency.setInviteUserId(Long.valueOf(inviteUserId));
+            List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
             agency.setProductId(productId);
             agency.setProductName(product.getName());
             agency.setStatus(AgencyStatus.ONCHECK);
-            agency.setUserName(userByMobile.getUserName());
-            agencyService.insertAgency(agency);
+            agency.setUserName(informations.getName());
+
+            if (agencyList.size() == 0){
+                agencyService.insertAgency(agency);
+            }else{
+                throw new BusinessException(ComRetCode.APPLY_EXIST_ERROR);
+            }
             InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
-            resultMap.put("queryUrl", product.getQueryUrl());
+            resultMap.put("applyCard", product.getDetailImageUrl());
 
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -144,7 +154,7 @@ public class UserBankCardController extends BaseController {
         return resultMap;
     }
 
-    @RequestMapping("/insert")
+    @RequestMapping("/insertBank")
     @ResponseBody
     public Object insertCard(HttpServletRequest request, BankCard card, String token) {
         Map<String, Object> resultMap = new HashMap<>();

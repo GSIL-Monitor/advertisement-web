@@ -53,4 +53,5 @@ public interface UserService {
 
 	public void updateUserBaseInfoIfNotExists(User user, String name, String avatar, String gender);
 
+
 }

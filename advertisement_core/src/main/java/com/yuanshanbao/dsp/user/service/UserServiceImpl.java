@@ -6,6 +6,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.yuanshanbao.dsp.agency.dao.AgencyDao;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
+import com.yuanshanbao.dsp.product.dao.ProductDao;
+import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.service.ProductService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +65,10 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private TokenService tokenService;
 
+	@Autowired
+    private ProductDao productDao;
+	@Autowired
+    private AgencyDao agencyDao;
 	@Transactional
 	@Override
 	public void insertUser(User user) {
@@ -387,5 +398,7 @@ public class UserServiceImpl implements UserService {
 
 		insertOrUpdateBaseInfo(baseInfo);
 	}
+
+
 
 }

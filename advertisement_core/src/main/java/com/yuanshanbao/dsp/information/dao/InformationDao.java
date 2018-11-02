@@ -16,4 +16,8 @@ public interface InformationDao {
 	public int updateInformation(Information information);
 
 	public List<Information> selectInformations(List<Long> informationIdList);
+
+
+
+	Information selectinformationByMobile(String mobile);
 }

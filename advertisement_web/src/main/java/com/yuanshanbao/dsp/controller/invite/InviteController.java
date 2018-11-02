@@ -28,7 +28,7 @@ import java.util.Map;
  * Created by Administrator on 2018/10/31.
  */
 @Controller
-@RequestMapping("/invite")
+@RequestMapping("/i/invite")
 public class InviteController extends BaseController {
 
 	private static final String WANGZHUAN_KEY = "wzxcx";
