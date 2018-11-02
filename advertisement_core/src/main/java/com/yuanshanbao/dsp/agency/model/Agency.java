@@ -99,8 +99,8 @@ public class Agency implements Serializable  {
     public String getStatusValue(){
             return AgencyStatus.getDescription(status);
     }
-    public BigDecimal getBrokerageValue() {
-        return brokerage.setScale(2, RoundingMode.HALF_UP);
+    public String getBrokerageValue() {
+        return String.valueOf(brokerage);
     }
 
 

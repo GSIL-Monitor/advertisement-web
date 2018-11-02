@@ -53,12 +53,11 @@ public class InviteController extends BaseController {
 			String qrCode = UploadUtils.uploadBytes(input, input.available(), "test/image/avatar" + System.nanoTime()
 					+ (int) (Math.random() * 10000) + ".png");
 			/* String path = UploadUtils.uploadFile(file, "test/img"); */
-			String url = IMAGE_URL+"?userId="+user.getUserId()+"&userName="+user.getUserName()+"&avatar="+user.getAvatar();
+			String url = URL+"?userId="+user.getUserId()+"&userName="+user.getUserName()+"&avatar="+user.getAvatar()+"&inviteUserId="+user.getInviteUserId();
 			resultMap.put("user", user);
 			resultMap.put("QRcode", qrCode);
 			resultMap.put("url",url);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
-
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
