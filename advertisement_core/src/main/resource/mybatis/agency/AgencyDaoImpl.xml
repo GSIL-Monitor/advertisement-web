@@ -95,9 +95,9 @@
 
 	<insert id="insertAgency" parameterType="Agency">
 		insert into
-		tb_agency(user_id,invite_user_id,user_name,invite_name,brokerage,product_id,product_name,invite_time,status)
+		tb_agency(user_id,invite_user_id,user_name,agency_name,brokerage,product_id,product_name,invite_time,status)
 		values
-		(#{userId}, #{inviteUserId}, #{userName}, #{invateName},#{brokerage},#{productId},#{productName},
+		(#{userId}, #{inviteUserId}, #{userName}, #{agencyName},#{brokerage},#{productId},#{productName},
 		#{inviteTime},#{status})
 		<selectKey resultType="java.lang.Long" order="AFTER"
 				   keyProperty="userId">

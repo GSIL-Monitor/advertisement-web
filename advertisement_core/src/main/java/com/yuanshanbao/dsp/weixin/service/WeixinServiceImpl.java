@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.weixin.service;
 
+import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -356,14 +357,23 @@ public class WeixinServiceImpl implements WeixinService {
 			JSONObject param = new JSONObject();
 			param.put("scene", scene);
 			param.put("page", page);
-			param.put("width", 430);
-			param.put("auto_color", false);
-			Map<String,Object> line_color = new HashMap<>();
-			line_color.put("r", 0);
-			line_color.put("g", 0);
-			line_color.put("b", 0);
-			param.put("line_color", line_color);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
+
+
+			 InputStream inputStream = new ByteArrayInputStream(byteArr);
+
+			File file = new File("D://1234.png");
+			if (!file.exists()){
+				file.createNewFile();
+			}
+			OutputStream outputStream = new FileOutputStream(file);
+			int len = 0;
+			byte[] buf = new byte[1024];
+			while ((len = inputStream.read(buf, 0, 1024)) != -1) {
+				outputStream.write(buf, 0, len);
+			}
+			outputStream.flush();
+
 			return byteArr;
 		} catch (Exception e) {
 			LoggerUtil.error("[bxm_nofity]", e);

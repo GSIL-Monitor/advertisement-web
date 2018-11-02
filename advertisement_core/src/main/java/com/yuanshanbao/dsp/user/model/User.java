@@ -15,9 +15,9 @@ public class User implements Serializable {
 	private Long userId;
 	private String mobile;
 	private String weixinId;
-	private String userName;
 	private String password;
 	private String registerFrom;
+	private String userName;
 	private String name;
 	private String avatar;
 	private Integer inviteType;
@@ -30,6 +30,13 @@ public class User implements Serializable {
 	private BaseInfo baseInfo;
 
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	public Long getInviteUserId() {
 		return inviteUserId;
@@ -55,13 +62,6 @@ public class User implements Serializable {
 		this.mobile = mobile;
 	}
 
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 
 	public String getPassword() {
 		return password;

@@ -8,7 +8,7 @@ public class AgencyStatus {
 	protected static Map<Integer, String> codeDescriptionMap = new LinkedHashMap<Integer, String>();
 
 	public static final int ONCHECK = 0;
-	public static final String ONCHECK_DESCRIPTION = "未审核";
+	public static final String ONCHECK_DESCRIPTION = "待审核";
 	public static final int OFFCHECK = 1;
 	public static final String OFFCHECK_DESCRIPTION = "审核通过";
 	public static final int NOCKECK = 2;

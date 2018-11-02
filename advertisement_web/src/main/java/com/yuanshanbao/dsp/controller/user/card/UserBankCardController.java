@@ -7,6 +7,9 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.bankcard.model.BankCard;
 import com.yuanshanbao.dsp.bankcard.model.vo.GetBank;
 import com.yuanshanbao.dsp.bankcard.service.BankCardService;
@@ -56,6 +59,8 @@ public class UserBankCardController extends BaseController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private AgencyService agencyService;
 
     @ResponseBody
     @RequestMapping("list")
@@ -98,16 +103,38 @@ public class UserBankCardController extends BaseController {
 
     @RequestMapping("/applyCard")
     @ResponseBody
-    public Object applyCard(HttpServletRequest request, BankCard card, String token, @RequestParam("productId") Long productId) {
+    public Object applyCard(HttpServletRequest request, BankCard card, @RequestParam("productId") Long productId,@RequestParam("name") String name,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
         Map<String, Object> resultMap = new HashMap<>();
-        User loginToken = tokenService.verifyLoginToken(token);
         try {
-            User user = userService.selectUserById(loginToken.getUserId());
-            resultMap.put("user", user);
-            if (productId != null) {
-                Product product = productService.selectProduct(productId);
-                resultMap.put("queryUrl", product.getQueryUrl());
+            if (!ValidateUtil.isPhoneNo(mobile)){
+                throw  new BusinessException(ComRetCode.WRONG_MOBILE);
             }
+            User user = userService.selectUserByMobile(mobile);
+            Product product = productService.selectProduct(productId);
+            if (user == null){
+                //添加用户
+                User insertUser = new User();
+                insertUser.setUserName(name);
+                insertUser.setMobile(mobile);
+                insertUser.setInviteUserId(Long.valueOf(inviteUserId));
+                userService.insertUser(insertUser);
+            }else {
+              if (!name.equals(user.getUserName())){
+                  throw new BusinessException(ComRetCode.USER_EXIST);
+              }
+            }
+            User userByMobile = userService.selectUserByMobile(mobile);
+            Agency agency = new Agency();
+            agency.setUserId(userByMobile.getUserId());
+            agency.setInviteUserId(userByMobile.getInviteUserId());
+            agency.setProductId(productId);
+            agency.setProductName(product.getName());
+            agency.setStatus(AgencyStatus.ONCHECK);
+            agency.setUserName(userByMobile.getUserName());
+            agencyService.insertAgency(agency);
+            InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
+            resultMap.put("queryUrl", product.getQueryUrl());
+
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {
@@ -140,7 +167,7 @@ public class UserBankCardController extends BaseController {
             String smsCode = request.getParameter("code");
             String userIp = JSPHelper.getRemoteAddr(request);
             //与第一次添加姓名一致
-            if (!(StringUtil.isEmpty(user.getUserName()) || userName.equals(user.getUserName()))) {
+            if (!(StringUtil.isEmpty(user.getName()) || userName.equals(user.getName()))) {
                 InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NO_USERNAME);
                 return resultMap;
             }

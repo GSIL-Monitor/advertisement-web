@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -63,9 +65,26 @@ public class InviteController extends BaseController {
             User user = userService.selectUserById(2l);
 //            String secne = "userId="+(user.getUserId())+"name"+(user.getName());
 
-            byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, "", URL);
+            byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, "123", URL);
+
+
+
+            String newFilename="D://1.png";
+            FileImageOutputStream imgout=new FileImageOutputStream(new File(newFilename));
+            imgout.write(bytes,0,bytes.length);
+            imgout.close();
+
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            BufferedImage bi1 =ImageIO.read(bais);
+            File w2 = new File("D://meinv.jpg");
+            ImageIO.write(bi1, "jpg", w2);
+
+
             InputStream input = new ByteArrayInputStream(bytes);
-            String qrCode = UploadUtils.uploadBytes(input,input.available(), "/test/image/avatar/"+ System.nanoTime() + (int)(Math.random() * 10000) + ".png");
+            ImageInputStream imageInputStream = ImageIO.createImageInputStream(input);
+
+            String qrCode = UploadUtils.uploadBytes(input,input.available(), "test/image/avatar/"+ System.nanoTime() + (int)(Math.random() * 10000) + ".png");
             /*String path = UploadUtils.uploadFile(file, "test/img");*/
             resultMap.put("user",user);
             resultMap.put("QRcode", qrCode);
