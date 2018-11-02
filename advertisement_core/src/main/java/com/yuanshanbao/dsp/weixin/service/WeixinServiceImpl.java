@@ -354,11 +354,11 @@ public class WeixinServiceImpl implements WeixinService {
 		try {
 			String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + accessToken;
 			JSONObject param = new JSONObject();
-			param.put("scene", scene);
 			param.put("page", page);
+			param.put("scene", scene);
 			param.put("width", 430);
 			param.put("auto_color", false);
-			Map<String,Object> line_color = new HashMap<>();
+			Map<String, Object> line_color = new HashMap<>();
 			line_color.put("r", 0);
 			line_color.put("g", 0);
 			line_color.put("b", 0);
@@ -366,7 +366,7 @@ public class WeixinServiceImpl implements WeixinService {
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
 			return byteArr;
 		} catch (Exception e) {
-			LoggerUtil.error("[bxm_nofity]", e);
+			LoggerUtil.error("[getQrCode]", e);
 		}
 		return null;
 	}
