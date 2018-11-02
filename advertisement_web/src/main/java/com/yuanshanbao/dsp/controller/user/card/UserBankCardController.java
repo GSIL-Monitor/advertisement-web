@@ -103,33 +103,16 @@ public class UserBankCardController extends BaseController {
         return resultMap;
     }
 
-    @RequestMapping(value = "/applyCard",method= RequestMethod.GET,produces="text/html;charset=UTF-8")
+    @RequestMapping("/applyCard")
     @ResponseBody
-    public Object applyCard(HttpServletRequest request, BankCard card, @RequestParam("productId") Long productId,@RequestParam("userName" ) String userName,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
+    public Object applyCard(HttpServletRequest request, @RequestParam("productId") Long productId,@RequestParam("userName" ) String userName,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             if (!ValidateUtil.isPhoneNo(mobile)){
                 throw  new BusinessException(ComRetCode.WRONG_MOBILE);
             }
-            Information queryInfomation = new Information();
-            queryInfomation.setName(userName);
-            queryInfomation.setMobile(mobile);
-            Information queryInformation = informationService.selectInformationByMobile(mobile);
-            Product product = productService.selectProduct(productId);
-            if (queryInformation == null){
-                //添加用户
-                Information information = new Information();
-                information.setName(userName);
-                information.setMobile(mobile);
-                information.setUserId(Long.valueOf(inviteUserId));  //邀请人ID
-                informationService.insertInformation(information);
-            }else {
-              if (userName.equals(queryInformation.getName())){
-                  throw new BusinessException(ComRetCode.USER_EXIST);
-              }
-            }
+            bankCardService.getApplyBankCardInfo(productId,userName,mobile,inviteUserId);
             InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
-            resultMap.put("applyCard", product.getDetailImageUrl());
 
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -158,7 +141,6 @@ public class UserBankCardController extends BaseController {
                 InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NOT_LOGIN);
                 return resultMap;
             }
-
             //添加卡
             String userName = parameterMap.get("userName");
             String cardNumber = parameterMap.get("cardNumber");

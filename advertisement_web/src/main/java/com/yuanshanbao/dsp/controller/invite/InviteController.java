@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-//import com.yuanshanbao.common.qrcode.ZXingCode;
 
 
 
@@ -32,7 +31,7 @@ import java.util.Map;
 public class InviteController extends BaseController {
 
 
-	private static final String URL = "pages/invitecard/invitecard";
+	private static final String URL = "https://wz.huhad.com/ipages/invitecard/invitecard";
 	private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541144361248_1832.png";
 
 	@Autowired
@@ -47,13 +46,13 @@ public class InviteController extends BaseController {
 	public Object inviteFriend(String token) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User user = userService.selectUserById(2l);
-			byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, "", URL);
+            User user = tokenService.verifyLoginToken(token);
+			byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, String.valueOf(user.getUserId()), URL);
 			InputStream input = new ByteArrayInputStream(bytes);
 			String qrCode = UploadUtils.uploadBytes(input, input.available(), "test/image/avatar" + System.nanoTime()
 					+ (int) (Math.random() * 10000) + ".png");
 			/* String path = UploadUtils.uploadFile(file, "test/img"); */
-			String url = URL+"?userId="+user.getUserId()+"&userName="+user.getUserName()+"&avatar="+user.getAvatar()+"&inviteUserId="+user.getInviteUserId();
+			String url = URL+"?userId="+user.getUserId();
 			resultMap.put("user", user);
 			resultMap.put("QRcode", qrCode);
 			resultMap.put("url",url);

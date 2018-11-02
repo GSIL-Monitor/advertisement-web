@@ -2,8 +2,15 @@ package com.yuanshanbao.dsp.bankcard.service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.dsp.agency.dao.AgencyDao;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.bankcard.dao.BankCardDao;
 import com.yuanshanbao.dsp.bankcard.model.BankCard;
+import com.yuanshanbao.dsp.information.dao.InformationDao;
+import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.product.dao.ProductDao;
+import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +24,13 @@ import java.util.List;
 public class BankCardServiceImpl implements BankCardService {
     @Autowired
     private BankCardDao bankCardDao;
+    @Autowired
+    private InformationDao informationDao;
+    @Autowired
+    private AgencyDao agencyDao;
+
+    @Autowired
+    private ProductDao productDao;
     @Override
     public List<BankCard> selectBankCards(BankCard bankCard, PageBounds pageBounds) {
         return null;
@@ -34,5 +48,36 @@ public class BankCardServiceImpl implements BankCardService {
         if (result < 0) {
             throw new BusinessException(ComRetCode.FAIL);
         }
+    }
+
+    @Override
+    public void getApplyBankCardInfo(Long productId, String userName, String mobile, String inviteUserId) {
+        Information queryInfomation = new Information();
+        queryInfomation.setName(userName);
+        queryInfomation.setMobile(mobile);
+        Information queryInformation = informationDao.selectinformationByMobile(mobile);
+        Product product =productDao.selectPrdouctById(productId);
+        if (queryInformation == null){
+            //添加用户
+            Information information = new Information();
+            information.setName(userName);
+            information.setMobile(mobile);
+            information.setUserId(Long.valueOf(inviteUserId));  //邀请人ID
+            informationDao.insertInformation(information);
+
+            Agency agency = new Agency();
+            agency.setInviteUserId(Long.valueOf(inviteUserId));
+            agency.setStatus(AgencyStatus.ONCHECK);
+            agency.setProductName(product.getName());
+            agency.setProductId(productId);
+            agency.setUserName(userName);
+            agency.setBrokerage(product.getBrokerage());
+            agencyDao.insertAgency(agency);
+        }else {
+            if (userName.equals(queryInformation.getName())){
+                throw new BusinessException(ComRetCode.USER_EXIST);
+            }
+        }
+
     }
 }

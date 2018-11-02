@@ -176,7 +176,8 @@ public class UserController extends BaseController {
 			String mobile = parameterMap.get("mobile");
 			String smsCode = parameterMap.get("smsCode");
 			String inviteCode = parameterMap.get("inviteCode");
-			String registerFrom = parameterMap.get("from");
+            String inviteUserId = parameterMap.get("inviteUserId");
+            String registerFrom = parameterMap.get("from");
 			String userIp = JSPHelper.getRemoteAddr(request);
 
 			// 4.校验短信
@@ -196,6 +197,7 @@ public class UserController extends BaseController {
 				} else {
 					user = new User();
 					user.setMobile(mobile);
+					user.setInviteUserId(Long.valueOf(inviteUserId));
 					user.setRegisterFrom(registerFrom);
 					user.setStatus(UserStatus.NORMAL);
 					String password = RandomUtil.generateNumberString(8);

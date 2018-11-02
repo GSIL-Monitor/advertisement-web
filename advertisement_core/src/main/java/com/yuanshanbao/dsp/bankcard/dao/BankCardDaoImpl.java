@@ -25,6 +25,6 @@ public class BankCardDaoImpl extends BaseDaoImpl implements BankCardDao{
 
     @Override
     public int insertBankCard(BankCard bankCard) {
-        return getSqlSession().insert("bankCard.insetBankCard",bankCard);
+        return getSqlSession().insert("bankCard.insertBankCard",bankCard);
     }
 }

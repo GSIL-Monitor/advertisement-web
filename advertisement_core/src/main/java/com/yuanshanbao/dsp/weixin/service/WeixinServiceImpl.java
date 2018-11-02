@@ -358,6 +358,9 @@ public class WeixinServiceImpl implements WeixinService {
 			param.put("scene", scene);
 			param.put("page", page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
+		/*	String result = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
+			System.out.println(result);*/
+
 			return byteArr;
 		} catch (Exception e) {
 			LoggerUtil.error("[bxm_nofity]", e);

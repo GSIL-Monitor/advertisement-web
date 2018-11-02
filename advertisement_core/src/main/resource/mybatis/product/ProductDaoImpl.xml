@@ -124,6 +124,12 @@
 		order by create_time desc
 	</select>
 
+	<select id="selectProductByProductId" resultType="Product">
+		SELECT *
+		FROM tb_product
+		WHERE
+		product_id = #{productId}
+	</select>
 	<select id="selectProductByIds" parameterType="List" resultMap="productMap">
 		select
 		* from
