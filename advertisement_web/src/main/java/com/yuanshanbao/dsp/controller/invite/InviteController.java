@@ -31,7 +31,7 @@ import java.util.Map;
 public class InviteController extends BaseController {
 
 
-	private static final String URL = "https://wz.huhad.com/ipages/invitecard/invitecard";
+	private static final String URL = "ipages/invitecard/invitecard";
 	private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541144361248_1832.png";
 
 	@Autowired
