@@ -31,7 +31,7 @@ import java.util.Map;
 public class InviteController extends BaseController {
 
 
-	private static final String URL = "ipages/invitecard/invitecard";
+	private static final String URL = "pages/invitecard/invitecard";
 	private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541144361248_1832.png";
 
 	@Autowired
@@ -54,8 +54,9 @@ public class InviteController extends BaseController {
 			/* String path = UploadUtils.uploadFile(file, "test/img"); */
 			String url = URL+"?userId="+user.getUserId();
 			resultMap.put("user", user);
-			resultMap.put("QRcode", qrCode);
 			resultMap.put("url",url);
+			resultMap.put("QRcode", qrCode);
+
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

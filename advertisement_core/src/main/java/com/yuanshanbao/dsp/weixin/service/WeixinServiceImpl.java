@@ -356,10 +356,10 @@ public class WeixinServiceImpl implements WeixinService {
 			String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + accessToken;
 			JSONObject param = new JSONObject();
 			param.put("scene", scene);
-			param.put("page", page);
+			param.put("page",page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
-		/*	String result = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
-			System.out.println(result);*/
+			String result = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
+			System.out.println(result);
 
 			return byteArr;
 		} catch (Exception e) {
