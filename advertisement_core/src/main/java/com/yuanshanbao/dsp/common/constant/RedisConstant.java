@@ -85,6 +85,8 @@ public class RedisConstant {
 	// 各个渠道计划的ctr
 	public static final String PROBABILITY_CHANNEL_CTR = "probability_channel_ctr" + COMMON_REDIS_PREFIX;
 
+	public static final String WEIXIN_ACCESS_TOKEN = "weixin_access_token" + COMMON_REDIS_PREFIX;
+
 	// token过期时间
 	public static int EXPIRE_LOGIN_TOKEN = IniCache.getIniIntValue(IniConstant.TOKEN_CACHE_TIME, 24 * 60 * 60);
 
@@ -445,5 +447,9 @@ public class RedisConstant {
 
 	public static String getProbabilityChannelCTRKey(Long probabilityId) {
 		return getCachePrefix(PROBABILITY_CHANNEL_CTR, probabilityId + "");
+	}
+
+	public static String getWeiXinAccessTokenKey(String appId, String appSecret) {
+		return getCachePrefix(WEIXIN_ACCESS_TOKEN, appId + "_" + appSecret);
 	}
 }
