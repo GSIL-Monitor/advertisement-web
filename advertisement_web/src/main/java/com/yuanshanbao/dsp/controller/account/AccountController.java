@@ -12,6 +12,7 @@ import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.earnings.model.Earnings;
 import com.yuanshanbao.dsp.earnings.service.EarningsService;
+import com.yuanshanbao.dsp.level.service.LevelService;
 import com.yuanshanbao.dsp.payment.PaymentInterfaceService;
 import com.yuanshanbao.dsp.redpacket.model.RedPacket;
 import com.yuanshanbao.dsp.redpacket.model.RedPacketStatus;
@@ -20,6 +21,7 @@ import com.yuanshanbao.dsp.redpacket.service.RedPacketService;
 import com.yuanshanbao.dsp.sms.service.VerifyCodeService;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.service.TokenService;
+import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.dsp.withdrawdeposit.model.WithdrawDeposit;
 import com.yuanshanbao.dsp.withdrawdeposit.service.WithdrawDepositService;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -70,6 +72,10 @@ public class AccountController extends BaseController {
 
 	@Autowired
 	private WithdrawDepositService withdrawDepositServcie;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private LevelService levelService;
 
 	@RequestMapping("/balance")
 	@ResponseBody
@@ -80,6 +86,7 @@ public class AccountController extends BaseController {
 			if (user == null || StringUtils.isBlank(user.getMobile())) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
+
 			resultMap.putAll(paymentInterfaceService.queryBalance(String.valueOf(user.getUserId())));
 			Object withdrawAmount = paymentInterfaceService.queryBillAmount(String.valueOf(user.getUserId()),
 					PaymentInterfaceService.WITHDRAW).get("amount");
@@ -94,6 +101,7 @@ public class AccountController extends BaseController {
 			}
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
+			resultMap.put("level",levelService.selectLevel(user.getUserId()));
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

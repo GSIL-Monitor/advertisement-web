@@ -28,9 +28,7 @@ import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.model.OrderStatus;
 import com.yuanshanbao.dsp.order.model.OrderType;
 import com.yuanshanbao.dsp.order.service.OrderService;
-import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
-import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
@@ -125,30 +123,15 @@ public class AdminOrderController extends PaginationController {
 	}
 
 	@RequestMapping("/updateWindow.do")
-	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Order order,
-			Probability probability, Quota quota) {
-		String isDisplay = "false";
+	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Order order) {
 		List<Order> list = orderService.selectOrder(order, new PageBounds());
-		List<Probability> proList = probabilityService.selectProbabilitys(probability, new PageBounds());
-		List<Quota> quotaList = quotaService.selectQuota(quota, new PageBounds());
+
 		if (list != null && list.size() >= 0) {
 			order = list.get(0);
 		}
-		if (proList != null && proList.size() == 1) {
-			if (quotaList != null && quotaList.size() == 1) {
-				probability = proList.get(0);
-				quota = quotaList.get(0);
-				isDisplay = "true";
-			}
-		}
-		Long advertiserId = null;
-		request.setAttribute("isDisplay", isDisplay);
-		// setProperty(request, getProjectId(request), advertiserId);
 		request.setAttribute("categories", ConfigManager.getCategoryMap());
 		request.setAttribute("tagsList", ConstantsManager.getTagsList(ConstantsManager.ADVERTISEMENT));
 		request.setAttribute("itemEdit", order);
-		request.setAttribute("probability", probability);
-		request.setAttribute("quota", quota);
 		return PAGE_UPDATE;
 	}
 

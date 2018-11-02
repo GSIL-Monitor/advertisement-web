@@ -17,6 +17,11 @@ public class ProductDaoImpl extends BaseDaoImpl implements ProductDao {
 	}
 
 	@Override
+	public Product selectPrdouctById(Long productId) {
+		return getSqlSession().selectOne("product.selectProductByProductId",productId);
+	}
+
+	@Override
 	public int insertProduct(Product product) {
 		return getSqlSession().insert("product.insertProduct", product);
 	}

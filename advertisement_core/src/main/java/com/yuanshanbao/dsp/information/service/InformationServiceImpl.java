@@ -270,6 +270,12 @@ public class InformationServiceImpl implements InformationService {
 		}
 	}
 
+	@Override
+	public Information selectInformationByMobile(String mobile) {
+		return informationDao.selectinformationByMobile(mobile);
+	}
+
+
 	public int checkChannelBonus(Information information) {
 		Channel channel = channelService.selectChannel(information.getChannel());
 		if (channel == null) {

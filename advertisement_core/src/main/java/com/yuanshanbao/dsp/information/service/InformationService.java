@@ -30,4 +30,7 @@ public interface InformationService {
 
 	public void notifyAgent(Information information);
 
+
+
+	Information selectInformationByMobile(String mobile);
 }

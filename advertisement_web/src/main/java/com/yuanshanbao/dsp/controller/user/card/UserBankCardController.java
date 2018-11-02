@@ -7,12 +7,17 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.bankcard.model.BankCard;
 import com.yuanshanbao.dsp.bankcard.model.vo.GetBank;
 import com.yuanshanbao.dsp.bankcard.service.BankCardService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.information.model.Information;
+import com.yuanshanbao.dsp.information.service.InformationService;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.service.ProductService;
@@ -24,20 +29,18 @@ import com.yuanshanbao.paginator.domain.PageList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.smartcardio.Card;
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.*;
 
 
 /**
  * Created by Administrator on 2018/10/23.
  */
-@RequestMapping("/card")
+@RequestMapping("/i/bankCard")
 @Controller
 public class UserBankCardController extends BaseController {
 
@@ -56,6 +59,10 @@ public class UserBankCardController extends BaseController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private AgencyService agencyService;
+    @Autowired
+    private InformationService informationService;
 
     @ResponseBody
     @RequestMapping("list")
@@ -98,16 +105,15 @@ public class UserBankCardController extends BaseController {
 
     @RequestMapping("/applyCard")
     @ResponseBody
-    public Object applyCard(HttpServletRequest request, BankCard card, String token, @RequestParam("productId") Long productId) {
+    public Object applyCard(HttpServletRequest request, @RequestParam("productId") Long productId,@RequestParam("userName" ) String userName,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
         Map<String, Object> resultMap = new HashMap<>();
-        User loginToken = tokenService.verifyLoginToken(token);
         try {
-            User user = userService.selectUserById(loginToken.getUserId());
-            resultMap.put("user", user);
-            if (productId != null) {
-                Product product = productService.selectProduct(productId);
-                resultMap.put("queryUrl", product.getQueryUrl());
+            if (!ValidateUtil.isPhoneNo(mobile)){
+                throw  new BusinessException(ComRetCode.WRONG_MOBILE);
             }
+            bankCardService.getApplyBankCardInfo(productId,userName,mobile,inviteUserId);
+            InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
+
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {
@@ -117,14 +123,16 @@ public class UserBankCardController extends BaseController {
         return resultMap;
     }
 
-    @RequestMapping("/insert")
+    @RequestMapping("/insertBank")
     @ResponseBody
-    public Object insertCard(HttpServletRequest request, BankCard card, String token) {
+    public Object insertCard(HttpServletRequest request, String token,String appId, String params) {
         Map<String, Object> resultMap = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
+
         try {
             //获取当前用户信息
             User loginToken = tokenService.verifyLoginToken(token);
+            Map<String, String> parameterMap = appService.decryptParameters(appId, params);
             if (loginToken == null) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
@@ -133,14 +141,13 @@ public class UserBankCardController extends BaseController {
                 InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NOT_LOGIN);
                 return resultMap;
             }
-
             //添加卡
-            String userName = request.getParameter("userName");
-            String cardNumber = request.getParameter("cardNumber");
-            String smsCode = request.getParameter("code");
+            String userName = parameterMap.get("userName");
+            String cardNumber = parameterMap.get("cardNumber");
+            String smsCode = parameterMap.get("code");
             String userIp = JSPHelper.getRemoteAddr(request);
             //与第一次添加姓名一致
-            if (!(StringUtil.isEmpty(user.getUserName()) || userName.equals(user.getUserName()))) {
+            if (!(StringUtil.isEmpty(user.getName()) || userName.equals(user.getName()))) {
                 InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NO_USERNAME);
                 return resultMap;
             }
@@ -152,6 +159,7 @@ public class UserBankCardController extends BaseController {
             }
             //获取银行卡归属
             String bankName = GetBank.getname(cardNumber);
+            BankCard card = new BankCard();
             card.setUserId(user.getUserId());
             card.setCardNumber(cardNumber);
             card.setCardName(bankName);

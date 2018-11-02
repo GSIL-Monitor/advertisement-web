@@ -135,6 +135,13 @@
 		</where>
 	</select>
 
+	<select id="selectinformationByMobile" resultType="Information">
+		SELECT *
+		FROM tb_information
+		WHERE mobile =#{mobile}
+
+	</select>
+
 	<insert id="insertInformation" parameterType="Information">
 		insert into
 		tb_information( project_id, activity_id, user_id, mobile, name, gender,

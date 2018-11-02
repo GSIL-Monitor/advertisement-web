@@ -39,4 +39,10 @@ public class InformationDaoImpl extends BaseDaoImpl implements InformationDao {
 		return getSqlSession().selectList("information.selectInformationByIds", informationIdList);
 	}
 
+	@Override
+	public Information selectinformationByMobile(String mobile) {
+		 return getSqlSession().selectOne("information.selectinformationByMobile", mobile);
+	}
+
+
 }
