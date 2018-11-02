@@ -358,22 +358,6 @@ public class WeixinServiceImpl implements WeixinService {
 			param.put("scene", scene);
 			param.put("page", page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
-
-
-			 InputStream inputStream = new ByteArrayInputStream(byteArr);
-
-			File file = new File("D://1234.png");
-			if (!file.exists()){
-				file.createNewFile();
-			}
-			OutputStream outputStream = new FileOutputStream(file);
-			int len = 0;
-			byte[] buf = new byte[1024];
-			while ((len = inputStream.read(buf, 0, 1024)) != -1) {
-				outputStream.write(buf, 0, len);
-			}
-			outputStream.flush();
-
 			return byteArr;
 		} catch (Exception e) {
 			LoggerUtil.error("[bxm_nofity]", e);

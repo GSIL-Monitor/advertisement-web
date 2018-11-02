@@ -31,8 +31,10 @@ import java.util.Map;
 @RequestMapping("/i/invite")
 public class InviteController extends BaseController {
 
-	private static final String WANGZHUAN_KEY = "wzxcx";
+
 	private static final String URL = "pages/invitecard/invitecard";
+	private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541144361248_1832.png";
+
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -51,9 +53,12 @@ public class InviteController extends BaseController {
 			String qrCode = UploadUtils.uploadBytes(input, input.available(), "test/image/avatar" + System.nanoTime()
 					+ (int) (Math.random() * 10000) + ".png");
 			/* String path = UploadUtils.uploadFile(file, "test/img"); */
+			String url = IMAGE_URL+"?userId="+user.getUserId()+"&userName="+user.getUserName()+"&avatar="+user.getAvatar();
 			resultMap.put("user", user);
 			resultMap.put("QRcode", qrCode);
+			resultMap.put("url",url);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {

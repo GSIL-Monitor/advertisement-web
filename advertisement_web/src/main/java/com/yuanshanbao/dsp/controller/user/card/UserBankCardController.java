@@ -29,6 +29,7 @@ import com.yuanshanbao.paginator.domain.PageList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -102,9 +103,9 @@ public class UserBankCardController extends BaseController {
         return resultMap;
     }
 
-    @RequestMapping("/applyCard")
+    @RequestMapping(value = "/applyCard",method= RequestMethod.GET,produces="text/html;charset=UTF-8")
     @ResponseBody
-    public Object applyCard(HttpServletRequest request, BankCard card, @RequestParam("productId") Long productId,@RequestParam("userName") String userName,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
+    public Object applyCard(HttpServletRequest request, BankCard card, @RequestParam("productId") Long productId,@RequestParam("userName" ) String userName,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             if (!ValidateUtil.isPhoneNo(mobile)){
@@ -123,24 +124,9 @@ public class UserBankCardController extends BaseController {
                 information.setUserId(Long.valueOf(inviteUserId));  //邀请人ID
                 informationService.insertInformation(information);
             }else {
-              if (!userName.equals(queryInformation.getName())){
-                  throw new BusinessException(ComRetCode.NO_USERNAME);
+              if (userName.equals(queryInformation.getName())){
+                  throw new BusinessException(ComRetCode.USER_EXIST);
               }
-            }
-            Information informations = informationService.selectInformationByMobile(mobile);
-            Agency agency = new Agency();
-            agency.setUserId(informations.getInformationId());
-            agency.setInviteUserId(Long.valueOf(inviteUserId));
-            List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
-            agency.setProductId(productId);
-            agency.setProductName(product.getName());
-            agency.setStatus(AgencyStatus.ONCHECK);
-            agency.setUserName(informations.getName());
-
-            if (agencyList.size() == 0){
-                agencyService.insertAgency(agency);
-            }else{
-                throw new BusinessException(ComRetCode.APPLY_EXIST_ERROR);
             }
             InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
             resultMap.put("applyCard", product.getDetailImageUrl());
@@ -156,12 +142,14 @@ public class UserBankCardController extends BaseController {
 
     @RequestMapping("/insertBank")
     @ResponseBody
-    public Object insertCard(HttpServletRequest request, BankCard card, String token) {
+    public Object insertCard(HttpServletRequest request, String token,String appId, String params) {
         Map<String, Object> resultMap = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
+
         try {
             //获取当前用户信息
             User loginToken = tokenService.verifyLoginToken(token);
+            Map<String, String> parameterMap = appService.decryptParameters(appId, params);
             if (loginToken == null) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
@@ -172,9 +160,9 @@ public class UserBankCardController extends BaseController {
             }
 
             //添加卡
-            String userName = request.getParameter("userName");
-            String cardNumber = request.getParameter("cardNumber");
-            String smsCode = request.getParameter("code");
+            String userName = parameterMap.get("userName");
+            String cardNumber = parameterMap.get("cardNumber");
+            String smsCode = parameterMap.get("code");
             String userIp = JSPHelper.getRemoteAddr(request);
             //与第一次添加姓名一致
             if (!(StringUtil.isEmpty(user.getName()) || userName.equals(user.getName()))) {
@@ -189,6 +177,7 @@ public class UserBankCardController extends BaseController {
             }
             //获取银行卡归属
             String bankName = GetBank.getname(cardNumber);
+            BankCard card = new BankCard();
             card.setUserId(user.getUserId());
             card.setCardNumber(cardNumber);
             card.setCardName(bankName);
