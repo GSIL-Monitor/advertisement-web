@@ -198,12 +198,12 @@ public class WeixinServiceImpl implements WeixinService {
 			if ("test".equals(CommonUtil.getEnvironment())) {
 				return;
 			}
-			LoggerUtil.sendMessageInfo("[Send Server Log serverLogId=" + serverLog.getLogId() + "; name="
-					+ serverLog.getTitle());
+			LoggerUtil.sendMessageInfo(
+					"[Send Server Log serverLogId=" + serverLog.getLogId() + "; name=" + serverLog.getTitle());
 			TemplateMsg templateMsg = new TemplateMsg();
 			templateMsg.setTemplateId(ALARM_SERVER_TEMPLATE);
-			templateMsg.setUrl(PropertyUtil.getProperty("host.web.open") + "/admin/serverLog.html?logId="
-					+ serverLog.getLogId());
+			templateMsg.setUrl(
+					PropertyUtil.getProperty("host.web.open") + "/admin/serverLog.html?logId=" + serverLog.getLogId());
 			templateMsg.putData("first", "服务器报警" + serverLog.getCount() + "次", "#F67072");
 			templateMsg.putData("keyword1", serverLog.getTypeValue() + "");
 			templateMsg.putData("keyword2", DateUtils.format(serverLog.getCreateTime(), null));
@@ -358,8 +358,11 @@ public class WeixinServiceImpl implements WeixinService {
 			param.put("scene", scene);
 			param.put("page",page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
+
 			String result = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
 			System.out.println(result);
+
+
 
 			return byteArr;
 		} catch (Exception e) {

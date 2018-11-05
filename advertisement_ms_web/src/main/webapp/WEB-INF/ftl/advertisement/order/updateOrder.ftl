@@ -29,9 +29,9 @@
 										<td width="80%">${itemEdit.orderId?c}</td>
 									</tr>
 									<tr>
-										<td width="20%">客户姓名：</td>
+										<td width="20%">订单名称：</td>
 										<td width="80%">
-											<input type="text" name="name" style="width:60%;"<#if itemEdit.informationInsurance.name??>value="${itemEdit.informationInsurance.name}"</#if>></td>
+											<input type="text" name="name" style="width:60%;"<#if itemEdit.name??>value="${itemEdit.name}"</#if>></td>
 									</tr>
 									<tr>
 										<td width="20%">客户性别：</td>
@@ -39,13 +39,9 @@
 											<@radioButton name="gender" labels="男,女" values="1,2" defaultValue="${itemEdit.informationInsurance.gender?c}"/>
 									</tr>
 									<tr>
-										<td width="20%">客户年龄：</td>
+										<td width="20%">订单金额：</td>
 										<td width="80%">
-									</tr>
-									<tr>
-										<td width="20%">客户归属地：</td>
-										<td width="80%">
-											<input type="text" name="location" style="width:60%;"<#if itemEdit.informationInsurance.location??>value="${itemEdit.informationInsurance.location}"</#if>></td>
+											<input type="text" name="amount" style="width:60%;"<#if itemEdit.amount??>value="${itemEdit.amount}"</#if>></td>
 									</tr>
 									<tr>
 										<td colspan="4" style="text-align:center">

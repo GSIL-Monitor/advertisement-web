@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.github.sd4324530.fastweixin.api.config.ApiConfig;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.PropertyUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.model.ActivityCombine;
 import com.yuanshanbao.dsp.activity.service.ActivityCombineService;
@@ -70,6 +72,7 @@ public class ConstantsManager {
 
 	public static final long CATEGORY = 20;
 	public static final long ADVERTISEMENT = 21;
+	public static final long CHANNEL = 37;
 	public static final long FORMTAG = 32;
 
 	public static final long GENDER = 0;
@@ -678,4 +681,28 @@ public class ConstantsManager {
 		return map.get(positionKey);
 	}
 
+	private String getAccessToken(String key) {
+		String config = PropertyUtil.getProperty("weixin.config");
+		String appId = PropertyUtil.getProperty("weixin.appid");
+		String appSercet = PropertyUtil.getProperty("weixin.appsecret");
+		Map<String, String> appIdMap = new HashMap<String, String>();
+		Map<String, String> appSecertMap = new HashMap<String, String>();
+		String[] configSegs = config.split(",");
+		String[] appIdSegs = appId.split(",");
+		String[] appSecretSegs = appSercet.split(",");
+		for (int i = 0; i < configSegs.length; i++) {
+			appIdMap.put(configSegs[i], appIdSegs[i]);
+			appSecertMap.put(configSegs[i], appSecretSegs[i]);
+		}
+		Long expireTime = redisService.ttl(RedisConstant.getWeiXinAccessTokenKey(appIdMap.get(key),
+				appSecertMap.get(key)));
+		if (expireTime > 0) {
+			return redisService.get(RedisConstant.getWeiXinAccessTokenKey(appIdMap.get(key), appSecertMap.get(key)));
+		} else {
+			ApiConfig apiConfig = new ApiConfig(appIdMap.get(key), appSecertMap.get(key), true);
+			redisService.set(RedisConstant.getWeiXinAccessTokenKey(appIdMap.get(key), appSecertMap.get(key)), 7100,
+					apiConfig.getAccessToken());
+			return apiConfig.getAccessToken();
+		}
+	}
 }

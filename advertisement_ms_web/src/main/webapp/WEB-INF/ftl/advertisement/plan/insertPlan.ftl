@@ -65,7 +65,7 @@
 											<div style="width:60%;">
 												<select multiple data-live-search="true" class="selectpicker form-control" id="allowChannelType">
 													<#list channelTypeList as type>
-														<option value="${type.key}">${type.value}</option>
+														<option value="${type.value}">${type.name}</option>
 													</#list>
 												</select>
 												<input type="hidden" name="allowChannelCategory" id="allowChannelTypeVal">
@@ -78,7 +78,7 @@
 											<div style="width:60%;">
 												<select multiple data-live-search="true" class="selectpicker form-control" id="forbidChannelType">
 													<#list channelTypeList as type>
-														<option value="${type.key}">${type.value}</option>
+														<option value="${type.value}">${type.name}</option>
 													</#list>
 												</select>
 												<input type="hidden" name="forbidChannelCategory" id="forbidChannelTypeVal">

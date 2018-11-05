@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.JacksonUtil;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertiser.dao.AdvertiserDao;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
@@ -169,51 +171,63 @@ public class BillServiceImpl implements BillService {
 				money = money + difference;
 			}
 		}
+		dealWithOverPlanAndOrder(plan, money);
+	}
+
+	private void dealWithOverPlanAndOrder(Plan plan, Double money) {
 		checkPlanBalance(plan, money);
 		checkOrderBalance(plan, money);
 	}
 
 	private void checkOrderBalance(Plan plan, Double money) {
-		if (money <= 0) {
-			return;
-		}
-		Double totalAmount = redisService
-				.increByDouble(RedisConstant.getOrderBalanceCountKey(plan.getOrderId()), money);
-		Double initAmount = Double.valueOf(redisService.get(RedisConstant.getOrderInitCountKey(plan.getOrderId())));
-		if (initAmount < totalAmount) {
-			// 把在投放的删除
-			Probability proParam = new Probability();
-			proParam.setOrderId(plan.getOrderId());
-			proParam.setStatus(CommonStatus.ONLINE);
-			List<Probability> probabilityList = probabilityService.selectProbabilitys(proParam, new PageBounds());
-			for (Probability pro : probabilityList) {
-				pro.setStatus(CommonStatus.OFFLINE);
-				probabilityService.updateProbability(pro);
+		try {
+			if (money <= 0) {
+				return;
 			}
-
+			Double totalAmount = redisService.increByDouble(RedisConstant.getOrderBalanceCountKey(plan.getOrderId()),
+					money);
+			Double initAmount = Double.valueOf(redisService.get(RedisConstant.getOrderInitCountKey(plan.getOrderId())));
+			if (initAmount < totalAmount) {
+				// 把在投放的删除
+				Probability proParam = new Probability();
+				proParam.setOrderId(plan.getOrderId());
+				proParam.setStatus(CommonStatus.ONLINE);
+				List<Probability> probabilityList = probabilityService.selectProbabilitys(proParam, new PageBounds());
+				for (Probability pro : probabilityList) {
+					pro.setStatus(CommonStatus.OFFLINE);
+					probabilityService.updateProbability(pro);
+				}
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("checkOrderBalance", e);
 		}
 	}
 
 	private void checkPlanBalance(Plan plan, Double money) {
-		if (money <= 0) {
-			return;
-		}
-		Double totalAmount = redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()), money);
-		if (plan.getSpend().compareTo(new BigDecimal(totalAmount)) < 0) {
-			Plan resultPlan = new Plan();
-			resultPlan.setPlanId(plan.getPlanId());
-			resultPlan.setStatus(PlanStatus.NOTFUNDS);
-			// 把计划设置为余额不足
-			planService.updatePlan(resultPlan);
-			// 把在投放的删除
-			Probability proParam = new Probability();
-			proParam.setPlanId(plan.getPlanId());
-			proParam.setStatus(CommonStatus.ONLINE);
-			List<Probability> probabilityList = probabilityService.selectProbabilitys(proParam, new PageBounds());
-			for (Probability pro : probabilityList) {
-				pro.setStatus(CommonStatus.OFFLINE);
-				probabilityService.updateProbability(pro);
+		try {
+			if (money <= 0) {
+				return;
 			}
+			Double totalAmount = redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()),
+					money);
+			if (plan.getSpend().compareTo(new BigDecimal(totalAmount)) < 0) {
+				Plan resultPlan = new Plan();
+				resultPlan.setPlanId(plan.getPlanId());
+				resultPlan.setStatus(PlanStatus.NOTFUNDS);
+				// 把计划设置为余额不足
+				planService.updatePlan(resultPlan);
+				// 把在投放的删除
+				Probability proParam = new Probability();
+				proParam.setPlanId(plan.getPlanId());
+				proParam.setStatus(CommonStatus.ONLINE);
+				List<Probability> probabilityList = probabilityService.selectProbabilitys(proParam, new PageBounds());
+				for (Probability pro : probabilityList) {
+					pro.setStatus(CommonStatus.OFFLINE);
+					probabilityService.updateProbability(pro);
+				}
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("checkOrderBalance", e);
 		}
 	}
 
@@ -239,10 +253,19 @@ public class BillServiceImpl implements BillService {
 		bill.setPlanId(probability.getPlanId());
 		bill.setAdvertiserId(plan.getAdvertiserId());
 		bill.setAmount(BigDecimal.valueOf(difference));
+		bill.setDate(DateUtils.format(new Date()));
 		bill.setChannel(probability.getChannel());
 		bill.setType(type);
 		bill.setStatus(CommonStatus.ONLINE);
 		insertBill(bill);
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("advertiserId", plan.getAdvertiserId());
+		parameters.put("difference", bill.getAmount());
+		int result = advertiserDao.cutPayment(parameters);
+		if (result < 0) {
+			throw new BusinessException(ComRetCode.FAIL);
+		}
+		LoggerUtil.info("扣费成功={}", JacksonUtil.obj2json(bill));
 	}
 
 	private double getCount(String key) {
@@ -391,6 +414,9 @@ public class BillServiceImpl implements BillService {
 					Integer lastCount = getClickOrShowCount(RedisConstant.getPlanLastBalanceCountKey(date,
 							probability.getProbabilityId()));
 					count = currentCount - lastCount;
+					if (count == 0) {
+						continue;
+					}
 					// 获取竞价信息
 					Map<Long, BigDecimal> proCostMap = DspConstantsManager.getBidByChannel(probability.getChannel());
 					if (proCostMap != null) {
@@ -399,7 +425,7 @@ public class BillServiceImpl implements BillService {
 							money = unitPrice.multiply(BigDecimal.valueOf(count));
 							String proMoneyValue = redisService.get(RedisConstant.getProbabilityBalanceCountKey(date,
 									probability.getProbabilityId()));
-							if (ValidateUtil.isNumber(proMoneyValue)) {
+							if (ValidateUtil.isDouble(proMoneyValue)) {
 								BigDecimal proMoney = new BigDecimal(proMoneyValue);
 								proMoney = proMoney.add(money);
 								redisService.set(
@@ -410,6 +436,9 @@ public class BillServiceImpl implements BillService {
 										RedisConstant.getProbabilityBalanceCountKey(date,
 												probability.getProbabilityId()), String.valueOf(money));
 							}
+							redisService.set(
+									RedisConstant.getPlanLastBalanceCountKey(date, probability.getProbabilityId()),
+									currentCount.toString());
 						}
 					}
 				}

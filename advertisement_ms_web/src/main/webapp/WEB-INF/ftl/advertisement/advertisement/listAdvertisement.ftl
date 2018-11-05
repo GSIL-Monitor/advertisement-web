@@ -44,7 +44,7 @@
 		    	"data": "typeContent"	
 		    }, {
 		    	"data": "statusValue"
-		    },   {
+		    }, {
 		    	"data": null,
 		        "render": function ( data, type, full, meta ) {
 		        	if(data.status ==1){
