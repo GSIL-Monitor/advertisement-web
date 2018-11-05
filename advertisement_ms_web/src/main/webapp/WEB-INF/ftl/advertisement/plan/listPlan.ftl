@@ -8,9 +8,44 @@
 		dataTable.ajax.url(newUrl);
 		dataTable.ajax.reload();
 	}
+	function change(id,status){
+		var url = "";
+		var message = "";
+		if(status=="投放中"){
+			url = "${rc.contextPath}/admin/${functionName}/pausePlan.do?${functionId}="+id;
+			message="您确认要暂停计划吗";
+		}else if(status=="未投放"){
+			url = "${rc.contextPath}/admin/${functionName}/startPlan.do?${functionId}="+id;
+			message="您确认要开启计划吗";
+		}
+		var r=confirm(message);
+		if(r==true){
+			$.ajax({
+                type: "POST",
+                dataType: "json",
+                url: url,
+                data: "",
+                success: function (data) {
+                	alert("修改成功");
+			    	reload();
+				}
+        	});
+		}
+	}
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?orderId=${orderId}";
-		dataTableConfig.columns = [{
+		dataTableConfig.columns = [ {
+		    	"data": null,
+		        "render": function ( data, type, full, meta ) {
+		        	if(data.status ==1){
+		            	return "<a href='javascript:;' onclick=\"change('"+data.planId+"','"+data.statusValue+"')\" class='btn btn-red' target='_blank'>暂停</a>";
+		        	}else if(data.status ==2){
+		        		return "<a href='javascript:;' onclick=\"change('"+data.planId+"','"+data.statusValue+"')\" class='btn btn-cyan' target='_blank'>开启</a>";
+		        	}else {
+		        		return "<a href='javascript:;'  class='' target='_blank'></a>";
+		        	}
+		        }
+		    },{
 			    	"data": "planId"
 			    },{
 			    	"data": "order.name"
@@ -92,6 +127,7 @@
 				<table class="table table-bordered data-table" id="dataTable">
 					<thead>
 						<tr>
+							<th>开启/暂停</th>
 							<th>ID</th>
 							<th>订单名称</th>
 							<th>计划名称</th>

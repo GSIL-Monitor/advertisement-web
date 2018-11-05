@@ -20,16 +20,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
-
 /**
  * Created by Administrator on 2018/10/31.
  */
 @Controller
 @RequestMapping("/i/invite")
 public class InviteController extends BaseController {
-
 
 	private static final String URL = "ipages/invitecard/invitecard";
 	private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541144361248_1832.png";
@@ -46,16 +42,18 @@ public class InviteController extends BaseController {
 	public Object inviteFriend(String token) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-            User user = tokenService.verifyLoginToken(token);
+			User user = tokenService.verifyLoginToken(token);
 			byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, String.valueOf(user.getUserId()), URL);
-			InputStream input = new ByteArrayInputStream(bytes);
-			String qrCode = UploadUtils.uploadBytes(input, input.available(), "test/image/avatar" + System.nanoTime()
-					+ (int) (Math.random() * 10000) + ".png");
+			if (bytes != null) {
+				InputStream input = new ByteArrayInputStream(bytes);
+				String qrCode = UploadUtils.uploadBytes(input, input.available(),
+						"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+				resultMap.put("QRcode", qrCode);
+			}
 			/* String path = UploadUtils.uploadFile(file, "test/img"); */
-			String url = URL+"?userId="+user.getUserId();
+			String url = URL + "?userId=" + user.getUserId();
 			resultMap.put("user", user);
-			resultMap.put("QRcode", qrCode);
-			resultMap.put("url",url);
+			resultMap.put("url", url);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

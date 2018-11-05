@@ -377,4 +377,62 @@ public class AdminPlanController extends PaginationController {
 		}
 		return resultMap;
 	}
+	
+	@ResponseBody
+	@RequestMapping("/pausePlan.do")
+	public Object pausePlan(HttpServletRequest request, HttpServletResponse response, Plan plan) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			if (plan.getPlanId() == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			plan.setStatus(PlanStatus.OFFLINE);
+			planService.updatePlan(plan);
+			Probability probability = new Probability();
+			probability.setPlanId(plan.getPlanId());
+			probability.setStatus(ProbabilityStatus.ONLINE);
+			List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
+			
+			for(Probability pro:list) {
+				pro.setStatus(ProbabilityStatus.OFFLINE);
+				probabilityService.updateProbability(pro);
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("plan pause", e2);
+		}
+		return resultMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/startPlan.do")
+	public Object startPlan(HttpServletRequest request, HttpServletResponse response, Plan plan) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			if (plan.getPlanId() == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			plan.setStatus(PlanStatus.ONLINE);
+			planService.updatePlan(plan);
+			Probability probability = new Probability();
+			probability.setPlanId(plan.getPlanId());
+			probability.setStatus(ProbabilityStatus.OFFLINE);
+			List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
+			
+			for(Probability pro:list) {
+				pro.setStatus(ProbabilityStatus.ONLINE);
+				probabilityService.updateProbability(pro);
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			LoggerUtil.error("plan pause", e2);
+		}
+		return resultMap;
+	}
+	
+	
 }
