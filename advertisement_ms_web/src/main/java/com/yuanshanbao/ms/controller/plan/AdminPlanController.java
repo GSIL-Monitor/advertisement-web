@@ -25,6 +25,7 @@ import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -120,9 +121,7 @@ public class AdminPlanController extends PaginationController {
 		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
-		// request.setAttribute("channelTypeList",
-		// ChannelType.getTypeDescriptionMap().entrySet());
-		request.setAttribute("channelTypeList", ConstantsManager.getTagsList(ConstantsManager.CHANNEL));
+		request.setAttribute("channelTypeList", ChannelType.getTypeDescriptionMap().entrySet());
 	}
 
 	@RequestMapping("/insertWindow.do")

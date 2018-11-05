@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.weixin.service;
 
+import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -354,24 +355,18 @@ public class WeixinServiceImpl implements WeixinService {
 		try {
 			String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + accessToken;
 			JSONObject param = new JSONObject();
-			param.put("page", page);
 			param.put("scene", scene);
-			param.put("width", 430);
-			param.put("auto_color", false);
-			Map<String, Object> line_color = new HashMap<>();
-			line_color.put("r", 0);
-			line_color.put("g", 0);
-			line_color.put("b", 0);
-			param.put("line_color", line_color);
+			param.put("page",page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
-			if (byteArr.length < 1024) {
-				String result = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
-				LoggerUtil.error("[getQrCodeFail]", result);
-				return null;
-			}
+
+			String result = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
+			System.out.println(result);
+
+
+
 			return byteArr;
 		} catch (Exception e) {
-			LoggerUtil.error("[getQrCode]", e);
+			LoggerUtil.error("[bxm_nofity]", e);
 		}
 		return null;
 	}
