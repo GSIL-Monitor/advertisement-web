@@ -74,7 +74,6 @@ public class IndexController extends BaseController {
                     tags.setImage(prod.getAdvantage());
                     tagsList.add(tags);
                 }
-
             }
             //滚动消息列表
             Message message = new Message();

@@ -30,7 +30,7 @@ import java.util.Map;
 public class InviteController extends BaseController {
 
     private static final String URL = "pages/invitecard/invitecard";
-
+    private static final String H5URL =  "https://wz.huhad.com/w/applicants.html";
     private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/image/avatar132529743323965055.png";
     private static String CODE = "";
     @Autowired
@@ -65,6 +65,7 @@ public class InviteController extends BaseController {
             }
             resultMap.put("QRcode", CODE);
             String url = URL + "?userId=" + user.getUserId();
+
             resultMap.put("user", user);
             resultMap.put("url", url);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
@@ -82,10 +83,10 @@ public class InviteController extends BaseController {
     public Object getLogoQRcode(String token, @RequestParam(value = "productId", required = false) Long productId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
-           /*   User user = tokenService.verifyLoginToken(token);
+              User user = tokenService.verifyLoginToken(token);
             if(user == null){
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
-            }*/
+            }
             //H5二维码
             if (productId == null) {
                 String content = "/i/product/detail";
@@ -96,7 +97,9 @@ public class InviteController extends BaseController {
             String content = "/i/product/detail" + "?productId=" + productId;
             //插入logo
             String applayCardCode = ZXingCode.getLogoQRCode(content, "https://yuanshanbao.oss-cn-beijing.aliyuncs.com/file/game/1534408311677_5704.jpg");
+            String H5Url =H5URL + "userId=" +user.getUserId() +"&productId=" + productId;
             resultMap.put("applayCardCode", applayCardCode);
+            resultMap.put("H5Url", H5Url);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
         } catch (BusinessException e) {
             InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
