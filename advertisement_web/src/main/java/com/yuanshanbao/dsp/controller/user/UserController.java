@@ -277,7 +277,7 @@ public class UserController extends BaseController {
 										String params) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
+			Map<String, String> parameterMap = appService.decryptParameters(appId,params);
 			String code = parameterMap.get("code");
 			String from = parameterMap.get("from");
 			String result = HttpsUtil.doGet(

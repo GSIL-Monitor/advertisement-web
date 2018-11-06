@@ -88,16 +88,9 @@ public class InviteController extends BaseController {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
             //H5二维码
-            String H5Url =H5URL + "?userId=" +user.getUserId() +"&productId=" + productId;
-            if (productId == null) {
-                String content = "/i/product/detail";
-                String shareCode = ZXingCode.getLogoQRCode(content, H5Url);
-                resultMap.put("shareCode", shareCode);
-            }
-            resultMap.put("user", userService.selectUserById(2l));
-            String content = "/i/product/detail" + "?productId=" + productId;
+            String H5Url =H5URL +"?userId=" +user.getUserId() +"&productId=" + productId;
             //插入logo
-            String applayCardCode = ZXingCode.getLogoQRCode(content, user.getAvatar());
+            String applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
             resultMap.put("applayCardCode", applayCardCode);
             resultMap.put("H5Url", H5Url);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

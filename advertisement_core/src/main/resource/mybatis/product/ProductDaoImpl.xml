@@ -121,7 +121,7 @@
 			</trim>
 
 		</where>
-		order by create_time desc
+		order by product_id asc
 	</select>
 
 	<select id="selectProductByProductId" resultType="Product">
