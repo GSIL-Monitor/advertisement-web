@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementDetails;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
@@ -39,15 +39,16 @@ public class IndexDspController {
 	// dsp请求广告接口
 	@RequestMapping(value = "/content", method = RequestMethod.POST)
 	@ResponseBody
-	public Object getContent(HttpServletRequest request, HttpServletResponse response, @RequestBody Instance instance) {
+	public Object getContent(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody MediaInformation mediaInformation) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
-				Channel channelObject = ConfigManager.getChannel(instance.getChannel());
+				Channel channelObject = ConfigManager.getChannel(mediaInformation.getChannel());
 				if (channelObject != null) {
 					List<AdvertisementDetails> seatBid = probabilityService.pickProbabilityByPlan(request,
-							project.getProjectId(), channelObject, instance);
+							project.getProjectId(), channelObject, mediaInformation);
 					resultMap.put("seatBid", seatBid);
 				}
 			}
@@ -69,6 +70,7 @@ public class IndexDspController {
 		try {
 			String channel = (String) body.get("channel");
 			String pId = (String) body.get("pId");
+			String key = (String) body.get("key");
 			if (StringUtils.isEmpty(channel)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
@@ -79,7 +81,7 @@ public class IndexDspController {
 			if (project != null) {
 				Channel channelObject = ConfigManager.getChannel(channel);
 				if (channelObject != null) {
-					probabilityService.recordPlanCount(pId, channel, false);
+					probabilityService.recordPlanCount(pId, key, channel, false);
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
@@ -101,6 +103,7 @@ public class IndexDspController {
 		try {
 			String channel = (String) body.get("channel");
 			String pId = (String) body.get("pId");
+			String key = (String) body.get("key");
 			if (StringUtils.isEmpty(channel)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
@@ -111,7 +114,7 @@ public class IndexDspController {
 			if (project != null) {
 				Channel channelObject = ConfigManager.getChannel(channel);
 				if (channelObject != null) {
-					probabilityService.recordPlanCount(pId, channel, true);
+					probabilityService.recordPlanCount(pId, key, channel, true);
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

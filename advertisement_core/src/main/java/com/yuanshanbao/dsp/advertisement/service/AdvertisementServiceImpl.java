@@ -18,7 +18,7 @@ import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
@@ -227,7 +227,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		return random;
 	}
 
-	public List<Advertisement> getAdvertisement(Long projectId, Long positionId, Instance instance) {
+	public List<Advertisement> getAdvertisement(Long projectId, Long positionId, MediaInformation instance) {
 		List<Advertisement> advertismentList = new ArrayList<Advertisement>();
 		Position position = positionService.selectPosition(positionId);
 		if (position == null) {
@@ -395,7 +395,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		return result;
 	}
 
-	public List<Advertisement> getGift(Long projectId, String activityKey, String channelKey, Instance instance) {
+	public List<Advertisement> getGift(Long projectId, String activityKey, String channelKey, MediaInformation instance) {
 		List<Advertisement> advertismentList = new ArrayList<Advertisement>();
 		List<Probability> probabilityList = probabilityService.selectProbabilityByKeyFromCache(projectId, activityKey,
 				channelKey, null);

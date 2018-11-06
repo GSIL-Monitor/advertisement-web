@@ -11,6 +11,8 @@
 		<result property="orderId" column="order_id" jdbcType="NUMERIC" />
 		<result property="planId" column="plan_id" jdbcType="NUMERIC" />
 		<result property="amount" column="amount" jdbcType="NUMERIC" />
+		<result property="nowCount" column="now_count" jdbcType="NUMERIC" />
+		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="date" column="date" jdbcType="VARCHAR" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
@@ -29,8 +31,17 @@
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId} and
 				</if>
+				<if test="planId != null">
+					plan_id = #{planId} and
+				</if>
+				<if test="orderId != null">
+					order_id = #{orderId} and
+				</if>
 				<if test="date != null">
 					date = #{date} and
+				</if>
+				<if test="channel != null">
+					channel = #{channel} and
 				</if>
 				<if test="type != null">
 					type = #{type} and
@@ -53,9 +64,9 @@
 
 	<insert id="insertBill" parameterType="Bill">
 		insert into
-		tb_bills(date,advertiser_id,probability_id,order_id,plan_id,amount,description, type,status, create_time, update_time)
+		tb_bills(date,advertiser_id,probability_id,order_id,plan_id,amount,now_count,channel,description, type,status, create_time, update_time)
 		values
-		(#{date},#{advertiserId},#{probabilityId},#{orderId},#{planId},#{amount}, #{description}, #{type},#{status},
+		(#{date},#{advertiserId},#{probabilityId},#{orderId},#{planId},#{amount},#{nowCount},#{channel}, #{description}, #{type},#{status},
 		 sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="billId">

@@ -16,7 +16,7 @@ import com.yuanshanbao.dsp.activity.model.ActivityCombine;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementCategory;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.config.model.Config;
 import com.yuanshanbao.dsp.config.model.Function;
@@ -188,13 +188,13 @@ public class ConfigManager implements ConfigConstants {
 	}
 
 	public static void setConfigMap(Map<String, Object> resultMap, Long activityId, String channel) {
-		Instance instance = new Instance();
+		MediaInformation instance = new MediaInformation();
 		instance.setActivityId(activityId);
 		instance.setChannel(channel);
 		setConfigMap(resultMap, instance);
 	}
 
-	public static void setConfigMap(Map<String, Object> resultMap, Instance instance) {
+	public static void setConfigMap(Map<String, Object> resultMap, MediaInformation instance) {
 		Map<String, String> configMap = getConfigMap(instance.getActivityId(), instance.getChannel(), null, null);
 		// setAdvertisementConfig(configMap, instance);
 		resultMap.putAll(configMap);

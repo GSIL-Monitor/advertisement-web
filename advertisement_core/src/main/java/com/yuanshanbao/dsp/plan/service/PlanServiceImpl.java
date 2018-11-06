@@ -11,8 +11,11 @@ import org.springframework.stereotype.Repository;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.advertiser.dao.AdvertiserDao;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.bill.model.BillType;
+import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.order.model.Order;
@@ -40,6 +43,12 @@ public class PlanServiceImpl implements PlanService {
 
 	@Autowired
 	private RedisService redisService;
+
+	@Autowired
+	private BillService billService;
+
+	@Autowired
+	private AdvertiserDao advertiserDao;
 
 	@Override
 	public void insertPlan(Plan plan) {
@@ -161,4 +170,36 @@ public class PlanServiceImpl implements PlanService {
 		}
 		return 0;
 	}
+
+	@Override
+	// 按计划扣费
+	public void paymentForPlan(Plan plan) {
+		Probability params = new Probability();
+		params.setPlanId(plan.getPlanId());
+		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
+		for (Probability probability : list) {
+			// 总消耗
+			double nowCount = getCount(RedisConstant
+					.getProbabilityBalanceCountKey(null, probability.getProbabilityId()));
+			// 上次操作扣费时消耗的数量
+			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
+					probability.getProbabilityId()));
+			double difference = nowCount - lastCount;
+			billService.checkBillAndCount(plan, probability, lastCount);
+			if (difference > 0) {
+				billService.createBill(plan, probability, nowCount, lastCount, BillType.DEDUCTION);
+				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
+						String.valueOf(nowCount));
+			}
+		}
+	}
+
+	private double getCount(String key) {
+		String str = (String) redisService.get(key);
+		if (ValidateUtil.isPositiveFloat(str)) {
+			return Double.parseDouble(str);
+		}
+		return 0;
+	}
+
 }

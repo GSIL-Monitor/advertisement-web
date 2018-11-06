@@ -194,4 +194,16 @@ public class AdminAdvertiserController extends PaginationController {
 		PageList pageList = (PageList) resultList;
 		return setPageInfo(request, response, pageList);
 	}
+
+	@ResponseBody
+	@RequestMapping("/test.do")
+	public Object test(Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		advertiser.setAdvertiserId(Long.valueOf(36));
+		advertiser.setAddress("1123");
+		advertiserService.updateAdvertiser(advertiser);
+		System.err.println(123123123);
+		InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		return result;
+	}
 }

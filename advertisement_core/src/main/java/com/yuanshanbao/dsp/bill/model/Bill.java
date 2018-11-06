@@ -15,6 +15,8 @@ public class Bill {
 	private String channel;
 	private String date;
 	private BigDecimal amount;
+	private BigDecimal nowCount;
+	private BigDecimal lastCount;
 	private String description;
 	private Integer type;
 	private Integer status;
@@ -159,6 +161,22 @@ public class Bill {
 
 	public void setDate(String date) {
 		this.date = date;
+	}
+
+	public BigDecimal getNowCount() {
+		return nowCount;
+	}
+
+	public void setNowCount(BigDecimal nowCount) {
+		this.nowCount = nowCount;
+	}
+
+	public BigDecimal getLastCount() {
+		return lastCount;
+	}
+
+	public void setLastCount(BigDecimal lastCount) {
+		this.lastCount = lastCount;
 	}
 
 }

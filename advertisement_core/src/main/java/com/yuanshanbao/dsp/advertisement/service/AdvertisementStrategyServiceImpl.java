@@ -20,7 +20,7 @@ import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyStatus;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategyType;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.model.Function;
@@ -189,13 +189,8 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 
 	@Override
 	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list,
-			Instance instance) {
-		List<AdvertisementStrategy> ipRegionList = new ArrayList<AdvertisementStrategy>();
-		List<AdvertisementStrategy> deviceTypeList = new ArrayList<AdvertisementStrategy>();
-		List<AdvertisementStrategy> netWayList = new ArrayList<AdvertisementStrategy>();
-		List<AdvertisementStrategy> carrierList = new ArrayList<AdvertisementStrategy>();
-		List<AdvertisementStrategy> ageList = new ArrayList<AdvertisementStrategy>();
-		List<AdvertisementStrategy> genderList = new ArrayList<AdvertisementStrategy>();
+			MediaInformation mediaInformation) {
+
 		List<Probability> resultList = new ArrayList<Probability>();
 		// 针对计划进行处理
 		for (Probability prob : list) {
@@ -205,29 +200,19 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 				resultList.add(prob);
 				continue;
 			}
-			for (AdvertisementStrategy advertisementStrategy : strategyList) {
-				ipRegionList = new ArrayList<AdvertisementStrategy>();
-				deviceTypeList = new ArrayList<AdvertisementStrategy>();
-				netWayList = new ArrayList<AdvertisementStrategy>();
-				carrierList = new ArrayList<AdvertisementStrategy>();
-				ageList = new ArrayList<AdvertisementStrategy>();
-				genderList = new ArrayList<AdvertisementStrategy>();
-				if (AdvertisementStrategyType.IP_REGION_KEY.equals(advertisementStrategy.getKey())) {
-					ipRegionList.add(advertisementStrategy);
-				} else if (AdvertisementStrategyType.DEVICETYPE_KEY.equals(advertisementStrategy.getKey())) {
-					deviceTypeList.add(advertisementStrategy);
-				} else if (AdvertisementStrategyType.NETWORK_WAY_KEY.equals(advertisementStrategy.getKey())) {
-					netWayList.add(advertisementStrategy);
-				} else if (AdvertisementStrategyType.CARRIER_KEY.equals(advertisementStrategy.getKey())) {
-					carrierList.add(advertisementStrategy);
-				} else if (AdvertisementStrategyType.AGE_KEY.equals(advertisementStrategy.getKey())) {
-					ageList.add(advertisementStrategy);
-				} else if (AdvertisementStrategyType.GENDER_KEY.equals(advertisementStrategy.getKey())) {
-					genderList.add(advertisementStrategy);
-				}
-			}
+			List<AdvertisementStrategy> ipRegionList = getStrategyTypeList(AdvertisementStrategyType.IP_REGION_KEY,
+					strategyList);
+			List<AdvertisementStrategy> deviceTypeList = getStrategyTypeList(AdvertisementStrategyType.DEVICETYPE_KEY,
+					strategyList);
+			List<AdvertisementStrategy> netWayList = getStrategyTypeList(AdvertisementStrategyType.NETWORK_WAY_KEY,
+					strategyList);
+			List<AdvertisementStrategy> carrierList = getStrategyTypeList(AdvertisementStrategyType.CARRIER_KEY,
+					strategyList);
+			List<AdvertisementStrategy> ageList = getStrategyTypeList(AdvertisementStrategyType.AGE_KEY, strategyList);
+			List<AdvertisementStrategy> genderList = getStrategyTypeList(AdvertisementStrategyType.GENDER_KEY,
+					strategyList);
 			boolean strategyPass = judgeStrategy(request, ipRegionList, deviceTypeList, netWayList, carrierList,
-					ageList, genderList, instance);
+					ageList, genderList, mediaInformation);
 			if (strategyPass) {
 				resultList.add(prob);
 			}
@@ -238,24 +223,27 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	private boolean judgeStrategy(HttpServletRequest request, List<AdvertisementStrategy> ipRegionList,
 			List<AdvertisementStrategy> deviceTypeList, List<AdvertisementStrategy> netWayList,
 			List<AdvertisementStrategy> carrierList, List<AdvertisementStrategy> ageList,
-			List<AdvertisementStrategy> genderList, Instance instance) {
-		if (checkIpRegion(request, ipRegionList, instance) && checkDeviceType(request, deviceTypeList, instance)
-				&& checkCarrier(request, carrierList, instance) && checkAge(request, ageList, instance)
-				&& checkNetWay(request, netWayList, instance) && checkGender(request, genderList, instance)) {
+			List<AdvertisementStrategy> genderList, MediaInformation mediaInformation) {
+		if (checkIpRegion(request, ipRegionList, mediaInformation)
+				&& checkDeviceType(request, deviceTypeList, mediaInformation)
+				&& checkCarrier(request, carrierList, mediaInformation) && checkAge(request, ageList, mediaInformation)
+				&& checkNetWay(request, netWayList, mediaInformation)
+				&& checkGender(request, genderList, mediaInformation)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	private boolean checkGender(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+	private boolean checkGender(HttpServletRequest request, List<AdvertisementStrategy> list,
+			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (StringUtils.isEmpty(instance.getGender())) {
+		if (StringUtils.isEmpty(mediaInformation.getGender())) {
 			return strategyPass;
 		}
 		if (list != null) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (instance.getGender().equals(advertisementStrategy.getValue())) {
+				if (mediaInformation.getGender().equals(advertisementStrategy.getValue())) {
 					return strategyPass;
 				}
 			}
@@ -264,14 +252,15 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return strategyPass;
 	}
 
-	private boolean checkNetWay(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+	private boolean checkNetWay(HttpServletRequest request, List<AdvertisementStrategy> list,
+			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (instance.getConnectiontype() != null) {
+		if (mediaInformation.getConnectiontype() != null) {
 			return strategyPass;
 		}
 		if (list != null) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (instance.getConnectiontype().equals(advertisementStrategy.getValue())) {
+				if (mediaInformation.getConnectiontype().equals(advertisementStrategy.getValue())) {
 					return strategyPass;
 				}
 			}
@@ -281,14 +270,15 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	}
 
 	// TODO
-	private boolean checkAge(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+	private boolean checkAge(HttpServletRequest request, List<AdvertisementStrategy> list,
+			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (StringUtils.isEmpty(instance.getAge())) {
+		if (StringUtils.isEmpty(mediaInformation.getAge())) {
 			return strategyPass;
 		}
 		if (list != null && list.size() > 0) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (instance.getOs().equals(advertisementStrategy.getValue())) {
+				if (mediaInformation.getOs().equals(advertisementStrategy.getValue())) {
 					return strategyPass;
 				}
 			}
@@ -297,14 +287,15 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return strategyPass;
 	}
 
-	private boolean checkCarrier(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+	private boolean checkCarrier(HttpServletRequest request, List<AdvertisementStrategy> list,
+			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (StringUtils.isEmpty(instance.getCarrier())) {
+		if (StringUtils.isEmpty(mediaInformation.getCarrier())) {
 			return strategyPass;
 		}
 		if (list != null && list.size() > 0) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (instance.getCarrier().equals(advertisementStrategy.getValue())) {
+				if (mediaInformation.getCarrier().equals(advertisementStrategy.getValue())) {
 					return strategyPass;
 				}
 			}
@@ -313,14 +304,15 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return strategyPass;
 	}
 
-	private boolean checkDeviceType(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+	private boolean checkDeviceType(HttpServletRequest request, List<AdvertisementStrategy> list,
+			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (StringUtils.isEmpty(instance.getOs())) {
+		if (StringUtils.isEmpty(mediaInformation.getOs())) {
 			return strategyPass;
 		}
 		if (list != null && list.size() > 0) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (instance.getOs().equals(advertisementStrategy.getValue())) {
+				if (mediaInformation.getOs().equals(advertisementStrategy.getValue())) {
 					return strategyPass;
 				}
 			}
@@ -329,7 +321,8 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return strategyPass;
 	}
 
-	private boolean checkIpRegion(HttpServletRequest request, List<AdvertisementStrategy> list, Instance instance) {
+	private boolean checkIpRegion(HttpServletRequest request, List<AdvertisementStrategy> list,
+			MediaInformation instance) {
 		boolean strategyPass = true;
 		if (StringUtils.isEmpty(instance.getIp())) {
 			return strategyPass;
@@ -352,7 +345,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 
 	@Override
 	public List<Long> getAvailableAdvertisementList(List<Long> advertisementIdList,
-			List<AdvertisementStrategy> strategyList, Instance instrance) {
+			List<AdvertisementStrategy> strategyList, MediaInformation instrance) {
 		List<Long> result = new ArrayList<Long>();
 		List<Long> ageList = new ArrayList<Long>();
 		List<Long> regionList = new ArrayList<Long>();
@@ -360,7 +353,8 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		List<AdvertisementStrategy> ageStrategyList = new ArrayList<AdvertisementStrategy>();
 		List<AdvertisementStrategy> regionStrategyList = new ArrayList<AdvertisementStrategy>();
 		List<AdvertisementStrategy> deviceTypeList = new ArrayList<AdvertisementStrategy>();
-		List<AdvertisementStrategy> ipRegionList = new ArrayList<AdvertisementStrategy>();
+		// List<AdvertisementStrategy> ipRegionList = new
+		// ArrayList<AdvertisementStrategy>();
 
 		// 获取已经配置过策略的广告
 		for (AdvertisementStrategy strategy : strategyList) {
@@ -486,5 +480,15 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	public Object selectPlanStrategy(AdvertisementStrategy strategy, PageBounds pageBounds) {
 		List<AdvertisementStrategy> list = strategyDao.selectPlanStrategy(strategy, new PageBounds());
 		return null;
+	}
+
+	private List<AdvertisementStrategy> getStrategyTypeList(String typeKey, List<AdvertisementStrategy> list) {
+		List<AdvertisementStrategy> resultList = new ArrayList<AdvertisementStrategy>();
+		for (AdvertisementStrategy advertisementStrategy : list) {
+			if (typeKey.equals(advertisementStrategy.getType())) {
+				resultList.add(advertisementStrategy);
+			}
+		}
+		return resultList;
 	}
 }

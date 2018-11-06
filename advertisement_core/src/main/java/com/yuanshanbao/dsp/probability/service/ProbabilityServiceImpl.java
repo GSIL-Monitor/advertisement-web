@@ -25,7 +25,7 @@ import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementDisplayType;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementDetails;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
@@ -48,7 +48,6 @@ import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.dsp.quota.service.operation.AdvertisementOperation;
-import com.yuanshanbao.dsp.quota.service.operation.QuotaOperationFactory;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -280,8 +279,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		for (Quota quota : quotaList) {
 			if (quota.getCount() != null && quota.getCount() > 0 && quota.getType() != null) {
 				String countValue = "";
-				QuotaOperationFactory factory = QuotaType.getCountFactory(quota.getType());
-				AdvertisementOperation operation = factory.getOperation();
+				// QuotaOperationFactory factory =
+				// QuotaType.getCountFactory(quota.getType());
+				AdvertisementOperation operation = QuotaType.getCountFactory(quota.getType());
 				operation.setQuota(quota);
 				operation.setRedisCacheService(redisCacheService);
 				countValue = operation.getResult();
@@ -483,10 +483,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	// 查找计划并展示
 	@Override
 	public List<AdvertisementDetails> pickProbabilityByPlan(HttpServletRequest request, Long projectId,
-			Channel channelObject, Instance instance) {
+			Channel channelObject, MediaInformation mediaInformation) {
 		List<AdvertisementDetails> resultList = new ArrayList<AdvertisementDetails>();
 		Map<Long, Probability> probabilitymap = selectPlanFromCache(request, projectId, channelObject.getKey(),
-				instance);
+				mediaInformation);
 		if (probabilitymap.size() <= 0) {
 			return resultList;
 		}
@@ -519,9 +519,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 					break;
 				}
 			}
-			String planKey = getEncryptPlanKey(plan);
-			AdvertisementDetails advertisementDetails = new AdvertisementDetails(planKey, resultMaterial,
-					channelObject.getKey());
+			String planKey = getEncryptKey(plan.getPlanId() + "");
+			String probabilityKey = getEncryptKey(probability.getProbabilityId() + "");
+			AdvertisementDetails advertisementDetails = new AdvertisementDetails(planKey, probabilityKey,
+					resultMaterial, channelObject.getKey());
 			resultList.add(advertisementDetails);
 		} catch (Exception e) {
 			LoggerUtil.error("getContent", e);
@@ -529,18 +530,18 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return resultList;
 	}
 
-	private String getEncryptPlanKey(Plan plan) {
-		String planKey = "";
+	private String getEncryptKey(String value) {
+		String key = "";
 		try {
-			planKey = AESUtils.encrypt(PLAN_ENCRYPT_KEY, plan.getPlanId().toString());
+			key = AESUtils.encrypt(PLAN_ENCRYPT_KEY, value);
 		} catch (Exception e) {
-			LoggerUtil.error("encryptPlanId", e);
+			LoggerUtil.error("encrypt error ", e);
 		}
-		return planKey;
+		return key;
 	}
 
 	public Map<Long, Probability> selectPlanFromCache(HttpServletRequest request, Long projectId, String channelKey,
-			Instance instance) {
+			MediaInformation mediaInformation) {
 		Map<Long, Probability> resultMap = new HashMap<Long, Probability>();
 		if (projectId == null || channelKey == null) {
 			return resultMap;
@@ -572,17 +573,29 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 					continue;
 				}
 			}
-			availableList.add(probability);
+			// 验证金额是否已经达到上限
+			Double consumed = getDoubleCount(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()));
+			if (BigDecimal.valueOf(consumed).compareTo(plan.getSpend()) < 0) {
+				availableList.add(probability);
+			}
 		}
 
 		List<Probability> result = advertisementStrategyService.getAvailableProbabilityList(request, availableList,
-				instance);
+				mediaInformation);
 
 		for (Probability probability : result) {
 			resultMap.put(probability.getProbabilityId(), probability);
 		}
 
 		return resultMap;
+	}
+
+	private double getDoubleCount(String key) {
+		String str = (String) redisService.get(key);
+		if (ValidateUtil.isPositiveFloat(str)) {
+			return Double.parseDouble(str);
+		}
+		return 0;
 	}
 
 	private Long dealWithCTRAndBid(Map<Long, BigDecimal> bidMap) {
@@ -618,12 +631,32 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	}
 
 	@Override
-	public void recordPlanCount(String pId, String channel, boolean isClick) {
+	public void recordPlanCount(String pId, String key, String channel, boolean isClick) {
 		String planId = AESUtils.decrypt(PLAN_ENCRYPT_KEY, pId);
+		String probabilityId = AESUtils.decrypt(PLAN_ENCRYPT_KEY, key);
+		Plan plan = ConfigManager.getPlanById(Long.valueOf(planId));
 		if (isClick) {
 			redisService.incr(RedisConstant.getPlanClickCountPVKey(null, planId, channel));
+			if (QuotaType.CPC.equals(plan.getChargeType())) {
+				increConsume(planId, probabilityId, channel);
+			}
 		} else {
 			redisService.incr(RedisConstant.getPlanShowCountPVKey(null, planId, channel));
+			if (QuotaType.CPM.equals(plan.getChargeType())) {
+				increConsume(planId, probabilityId, channel);
+			}
+		}
+	}
+
+	private void increConsume(String planId, String probabilityId, String channel) {
+		try {
+			Map<Long, BigDecimal> proCostMap = DspConstantsManager.getBidByChannel(channel);
+			redisService.increByDouble(RedisConstant.getProbabilityBalanceCountKey(null, Long.valueOf(probabilityId)),
+					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
+			redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(Long.valueOf(planId)),
+					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
+		} catch (Exception e) {
+			LoggerUtil.error("increConsume", e);
 		}
 	}
 }

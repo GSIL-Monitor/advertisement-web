@@ -24,4 +24,6 @@ public interface AdvertiserService {
 
 	public void cutPayment(Long advertiserId, BigDecimal money);
 
+	public Advertiser selectAdvertiserForUpdate(Long advertiserId);
+
 }

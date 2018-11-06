@@ -19,6 +19,7 @@ import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public class DspConstantsManager {
@@ -66,7 +67,11 @@ public class DspConstantsManager {
 			for (Probability probability : proList) {
 				Plan plan = ConfigManager.getPlanById(probability.getPlanId());
 				if (plan != null && plan.getBestBid() != null) {
-					probabilityBidMap.put(probability.getProbabilityId(), plan.getBestBid());
+					BigDecimal bestBid = plan.getBestBid();
+					if (QuotaType.CPM.equals(plan.getChargeType())) {
+						bestBid = bestBid.divide(new BigDecimal(1000));
+					}
+					probabilityBidMap.put(probability.getProbabilityId(), bestBid);
 				}
 			}
 			if (probabilityBidMap.size() == 0) {

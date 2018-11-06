@@ -6,6 +6,7 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.bill.model.Bill;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.plan.model.Plan;
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface BillService {
@@ -32,5 +33,9 @@ public interface BillService {
 	public void combineProbabilityBill(Plan plan);
 
 	public Bill selectAdvertiserConsume(Bill bill);
+
+	public void createBill(Plan plan, Probability probability, double nowCount, double lastCount, int type);
+
+	public void checkBillAndCount(Plan plan, Probability probability, double lastCount);
 
 }

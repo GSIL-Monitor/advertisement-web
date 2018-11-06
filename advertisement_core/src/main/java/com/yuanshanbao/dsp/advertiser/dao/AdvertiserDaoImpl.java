@@ -52,4 +52,9 @@ public class AdvertiserDaoImpl extends BaseDaoImpl implements AdvertiserDao {
 		return getSqlSession().update("advertiser.cutPayment", parameters);
 	}
 
+	@Override
+	public Advertiser selectAdvertiserForUpdate(Map<String, Object> parameters) {
+		return getSqlSession().selectOne("advertiser.selectAdvertiserForUpdate", parameters);
+	}
+
 }

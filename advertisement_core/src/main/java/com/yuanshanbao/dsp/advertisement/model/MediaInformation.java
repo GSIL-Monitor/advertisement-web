@@ -1,6 +1,6 @@
 package com.yuanshanbao.dsp.advertisement.model;
 
-public class Instance {
+public class MediaInformation {
 	private String userId;
 	private String appId;
 	private String moblileLocation;

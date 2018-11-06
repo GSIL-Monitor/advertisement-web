@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
@@ -35,10 +35,10 @@ public interface AdvertisementStrategyService {
 	public List<AdvertisementStrategy> selectAdvertisementStrategyFromCache(Long projectId);
 
 	public List<Long> getAvailableAdvertisementList(List<Long> advertisementIdList,
-			List<AdvertisementStrategy> stagtegyList, Instance instrance);
+			List<AdvertisementStrategy> stagtegyList, MediaInformation instrance);
 
 	public List<Probability> getAvailableProbabilityList(HttpServletRequest request, List<Probability> list,
-			Instance instance);
+			MediaInformation mediaInformation);
 
 	public void updatePlanStrategy(HttpServletRequest request, Long probabilityId, Long advertiserId);
 
