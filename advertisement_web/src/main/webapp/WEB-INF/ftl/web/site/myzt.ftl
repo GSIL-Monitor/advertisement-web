@@ -1,11 +1,15 @@
 <#include "../common/core.ftl" />
-<#assign title="远山保科技-金融大数据服务领军者">
+<#assign title="蚂蚁智投">
 <@htmlHead title="${title}" description="">
 	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
 	<@cssFile file=["../js/plugins/bootstrap/css/bootstrap.min.css", "web/site/ysb.css", "../js/plugins/WOW/css/libs/animate.css"] />
 	<@jsFile file=["plugins/bootstrap/js/bootstrap.min.js", "plugins/WOW/dist/wow.js"] />
 </@htmlHead>
-<@calculatePage/>
+<style >
+	html{
+		font-size: 100px;
+	}
+</style>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container navbar-top">
     <div class="navbar-header">
@@ -16,7 +20,7 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand brand" href="#">
-		<img class="logo" src="${cdnUrl}/img/web/site/ysb/ysb-logo@2x.png" alt="">
+		<img class="logo" src="${cdnUrl}/img/web/site/myzt/myzt-logo@2x.png" alt="">
       </a>
     </div>
 
@@ -155,7 +159,7 @@
 					<img src="${cdnUrl}/img/web/site/myzt/weixin@3x.png" alt="">
 				</div>
 				<div class="col-xs-6 col-md-2 cooperation wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.4s">
-					<img src="${cdnUrl}/img/web/site/myzt/xiaohuangche@3x.png" alt="">
+					<img src="${cdnUrl}/img/web/site/myzt/ofo@3x.png" alt="">
 				</div>
 				<div class="col-xs-6 col-md-2 cooperation wow bounceInUp" data-wow-duration="1s" data-wow-delay="0.6s">
 					<img src="${cdnUrl}/img/web/site/myzt/douyin@3x.png" alt="">
