@@ -8,9 +8,9 @@
 	<p>已成功领取<span class="money">平安出行险</span>，平安客服后续将致电以确认免费保险生效事宜。</p>
 	<p class="coupon-tip">滴滴红包已发送到您的手机，请注意查收。</p>
 </#macro>
-<@resultPopWindow title="" buttonText="参与保费测算再送${surveyPromotionTextConfig}" buttonFunction=""/>
+<@resultCalculatePopWindow actionValue="再送"/>
 <#-- 问卷弹窗 -->
-<@surveyPopWindow title="完成下面问题，立即领取赠险。" buttonText="提交" buttonFunction=""/>
+<@surveyPopWindow />
 <@emailPopWindow />
 <#-- 身份证弹窗 -->
 <@identityCardPopWindow />
@@ -65,10 +65,9 @@
 					<p>1、有效参与用户身体健康，须要在25-50周岁；</p>
 					<p>2、每位用户限领1份出行保障，多次领取无效；</p>
 					<p>3、本保险仅提供电子保单，保单生效后，承保用户会自动收到保险平台及保险公司短信通知；</p>
-					<p>4、因单一保险公司（如平安保险）保障范围存在地域等限制因素，为提升用户体验，我们将及时为用户免费赠送其他保险公司同类型产品。（包括但不限制泰康人寿、中美大都会、百年人寿、阳光人寿、华夏保险等）</p>
-					<p>5、滴滴红包，参与活动即可获得5~100元滴滴红包，乘坐快车、专车等均可抵现使用。</p>
+					<p>4、滴滴红包，参与活动即可获得5~100元滴滴红包，乘坐快车、专车等均可抵现使用。</p>
 				</div>
-				<p class="insurance-provider">我已同意<span>《安全条款》</span>并领取免费保险</p>
+				<p class="insurance-provider">我已同意<span>《用户协议》</span>并领取免费保险</p>
 			</div>
 		</div>
 		<div class="line foot-line"></div>

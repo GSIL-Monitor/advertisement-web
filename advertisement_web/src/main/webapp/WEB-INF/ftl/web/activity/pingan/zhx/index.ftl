@@ -8,9 +8,9 @@
 <#macro resultTitleArea>
 	<p>已成功领取<span class="money">平安出行险</span>，平安客服后续将致电以确认免费保险生效事宜。</p>
 </#macro>
-<@resultPopWindow title="" buttonText="参与保费测算再送${surveyPromotionTextConfig}" buttonFunction=""/>
+<@resultCalculatePopWindow />
 <#-- 问卷弹窗 -->
-<@surveyPopWindow title="完成下面问题，立即领取赠险。" buttonText="提交" buttonFunction=""/>
+<@surveyPopWindow />
 <@emailPopWindow />
 <#-- 身份证弹窗 -->
 <@identityCardPopWindow />
@@ -50,7 +50,7 @@
 						<img class="pingan" src="${cdnUrl}/img/web/activity/pingan/zhx/logo1.png">
 						<div class="title">网络e护个人账户安全险</div>
 						<table>
-							<tr><td class="l">保障项目</td><td class="r">个人银行/网络账户损失</td></tr>
+							<tr><td class="l">保障项目</td><td class="r">个人银行/网络账户损失(不含第三方支付账户)</td></tr>
 							<tr><td class="l">保障金额</td><td class="r"><span class="money">10000元</span></td></tr>
 							<tr><td class="l">投保年龄</td><td class="r">25-50周岁</td></tr>
 							<tr><td class="l">保障日期</td><td class="r"><span class="money">30天</span></td></tr>

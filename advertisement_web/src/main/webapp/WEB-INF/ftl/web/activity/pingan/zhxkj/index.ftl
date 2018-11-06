@@ -7,9 +7,9 @@
 <#macro resultTitleArea>
 	<p>已成功领取<span class="money">平安账户险</span>，平安客服后续将致电以确认免费保险生效事宜。</p>
 </#macro>
-<@resultPopWindow title="" buttonText="参与保费测算再送${surveyPromotionTextConfig}" buttonFunction=""/>
+<@resultCalculatePopWindow />
 <#-- 问卷弹窗 -->
-<@surveyPopWindow title="完成下面问题，立即领取赠险。" buttonText="提交" buttonFunction=""/>
+<@surveyPopWindow />
 <@emailPopWindow />
 <#-- 身份证弹窗 -->
 <@identityCardPopWindow />

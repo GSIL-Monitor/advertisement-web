@@ -7,10 +7,10 @@
 <#macro resultTitleArea>
 	<p>已成功领取<span class="money">平安出行险</span>，平安客服后续将致电以确认免费保险生效事宜。</p>
 </#macro>
-<@resultPopWindow title="" buttonText="参与保费测算再送${surveyPromotionTextConfig}" buttonFunction=""/>
+<@resultCalculatePopWindow />
 <#-- 问卷弹窗 -->
 <#if surverPositionConfig?? && surverPositionConfig=="popup">
-<@surveyPopWindow title="完成下面问题，立即领取赠险。" buttonText="提交" buttonFunction=""/>
+<@surveyPopWindow />
 </#if>
 <div class="container">
 	<#-- 头部信息（包括公司logo，菜单等） -->
@@ -131,8 +131,7 @@
 				<#if channel?? && channel=="tianm">
 				<p>4、如有疑问，可咨询客服qq:2013780348</p>
 				<#else>
-				<p>4、因单一保险公司（如平安保险）保障范围存在地域等限制因素，为提升用户体验，我们将及时为用户免费赠送其他保险公司同类型产品。（包括但不限制泰康人寿、中美大都会、百年人寿、阳光人寿、华夏保险等）</p>
-				<p>5、如有疑问，可咨询客服qq:2013780348</p>
+				<p>4、如有疑问，可咨询客服qq:2013780348</p>
 				</#if>
 			</div>
 		</div>

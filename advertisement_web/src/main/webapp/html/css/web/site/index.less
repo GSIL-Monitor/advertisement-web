@@ -12,6 +12,13 @@ body {
 	border-bottom: 1px solid #f3dab9;
 }
 
+.huhabao-header {
+	height: 60px;
+	background-color: #DCF1FA;
+	border-bottom: none;
+	opacity: 0.8352;
+}
+
 .nav-area {
 	width: 1000px;
 	margin: 0 auto;
@@ -21,8 +28,19 @@ body {
 		float: left;
 		width: 328px;
 		height: 80px;
-		background: url(../../../img/web/site/logo.png) no-repeat left center;
-		background-size: 95px 37px;
+	}
+
+	.huha {
+		width: 146px;
+		height: 48px;
+		margin-top: 6px;
+		background: url(../../../img/web/site/logo_huha.png) no-repeat;
+		background-size: 146px 48px;
+	}
+
+	.yuanshan {
+		background: url(../../../img/web/site/logo_yuanshan.png) no-repeat left center;
+		background-size: 153px 50px;
 	}
 }
 
@@ -33,9 +51,17 @@ body {
 		float: left;
 		width: 100%;
 		height: 640px;
-		background: url(../../../img/web/site/carousel.png) no-repeat center center;
+	}
+
+	.yuanshan {
+		background: url(../../../img/web/site/carousel_yuanshan.png) no-repeat center center;
 	}
     
+    .huha {
+    	height: 790px;
+    	background: url(../../../img/web/site/carousel_huha.jpg) no-repeat center center;
+    }
+
     .dots {
 	    display: block;
 	    position: absolute;
@@ -64,6 +90,18 @@ body {
 
 	ol,ul {
 		list-style: none;
+	}
+}
+
+.huhabao-carousel-wrap {
+	padding-top: 0;
+
+	.carousel-inner {
+		height: 790px;
+		
+		.huha {
+			height: 790px;
+		}
 	}
 }
 
@@ -210,5 +248,72 @@ body {
 	font-size: 14px;
 }
 
+.huhabao-footer {
+	position: relative;
+	height: 110px;
+	background: #DCF1FA;
+	.huhabao-footer-info {
+		z-index: 1000;
+		position: absolute;
+		left: 50%;
+		margin-left: -500px;
+		top: -33px;
+		width: 1000px;
+		height: 66px;
+		background: url(../../../img/web/site/huha_footer.png) no-repeat;
 
+		.huhabao-content {
+			font-size: 16px;
+			color: #222222;
+			letter-spacing: 0;
+	    	dd {
+	    		float: left;
+	    		height: 66px;
+	    		a {
+	    			cursor: pointer;
+	    			color: #222;
+	    		}
+	    	}
+
+	    	i {
+	    		display: inline-block;
+	    		width: 22px;
+	    		height: 22px;
+	    		margin-left: 64px;
+	    		margin-right: 10px;
+	    		vertical-align: middle;
+	    	}
+	    	span {
+	    		display: inline-block;
+	    		height: 66px;
+	    		line-height: 66px;
+	    		vertical-align: middle;
+	    	}
+
+	    	.c1 {
+	    		margin-left: 75px;
+	    		background: url(../../../img/web/site/huha_tel.png) no-repeat center center;
+	    		background-size: 100%;
+	    	}
+
+	    	.c2 {
+	    		background: url(../../../img/web/site/huha_email.png) no-repeat center center;
+	    		background-size: 100%;
+	    	}
+
+	    	.c3 {
+	    		background: url(../../../img/web/site/huha_QQ.png) no-repeat center center;
+	    		background-size: 100%;
+	    	}
+		}
+	}
+
+	.copyright {
+		padding: 51px 0 19px;
+		background: #DCF1FA;
+		font-size: 14px;
+		color: #666666;
+		letter-spacing: 0;
+	}
+}
 

@@ -95,7 +95,7 @@ public class IndexController extends BaseController {
 		return resultMap;
 	}
 
-	@RequestMapping("/index")
+	@RequestMapping("")
 	public String indexWeb(HttpServletRequest request, ModelMap resultMap) {
 		try {
 			String host = request.getHeader("Host");

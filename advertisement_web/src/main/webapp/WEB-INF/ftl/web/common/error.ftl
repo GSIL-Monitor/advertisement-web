@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
 	<meta name="baidu-site-verification" content="3QzDHZVkvx" />
-	<title>蓝筹-系统错误</title>
+	<title>系统错误</title>
 	<link rel="stylesheet" type="text/css" href="/html/css/pages/common.css">
 	<link rel="stylesheet" type="text/css" href="/html/css/pages/base.css">
 	<link rel="stylesheet" type="text/css" href="/html/css/pages/40x.css">

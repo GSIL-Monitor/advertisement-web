@@ -7,7 +7,7 @@
 <#macro resultTitleArea>
 	<p>已成功领取<span class="money">中英交通意外险</span>，中英客服后续将致电以确认免费保险生效事宜。</p>
 </#macro>
-<@resultPopWindow title="" buttonText="参与保费测算再送${surveyPromotionTextConfig}" buttonFunction=""/>
+<@resultSurveyPopWindow />
 <#if emailPositionConfig?? && emailPositionConfig=="popup">
 <@emailPopWindow />
 </#if>
@@ -63,7 +63,7 @@
 				<div class="protocal">
 					<span>
 						<img src="${cdnUrl}/img/wap/activity/pingan/xxjhb/check.png"/>
-						我同意<a href="javascript:;" onclick="showActivityRule();">《活动规则》</a>及<a href="javascript:;" onclick="showProtocol();">《安全条款》</a>并领取<a href="javascript:;" id="insuranceDetailButton">免费保障</a>
+						我同意<a href="javascript:;" onclick="showActivityRule();">《活动规则》</a>及<a href="javascript:;" onclick="showProtocol();">《用户协议》</a>并领取<a href="javascript:;" id="insuranceDetailButton">免费保障</a>
 					</span>
 					<@commonProtocolContent merchantName="中英" merchantDomain="www.aviva-cofco.com.cn"/>
 					<div id="activityRulePopWindow" class="hide">

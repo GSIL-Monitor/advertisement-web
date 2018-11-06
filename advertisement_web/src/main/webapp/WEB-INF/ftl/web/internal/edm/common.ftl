@@ -7,6 +7,7 @@
 		<div style="display:none;">
 			<img src="http://www.dachuanbao.cn/html/img/edm/1.jpg?from=${channel}"/>
 		</div>
+		<#if name??>
 		<table width="700px" height="700px" style="font-size: 14px; font-family: '微软雅黑'; color:#555; background-color: #f1f1f1; border: none;" border="0" cellspacing="0" cellpadding="0">
 			<#list pointList as rows>
 			<tr>
@@ -20,6 +21,7 @@
 			</tr>
 			</#list>
 		</table>
+		</#if>
 		<table width="700px" style="font-size: 13px; line-height: 20px; font-family: '微软雅黑'; color:#777; border: none;" border="0" cellspacing="0" cellpadding="0">
 			<#if advertisementImage?? && advertisementLink??>
 			<tr>

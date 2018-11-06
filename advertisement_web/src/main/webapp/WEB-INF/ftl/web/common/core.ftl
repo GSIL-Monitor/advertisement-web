@@ -25,7 +25,7 @@
 			<meta name="keywords" content="${keywords}"/>
 			<meta name="description" content="${description}"/>
 			<@cssFile file=["web/base.css", "web/common.css"] />
-			<@jsFile file=["plugins/jquery-1.11.3.min.js", "base/core.js"] />
+			<@jsFile file=["plugins/jquery.min.js", "base/core.js"] />
       		<#nested>
       		<link rel="shortcut icon" type="image/ico" href="/favicon.ico">
       		<!--[if lt IE 9]>
@@ -71,14 +71,13 @@
 		<input type="hidden" id="activityPath" value="${activityPath}"/>
 		<span>
 			<#if chineseName?? && (chineseName?length>0)>
-			<p>版权所有 © ${chineseName}，未经许可不得复制、转载或摘编，违者必究!</p>
+			<#-- <p>版权所有 © ${chineseName}，未经许可不得复制、转载或摘编，违者必究!</p> -->
 			</#if>
 			<#-- <p>Copyright © ${englishName} All Rights Reserved</p> -->
+			<p>本DMP服务未经许可不得复制、转载或摘编，违者必究!</p>
 			<#if isDachuanbao??&&isDachuanbao=="true">
-			<p>本DMP服务由远山保险提供</p>
 			<p>京ICP备16050725号-1</p>
 			<#else>
-			<p>本DMP服务由北京远山保科技有限公司提供</p>
 			<p>京ICP备16055004号-1</p>
 			</#if>
 		</span>
@@ -165,11 +164,11 @@
 
 		<div class="form-item">
 			<div class="field-name">
-				缴费方式：
+				交费方式：
 			</div>
 			<div class="input-area">
-				<div name="payWayValue" class="left radio-btn radio-btn-select" value="year">按年缴费</div>
-				<div name="payWayValue" class="right radio-btn" value="month">按月缴费</div>
+				<div name="payWayValue" class="left radio-btn radio-btn-select" value="year">按年交费</div>
+				<div name="payWayValue" class="right radio-btn" value="month">按月交费</div>
 				<input type="hidden" id="payWay" name="payWay" value="year"/>
 			</div>
 		</div>
@@ -231,4 +230,56 @@
 			</div>
 		</div>
 	</form>
+</#macro>
+
+<#macro commonHeader insurance="" description="" headerClass="">
+	<div class="header ${headerClass}">
+		<div class="header-wrap">
+		<#if channel?? && channel.imageUrl?? && (channel.imageUrl?length>0)>
+			<img src="${channel.imageUrl}">
+		<#elseif insurance?? && (insurance?length>0)>
+			<img src="${ossUrl}/img/common/logo/${insurance}-logo.png?${cdnFileVersion}">
+		</#if>
+
+		<#if hasHeaderCooperateConfig?? && hasHeaderCooperateConfig == "true" && (description?? && description?length > 0)>
+			<div class="header-description">
+				远山携手${description}
+			</div>
+		</#if>
+		</div>
+	</div>
+</#macro>
+
+<#macro beianNumber>
+	<#if isDachuanbao??&&isDachuanbao=="true">
+  	京ICP备16050725号-1
+  	<#elseif isYuanshanbx?? && isYuanshanbx=="true">
+  	京ICP备16055004号-2
+  	<#elseif isHuhabao?? && isHuhabao=="true">
+  	京ICP备17008756号-1
+  	<#elseif isRjbbx?? && isRjbbx=="true">
+ 	京ICP备14033532号-1
+  	<#else>
+  	京ICP备16055004号-1
+  	</#if>
+</#macro>
+
+<#macro companyName>
+<#if isDachuanbao??&&isDachuanbao=="true">
+大川保
+<#elseif isYuanshanbx?? && isYuanshanbx=="true">
+远山保
+<#elseif isHuhabao?? && isHuhabao=="true">
+呼哈保
+<#else>
+远山保
+</#if>
+</#macro>
+
+<#macro copyRight>
+	<#if isHuhabao?? && isHuhabao=="true">
+	版权所有&copy;2017北京北方青蓝电子科技有限公司
+	<#else>
+	版权所有&copy;2017北京远山保科技有限公司
+	</#if>
 </#macro>

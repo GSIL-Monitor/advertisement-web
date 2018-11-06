@@ -89,7 +89,7 @@
 		<div class="submit-button-area">
 			<div class="submit-button" id="submitButton">免费领好礼</div>
 		</div>
-		<p class="warm-tip"><img src="${cdnUrl}/img/wap/common/check.png"/>我已同意<a href="javascript:;" onclick="showProtocol();">《安全条款》</a><p>
+		<p class="warm-tip"><img src="${cdnUrl}/img/wap/common/check.png"/>我已同意<a href="javascript:;" onclick="showProtocol();">《用户协议》</a><p>
 		<div id="protocolContent" class="hide">
 			<p>1. 每一客户受赠平安出行保险以1份为限。保险对象为出生25-50周岁，身体健康、能正常工作和劳动。</p>
 			<p>2. 本保险仅提供电子保单，仅限赠送。保单生效后客户会自动收到短信通知，您也可以通过平安官网自助卡平台及寿险免费险平台查询功能查询您的保单信息。</p>

@@ -1,21 +1,33 @@
 <#include "../../../common/core.ftl" />
 <@htmlHead title="免费领取100万元平安出行保障" description="">
-	<@jsFile file=["common/zengxian.js"] />
-	<@cssFile file=["web/activity/pingan/yacx-web.css"] />
+	<@jsFile file=["common/zengxian.js", "plugins/jquery.datetimepicker.js"] />
+	<@cssFile file=["web/activity/pingan/yacx-web.css", "plugins/jquery.datetimepicker.css"] />
 </@htmlHead>
 <#-- 结果弹窗 -->
 <#macro resultTitleArea>
 	<p>已成功领取<span class="money">平安出行险</span>，平安客服后续将致电以确认免费保险生效事宜。</p>
 </#macro>
-<@resultPopWindow title="" buttonText="参与保费测算再送${surveyPromotionTextConfig}" buttonFunction=""/>
+<@resultCalculatePopWindow />
 <#-- 问卷弹窗 -->
-<@surveyPopWindow title="完成下面问题，立即领取赠险。" buttonText="提交" buttonFunction=""/>
+<@surveyPopWindow />
 <#if emailPositionConfig?? && emailPositionConfig=="popup">
 <@emailPopWindow />
 </#if>
 <#-- 身份证弹窗 -->
 <@identityCardPopWindow />
-
+<script type="text/javascript">
+	$(function () {
+		$('#birthday').datetimepicker({
+		    format: 'Y/m/d',
+		    defaultSelect:false,
+		    allowBlank:true,
+		    yearStart:1991,
+		    yearEnd:2031,
+		    yearOffset: -31,
+		    timepicker: false
+		});
+	});
+</script>
 <@commonHeader description=""/>
 <@commonBanner path="pingan/yacx" />
 <div class="container">
