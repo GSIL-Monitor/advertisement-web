@@ -250,15 +250,11 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 	}
 
 	@RequestMapping("/strategyList.do")
-	public String strategyList(Long probabilityId, ModelMap modelMap, HttpServletRequest request,
-			HttpServletResponse response) {
+	public String strategyList(Long planId, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
 		Advertiser advertiser = getBindAdvertiserByUser();
 		if (advertiser != null) {
 			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
 		}
-		Map<String, String> map = ConfigManager.getStrategyMap(probabilityId);
-		request.setAttribute("strategyValue", map);
-		request.setAttribute("probabilityId", probabilityId);
 		return PAGE_PLAN_STRATEGY_LIST;
 	}
 

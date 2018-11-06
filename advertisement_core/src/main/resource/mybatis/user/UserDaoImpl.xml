@@ -10,15 +10,16 @@
 		<result property="weixinId" column="weixin_id" jdbcType="VARCHAR" />
 		<result property="password" column="password" jdbcType="VARCHAR" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
-		<result property="userName" column="user_name" jdbcType="VARCHAR" />
+		<result property="nickName" column="nick_name" jdbcType="VARCHAR" />
 		<result property="avatar" column="avatar" jdbcType="VARCHAR" />
+		<result property="inviteId" column="invite_id" jdbcType="VARCHAR" />
 		<result property="inviteType" column="invite_type" jdbcType="NUMERIC" />
 		<result property="registerFrom" column="register_from" jdbcType="NUMERIC" />
 		<result property="userType" column="user_type" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
-		<result property="inviteId" column="invite_id" jdbcType="VARCHAR" />
+
 	</resultMap>
 	
 	<resultMap id="loginTokenMap" type="LoginToken">
@@ -92,10 +93,10 @@
 	<insert id="insertUser" parameterType="User">
 		insert into
 		tb_user_info(mobile, weixin_id, password,invite_user_id,
-		name,user_name,avatar,invite_type, register_from, status,
+		name,nick_name,avatar,invite_type, register_from, status,
 		create_time,update_time)
 		values
-		(#{mobile}, #{weixinId}, #{password},#{inviteUserId},#{name},#{userName},
+		(#{mobile}, #{weixinId}, #{password},#{inviteUserId},#{name},#{nickName},
 		#{avatar}, #{inviteType},#{registerFrom}, #{status}, 
 		sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
@@ -132,8 +133,8 @@
 				<if test="name != null">
 					name=#{name},
 				</if>
-				<if test="userName != null">
-					user_name=#{userName},
+				<if test="nickName != null">
+					nick_name=#{nickName},
 				</if>
 				<if test="avatar != null">
 					avatar=#{avatar},

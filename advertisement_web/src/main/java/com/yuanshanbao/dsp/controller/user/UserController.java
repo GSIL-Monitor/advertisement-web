@@ -274,13 +274,12 @@ public class UserController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/xcxLogin")
 	public Map<String, Object> xcxLogin(HttpServletRequest request, HttpServletResponse response, String appId,
-			String params) {
+										String params) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String code = parameterMap.get("code");
 			String from = parameterMap.get("from");
-
 			String result = HttpsUtil.doGet(
 					"https://api.weixin.qq.com/sns/jscode2session",
 					"appid=" + weixinService.getAppId(WeixinService.CONFIG_WZXCX) + "&secret="
@@ -404,8 +403,8 @@ public class UserController extends BaseController {
 	/**
 	 * @param request
 	 * @param appId
-	 * @param tempToken
-	 * @param user
+	 * @param
+	 * @param
 	 * @return
 	 */
 	@ResponseBody
@@ -626,7 +625,7 @@ public class UserController extends BaseController {
 		Agency agency = new Agency();
 		agency.setInviteUserId(user.getInviteUserId());
 		agency.setUserId(user.getUserId());
-		agency.setUserName(user.getUserName());
+		agency.setName(user.getName());
 		agency.setAgencyName(inviteUser.getName());
 		agencyService.insertAgency(agency);
 

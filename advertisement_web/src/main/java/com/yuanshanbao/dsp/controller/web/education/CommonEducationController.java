@@ -16,7 +16,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -72,7 +72,7 @@ public class CommonEducationController extends BaseInformationController {
 			Information information = (Information) request.getSession().getAttribute(
 					SessionConstants.SESSION_INFORMATION);
 			if (information != null) {
-				Instance instance = new Instance();
+				MediaInformation instance = new MediaInformation();
 				instance.setActivityId(information.getActivityId());
 				instance.setChannel(information.getChannel());
 				ConfigManager.setConfigMap(resultMap, instance);

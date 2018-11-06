@@ -1,9 +1,9 @@
-package com.yuanshanbao.dsp.level.model.vo;
+package com.yuanshanbao.dsp.user.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class LevelStatus {
+public class UserLevel {
 
 	protected static Map<Integer, String> codeDescriptionMap = new LinkedHashMap<Integer, String>();
 

@@ -39,7 +39,7 @@
 										<tr>
 											<td style="width:20%;">性别：</td>
 											<td>
-												<input type="radio" name="genderStrategy" value="" checked>不限
+												<input type="radio" name="genderStrategy" value="" checked>不限${strategyValue.genderStrategy}
 												<input type="radio" name="genderStrategy" value="M">男
 												<input type="radio" name="genderStrategy" value="F">女
 											</td>

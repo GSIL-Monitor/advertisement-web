@@ -112,4 +112,11 @@ public class AdvertiserServiceImpl implements AdvertiserService {
 		}
 	}
 
+	@Override
+	public Advertiser selectAdvertiserForUpdate(Long advertiserId) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("advertiserId", advertiserId);
+		Advertiser advertiser = advertiserDao.selectAdvertiserForUpdate(parameters);
+		return advertiser;
+	}
 }

@@ -20,4 +20,6 @@ public interface AdvertiserDao {
 	public int lockBalance(Map<String, Object> parameters);
 
 	public int cutPayment(Map<String, Object> parameters);
+
+	public Advertiser selectAdvertiserForUpdate(Map<String, Object> parameters);
 }

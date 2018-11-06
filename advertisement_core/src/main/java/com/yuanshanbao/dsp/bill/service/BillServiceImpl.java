@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.bill.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -45,7 +46,6 @@ import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.dsp.quota.service.operation.AdvertisementOperation;
-import com.yuanshanbao.dsp.quota.service.operation.QuotaOperationFactory;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -148,9 +148,9 @@ public class BillServiceImpl implements BillService {
 		}
 	}
 
-	@Transactional
 	@Override
 	// 按计划扣费
+	@Transactional
 	public void paymentForPlan(Plan plan) {
 		Probability params = new Probability();
 		params.setPlanId(plan.getPlanId());
@@ -164,14 +164,42 @@ public class BillServiceImpl implements BillService {
 			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
 					probability.getProbabilityId()));
 			double difference = nowCount - lastCount;
+			checkBillAndCount(plan, probability, lastCount);
 			if (difference > 0) {
-				createBill(plan, probability, difference, BillType.DEDUCTION);
+				createBill(plan, probability, nowCount, lastCount, BillType.DEDUCTION);
 				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
 						String.valueOf(nowCount));
 				money = money + difference;
 			}
 		}
-		dealWithOverPlanAndOrder(plan, money);
+		// dealWithOverPlanAndOrder(plan, money);
+	}
+
+	@Transactional
+	@Override
+	public void checkBillAndCount(Plan plan, Probability probability, double lastCount) {
+		Bill param = new Bill();
+		param.setPlanId(probability.getPlanId());
+		param.setOrderId(plan.getOrderId());
+		param.setDate(DateUtils.format(new Date()));
+		param.setChannel(probability.getChannel());
+		param.setType(BillType.DEDUCTION);
+		List<Bill> list = selectBill(param, new PageBounds());
+		if (list != null && list.size() > 0) {
+			Bill bill = list.get(0);
+			if (bill.getNowCount().compareTo(BigDecimal.valueOf(lastCount)) == 0) {
+				return;
+			} else {
+				deleteBill(bill.getBillId());
+				Advertiser advertiser = advertiserService.selectAdvertiserForUpdate(plan.getAdvertiserId());
+				if (advertiser != null) {
+					Map<String, Object> parameters = new HashMap<String, Object>();
+					parameters.put("advertiserId", advertiser.getAdvertiserId());
+					parameters.put("amount", bill.getAmount());
+					advertiserDao.lockBalance(parameters);
+				}
+			}
+		}
 	}
 
 	private void dealWithOverPlanAndOrder(Plan plan, Double money) {
@@ -248,24 +276,30 @@ public class BillServiceImpl implements BillService {
 		}
 	}
 
-	public void createBill(Plan plan, Probability probability, double difference, int type) {
+	@Transactional
+	public void createBill(Plan plan, Probability probability, double nowCount, double lastCount, int type) {
 		Bill bill = new Bill();
 		bill.setPlanId(probability.getPlanId());
 		bill.setAdvertiserId(plan.getAdvertiserId());
-		bill.setAmount(BigDecimal.valueOf(difference));
+		bill.setOrderId(plan.getOrderId());
+		bill.setAmount(BigDecimal.valueOf(nowCount - lastCount).setScale(3, RoundingMode.FLOOR));
 		bill.setDate(DateUtils.format(new Date()));
 		bill.setChannel(probability.getChannel());
+		bill.setNowCount(BigDecimal.valueOf(nowCount));
 		bill.setType(type);
 		bill.setStatus(CommonStatus.ONLINE);
 		insertBill(bill);
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("advertiserId", plan.getAdvertiserId());
-		parameters.put("difference", bill.getAmount());
-		int result = advertiserDao.cutPayment(parameters);
-		if (result < 0) {
-			throw new BusinessException(ComRetCode.FAIL);
+		Advertiser advertiser = advertiserService.selectAdvertiserForUpdate(plan.getAdvertiserId());
+		if (advertiser != null) {
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("advertiserId", plan.getAdvertiserId());
+			parameters.put("amount", bill.getAmount());
+			int result = advertiserDao.cutPayment(parameters);
+			if (result < 0) {
+				throw new BusinessException(ComRetCode.FAIL);
+			}
+			LoggerUtil.info("扣费成功={}", JacksonUtil.obj2json(bill));
 		}
-		LoggerUtil.info("扣费成功={}", JacksonUtil.obj2json(bill));
 	}
 
 	private double getCount(String key) {
@@ -403,8 +437,7 @@ public class BillServiceImpl implements BillService {
 			money = new BigDecimal(0);
 			for (Probability probability : probabilityList) {
 				count = 0;
-				QuotaOperationFactory factory = QuotaType.getCountFactory(plan.getChargeType());
-				AdvertisementOperation operation = factory.getOperation();
+				AdvertisementOperation operation = QuotaType.getCountFactory(plan.getChargeType());
 				operation.setProbability(probability);
 				operation.setRedisCacheService(redisCacheService);
 				String countValue = operation.getProbabilityResult();

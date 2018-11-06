@@ -6,6 +6,7 @@ import com.yuanshanbao.dsp.material.model.Material;
 public class AdvertisementDetails {
 
 	private String pId;
+	private String key;
 	private String title;
 	private String description;
 	private String imageUrl;
@@ -15,8 +16,9 @@ public class AdvertisementDetails {
 		super();
 	}
 
-	public AdvertisementDetails(String planKey, Material material, String channel) {
+	public AdvertisementDetails(String planKey, String probabilityKey, Material material, String channel) {
 		this.pId = planKey;
+		this.key = probabilityKey;
 		this.title = material.getTitle();
 		this.description = material.getDescription();
 		this.imageUrl = material.getImageUrl();
@@ -65,5 +67,13 @@ public class AdvertisementDetails {
 
 	private String setUrlByKey(String planKey, String channel) {
 		return CommonConstant.advertisement_HOST + "/i/j/common.html?id=" + planKey + "&channel=" + channel;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 }

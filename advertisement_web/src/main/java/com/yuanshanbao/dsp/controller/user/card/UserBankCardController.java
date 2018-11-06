@@ -7,8 +7,6 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
-import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.bankcard.model.BankCard;
 import com.yuanshanbao.dsp.bankcard.model.vo.GetBank;
@@ -16,7 +14,6 @@ import com.yuanshanbao.dsp.bankcard.service.BankCardService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.information.model.Information;
 import com.yuanshanbao.dsp.information.service.InformationService;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductStatus;
@@ -29,7 +26,6 @@ import com.yuanshanbao.paginator.domain.PageList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -45,9 +41,6 @@ import java.util.*;
 public class UserBankCardController extends BaseController {
 
     private static final String EDUCATION_APP = "education_app";
-    private final String BANK_CARD_URL = "https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo=";
-    private final String BANK_URL_END = "cardBinCheck=true";
-    private final String BANK_LOGO_URL = "https://apimg.alipay.com/combo.png?d=cashier&t=";
     @Autowired
     private BankCardService bankCardService;
 
@@ -103,6 +96,7 @@ public class UserBankCardController extends BaseController {
         return resultMap;
     }
 
+
     @RequestMapping("/applyCard")
     @ResponseBody
     public Object applyCard(HttpServletRequest request, @RequestParam("productId") Long productId,@RequestParam("userName" ) String userName,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
@@ -111,6 +105,7 @@ public class UserBankCardController extends BaseController {
             if (!ValidateUtil.isPhoneNo(mobile)){
                 throw  new BusinessException(ComRetCode.WRONG_MOBILE);
             }
+
             bankCardService.getApplyBankCardInfo(productId,userName,mobile,inviteUserId);
             InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
 

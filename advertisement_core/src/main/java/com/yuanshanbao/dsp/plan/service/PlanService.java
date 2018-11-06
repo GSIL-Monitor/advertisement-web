@@ -25,4 +25,6 @@ public interface PlanService {
 
 	public void calculateCTR(List<Probability> list);
 
+	public void paymentForPlan(Plan plan);
+
 }

@@ -18,7 +18,7 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
-import com.yuanshanbao.dsp.advertisement.model.Instance;
+import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
@@ -38,7 +38,7 @@ public class IndexAdvertisementController extends BaseController {
 	// 请求广告接口
 	@RequestMapping("/{projectKey}/advertisement")
 	@ResponseBody
-	public Object getAdvertisements(HttpServletRequest request, HttpServletResponse response, Instance instance,
+	public Object getAdvertisements(HttpServletRequest request, HttpServletResponse response, MediaInformation instance,
 			@PathVariable("projectKey") String projectKey) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {

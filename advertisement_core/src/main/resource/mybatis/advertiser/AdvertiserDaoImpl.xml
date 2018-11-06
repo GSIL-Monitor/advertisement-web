@@ -139,5 +139,13 @@
 		advertiser_id = #{advertiserId, jdbcType=INTEGER} 
 		and status = 1
 	</update>
+
+	<select id="selectAdvertiserForUpdate" parameterType="map"
+		resultMap="advertiserMap">
+		select
+		* from
+		tb_advertiser
+		where advertiser_id=#{advertiserId} for update
+	</select>
 	
 </mapper>

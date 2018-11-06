@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -137,7 +138,7 @@ public class BaseController {
 	protected User getLoginUser(String token) {
 		User loginToken = tokenService.verifyLoginToken(token);
 		if (loginToken == null) {
-			throw new BusinessException();
+			throw new BusinessException(ComRetCode.NOT_LOGIN);
 		}
 		User user = userService.selectUserById(loginToken.getUserId());
 //		User user = userService.selectUserById(2L);
