@@ -105,6 +105,7 @@ public class UserBankCardController extends BaseController {
             if (!ValidateUtil.isPhoneNo(mobile)){
                 throw  new BusinessException(ComRetCode.WRONG_MOBILE);
             }
+
             bankCardService.getApplyBankCardInfo(productId,userName,mobile,inviteUserId);
             InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
 

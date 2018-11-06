@@ -88,16 +88,16 @@ public class InviteController extends BaseController {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
             //H5二维码
+            String H5Url =H5URL + "?userId=" +user.getUserId() +"&productId=" + productId;
             if (productId == null) {
                 String content = "/i/product/detail";
-                String shareCode = ZXingCode.getLogoQRCode(content, "https://yuanshanbao.oss-cn-beijing.aliyuncs.com/file/game/1534408311677_5704.jpg");
+                String shareCode = ZXingCode.getLogoQRCode(content, H5Url);
                 resultMap.put("shareCode", shareCode);
             }
             resultMap.put("user", userService.selectUserById(2l));
             String content = "/i/product/detail" + "?productId=" + productId;
             //插入logo
-            String applayCardCode = ZXingCode.getLogoQRCode(content, "https://yuanshanbao.oss-cn-beijing.aliyuncs.com/file/game/1534408311677_5704.jpg");
-            String H5Url =H5URL + "userId=" +user.getUserId() +"&productId=" + productId;
+            String applayCardCode = ZXingCode.getLogoQRCode(content, user.getAvatar());
             resultMap.put("applayCardCode", applayCardCode);
             resultMap.put("H5Url", H5Url);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
