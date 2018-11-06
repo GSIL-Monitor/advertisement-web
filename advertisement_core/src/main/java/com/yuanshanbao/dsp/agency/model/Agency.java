@@ -16,7 +16,7 @@ public class Agency implements Serializable  {
     private Long inviteUserId;
     private Long userId;
     private String agencyName;
-    private String userName;
+    private String name;
     private Timestamp inviteTime;
     private BigDecimal brokerage;
     private Integer status;                //0:待审核 1:审核通过 2:审核未通过
@@ -79,12 +79,12 @@ public class Agency implements Serializable  {
         this.agencyName = agencyName;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setInviteTime(Timestamp inviteTime) {

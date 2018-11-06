@@ -17,25 +17,36 @@ public class User implements Serializable {
 	private String weixinId;
 	private String password;
 	private String registerFrom;
-	private String userName;
+	private String nickName;
 	private String name;
 	private String avatar;
 	private Integer inviteType;
 	private Long inviteUserId;
 	private Integer status;
+	private Integer level;
 	private Integer userType;
 	private Timestamp createTime;
 	private Timestamp updateTime;
 
 	private BaseInfo baseInfo;
 
-
-	public String getUserName() {
-		return userName;
+	public Integer getLevel() {
+		return level;
+	}
+	public String getLevelValue(){
+		return UserLevel.getDescription(level);
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 
 	public Long getInviteUserId() {
@@ -159,6 +170,10 @@ public class User implements Serializable {
 
 	public Long getUserId() {
 		return userId;
+	}
+
+	public String getUserIdValue(){
+		return String.format("%06d",userId);
 	}
 
 	public void setUserId(Long userId) {

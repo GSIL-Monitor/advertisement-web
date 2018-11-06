@@ -70,7 +70,7 @@ public class BankCardServiceImpl implements BankCardService {
             agency.setStatus(AgencyStatus.ONCHECK);
             agency.setProductName(product.getName());
             agency.setProductId(productId);
-            agency.setUserName(userName);
+            agency.setName(userName);
             agency.setBrokerage(product.getBrokerage());
             agencyDao.insertAgency(agency);
         }else {

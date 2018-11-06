@@ -12,7 +12,6 @@ import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.earnings.model.Earnings;
 import com.yuanshanbao.dsp.earnings.service.EarningsService;
-import com.yuanshanbao.dsp.level.service.LevelService;
 import com.yuanshanbao.dsp.payment.PaymentInterfaceService;
 import com.yuanshanbao.dsp.redpacket.model.RedPacket;
 import com.yuanshanbao.dsp.redpacket.model.RedPacketStatus;
@@ -75,7 +74,7 @@ public class AccountController extends BaseController {
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private LevelService levelService;
+	private EarningsService earningsService;
 
 	@RequestMapping("/balance")
 	@ResponseBody
@@ -101,7 +100,7 @@ public class AccountController extends BaseController {
 			}
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
-			resultMap.put("level",levelService.selectLevel(user.getUserId()));
+			resultMap.put("levelStatus",user.getLevelValue());
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -110,6 +109,46 @@ public class AccountController extends BaseController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;
+	}
+	/**
+	 * 等级详情
+	 */
+	@RequestMapping("/levelDetails")
+	@ResponseBody
+	public Object getLevel(String token) {
+		Map<Object, Object> resultMap = new HashMap<>();
+		try {
+			//获取当前用户信息
+			User user = getLoginUser(token);
+			int number =0;
+			//获取当前用户的
+			if (user.getMobile() == null) {
+				resultMap.put("levelStatus", user.getLevelValue());
+			} else {
+				resultMap.put("levelStatus", user.getLevelValue());
+			}
+			int countProuctId = earningsService.selectCountProuctIds(user.getUserId());
+			if (countProuctId > 0 && countProuctId < 10) {
+				number = 10 - countProuctId;
+				resultMap.put("number",number);
+				resultMap.put("levelStatus", user.getLevelValue());
+			} else if (countProuctId == 10) {
+				number = 50 - countProuctId;
+				resultMap.put("number",number);
+				resultMap.put("levelStatus", user.getLevelValue());
+			} else if (countProuctId > 10 && countProuctId < 50) {
+				resultMap.put("levelStatus", user.getLevelValue());
+			} else {
+				resultMap.put("levelStatus", user.getLevelValue());
+			}
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			LoggerUtil.error("[productList error:]", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+		}
+		return resultMap;
+
 	}
 
 	/**

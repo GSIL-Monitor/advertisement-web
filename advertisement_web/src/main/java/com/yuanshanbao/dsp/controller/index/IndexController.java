@@ -10,6 +10,7 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
+import com.yuanshanbao.dsp.tags.model.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,8 +60,16 @@ public class IndexController extends BaseController {
 			// 产品列表
 			product.setActivityId(activity.getActivityId());
 			product.setStatus(ProductStatus.ONLINE);
-			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
-					formatPageBounds(pageBounds));
+			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product, formatPageBounds(pageBounds));
+			List<Tags> tagsList = new ArrayList<>();
+			for (Product prod: productList){
+				Tags tags = new Tags();
+				if (prod.getAdvantage() != null){
+					tags.setImage(prod.getAdvantage());
+					tagsList.add(tags);
+				}
+
+			}
 			//滚动消息列表
 			Message message = new Message();
 			message.setProductId(activity.getActivityId());
@@ -81,6 +90,7 @@ public class IndexController extends BaseController {
 			setAdvertisement(client, resultMap, channel, appKey, activityId, AdvertisementPosition.ADVERTISEMENT_INDEX);
             resultMap.put("messageList",messageList);
             resultMap.put("productList", productList);
+            resultMap.put("tagsList", tagsList);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

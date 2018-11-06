@@ -404,8 +404,8 @@ public class UserController extends BaseController {
 	/**
 	 * @param request
 	 * @param appId
-	 * @param tempToken
-	 * @param user
+	 * @param
+	 * @param
 	 * @return
 	 */
 	@ResponseBody
@@ -626,7 +626,7 @@ public class UserController extends BaseController {
 		Agency agency = new Agency();
 		agency.setInviteUserId(user.getInviteUserId());
 		agency.setUserId(user.getUserId());
-		agency.setUserName(user.getUserName());
+		agency.setName(user.getName());
 		agency.setAgencyName(inviteUser.getName());
 		agencyService.insertAgency(agency);
 

@@ -6,15 +6,16 @@
 
 	<resultMap id="agencyMap" type="Agency">
 		<id property="userId" column="user_id" jdbcType="VARCHAR" />
-		<result property="inviteUserId" column="invite_user_id" jdbcType="VARCHAR" />
 		<result property="agencyName" column="agency_name" jdbcType="VARCHAR" />
-		<result property="userName" column="user_name" jdbcType="VARCHAR" />
-		<result property="brokerage" column="brokerage" jdbcType="NUMERIC" />
-		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="inviteUserId" column="invite_user_id" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="productId" column="product_id" jdbcType="NUMERIC" />
 		<result property="productName" column="product_name" jdbcType="NUMERIC" />
+		<result property="brokerage" column="brokerage" jdbcType="NUMERIC" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="inviteTime" column="invite_time" jdbcType="TIMESTAMP" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+
 	</resultMap>
 
 <!--查询直推总佣金-->
@@ -71,8 +72,8 @@
 				<if test="agencyName != null">
 					agency_name= #{agencyName} and
 				</if>
-				<if test="userName != null">
-					user_name= #{userName} and
+				<if test="name != null">
+					name= #{name} and
 				</if>
 				<if test="inviteTime != null">
 					invite_time= #{inviteTime} and
@@ -96,9 +97,9 @@
 
 	<insert id="insertAgency" parameterType="Agency">
 		insert into
-		tb_agency(user_id,invite_user_id,user_name,agency_name,brokerage,product_id,product_name,status,invite_time,create_time)
+		tb_agency(user_id,invite_user_id,name,agency_name,brokerage,product_id,product_name,status,invite_time,create_time)
 		values
-		(#{userId}, #{inviteUserId}, #{userName}, #{agencyName},#{brokerage},#{productId},#{productName},
+		(#{userId}, #{inviteUserId}, #{name}, #{agencyName},#{brokerage},#{productId},#{productName},
 		#{status},sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 				   keyProperty="userId">

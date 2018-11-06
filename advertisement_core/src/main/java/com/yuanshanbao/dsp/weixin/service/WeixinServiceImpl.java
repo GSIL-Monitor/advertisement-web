@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.yuanshanbao.common.exception.BusinessException;
+import com.yuanshanbao.common.ret.ComRetCode;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -353,17 +355,16 @@ public class WeixinServiceImpl implements WeixinService {
 
 	private byte[] getQrCode(String scene, String page, String accessToken) {
 		try {
+			if (accessToken == null){
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
 			String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + accessToken;
 			JSONObject param = new JSONObject();
 			param.put("scene", scene);
 			param.put("page",page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
-
 			String result = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
 			System.out.println(result);
-
-
-
 			return byteArr;
 		} catch (Exception e) {
 			LoggerUtil.error("[bxm_nofity]", e);
