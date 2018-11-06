@@ -89,11 +89,9 @@ public class IndexController extends BaseController {
             String ids = ConfigManager.getConfigValue(activityId, channel, appKey,
                     ConfigConstants.PRODUCT_CATEGORY_INDEX_CONFIG);
             productCategorys = ConfigManager.getProductCategoryList(ids);
-
             resultMap.put("productCategorys", productCategorys);
             resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
             setAdvertisement(client, resultMap, channel, appKey, activityId, AdvertisementPosition.ADVERTISEMENT_INDEX);
-
             resultMap.put("messageList", messageList);
             resultMap.put("productList", productList);
             resultMap.put("tagsList", tagsList);

@@ -457,8 +457,11 @@ public class Product {
 
 
 	public String [] getSchoolTimeValue(){
-		 String [] getValue= schoolTime.split(",");
-		 return getValue;
+		if (schoolTime != null){
+			String [] getValue= schoolTime.split(",");
+			return getValue;
+		}
+		return  null;
 	}
 
 
