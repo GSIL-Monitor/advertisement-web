@@ -1,6 +1,5 @@
 package com.yuanshanbao.dsp.weixin.service;
 
-import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,8 +7,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import com.yuanshanbao.common.exception.BusinessException;
-import com.yuanshanbao.common.ret.ComRetCode;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -64,8 +61,8 @@ public class WeixinServiceImpl implements WeixinService {
 	private Map<String, TemplateAPI> templateApiMap = new HashMap<>();
 	private Map<String, JsAPI> jsApiMap = new HashMap<>();
 	private Map<String, String> appIdMap = new HashMap<>();
-	private Map<String, ApiConfig> apiConfigMap = new HashMap<>();
 	private Map<String, String> appSecretMap = new HashMap<>();
+	private Map<String, ApiConfig> apiConfigMap = new HashMap<>();
 
 	@PostConstruct
 	public void init() {
@@ -202,12 +199,12 @@ public class WeixinServiceImpl implements WeixinService {
 			if ("test".equals(CommonUtil.getEnvironment())) {
 				return;
 			}
-			LoggerUtil.sendMessageInfo(
-					"[Send Server Log serverLogId=" + serverLog.getLogId() + "; name=" + serverLog.getTitle());
+			LoggerUtil.sendMessageInfo("[Send Server Log serverLogId=" + serverLog.getLogId() + "; name="
+					+ serverLog.getTitle());
 			TemplateMsg templateMsg = new TemplateMsg();
 			templateMsg.setTemplateId(ALARM_SERVER_TEMPLATE);
-			templateMsg.setUrl(
-					PropertyUtil.getProperty("host.web.open") + "/admin/serverLog.html?logId=" + serverLog.getLogId());
+			templateMsg.setUrl(PropertyUtil.getProperty("host.web.open") + "/admin/serverLog.html?logId="
+					+ serverLog.getLogId());
 			templateMsg.putData("first", "服务器报警" + serverLog.getCount() + "次", "#F67072");
 			templateMsg.putData("keyword1", serverLog.getTypeValue() + "");
 			templateMsg.putData("keyword2", DateUtils.format(serverLog.getCreateTime(), null));
@@ -360,20 +357,16 @@ public class WeixinServiceImpl implements WeixinService {
 
 	private byte[] getQrCode(String scene, String page, String accessToken) {
 		try {
-			if (accessToken == null){
-				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
-			}
 			String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + accessToken;
 			JSONObject param = new JSONObject();
 			param.put("scene", scene);
-			param.put("page",page);
+			param.put("page", page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
-			String result = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
-			System.out.println(result);
 			return byteArr;
 		} catch (Exception e) {
 			LoggerUtil.error("[bxm_nofity]", e);
 		}
 		return null;
 	}
+
 }

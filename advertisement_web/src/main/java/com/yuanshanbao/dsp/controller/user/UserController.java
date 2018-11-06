@@ -274,13 +274,12 @@ public class UserController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/xcxLogin")
 	public Map<String, Object> xcxLogin(HttpServletRequest request, HttpServletResponse response, String appId,
-			String params) {
+										String params) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String code = parameterMap.get("code");
 			String from = parameterMap.get("from");
-
 			String result = HttpsUtil.doGet(
 					"https://api.weixin.qq.com/sns/jscode2session",
 					"appid=" + weixinService.getAppId(WeixinService.CONFIG_WZXCX) + "&secret="
