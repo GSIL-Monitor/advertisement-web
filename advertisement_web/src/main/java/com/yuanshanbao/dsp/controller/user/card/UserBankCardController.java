@@ -99,7 +99,7 @@ public class UserBankCardController extends BaseController {
 
     @RequestMapping("/applyCard")
     @ResponseBody
-    public Object applyCard(String token,@RequestParam("productId") Long productId, @RequestParam("userName") String userName, @RequestParam("mobile") String mobile) {
+    public Object applyCard(String token, @RequestParam("productId") Long productId, @RequestParam("userName") String userName, @RequestParam("mobile") String mobile) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             getLoginUser(token);
