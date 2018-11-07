@@ -86,6 +86,7 @@ public class InviteController extends BaseController {
             User user = tokenService.verifyLoginToken(token);
             if (user == null) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
+
             }
             //H5二维码
             String H5Url = H5URL + "?userId=" + user.getUserId() + "&productId=" + productId;
