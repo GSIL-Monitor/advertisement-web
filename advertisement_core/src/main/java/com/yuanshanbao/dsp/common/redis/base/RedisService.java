@@ -96,4 +96,6 @@ public interface RedisService {
 	Double increByFloat(String key, float increaseCount);
 
 	Double increByDouble(String key, double increaseCount);
+
+	Long srem(String key, String value);
 }

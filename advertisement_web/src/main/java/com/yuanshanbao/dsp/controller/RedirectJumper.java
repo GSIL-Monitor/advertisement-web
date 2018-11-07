@@ -39,11 +39,15 @@ public class RedirectJumper extends BaseController {
 	@RequestMapping("/common")
 	public String common(HttpServletRequest request, ModelMap modelMap, String id, String channel) {
 		String pidValue = AESUtils.decrypt(PLAN_ENCRYPT_KEY, id);
+		String[] values = pidValue.split(":");
 		// 获取计划链接
-		Plan plan = ConfigManager.getPlanById(Long.valueOf(pidValue));
+		Plan plan = ConfigManager.getPlanById(Long.valueOf(values[0]));
 		if (plan != null) {
-			addPlanClickCount(request, id, channel);
+			addPlanClickCount(request, values[0], channel);
 			modelMap.put("url", plan.getLink());
+			if (StringUtils.isEmpty(values[1])) {
+				modelMap.put("incrUrl", values[1]);
+			}
 		}
 		return getFtlPath(request, "/activity/common/jump");
 	}

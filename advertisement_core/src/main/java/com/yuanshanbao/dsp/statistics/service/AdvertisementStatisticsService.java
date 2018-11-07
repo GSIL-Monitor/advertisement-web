@@ -48,4 +48,7 @@ public interface AdvertisementStatisticsService {
 
 	public List<AdvertisementStatistics> selectPlanStatistic(AdvertisementStatistics advertisementStatistics,
 			Boolean pv, Long planId, Long projectId);
+
+	public List<AdvertisementStatistics> selectMediaAdvertisementStatistic(
+			AdvertisementStatistics advertisementStatistics, Boolean isPv, String channel, Long long1);
 }

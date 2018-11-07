@@ -7,7 +7,7 @@
 <script>
 	$(document).ready(function(){
 		dataTableConfig.iDisplayLength = 1000;
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryMediaAdvertisements.do";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryMediaAdvertisements.do?isPv=true";
 		dataTableConfig.columns = [
 			{
 		    	"data": "channel"	
@@ -19,21 +19,10 @@
 		    	"data": "clickCount"
 		    }, {
 		    	"data": "showCount"
-		    }, {
-		    	"data": "channel",
-		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/channelAdvertisements.do?channelkey='+data+'"  class="btn btn-cyan" target="_blank">查看广告统计</a>';
-		        }
 		    }];
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
 		
-		$('#date').change(function(){
-			reload();
-		});
-		$('#pv').change(function(){
-			reload();
-		});
 		$('#queryButton').on('click', function(){
 			var queryStartTime=$('#createTimeStart').val();
 			var queryEndTime=$('#createTimeEnd').val();
@@ -49,10 +38,7 @@
 			if (isNotEmpty($('#name').val())) {
 				params += "companyName=" +encodeURI(encodeURI($('#name').val())) + "&";
 			}
-			if (isNotEmpty($('#positionName').val())) {
-				params += "positionName=" +encodeURI(encodeURI($('#positionName').val())) + "&";
-			}
-			var newUrl="${rc.contextPath}/admin/${functionName}/queryChannelAdvertisements.do?" + params;
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryMediaAdvertisements.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
@@ -72,7 +58,6 @@
 						<h5>数据表格</h5>
 						<div style="float:right;margin:3px 8px 3px 0">
 							<select name="pv" id="pv">
-								<option value="false" selected>uv</option>
 								<option value="true">pv</option>
 							</select>
 							<div class="filter-component">
@@ -81,7 +66,6 @@
 							</div>
 							<div class="btn btn-green" id="queryButton">确定</div>
 							<div class="btn btn-white" id="queryReset">重置</div>
-							<div class="btn btn-red" id="downloadButton" style = "float:right">下载</div>	  
 						</div>
 					</div>
 					<div class="widget-content nopadding">
@@ -93,7 +77,6 @@
 									<td>日期</td>
 									<td>点击量</td>
 									<td>曝光量</td>
-									<td>广告统计</td>
 								</tr>
 							</thead>
 							<tbody>

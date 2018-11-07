@@ -136,7 +136,6 @@ public class CommonUtil {
 		return format.format(numberToFormat);
 	}
 
-
 	/*
 	 * 将字符数组转换为16进制字符串
 	 */
@@ -793,6 +792,10 @@ public class CommonUtil {
 			return from;
 		}
 		return from;
+	}
+
+	public static String getDspJumpUrl(String url, String planKey, String channel) {
+		return url + "/i/j/common.html?id=" + planKey + "&channel=" + channel;
 	}
 
 }

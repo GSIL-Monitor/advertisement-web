@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 
 public class AppAddTest {
 	public static final String ADD_URL = "http://dev.t.huhad.com/dsp/content.html";
+	public static final String ADD_URL_CON = "http://cond.xingdk.com/dsp/content.html";
 	public static final String ADD_SHOW_URL = "http://dev.t.huhad.com/dsp/ad/show.html";
 
 	public static void main(String[] args) {
@@ -23,7 +24,7 @@ public class AppAddTest {
 
 	public static void appadd() {
 		try {
-			URL url = new URL(ADD_SHOW_URL);
+			URL url = new URL(ADD_URL_CON);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
@@ -35,9 +36,9 @@ public class AppAddTest {
 			// POST请求
 			DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 			JSONObject obj = new JSONObject();
-			obj.element("channel", "ysjssh");
-			obj.element("pId", "7AA05E254CE1ED546971EABD0ECCFD20");
-			obj.element("key", "31C977A008B924F67C014EAFFA954FA6");
+			obj.element("channel", "jytest");
+			// obj.element("pId", "7AA05E254CE1ED546971EABD0ECCFD20");
+			// obj.element("key", "31C977A008B924F67C014EAFFA954FA6");
 			out.writeBytes(obj.toString());
 			System.out.println("data=" + obj.toString());
 			out.flush();

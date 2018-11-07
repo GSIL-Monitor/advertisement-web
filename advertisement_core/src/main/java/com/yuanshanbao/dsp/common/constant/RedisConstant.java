@@ -87,7 +87,10 @@ public class RedisConstant {
 
 	public static final String WEIXIN_ACCESS_TOKEN = "weixin_access_token" + COMMON_REDIS_PREFIX;
 
+	// 增量
 	public static final String PLAN_CHARGE_TYPE_COUNT = "plan_charge_type_count" + COMMON_REDIS_PREFIX;
+	public static final String PLAN_LAST_CHARGE_TYPE_COUNT = "plan_last_charge_type_count" + COMMON_REDIS_PREFIX;
+	public static final String CHANNEL_INCRE_ID = "channel_incre_id" + COMMON_REDIS_PREFIX;
 
 	// token过期时间
 	public static int EXPIRE_LOGIN_TOKEN = IniCache.getIniIntValue(IniConstant.TOKEN_CACHE_TIME, 24 * 60 * 60);
@@ -457,5 +460,13 @@ public class RedisConstant {
 
 	public static String getPlanChargeTypeCountKey(String planId) {
 		return getCachePrefix(PLAN_CHARGE_TYPE_COUNT, planId);
+	}
+
+	public static String getPlanLastChargeTypeCountKey(String planId) {
+		return getCachePrefix(PLAN_LAST_CHARGE_TYPE_COUNT, planId);
+	}
+
+	public static String getChannelIncreIdKey(String channel) {
+		return getCachePrefix(CHANNEL_INCRE_ID, channel);
 	}
 }
