@@ -52,13 +52,14 @@
 												<span class="hidden" id="ageRange">
 													<input type="number" name="startAge" id="startAge" /><span>-</span>
 													<input type="number" name="endAge" id="endAge"/>
+													<input type="hidden" id="ageRangeinput" value="${strategyValue.ageRange}">
 												</span>
 											</td>
 										</tr>
 										<tr>
 											<td>区域：</td>
 											<td>
-												<div id="cityDuoXuan" style="width:300px;" class="hsCheckData"></div>
+												<div id="cityDuoXuan" data-id="${strategyValue.ipRegionStrategy}" style="width:300px;" class="hsCheckData"></div>
 												<input type="hidden" id="citys" name="ipRegionStrategy" value="">
 											</td>
 										</tr>
@@ -94,7 +95,7 @@
 										
 										<tr>
 											<td colspan="4" style="text-align:center">
-												<input type="submit" name="" value="提交" class="btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();"></td>
+												<input type="submit" name="" value="提交" class="btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="return checkResult();"></td>
 										</tr>
 									</tbody>
 								</table>
@@ -106,6 +107,10 @@
 	</div>
 </div>
 <input type="hidden" id="reqData" value="${strategyValue}">
+<input type="hidden" id="genderStrategy" value="${strategyValue.genderStrategy}">
+<input type="hidden" id="deviceTypeStrategy" value="${strategyValue.deviceTypeStrategy}">
+<input type="hidden" id="netWorkStrategy" value="${strategyValue.netWorkStrategy}">
+<input type="hidden" id="tMobileStrategy" value="${strategyValue.tMobileStrategy}">
 <script>
 	$('#cityDuoXuan').hsCheckData({
         isShowCheckBox: true, //默认为false
@@ -122,6 +127,23 @@
     		$('#ageRange').addClass('hidden');
     	}
     })
+    function initForm() {
+    	if($('#ageRangeinput').val()) {
+    		$('#startAge').val($('#ageRangeinput').val().split('-')[0]);
+    		$('#endAge').val($('#ageRangeinput').val().split('-')[0]);
+    		$(":radio[name='age'][value='others']").prop("checked", "checked");
+    	}
+    	$(":radio[name='genderStrategy'][value='" + $('#genderStrategy').val() + "']").prop("checked", "checked");
+    	$(":radio[name='deviceTypeStrategy'][value='" + $('#deviceTypeStrategy').val() + "']").prop("checked", "checked");
+    	$(":radio[name='netWorkStrategy'][value='" + $('#netWorkStrategy').val() + "']").prop("checked", "checked");
+    	$(":radio[name='tMobileStrategy'][value='" + $('#tMobileStrategy').val() + "']").prop("checked", "checked");
+    }
+    initForm();
+    function checkResult() {
+    	var ageRange = $('#startAge').val() + '-' + $('#endAge').val();
+    	$('#ageRangeinput').val(ageRange);
+    	return true;
+    }
 </script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />
 <@footPart />
