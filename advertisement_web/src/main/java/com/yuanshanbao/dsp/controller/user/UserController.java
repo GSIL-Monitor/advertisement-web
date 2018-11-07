@@ -174,9 +174,6 @@ public class UserController extends BaseController {
             String inviteUserId = parameterMap.get("inviteUserId");
             String registerFrom = parameterMap.get("from");
 			String userIp = JSPHelper.getRemoteAddr(request);
-			mobile = "18235476490";
-			smsCode = "7026";
-			inviteUserId = "2";
 			// 4.校验短信
 			try {
 				smsCodeService.validateSmsCode(mobile, smsCode, "", userIp);
