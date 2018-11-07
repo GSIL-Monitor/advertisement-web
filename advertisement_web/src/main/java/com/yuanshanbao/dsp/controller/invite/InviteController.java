@@ -93,7 +93,7 @@ public class InviteController extends BaseController {
             //插入logo
             if (user.getAvatar() == null) {
                 String applayCardCode = ZXingCode.getLogoQRCode(H5Url, "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
-                resultMap.put("applayCardCode", applayCardCode);
+                resultMap.put("CardCode", applayCardCode);
             }
             String applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
             resultMap.put("applayCardCode", applayCardCode);

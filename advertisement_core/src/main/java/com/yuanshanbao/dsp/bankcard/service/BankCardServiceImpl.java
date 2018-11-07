@@ -51,7 +51,7 @@ public class BankCardServiceImpl implements BankCardService {
     }
 
     @Override
-    public void getApplyBankCardInfo(Long productId, String userName, String mobile, String inviteUserId) {
+    public void getApplyBankCardInfo(Long productId, String userName, String mobile) {
         Information queryInfomation = new Information();
         queryInfomation.setName(userName);
         queryInfomation.setMobile(mobile);
@@ -60,7 +60,6 @@ public class BankCardServiceImpl implements BankCardService {
             Information information = new Information();
             information.setName(userName);
             information.setMobile(mobile);
-            information.setUserId(Long.valueOf(inviteUserId));  //邀请人ID
             informationDao.insertInformation(information);
             Agency agency = new Agency();
             agency.setStatus(AgencyStatus.ONCHECK);

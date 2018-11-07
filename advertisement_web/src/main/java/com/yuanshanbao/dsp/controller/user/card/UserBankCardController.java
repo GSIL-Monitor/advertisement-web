@@ -99,13 +99,13 @@ public class UserBankCardController extends BaseController {
 
     @RequestMapping("/applyCard")
     @ResponseBody
-    public Object applyCard( @RequestParam("productId") Long productId, @RequestParam("userName") String userName, @RequestParam("mobile") String mobile, @RequestParam("inviteUserId") String inviteUserId) {
+    public Object applyCard(@RequestParam("productId") Long productId, @RequestParam("userName") String userName, @RequestParam("mobile") String mobile) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             if (!ValidateUtil.isPhoneNo(mobile)) {
                 throw new BusinessException(ComRetCode.WRONG_MOBILE);
             }
-            bankCardService.getApplyBankCardInfo(productId, userName, mobile, inviteUserId);
+            bankCardService.getApplyBankCardInfo(productId, userName, mobile);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
         } catch (BusinessException e) {
