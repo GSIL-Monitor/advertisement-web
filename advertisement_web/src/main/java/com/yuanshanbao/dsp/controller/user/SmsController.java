@@ -64,7 +64,6 @@ public class SmsController extends BaseController {
 			String smsToken) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-
 			String mobile = request.getParameter("mobile");
 			String type = request.getParameter("type");
 			String channel = request.getParameter("from");

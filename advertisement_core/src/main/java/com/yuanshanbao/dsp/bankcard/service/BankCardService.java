@@ -16,5 +16,5 @@ public interface BankCardService {
 
     public void insertBankCard(BankCard bankCard);
 
-    void getApplyBankCardInfo(Long productId, String userName, String mobile, String inviteUserId);
+    void getApplyBankCardInfo(Long productId, String userName, String mobile);
 }

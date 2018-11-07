@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yuanshanbao.dsp.user.model.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +43,6 @@ import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.sms.service.VerifyCodeService;
-import com.yuanshanbao.dsp.user.model.BaseInfo;
-import com.yuanshanbao.dsp.user.model.InviteCode;
-import com.yuanshanbao.dsp.user.model.LoginToken;
-import com.yuanshanbao.dsp.user.model.User;
-import com.yuanshanbao.dsp.user.model.UserStatus;
-import com.yuanshanbao.dsp.user.model.UserVo;
 import com.yuanshanbao.dsp.user.service.AESUtils;
 import com.yuanshanbao.dsp.user.service.InviteCodeService;
 import com.yuanshanbao.dsp.user.service.TokenService;
@@ -179,7 +174,6 @@ public class UserController extends BaseController {
             String inviteUserId = parameterMap.get("inviteUserId");
             String registerFrom = parameterMap.get("from");
 			String userIp = JSPHelper.getRemoteAddr(request);
-
 			// 4.校验短信
 			try {
 				smsCodeService.validateSmsCode(mobile, smsCode, "", userIp);
@@ -200,6 +194,7 @@ public class UserController extends BaseController {
 					user.setInviteUserId(Long.valueOf(inviteUserId));
 					user.setRegisterFrom(registerFrom);
 					user.setStatus(UserStatus.NORMAL);
+					user.setLevel(UserLevel.ONLEVEL);
 					String password = RandomUtil.generateNumberString(8);
 					generateUser(user, password, inviteCode);
 				}

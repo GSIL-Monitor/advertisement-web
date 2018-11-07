@@ -51,33 +51,22 @@ public class BankCardServiceImpl implements BankCardService {
     }
 
     @Override
-    public void getApplyBankCardInfo(Long productId, String userName, String mobile, String inviteUserId) {
+    public void getApplyBankCardInfo(Long productId, String userName, String mobile) {
         Information queryInfomation = new Information();
         queryInfomation.setName(userName);
         queryInfomation.setMobile(mobile);
-        Information queryInformation = informationDao.selectinformationByMobile(mobile);
         Product product =productDao.selectPrdouctById(productId);
-        if (queryInformation == null){
             //添加用户
             Information information = new Information();
             information.setName(userName);
             information.setMobile(mobile);
-            information.setUserId(Long.valueOf(inviteUserId));  //邀请人ID
             informationDao.insertInformation(information);
-
             Agency agency = new Agency();
-            agency.setInviteUserId(Long.valueOf(inviteUserId));
             agency.setStatus(AgencyStatus.ONCHECK);
             agency.setProductName(product.getName());
             agency.setProductId(productId);
             agency.setName(userName);
             agency.setBrokerage(product.getBrokerage());
             agencyDao.insertAgency(agency);
-        }else {
-            if (userName.equals(queryInformation.getName())){
-                throw new BusinessException(ComRetCode.USER_EXIST);
-            }
-        }
-
     }
 }
