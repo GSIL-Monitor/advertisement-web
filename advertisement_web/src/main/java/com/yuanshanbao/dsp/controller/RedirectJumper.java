@@ -43,9 +43,9 @@ public class RedirectJumper extends BaseController {
 		Plan plan = ConfigManager.getPlanById(Long.valueOf(pidValue));
 		if (plan != null) {
 			addPlanClickCount(request, id, channel);
-			return redirect(plan.getLink());
+			modelMap.put("url", plan.getLink());
 		}
-		return "/web/activity/common/jump";
+		return getFtlPath(request, "/activity/common/jump");
 	}
 
 	@RequestMapping("/adCount")

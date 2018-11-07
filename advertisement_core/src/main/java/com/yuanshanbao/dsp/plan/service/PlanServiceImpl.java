@@ -177,11 +177,12 @@ public class PlanServiceImpl implements PlanService {
 		Probability params = new Probability();
 		params.setPlanId(plan.getPlanId());
 		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
+		Integer totalCount = 0;
 		for (Probability probability : list) {
 			// 总消耗
 			double nowCount = getCount(RedisConstant
 					.getProbabilityBalanceCountKey(null, probability.getProbabilityId()));
-			// 上次操作扣费时消耗的数量
+			// 上次操作扣费时消耗的金额
 			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
 					probability.getProbabilityId()));
 			double difference = nowCount - lastCount;
@@ -191,6 +192,9 @@ public class PlanServiceImpl implements PlanService {
 				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
 						String.valueOf(nowCount));
 			}
+			totalCount = totalCount
+					+ getClickOrShowCount(RedisConstant.getPlanClickCountPVKey(null, plan.getPlanId() + "",
+							probability.getChannel()));
 		}
 	}
 

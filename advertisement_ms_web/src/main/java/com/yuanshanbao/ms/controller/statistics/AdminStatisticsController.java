@@ -90,6 +90,8 @@ public class AdminStatisticsController extends PaginationController {
 
 	private static final String PAGE_ADVERTISER_STATISTIC_LIST = "advertisement/statistics/listAdvertiserStatistics";
 
+	private static final String PAGE_PLAN_STATISTICS_LIST = "advertisement/statistics/listPlanStatistics";
+
 	public static String OSS_HOST_FILES = PropertyUtil.getProperty("oss.host.files");
 
 	@Autowired
@@ -975,5 +977,32 @@ public class AdminStatisticsController extends PaginationController {
 		}
 		InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		return resultMap;
+	}
+
+	// 计划数据
+	@RequestMapping("/planStatistic.do")
+	public String planStatistic(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
+		addDateList(modelMap, 0);
+		return PAGE_PLAN_STATISTICS_LIST;
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryPlanStatistic.do")
+	public Object queryPlanStatistic(AdvertisementStatistics advertisementStatistics, HttpServletRequest request,
+			HttpServletResponse response, Boolean isPv, Long planId) {
+		List<AdvertisementStatistics> list = advertisementStatisticsService.selectPlanStatistic(
+				advertisementStatistics, isPv, planId, getProjectId(request));
+		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(list, new Paginator()));
+	}
+
+	@RequestMapping("/planChannel.do")
+	public String planChannel(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
+			Long advertisementId) {
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
+		modelMap.put("advertisement", ConfigManager.getAdvertisement(advertisementId + ""));
+		modelMap.put("advertisementId", advertisementId);
+		addDateList(modelMap, 0);
+		return PAGE_ADVERTISEMENT_CHANNEL_LIST;
 	}
 }

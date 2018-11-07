@@ -655,6 +655,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
 			redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(Long.valueOf(planId)),
 					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
+			redisService.incr(RedisConstant.getPlanChargeTypeCountKey(planId));
 		} catch (Exception e) {
 			LoggerUtil.error("increConsume", e);
 		}

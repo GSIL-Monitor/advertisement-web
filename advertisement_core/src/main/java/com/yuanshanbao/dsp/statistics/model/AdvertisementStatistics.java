@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.plan.model.Plan;
 
 public class AdvertisementStatistics {
 
@@ -34,6 +35,8 @@ public class AdvertisementStatistics {
 	private String queryEndTime;
 
 	private Advertisement advertisement;
+
+	private Plan plan;
 
 	public AdvertisementStatistics(Long advertisementId) {
 		super();
@@ -264,5 +267,13 @@ public class AdvertisementStatistics {
 
 	public void setPlanId(Long planId) {
 		this.planId = planId;
+	}
+
+	public Plan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(Plan plan) {
+		this.plan = plan;
 	}
 }
