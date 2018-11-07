@@ -80,7 +80,7 @@ public class InviteController extends BaseController {
 
     @ResponseBody
     @RequestMapping("/getLogoQRcode")
-    public Object getLogoQRcode(String token, @RequestParam(value = "productId", required = false) Long productId) {
+    public Object getLogoQRcode(String token, @RequestParam(value = "productId", required = false) Long productId,@RequestParam("avatarUrl") String avatarUrl) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             User user = tokenService.verifyLoginToken(token);
@@ -91,11 +91,11 @@ public class InviteController extends BaseController {
             //H5二维码
             String H5Url = H5URL + "?userId=" + user.getUserId() + "&productId=" + productId;
             //插入logo
-            if (user.getAvatar() == null) {
+            if ("".equals(avatarUrl) && avatarUrl == null ) {
                 String applayCardCode = ZXingCode.getLogoQRCode(H5Url, "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
                 resultMap.put("CardCode", applayCardCode);
             }
-            String applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
+            String applayCardCode = ZXingCode.getLogoQRCode(H5Url, avatarUrl);
             resultMap.put("applayCardCode", applayCardCode);
             resultMap.put("H5Url", H5Url);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
