@@ -30,7 +30,7 @@ import java.util.Map;
 public class InviteController extends BaseController {
 
     private static final String URL = "pages/invitecard/invitecard";
-    private static final String H5URL =  "https://wz.huhad.com/w/applicants.html";
+    private static final String H5URL = "https://wz.huhad.com/w/applicants.html";
     private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/image/avatar132529743323965055.png";
     private static String CODE = "";
     @Autowired
@@ -83,13 +83,17 @@ public class InviteController extends BaseController {
     public Object getLogoQRcode(String token, @RequestParam(value = "productId", required = false) Long productId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
-              User user = tokenService.verifyLoginToken(token);
-            if(user == null){
+            User user = tokenService.verifyLoginToken(token);
+            if (user == null) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
             //H5二维码
-            String H5Url =H5URL +"?userId=" +user.getUserId() +"&productId=" + productId;
+            String H5Url = H5URL + "?userId=" + user.getUserId() + "&productId=" + productId;
             //插入logo
+            if (user.getAvatar() == null) {
+                String applayCardCode = ZXingCode.getLogoQRCode(H5Url, "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
+                resultMap.put("applayCardCode", applayCardCode);
+            }
             String applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
             resultMap.put("applayCardCode", applayCardCode);
             resultMap.put("H5Url", H5Url);

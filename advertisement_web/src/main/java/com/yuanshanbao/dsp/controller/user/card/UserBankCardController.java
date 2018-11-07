@@ -102,10 +102,10 @@ public class UserBankCardController extends BaseController {
     public Object applyCard(HttpServletRequest request, @RequestParam("productId") Long productId,@RequestParam("userName" ) String userName,@RequestParam("mobile") String mobile,@RequestParam("inviteUserId") String inviteUserId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
+
             if (!ValidateUtil.isPhoneNo(mobile)){
                 throw  new BusinessException(ComRetCode.WRONG_MOBILE);
             }
-
             bankCardService.getApplyBankCardInfo(productId,userName,mobile,inviteUserId);
             InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
 

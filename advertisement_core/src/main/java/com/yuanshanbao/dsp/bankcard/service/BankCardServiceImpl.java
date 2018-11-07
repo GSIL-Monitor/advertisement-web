@@ -65,6 +65,7 @@ public class BankCardServiceImpl implements BankCardService {
             information.setUserId(Long.valueOf(inviteUserId));  //邀请人ID
             informationDao.insertInformation(information);
 
+
             Agency agency = new Agency();
             agency.setInviteUserId(Long.valueOf(inviteUserId));
             agency.setStatus(AgencyStatus.ONCHECK);

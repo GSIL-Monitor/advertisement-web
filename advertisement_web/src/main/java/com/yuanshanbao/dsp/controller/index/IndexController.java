@@ -12,6 +12,7 @@ import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import com.yuanshanbao.dsp.tags.model.Tags;
+import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -72,6 +73,7 @@ public class IndexController extends BaseController {
                 Tags tags = new Tags();
                 if (prod.getAdvantage() != null) {
                     tags.setImage(prod.getAdvantage());
+
                     tagsList.add(tags);
                 }
             }
