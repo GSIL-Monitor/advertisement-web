@@ -662,7 +662,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 
 	@Override
 	public void recordPlanCount(String pId, String key, String channel, boolean isClick) {
-		String planId = AESUtils.decrypt(PLAN_ENCRYPT_KEY, pId);
+		String planIdAndUrlValue = AESUtils.decrypt(PLAN_ENCRYPT_KEY, pId);
+		String[] planIdAndUrl = planIdAndUrlValue.split(":");
+		String planId = planIdAndUrl[0];
 		String probabilityId = AESUtils.decrypt(PLAN_ENCRYPT_KEY, key);
 		Plan plan = ConfigManager.getPlanById(Long.valueOf(planId));
 		if (isClick) {
