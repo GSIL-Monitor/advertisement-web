@@ -7,6 +7,8 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
@@ -39,6 +41,8 @@ public class InviteController extends BaseController {
     private TokenService tokenService;
     @Autowired
     private WeixinService weixinService;
+    @Autowired
+    private ProductService productService;
 
 
     @ResponseBody
@@ -80,7 +84,7 @@ public class InviteController extends BaseController {
 
     @ResponseBody
     @RequestMapping("/getLogoQRcode")
-    public Object getLogoQRcode(String token, @RequestParam(value = "productId", required = false) Long productId,@RequestParam("avatarUrl") String avatarUrl) {
+    public Object getLogoQRcode(String token, @RequestParam(value = "productId", required = false) Long productId, @RequestParam("avatarUrl") String avatarUrl) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             User user = tokenService.verifyLoginToken(token);
@@ -91,7 +95,7 @@ public class InviteController extends BaseController {
             //H5二维码
             String H5Url = H5URL + "?userId=" + user.getUserId() + "&productId=" + productId;
             //插入logo
-            if ("".equals(avatarUrl) && avatarUrl == null ) {
+            if ("".equals(avatarUrl) && avatarUrl == null) {
                 String applayCardCode = ZXingCode.getLogoQRCode(H5Url, "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
                 resultMap.put("CardCode", applayCardCode);
             }
@@ -108,5 +112,24 @@ public class InviteController extends BaseController {
         return resultMap;
     }
 
+    @ResponseBody
+    @RequestMapping("/getUrl")
+    public Object getUrl(String token, @RequestParam(value = "productId", required = false) String productId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        try {
+            User user = tokenService.verifyLoginToken(token);
+            if (user == null) {
+                throw new BusinessException(ComRetCode.NOT_LOGIN);
+            }
+            Product product = productService.selectProduct(Long.valueOf(productId));
+            resultMap.put("url", product.getDetailImageUrl());
+        } catch (BusinessException e) {
+            InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+        } catch (Exception e) {
+            LoggerUtil.error("[home index]: ", e);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+        }
+        return resultMap;
 
+    }
 }
