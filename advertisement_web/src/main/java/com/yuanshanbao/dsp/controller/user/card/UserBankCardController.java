@@ -99,10 +99,9 @@ public class UserBankCardController extends BaseController {
 
     @RequestMapping("/applyCard")
     @ResponseBody
-    public Object applyCard(String token, @RequestParam("productId") Long productId, @RequestParam("userName") String userName, @RequestParam("mobile") String mobile, @RequestParam("inviteUserId") String inviteUserId) {
+    public Object applyCard( @RequestParam("productId") Long productId, @RequestParam("userName") String userName, @RequestParam("mobile") String mobile, @RequestParam("inviteUserId") String inviteUserId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
-            getLoginUser(token);
             if (!ValidateUtil.isPhoneNo(mobile)) {
                 throw new BusinessException(ComRetCode.WRONG_MOBILE);
             }
