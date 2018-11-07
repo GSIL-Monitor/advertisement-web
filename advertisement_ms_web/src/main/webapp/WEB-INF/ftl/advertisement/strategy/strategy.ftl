@@ -52,7 +52,7 @@
 												<span class="hidden" id="ageRange">
 													<input type="number" name="startAge" id="startAge" /><span>-</span>
 													<input type="number" name="endAge" id="endAge"/>
-													<input type="hidden" id="ageRangeinput" value="${strategyValue.age}">
+													<input type="hidden" id="ageRangeinput" value="${strategyValue.ageRange}">
 												</span>
 											</td>
 										</tr>
