@@ -133,16 +133,16 @@
 				<if test="inviteTime != null">
 					invite_time= #{inviteTime} and
 				</if>
-				<if test="brokerage != null"> and
-					brokerage= #{brokerage}
+				<if test="brokerage != null">
+					brokerage= #{brokerage} and
 				</if>
-				<if test="productId != null"> and
-					product_id= #{productId}
+				<if test="productId != null">
+					product_id= #{productId}  and
 				</if>
-				<if test="productName != null"> and
-					product_name= #{productName}
+				<if test="productName != null">
+					product_name= #{productName} and
 				</if>
-				<if test="status != null"> and
+				<if test="status != null">
 					status= #{status}
 				</if>
 			</trim>
