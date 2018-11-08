@@ -85,7 +85,6 @@ public class AccountController extends BaseController {
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
-
 			resultMap.putAll(paymentInterfaceService.queryBalance(String.valueOf(user.getUserId())));
 			Object withdrawAmount = paymentInterfaceService.queryBillAmount(String.valueOf(user.getUserId()),
 					PaymentInterfaceService.WITHDRAW).get("amount");
