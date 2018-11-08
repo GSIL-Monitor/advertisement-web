@@ -25,6 +25,7 @@
 		<result property="age" column="age" jdbcType="NUMERIC" />
 		<result property="marriage" column="marriage" jdbcType="NUMERIC" />
 		<result property="hasChild" column="has_child" jdbcType="NUMERIC" />
+		<result property="inviteUserId" column="invite_user_id" jdbcType="VARCHAR" />
 		<result property="channel" column="channel" jdbcType="VARCHAR" />
 		<result property="address" column="address" jdbcType="VARCHAR" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
@@ -108,6 +109,9 @@
 				<if test="hasChild != null">
 					has_child= #{hasChild} and
 				</if>
+				<if test="inviteUserId != null">
+					inviteUserId= #{inviteUserId} and
+				</if>
 				<if test="channel != null">
 					channel= #{channel} and
 				</if>
@@ -146,7 +150,7 @@
 		insert into
 		tb_information( project_id, activity_id, user_id, mobile, name, gender,
 		identity_card, birthday, email, education, location, address, province, city,
-		position, salary,age, marriage, has_child, channel,
+		position, salary,age, marriage, has_child,invite_user_id, channel,
 		status, create_time,
 		update_time )
 		values
@@ -156,7 +160,7 @@
 		#{education},
 		#{location}, #{address}, #{province}, #{city},#{position}, #{salary},
 		#{age},#{marriage},
-		#{hasChild}, #{channel},#{status},
+		#{hasChild},#{inviteUserId}, #{channel},#{status},
 		sysdate(), sysdate() )
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="informationId">
@@ -224,6 +228,9 @@
 				</if>
 				<if test="hasChild != null">
 					has_child= #{hasChild},
+				</if>
+				<if test="inviteUserId != null">
+					invite_user_id= #{inviteUserId},
 				</if>
 				<if test="channel != null">
 					channel= #{channel},
