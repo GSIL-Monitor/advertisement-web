@@ -88,6 +88,12 @@ public class AgencyController extends BaseController {
 				agency.setInviteUserId(agen.getUserId());
 				twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
 			}
+			for (Iterator iterator = twoAgencyList.iterator();iterator.hasNext();){
+				Agency twoAgen = (Agency) iterator.next();
+				if (twoAgen.getBrokerage() == null) {
+					iterator.remove();
+				}
+			}
 			resultMap.put("oneAgencyList", oneAgencyList);
 			resultMap.put("twoAgencyList", twoAgencyList);
 			resultMap.put("brokerage",brokerages.setScale(2, RoundingMode.HALF_UP));
