@@ -8,7 +8,8 @@ import com.yuanshanbao.dsp.product.model.Product;
 public interface ProductDao {
 
 	public List<Product> selectProducts(Product product, PageBounds pageBounds);
-	Product selectPrdouctById(Long productId);
+
+	public Product selectPrdouctById(Long productId);
 
 	public int insertProduct(Product product);
 
