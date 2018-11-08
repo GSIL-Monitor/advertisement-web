@@ -102,11 +102,12 @@ public class UserBankCardController extends BaseController {
     public Object applyCard(String token, @RequestParam("productId") String productId, @RequestParam("userName") String userName, @RequestParam("mobile") String mobile) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
-         /*  User loginUser = getLoginUser(token);
+           User loginUser = getLoginUser(token);
             if (!ValidateUtil.isPhoneNo(mobile)) {
                 throw new BusinessException(ComRetCode.WRONG_MOBILE);
-            }*/
-            bankCardService.getApplyBankCardInfo(69l,Long.valueOf(productId), userName, mobile);
+            }
+
+            bankCardService.getApplyBankCardInfo(loginUser.getUserId(),Long.valueOf(productId), userName, mobile);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
         } catch (BusinessException e) {

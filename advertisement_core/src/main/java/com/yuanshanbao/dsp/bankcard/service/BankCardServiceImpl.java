@@ -62,21 +62,16 @@ public class BankCardServiceImpl implements BankCardService {
         Agency agencyUser = agencyDao.selectAgency(String.valueOf(userId));
         if (agencyUser != null) {
             //添加用户信息
-            Information information = new Information();
-            information.setName(userName);
-            information.setMobile(mobile);
-            information.setUserId(userId);
-            information.setInviteUserId(agencyUser.getInviteUserId());
-            informationDao.insertInformation(information);
-
-            agencyUser.setUserId(userId);
-            agencyUser.setInviteUserId(agencyUser.getInviteUserId());
-            agencyUser.setStatus(AgencyStatus.ONCHECK);
-            agencyUser.setProductName(product.getName());
-            agencyUser.setProductId(productId);
-            agencyUser.setName(userName);
-            agencyUser.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
-            agencyDao.updateAgency(agencyUser);
+            Agency agency = new Agency();
+            agency.setUserId(userId);
+            agency.setInviteUserId(agencyUser.getInviteUserId());
+            agency.setMobile(agencyUser.getMobile());
+            agency.setStatus(AgencyStatus.ONCHECK);
+            agency.setProductName(product.getName());
+            agency.setProductId(productId);
+            agency.setAgencyName(userName);
+            agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
+            agencyDao.insertAgency(agencyUser);
         }
 
     }

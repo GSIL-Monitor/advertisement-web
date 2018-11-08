@@ -9,6 +9,7 @@
 		<result property="agencyName" column="agency_name" jdbcType="VARCHAR" />
 		<result property="inviteUserId" column="invite_user_id" jdbcType="NUMERIC" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
 		<result property="productId" column="product_id" jdbcType="NUMERIC" />
 		<result property="productName" column="product_name" jdbcType="NUMERIC" />
 		<result property="brokerage" column="brokerage" jdbcType="NUMERIC" />
@@ -84,6 +85,9 @@
 				<if test="name != null">
 					name=#{name},
 				</if>
+				<if test="mobile != null">
+					mobile=#{mobile},
+				</if>
 				<if test="productId != null">
 					product_id=#{productId},
 				</if>
@@ -123,6 +127,9 @@
 				<if test="name != null">
 					name= #{name} and
 				</if>
+				<if test="mobile != null">
+					mobile= #{mobile} and
+				</if>
 				<if test="inviteTime != null">
 					invite_time= #{inviteTime} and
 				</if>
@@ -145,9 +152,9 @@
 
 	<insert id="insertAgency" parameterType="Agency">
 		insert into
-		tb_agency(user_id,invite_user_id,name,agency_name,brokerage,product_id,product_name,status,invite_time,create_time)
+		tb_agency(user_id,invite_user_id,name,mobile,agency_name,brokerage,product_id,product_name,status,invite_time,create_time)
 		values
-		(#{userId}, #{inviteUserId}, #{name}, #{agencyName},#{brokerage},#{productId},#{productName},
+		(#{userId}, #{inviteUserId}, #{name},#{mobile}, #{agencyName},#{brokerage},#{productId},#{productName},
 		#{status},sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 				   keyProperty="userId">

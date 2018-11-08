@@ -17,6 +17,7 @@ public class Agency implements Serializable  {
     private Long userId;
     private String agencyName;
     private String name;
+    private String mobile;
     private Long productId;
     private String productName;
     private BigDecimal brokerage;
@@ -25,6 +26,13 @@ public class Agency implements Serializable  {
     private Timestamp createTime;
     private Timestamp updateTime;
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
 
     public Long getInviteUserId() {
         return inviteUserId;
