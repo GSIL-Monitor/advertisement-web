@@ -17,12 +17,12 @@ public class Agency implements Serializable  {
     private Long userId;
     private String agencyName;
     private String name;
-    private BigDecimal brokerage;
-    private Integer status;                //0:待审核 1:审核通过 2:审核未通过
     private Long productId;
     private String productName;
-    private Timestamp createTime;
+    private BigDecimal brokerage;
+    private Integer status;                //0:待审核 1:审核通过 2:审核未通过
     private Timestamp inviteTime;
+    private Timestamp createTime;
     private Timestamp updateTime;
 
 
@@ -115,7 +115,9 @@ public class Agency implements Serializable  {
         return String.valueOf(brokerage);
     }
 
-
+    public Integer getStatus(){
+        return status;
+    }
     public void setStatus(Integer status) {
         this.status = status;
     }
