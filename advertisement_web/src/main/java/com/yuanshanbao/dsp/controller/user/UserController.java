@@ -273,7 +273,6 @@ public class UserController extends BaseController {
             String code = parameterMap.get("code");
             String from = parameterMap.get("from");
             String inviteUserId = parameterMap.get("inviteUserId");
-
             String result = HttpsUtil.doGet(
                     "https://api.weixin.qq.com/sns/jscode2session",
                     "appid=" + weixinService.getAppId(WeixinService.CONFIG_WZXCX) + "&secret="
@@ -294,6 +293,7 @@ public class UserController extends BaseController {
                 user.setWeixinId(unionId);
                 user.setRegisterFrom(from);
                 user.setStatus(UserStatus.NORMAL);
+                user.setLevel(UserLevel.ONLEVEL);
                 if (inviteUserId != null) {
                     user.setInviteUserId(Long.valueOf(inviteUserId));
                 }
@@ -311,6 +311,7 @@ public class UserController extends BaseController {
                     JSPHelper.getRemoteAddr(request));
             loginToken.setRegister(register);
             loginToken.setUser(user);
+
             setSession(request, loginToken.getToken(), user);
             resultMap.put("loginToken", loginToken);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
@@ -341,6 +342,10 @@ public class UserController extends BaseController {
             String gender = parameterMap.get("gender");
 
             userService.updateUserBaseInfoIfNotExists(user, name, avatar, gender);
+            Agency agency = new Agency();
+            agency.setAgencyName(name);
+            agency.setUserId(user.getUserId());
+            agencyService.updateAgency(agency);
             request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, user);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
             return resultMap;
