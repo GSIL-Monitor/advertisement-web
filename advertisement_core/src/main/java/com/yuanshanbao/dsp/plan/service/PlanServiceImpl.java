@@ -18,11 +18,13 @@ import com.yuanshanbao.dsp.bill.model.BillType;
 import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.plan.dao.PlanDao;
 import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
@@ -171,17 +173,18 @@ public class PlanServiceImpl implements PlanService {
 		return 0;
 	}
 
-	@Override
 	// 按计划扣费
+	@Override
 	public void paymentForPlan(Plan plan) {
 		Probability params = new Probability();
 		params.setPlanId(plan.getPlanId());
 		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
+		Integer totalCount = 0;
 		for (Probability probability : list) {
 			// 总消耗
 			double nowCount = getCount(RedisConstant
 					.getProbabilityBalanceCountKey(null, probability.getProbabilityId()));
-			// 上次操作扣费时消耗的数量
+			// 上次操作扣费时消耗的金额
 			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
 					probability.getProbabilityId()));
 			double difference = nowCount - lastCount;
@@ -191,7 +194,39 @@ public class PlanServiceImpl implements PlanService {
 				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
 						String.valueOf(nowCount));
 			}
+
+			totalCount = totalCount
+					+ getClickOrShowCount(RedisConstant.getPlanClickCountPVKey(null, plan.getPlanId() + "",
+							probability.getChannel()));
 		}
+		calculateIncrement(plan.getPlanId());
+	}
+
+	private void calculateIncrement(Long planId) {
+		try {
+			Integer totalCount = getClickOrShowCount(RedisConstant.getPlanChargeTypeCountKey(planId + ""));
+			Integer lastCount = getClickOrShowCount(RedisConstant.getPlanLastChargeTypeCountKey(planId + ""));
+			Integer difference = totalCount - lastCount;
+			if (difference == 0) {
+				return;
+			}
+			// 比例
+			String scale = IniBean.getIniValue("increment_scale");
+			difference = (int) (difference * Double.valueOf(scale));
+			Probability param = new Probability();
+			param.setPlanId(planId);
+			param.setStatus(ProbabilityStatus.ONLINE);
+			List<Probability> list = probabilityService.selectProbabilitys(param, new PageBounds());
+			for (Probability probability : list) {
+				String channel = probability.getChannel();
+				redisService.sadd(RedisConstant.getChannelIncreIdKey(channel),
+						planId + ":" + probability.getProbabilityId());
+			}
+			redisService.increBy(RedisConstant.getPlanChargeTypeCountKey(planId + ""), difference);
+		} catch (Exception e) {
+
+		}
+
 	}
 
 	private double getCount(String key) {

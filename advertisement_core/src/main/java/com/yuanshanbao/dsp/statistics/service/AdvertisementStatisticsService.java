@@ -45,4 +45,10 @@ public interface AdvertisementStatisticsService {
 	public List<AdvertisementStatistics> calculateStatistics(Long projectId, List<Probability> list, String date);
 
 	public String downStatistics(List<AdvertisementStatistics> list);
+
+	public List<AdvertisementStatistics> selectPlanStatistic(AdvertisementStatistics advertisementStatistics,
+			Boolean pv, Long planId, Long projectId);
+
+	public List<AdvertisementStatistics> selectMediaAdvertisementStatistic(
+			AdvertisementStatistics advertisementStatistics, Boolean isPv, String channel, Long long1);
 }

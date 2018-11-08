@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +33,7 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
@@ -519,7 +521,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 					break;
 				}
 			}
-			String planKey = getEncryptKey(plan.getPlanId() + "");
+			// 增量url
+			String increUrl = getIncrePlanUrl(channelObject);
+			// 生成返回信息
+			String planKey = getEncryptKey(plan.getPlanId() + ":" + increUrl);
 			String probabilityKey = getEncryptKey(probability.getProbabilityId() + "");
 			AdvertisementDetails advertisementDetails = new AdvertisementDetails(planKey, probabilityKey,
 					resultMaterial, channelObject.getKey());
@@ -528,6 +533,31 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			LoggerUtil.error("getContent", e);
 		}
 		return resultList;
+	}
+
+	private String getIncrePlanUrl(Channel channelObject) {
+		String url = "";
+		Set<String> idList = redisService.smembers(RedisConstant.getChannelIncreIdKey(channelObject.getKey()));
+		if (idList == null || idList.size() == 0) {
+			return null;
+		}
+		List<String> list = new ArrayList<String>(idList);
+		// 随机取一个
+		String key = list.get((int) (Math.random() * list.size()));
+		String[] values = key.split(":");
+		Long result = redisService.increBy(RedisConstant.getPlanChargeTypeCountKey(values[0]), -1);
+		if (result <= 0) {
+			redisService.srem(RedisConstant.getChannelIncreIdKey(channelObject.getKey()), key);
+		}
+		Plan plan = ConfigManager.getPlanById(Long.valueOf(values[0]));
+		if (QuotaType.CPM.equals(plan.getChargeType())) {
+			recordPlanCount(values[0], values[1], channelObject.getKey(), false);
+		} else if (QuotaType.CPC.equals(plan.getChargeType())) {
+			recordPlanCount(values[0], values[1], channelObject.getKey(), true);
+			String planKey = getEncryptKey(values[0]);
+			url = CommonUtil.getDspJumpUrl(CommonConstant.advertisement_HOST, planKey, channelObject.getKey());
+		}
+		return url;
 	}
 
 	private String getEncryptKey(String value) {
@@ -632,7 +662,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 
 	@Override
 	public void recordPlanCount(String pId, String key, String channel, boolean isClick) {
-		String planId = AESUtils.decrypt(PLAN_ENCRYPT_KEY, pId);
+		String planIdAndUrlValue = AESUtils.decrypt(PLAN_ENCRYPT_KEY, pId);
+		String[] planIdAndUrl = planIdAndUrlValue.split(":");
+		String planId = planIdAndUrl[0];
 		String probabilityId = AESUtils.decrypt(PLAN_ENCRYPT_KEY, key);
 		Plan plan = ConfigManager.getPlanById(Long.valueOf(planId));
 		if (isClick) {
@@ -655,6 +687,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
 			redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(Long.valueOf(planId)),
 					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
+			redisService.incr(RedisConstant.getPlanChargeTypeCountKey(planId));
 		} catch (Exception e) {
 			LoggerUtil.error("increConsume", e);
 		}

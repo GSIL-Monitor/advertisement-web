@@ -700,4 +700,18 @@ public class RedisServiceImpl implements RedisService {
 		return baseRedis.getJedisCluster();
 	}
 
+	@Override
+	public Long srem(String key, String value) {
+		if (StringUtils.isBlank(key)) {
+			return null;
+		}
+		key = CommonUtil.getCacheKey(key);
+		try {
+			return getJedis().srem(key);
+		} catch (Exception e) {
+			LoggerUtil.error("Error srem, key:" + key, e);
+			return null;
+		}
+	}
+
 }

@@ -7,22 +7,23 @@
 <script>
 	$(document).ready(function(){
 		dataTableConfig.iDisplayLength = 1000;
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryMediaAdvertisements.do";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryPlanStatistic.do";
 		dataTableConfig.columns = [
 			{
-		    	"data": "channel"	
+		    	"data": null,
+		    	 "render": function ( data, type, full, meta ) {
+		            return '【'+data.plan.planId+'】'+ data.plan.name;
+		        }
 	      	}, {
 		    	"data": "total"
-		    }, {
-		    	"data": "date"
 		    }, {
 		    	"data": "clickCount"
 		    }, {
 		    	"data": "showCount"
 		    }, {
-		    	"data": "channel",
+		    	"data": "advertisement",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/channelAdvertisements.do?channelkey='+data+'"  class="btn btn-cyan" target="_blank">查看广告统计</a>';
+		            return '<a href="${rc.contextPath}/admin/${functionName}/advertisementChannel.do?"  class="btn btn-info" target="_blank">查看渠道统计</a>';
 		        }
 		    }];
 		
@@ -52,17 +53,23 @@
 			if (isNotEmpty($('#positionName').val())) {
 				params += "positionName=" +encodeURI(encodeURI($('#positionName').val())) + "&";
 			}
-			var newUrl="${rc.contextPath}/admin/${functionName}/queryChannelAdvertisements.do?" + params;
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryPlanStatistic.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
-		
+		function reload() {
+			var date=$('#date').val();
+			var pv=$('#pv').val();
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryAdvertisementStatistic.do?advertisementId=${advertisementId?c}&statisticsDate="+encodeURI(encodeURI(date))+"&isPv="+pv;
+			dataTable.ajax.url(newUrl);
+			dataTable.ajax.reload();
+		}
 	});
 </script>
 <div id="content">
 	<div id="content-header">
 		<div id="breadcrumb"><a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a><a href="#" class="current">${functionTitle}列表</a></div>
-		<h1>每日渠道广告统计列表</h1>
+		<h1>每日广告统计列表</h1>
 	</div>
 	<div class="container-fluid">
 		<hr>
@@ -88,12 +95,11 @@
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
 								<tr>
-									<td>channel</td>
+									<td>计划名称</td>
 									<td>总数</td>
-									<td>日期</td>
 									<td>点击量</td>
 									<td>曝光量</td>
-									<td>广告统计</td>
+									<td>渠道统计</td>
 								</tr>
 							</thead>
 							<tbody>
