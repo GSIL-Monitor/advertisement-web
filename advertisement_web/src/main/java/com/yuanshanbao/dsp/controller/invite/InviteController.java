@@ -5,6 +5,7 @@ import com.yuanshanbao.common.qrcode.ZXingCode;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -34,8 +35,6 @@ public class InviteController extends BaseController {
     private static final String URL = "pages/invitecard/invitecard";
     private static final String H5URL = "https://wz.huhad.com/w/applicants.html";
     private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/image/avatar132529743323965055.png";
-    private static String CODE = "";
-    private static String XCXCODE = "";
     private static final String DETAILURL = "pages/index/detail/detail";
     @Autowired
     private UserService userService;
@@ -52,26 +51,25 @@ public class InviteController extends BaseController {
     public Object inviteFriend(String token) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
-            User user = tokenService.verifyLoginToken(token);
+            User user = getLoginUser(token);
             if (user == null) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
-            /*String code = redisCacheService.get("code");*/
-            if ("".equals(CODE)) {
+            String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
+            if ("".equals(code) && code == null) {
                 byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, String.valueOf(user.getUserId()), URL);
                 if (bytes != null) {
                     InputStream input = new ByteArrayInputStream(bytes);
                     String qrCode = UploadUtils.uploadBytes(input, input.available(),
                             "test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
-//                    redisCacheService.set("code",qrCode);
-                    CODE = qrCode;
+                    redisCacheService.set(RedisConstant.WX_XCX_CODE + user.getUserId(), qrCode);
                     resultMap.put("QRcode", qrCode);
                 }
             }
-            resultMap.put("QRcode", CODE);
-            String url = URL + "?userId=" + 2;
+            resultMap.put("QRcode", code);
+            String url = URL + "?userId=" + user.getUserId();
 
-            resultMap.put("user", 2);
+            resultMap.put("user", user);
             resultMap.put("url", url);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
         } catch (BusinessException e) {
@@ -85,7 +83,7 @@ public class InviteController extends BaseController {
 
     @ResponseBody
     @RequestMapping("/getLogoQRcode")
-    public Object getLogoQRcode(String token, @RequestParam(value = "productId", required = false) String  productId, @RequestParam("avatarUrl") String avatarUrl) {
+    public Object getLogoQRcode(String token, @RequestParam(value = "productId", required = false) String productId, @RequestParam("avatarUrl") String avatarUrl) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             User user = tokenService.verifyLoginToken(token);
@@ -115,25 +113,26 @@ public class InviteController extends BaseController {
 
     @ResponseBody
     @RequestMapping("/xcxGetDetailCode")
-    public Object xcxGetDetailCode(String token, @RequestParam(value = "productId", required = false) String  productId) {
+    public Object xcxGetDetailCode(String token, @RequestParam(value = "productId", required = false) String productId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
             User user = tokenService.verifyLoginToken(token);
             if (user == null) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
-            if ("".equals(XCXCODE)) {
-
-                byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId+","+user.getUserId(), DETAILURL);
+            String code = redisCacheService.get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId());
+            if ("".equals(code) && code == null) {
+                byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId + "," + user.getUserId(), DETAILURL);
                 if (bytes != null) {
                     InputStream input = new ByteArrayInputStream(bytes);
                     String qrCode = UploadUtils.uploadBytes(input, input.available(),
                             "test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
-                    XCXCODE = qrCode;
+                    code = qrCode;
+                    redisCacheService.set(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId(), qrCode);
                     resultMap.put("QRcode", qrCode);
                 }
             }
-            resultMap.put("QRcode", XCXCODE);
+            resultMap.put("QRcode", code);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
         } catch (BusinessException e) {
             InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

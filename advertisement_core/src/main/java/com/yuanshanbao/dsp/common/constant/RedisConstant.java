@@ -24,6 +24,8 @@ public class RedisConstant {
 	public final static String PREFIX_UNIQUE_TOKEN = "advertisement_unique_token:";// 防止重复提交的token
 	public final static String PREFIX_LOG_START = "advertisement_log:start:";
 	public final static String PREFIX_LOG_HITS = "advertisement_log:hits:";
+	public final static String WX_XCX_CODE = "wz_code";
+	public final static String WX_XCX_DETAIL_CODE = "wz_detail_code";
 
 	public static final String ADVERTISEMENT_CLICK_PV_COUNT = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String UV_COUNT = "uv_stat_count" + COMMON_REDIS_PREFIX;
