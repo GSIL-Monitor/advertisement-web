@@ -362,11 +362,15 @@ public class WeixinServiceImpl implements WeixinService {
 			param.put("scene", scene);
 			param.put("page", page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
+			if (byteArr.length < 1024) {
+				String errorLog = new String(byteArr, "UTF-8");
+				LoggerUtil.error("getQrCode error", errorLog);
+				return null;
+			}
 			return byteArr;
 		} catch (Exception e) {
 			LoggerUtil.error("[bxm_nofity]", e);
 		}
 		return null;
 	}
-
 }
