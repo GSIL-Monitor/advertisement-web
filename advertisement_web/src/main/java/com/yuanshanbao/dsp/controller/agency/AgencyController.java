@@ -74,10 +74,13 @@ public class AgencyController extends BaseController {
 		try {
 			User user = getLoginUser(token);
 			agency.setInviteUserId(user.getUserId());
-			Map<Long,Agency> oneAgencyMap = new LinkedHashMap<Long,Agency>();
+
 			List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
-			for (Agency oneAgency : oneAgencyList){
-				oneAgencyMap.put(oneAgency.getUserId(),oneAgency);
+			for (Iterator iterator = oneAgencyList.iterator();iterator.hasNext();){
+				Agency agen = (Agency) iterator.next();
+				if (agen.getBrokerage() == null) {
+					iterator.remove();
+				}
 			}
 			// 总佣金
 			BigDecimal brokerages = agencyService.getBrokerages(agency, pageBounds);
@@ -85,7 +88,7 @@ public class AgencyController extends BaseController {
 				agency.setInviteUserId(agen.getUserId());
 				twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
 			}
-			resultMap.put("oneAgencyList", oneAgencyMap.values());
+			resultMap.put("oneAgencyList", oneAgencyList);
 			resultMap.put("twoAgencyList", twoAgencyList);
 			resultMap.put("brokerage",brokerages.setScale(2, RoundingMode.HALF_UP));
 		} catch (BusinessException e) {

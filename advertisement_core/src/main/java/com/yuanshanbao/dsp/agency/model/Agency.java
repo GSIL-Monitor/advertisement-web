@@ -26,6 +26,10 @@ public class Agency implements Serializable  {
     private Timestamp createTime;
     private Timestamp updateTime;
 
+    public BigDecimal getBrokerage() {
+        return brokerage;
+    }
+
     public String getMobile() {
         return mobile;
     }
