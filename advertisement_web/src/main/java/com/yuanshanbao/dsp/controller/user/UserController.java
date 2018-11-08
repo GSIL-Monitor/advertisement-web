@@ -304,6 +304,7 @@ public class UserController extends BaseController {
                 if (wxUser != null && inviteUserId != null) {
                     agency.setUserId(wxUser.getUserId());
                     agency.setInviteUserId(Long.valueOf(inviteUserId));
+                    agency.setAgencyName(wxUser.getNickName());
                     agencyService.insertAgency(agency);
                 }
             }
@@ -342,6 +343,11 @@ public class UserController extends BaseController {
             String gender = parameterMap.get("gender");
 
             userService.updateUserBaseInfoIfNotExists(user, name, avatar, gender);
+            User updateUser = new User();
+            updateUser.setUserId(user.getUserId());
+            updateUser.setNickName(name);
+            updateUser.setAvatar(avatar);
+            userService.updateUser(updateUser);
             Agency agency = new Agency();
             agency.setAgencyName(name);
             agency.setUserId(user.getUserId());
