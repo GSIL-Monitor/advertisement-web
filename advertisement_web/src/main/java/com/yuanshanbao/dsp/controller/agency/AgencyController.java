@@ -55,6 +55,7 @@ public class AgencyController extends BaseController {
 					agen.setBrokerage(BigDecimal.valueOf(0));
 				}
 			}
+
 			resultMap.put("agencyList", agencyList);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -80,8 +81,6 @@ public class AgencyController extends BaseController {
 				agency.setInviteUserId(agen.getUserId());
 				twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
 			}
-
-
 			resultMap.put("oneAgencyList", oneAgencyList);
 			resultMap.put("twoAgencyList", twoAgencyList);
 			resultMap.put("brokerage",brokerages.setScale(2, RoundingMode.HALF_UP));

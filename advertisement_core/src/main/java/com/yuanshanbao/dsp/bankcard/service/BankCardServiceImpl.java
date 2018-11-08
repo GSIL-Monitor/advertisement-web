@@ -16,6 +16,7 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -74,7 +75,7 @@ public class BankCardServiceImpl implements BankCardService {
             agencyUser.setProductName(product.getName());
             agencyUser.setProductId(productId);
             agencyUser.setName(userName);
-            agencyUser.setBrokerage(product.getBrokerage());
+            agencyUser.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
             agencyDao.updateAgency(agencyUser);
         }
 
