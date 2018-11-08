@@ -123,6 +123,7 @@ public class InviteController extends BaseController {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
             if ("".equals(XCXCODE)) {
+
                 byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId+","+user.getUserId(), DETAILURL);
                 if (bytes != null) {
                     InputStream input = new ByteArrayInputStream(bytes);
