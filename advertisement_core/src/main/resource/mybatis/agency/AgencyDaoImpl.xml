@@ -54,7 +54,9 @@
 					 close=")">
 				#{userId}
 			</foreach>
+			and status = 1
 		</where>
+
 	</select>
 
 	<select id="selectAgencyById"  resultMap="agencyMap">

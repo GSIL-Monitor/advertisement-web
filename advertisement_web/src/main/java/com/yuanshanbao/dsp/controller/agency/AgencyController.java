@@ -4,6 +4,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -49,6 +50,11 @@ public class AgencyController extends BaseController {
 			User user = getLoginUser(token);
 			agency.setInviteUserId(user.getUserId());
 			List<Agency> agencyList = agencyService.selectAgencys(agency, pageBounds);
+			for (Agency agen: agencyList){
+				if (agen.getStatus()!=null && agen.getStatus() != AgencyStatus.OFFCHECK){
+					agen.setBrokerage(BigDecimal.valueOf(0));
+				}
+			}
 			resultMap.put("agencyList", agencyList);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -74,9 +80,11 @@ public class AgencyController extends BaseController {
 				agency.setInviteUserId(agen.getUserId());
 				twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
 			}
+
+
 			resultMap.put("oneAgencyList", oneAgencyList);
 			resultMap.put("twoAgencyList", twoAgencyList);
-			resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
+			resultMap.put("brokerage",brokerages.setScale(2, RoundingMode.HALF_UP));
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
