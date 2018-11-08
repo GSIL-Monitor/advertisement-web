@@ -15,7 +15,7 @@ import java.util.List;
 public interface AgencyService {
     public List<Agency> selectAgencys(Agency agency,PageBounds pageBounds);
 
-    public Agency selectAgency(Long inviteId);
+    public Agency selectAgency(String userId);
 
     public int insertAgency(Agency agency);
 
@@ -27,7 +27,7 @@ public interface AgencyService {
 
     /**
      * 获得一级直推总佣金
-     * @param agency
+     * @param
      * @return
      */
     BigDecimal getAgencyBrokerage(Long inviteUserId);

@@ -13,7 +13,7 @@ import java.util.List;
 public interface AgencyDao {
     public List<Agency> selectAgencys(Agency agency, PageBounds pageBounds);
 
-    Agency selectAgency(Long inviteId);
+    Agency selectAgency(String  userId);
 
     public int insertAgency(Agency agency);
 

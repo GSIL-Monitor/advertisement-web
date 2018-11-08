@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.bankcard.service;
 
 import com.yuanshanbao.dsp.bankcard.model.BankCard;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface BankCardService {
 
     public void insertBankCard(BankCard bankCard);
 
-    void getApplyBankCardInfo(Long productId, String userName, String mobile);
+    void getApplyBankCardInfo(Long userId, Long productId, String userName, String mobile);
 }

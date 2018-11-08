@@ -15,6 +15,7 @@
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="inviteTime" column="invite_time" jdbcType="TIMESTAMP" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 
 	</resultMap>
 
@@ -55,6 +56,51 @@
 			</foreach>
 		</where>
 	</select>
+
+	<select id="selectAgencyById"  resultMap="agencyMap">
+		select
+		* from
+		tb_agency
+		<where>
+			user_id=#{userId}
+		</where>
+	</select>
+
+	<update id="updateAgency" parameterType="Agency">
+		update tb_agency
+		<set>
+			<trim suffixOverrides=",">
+				<if test="userId != null">
+					user_id=#{userId},
+				</if>
+				<if test="agencyName != null">
+					agency_name=#{agencyName},
+				</if>
+				<if test="inviteUserId != null">
+					invite_user_id=#{inviteUserId},
+				</if>
+				<if test="name != null">
+					name=#{name},
+				</if>
+				<if test="productId != null">
+					product_id=#{productId},
+				</if>
+				<if test="productName != null">
+					product_name=#{productName},
+				</if>
+				<if test="brokerage != null">
+					brokerage=#{brokerage},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			user_id=#{userId}
+		</where>
+	</update>
 
 	<!-- 查询sql -->
 	<select id="selectAgencys" parameterType="Agency" resultMap="agencyMap">

@@ -11,6 +11,7 @@ import com.yuanshanbao.dsp.information.dao.InformationDao;
 import com.yuanshanbao.dsp.information.model.Information;
 import com.yuanshanbao.dsp.product.dao.ProductDao;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class BankCardServiceImpl implements BankCardService {
 
     @Autowired
     private ProductDao productDao;
+
     @Override
     public List<BankCard> selectBankCards(BankCard bankCard, PageBounds pageBounds) {
         return null;
@@ -51,22 +53,30 @@ public class BankCardServiceImpl implements BankCardService {
     }
 
     @Override
-    public void getApplyBankCardInfo(Long productId, String userName, String mobile) {
+    public void getApplyBankCardInfo(Long userId, Long productId, String userName, String mobile) {
         Information queryInfomation = new Information();
         queryInfomation.setName(userName);
         queryInfomation.setMobile(mobile);
-        Product product =productDao.selectPrdouctById(productId);
-            //添加用户
+        Product product = productDao.selectPrdouctById(productId);
+        Agency agencyUser = agencyDao.selectAgency(String.valueOf(userId));
+        if (agencyUser != null) {
+            //添加用户信息
             Information information = new Information();
             information.setName(userName);
             information.setMobile(mobile);
+            information.setUserId(userId);
+            information.setActivityId(Long.valueOf(agencyUser.getInviteUserId()));
             informationDao.insertInformation(information);
-            Agency agency = new Agency();
-            agency.setStatus(AgencyStatus.ONCHECK);
-            agency.setProductName(product.getName());
-            agency.setProductId(productId);
-            agency.setName(userName);
-            agency.setBrokerage(product.getBrokerage());
-            agencyDao.insertAgency(agency);
+
+            agencyUser.setUserId(String.valueOf(userId));
+            agencyUser.setInviteUserId(agencyUser.getInviteUserId());
+            agencyUser.setStatus(AgencyStatus.ONCHECK);
+            agencyUser.setProductName(product.getName());
+            agencyUser.setProductId(productId);
+            agencyUser.setName(userName);
+            agencyUser.setBrokerage(product.getBrokerage());
+            agencyDao.updateAgency(agencyUser);
+        }
+
     }
 }

@@ -28,11 +28,11 @@ public class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
-    public Agency selectAgency(Long inviteId) {
-        if (inviteId == null) {
+    public Agency selectAgency(String userId) {
+        if (userId == null) {
             throw new BusinessException(ComRetCode.FAIL);
         }
-        return agencyDao.selectAgency(inviteId);
+        return agencyDao.selectAgency(userId);
     }
 
 
@@ -92,7 +92,7 @@ public class AgencyServiceImpl implements AgencyService {
             if (oneAgencyList.size() == 0){
                 break;
             }
-            oneInviteUserIds.add(agencyIds.getUserId());
+            oneInviteUserIds.add(Long.valueOf(agencyIds.getUserId()));
         }
         if (oneInviteUserIds.size() != 0){
             oneAgencyBrokerage = agencyDao.getSumBrokerage(oneInviteUserIds);
@@ -105,7 +105,7 @@ public class AgencyServiceImpl implements AgencyService {
             agency.setInviteUserId(agen.getUserId());
             twoAgencyList = agencyDao.selectAgencys(agency, new PageBounds());
             for (Agency agencyIds : twoAgencyList) {
-                twoInviteUserIds.add(agencyIds.getUserId());
+                twoInviteUserIds.add(Long.valueOf(agencyIds.getUserId()));
             }
         }
         if (twoInviteUserIds.size() != 0){

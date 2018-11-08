@@ -47,7 +47,7 @@ public class AgencyController extends BaseController {
 		try {
 			// 获取当前用户信息
 			User user = getLoginUser(token);
-			agency.setInviteUserId(user.getUserId());
+			agency.setInviteUserId(String.valueOf(user.getUserId()));
 			List<Agency> agencyList = agencyService.selectAgencys(agency, pageBounds);
 			resultMap.put("agencyList", agencyList);
 		} catch (BusinessException e) {
@@ -66,7 +66,7 @@ public class AgencyController extends BaseController {
 		List<Agency> twoAgencyList = new ArrayList<>();
 		try {
 			User user = getLoginUser(token);
-			agency.setInviteUserId(user.getUserId());
+			agency.setInviteUserId(String.valueOf(user.getUserId()));
 			List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
 			// 总佣金
 			BigDecimal brokerages = agencyService.getBrokerages(agency, pageBounds);

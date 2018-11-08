@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.agency.dao;
 
 import com.alibaba.fastjson.support.odps.udf.CodecCheck;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.base.dao.BaseDaoImpl;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -23,8 +24,8 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
     }
 
     @Override
-    public Agency selectAgency(Long inviteId) {
-        return getSqlSession().selectOne("agency.selectAgency", inviteId);
+    public Agency selectAgency(String userId) {
+        return getSqlSession().selectOne("agency.selectAgencyById", userId);
     }
 
     @Override
@@ -39,7 +40,8 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
 
     @Override
     public int updateAgency(Agency agency) {
-        return 0;
+        agency.setUpdateTime(DateUtils.getCurrentTime());
+        return getSqlSession().update("agency.updateAgency", agency);
     }
 
     @Override

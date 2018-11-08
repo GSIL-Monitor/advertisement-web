@@ -129,7 +129,6 @@ public class UserController extends BaseController {
 	public Map<String, Object> tokenLogin(HttpServletRequest request, HttpServletResponse response, String appId,
 			String params) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-
 		try {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String token = parameterMap.get("token");
@@ -171,7 +170,6 @@ public class UserController extends BaseController {
 			String mobile = parameterMap.get("mobile");
 			String smsCode = parameterMap.get("smsCode");
 			String inviteCode = parameterMap.get("inviteCode");
-            String inviteUserId = parameterMap.get("inviteUserId");
             String registerFrom = parameterMap.get("from");
 			String userIp = JSPHelper.getRemoteAddr(request);
 			// 4.校验短信
@@ -191,7 +189,6 @@ public class UserController extends BaseController {
 				} else {
 					user = new User();
 					user.setMobile(mobile);
-					user.setInviteUserId(Long.valueOf(inviteUserId));
 					user.setRegisterFrom(registerFrom);
 					user.setStatus(UserStatus.NORMAL);
 					user.setLevel(UserLevel.ONLEVEL);
@@ -272,9 +269,10 @@ public class UserController extends BaseController {
 										String params) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			Map<String, String> parameterMap = appService.decryptParameters(appId,params);
+			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String code = parameterMap.get("code");
-			String from = parameterMap.get("from");
+            String from = parameterMap.get("from");
+			String inviteUserId = parameterMap.get("inviteUserId");
 			String result = HttpsUtil.doGet(
 					"https://api.weixin.qq.com/sns/jscode2session",
 					"appid=" + weixinService.getAppId(WeixinService.CONFIG_WZXCX) + "&secret="
@@ -295,9 +293,17 @@ public class UserController extends BaseController {
 				user.setWeixinId(unionId);
 				user.setRegisterFrom(from);
 				user.setStatus(UserStatus.NORMAL);
+				user.setInviteUserId(inviteUserId);
 				userService.insertUser(user);
 				register = true;
-			}
+				User wxUser = userService.selectUserByWeixinId(unionId);
+				Agency agency = new Agency();
+				if (wxUser !=null){
+                    agency.setUserId(String.valueOf(wxUser.getUserId()));
+                }
+                    agency.setInviteUserId(inviteUserId);
+                agencyService.insertAgency(agency);
+            }
 			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "",
 					JSPHelper.getRemoteAddr(request));
 			loginToken.setRegister(register);
@@ -434,7 +440,6 @@ public class UserController extends BaseController {
 				user = new User();
 				user.setMobile(mobile);
 				user.setRegisterFrom(registerFrom);
-				user.setInviteUserId(Long.valueOf(inviteUserId));
 				user.setStatus(UserStatus.NORMAL);
 				generateUser(user, password, inviteCode);
 				LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "", userIp);
@@ -616,14 +621,6 @@ public class UserController extends BaseController {
 		user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
 		userService.updateUser(user);
 		User inviteUser = userService.selectUserById(user.getInviteUserId());
-		// 邀请记录
-		Agency agency = new Agency();
-		agency.setInviteUserId(user.getInviteUserId());
-		agency.setUserId(user.getUserId());
-		agency.setName(user.getName());
-		agency.setAgencyName(inviteUser.getName());
-		agencyService.insertAgency(agency);
-
 		BaseInfo baseInfo = new BaseInfo();
 		baseInfo.setUserId(user.getUserId() + "");
 		baseInfo.setName(DataFormat.hiddenMobile(user.getMobile()));
