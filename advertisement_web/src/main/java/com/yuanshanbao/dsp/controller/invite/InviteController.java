@@ -66,12 +66,9 @@ public class InviteController extends BaseController {
 //                    redisCacheService.set("code",qrCode);
                     CODE = qrCode;
                     resultMap.put("QRcode", qrCode);
-                    LoggerUtil.info(CODE + "++++++++++++++++++++++++++++++++");
                 }
-                LoggerUtil.info(CODE + "===========================");
             }
             resultMap.put("QRcode", CODE);
-            LoggerUtil.info(CODE + "__________________________________");
             String url = URL + "?userId=" + 2;
 
             resultMap.put("user", 2);
@@ -126,7 +123,7 @@ public class InviteController extends BaseController {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
             }
             if ("".equals(XCXCODE)) {
-                byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId+user.getUserId(), DETAILURL);
+                byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId+","+user.getUserId(), DETAILURL);
                 if (bytes != null) {
                     InputStream input = new ByteArrayInputStream(bytes);
                     String qrCode = UploadUtils.uploadBytes(input, input.available(),
