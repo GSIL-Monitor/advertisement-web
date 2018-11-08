@@ -119,12 +119,12 @@ public class InviteController extends BaseController {
     public Object xcxGetDetailCode(String token, @RequestParam(value = "productId", required = false) String  productId) {
         Map<String, Object> resultMap = new HashMap<>();
         try {
-           /* User user = tokenService.verifyLoginToken(token);
+            User user = tokenService.verifyLoginToken(token);
             if (user == null) {
                 throw new BusinessException(ComRetCode.NOT_LOGIN);
-            }*/
+            }
             if ("".equals(XCXCODE)) {
-                byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId+12, DETAILURL);
+                byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId+user.getUserId(), DETAILURL);
                 if (bytes != null) {
                     InputStream input = new ByteArrayInputStream(bytes);
                     String qrCode = UploadUtils.uploadBytes(input, input.available(),
