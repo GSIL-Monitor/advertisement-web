@@ -82,7 +82,7 @@ public class AccountController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = getLoginUser(token);
-			if (user == null || StringUtils.isBlank(user.getMobile())) {
+			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
 
