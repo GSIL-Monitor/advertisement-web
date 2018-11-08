@@ -21,7 +21,7 @@ public class User implements Serializable {
 	private String name;
 	private String avatar;
 	private Integer inviteType;
-	private String inviteUserId;
+	private Long inviteUserId;
 	private Integer status;
 	private Integer level;
 	private Integer userType;
@@ -49,11 +49,11 @@ public class User implements Serializable {
 		this.nickName = nickName;
 	}
 
-	public String getInviteUserId() {
+	public Long getInviteUserId() {
 		return inviteUserId;
 	}
 
-	public void setInviteUserId(String inviteUserId) {
+	public void setInviteUserId(Long inviteUserId) {
 		this.inviteUserId = inviteUserId;
 	}
 

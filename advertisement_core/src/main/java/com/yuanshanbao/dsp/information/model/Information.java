@@ -48,7 +48,7 @@ public class Information implements Serializable {
 	private Integer age;
 	private Long marriage;
 	private Long hasChild;
-	private String inviteUserId;
+	private Long inviteUserId;
 	private String channel;
 	private String ip;
 
@@ -76,11 +76,11 @@ public class Information implements Serializable {
 		super();
 	}
 
-	public String getInviteUserId() {
+	public Long getInviteUserId() {
 		return inviteUserId;
 	}
 
-	public void setInviteUserId(String inviteUserId) {
+	public void setInviteUserId(Long inviteUserId) {
 		this.inviteUserId = inviteUserId;
 	}
 

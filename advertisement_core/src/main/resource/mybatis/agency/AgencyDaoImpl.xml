@@ -5,9 +5,9 @@
 <mapper namespace="agency">
 
 	<resultMap id="agencyMap" type="Agency">
-		<result property="userId" column="user_id" jdbcType="VARCHAR" />
+		<result property="userId" column="user_id" jdbcType="NUMERIC" />
 		<result property="agencyName" column="agency_name" jdbcType="VARCHAR" />
-		<result property="inviteUserId" column="invite_user_id" jdbcType="VARCHAR" />
+		<result property="inviteUserId" column="invite_user_id" jdbcType="NUMERIC" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="productId" column="product_id" jdbcType="NUMERIC" />
 		<result property="productName" column="product_name" jdbcType="NUMERIC" />

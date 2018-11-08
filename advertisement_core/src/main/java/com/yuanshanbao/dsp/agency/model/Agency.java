@@ -13,8 +13,8 @@ import java.sql.Timestamp;
  */
 public class Agency implements Serializable  {
     private static final long serialVersionUID = 4165445835251317169L;
-    private String inviteUserId;
-    private String userId;
+    private Long inviteUserId;
+    private Long userId;
     private String agencyName;
     private String name;
     private BigDecimal brokerage;
@@ -25,11 +25,20 @@ public class Agency implements Serializable  {
     private Timestamp inviteTime;
     private Timestamp updateTime;
 
-    public String getUserId() {
+
+    public Long getInviteUserId() {
+        return inviteUserId;
+    }
+
+    public void setInviteUserId(Long inviteUserId) {
+        this.inviteUserId = inviteUserId;
+    }
+
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -72,13 +81,6 @@ public class Agency implements Serializable  {
         this.brokerage = brokerage;
     }
 
-    public String getInviteUserId() {
-        return inviteUserId;
-    }
-
-    public void setInviteUserId(String inviteUserId) {
-        this.inviteUserId = inviteUserId;
-    }
 
 
     public String getAgencyName() {
