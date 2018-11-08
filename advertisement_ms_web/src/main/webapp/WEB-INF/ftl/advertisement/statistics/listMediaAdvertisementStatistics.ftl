@@ -56,16 +56,25 @@
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
 						<h5>数据表格</h5>
-						<div style="float:right;margin:3px 8px 3px 0">
-							<select name="pv" id="pv">
-								<option value="true">pv</option>
-							</select>
-							<div class="filter-component">
+						<div class="filter-box">
+
+							<div class="btn-group">
+								<select name="pv" id="pv">
+									<option value="true">pv</option>
+								</select>
+							</div>
+
+							<div class="btn-group">	
+								<div class="filter-component">
 									<h6>日期：</h6>
 									<@timeRangeSearchBar/>
+								</div>
 							</div>
+							
 							<div class="btn btn-green" id="queryButton">确定</div>
 							<div class="btn btn-white" id="queryReset">重置</div>
+						</div>
+						<div>
 						</div>
 					</div>
 					<div class="widget-content nopadding">
