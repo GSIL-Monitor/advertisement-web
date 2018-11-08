@@ -114,6 +114,12 @@ public class AgencyServiceImpl implements AgencyService {
                 twoAgencyBrokerage = BigDecimal.valueOf(0);
             }
         }
+        if (oneAgencyBrokerage == null) {
+        	oneAgencyBrokerage = BigDecimal.ZERO;
+        }
+        if (twoAgencyBrokerage == null) {
+        	twoAgencyBrokerage = BigDecimal.ZERO;
+        }
         BigDecimal sumAgencyBrokerage = oneAgencyBrokerage.add(twoAgencyBrokerage);
         return sumAgencyBrokerage;
     }
