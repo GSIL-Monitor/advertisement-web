@@ -58,6 +58,8 @@
 				},{
 			    	"data": "statusValue"
 		        },{
+			    	"data": "bestBid"
+		        },{
 			    	"data": "spend"
 		        },{
 			    	"data": "consumed"
@@ -134,6 +136,7 @@
 							<th>广告主</th>
 							<th>创建时间</th>
 							<th>投放状态</th>
+							<th>出价</th>
 							<th>预算</th>
 							<th>已消耗预算</th>
 							<th>查看详情</th>
