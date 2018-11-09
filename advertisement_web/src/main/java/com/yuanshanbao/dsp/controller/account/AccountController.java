@@ -7,6 +7,8 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.RequestUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.common.util.VerifyIdcard;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -71,10 +73,16 @@ public class AccountController extends BaseController {
 
 	@Autowired
 	private WithdrawDepositService withdrawDepositServcie;
+
 	@Autowired
 	private UserService userService;
+
 	@Autowired
 	private EarningsService earningsService;
+
+	@Autowired
+	private AgencyService agencyService;
+
 
 	@RequestMapping("/balance")
 	@ResponseBody
@@ -309,6 +317,13 @@ public class AccountController extends BaseController {
 			if (!VerifyIdcard.verifyIdCard(identityCard)) {
 				throw new BusinessException(ComRetCode.IDNO_FORMAT_ERROR);
 			}
+			Agency agency = agencyService.selectAgency(String.valueOf(loginToken.getUserId()));
+			if (agency !=null && agency.getInviteUserId() !=null){
+			    Agency updateAgency= new Agency();
+                updateAgency.setAgencyName(name);
+                updateAgency.setUserId(agency.getUserId());
+			    agencyService.updateAgency(updateAgency);
+            }
 			String userIp = RequestUtil.getRemoteAddr(request);
 			Map<String, Object> map = paymentInterfaceService.verifyIdentity(String.valueOf(loginToken.getUserId()),
 					loginToken.getMobile(), name, identityCard, userIp);

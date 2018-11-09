@@ -48,7 +48,11 @@ public class AgencyServiceImpl implements AgencyService {
 
     @Override
     public int updateAgency(Agency agency) {
-        return 0;
+        if (agency == null && agency.getUserId() == null) {
+            throw new BusinessException(ComRetCode.FAIL);
+        }
+        return agencyDao.updateAgency(agency);
+
     }
 
     @Override
