@@ -44,8 +44,8 @@ public class AgencyController extends BaseController {
 
 		try {
 			// 获取当前用户信息
-			User user = getLoginUser(token);
-			agency.setInviteUserId(user.getUserId());
+//			User user = getLoginUser(token);
+			agency.setInviteUserId(3l);
 			List<Agency> agencyList = agencyService.selectAgencys(agency, pageBounds);
 
 			Map<Long,Agency> agencyMap = new LinkedHashMap<Long,Agency>();

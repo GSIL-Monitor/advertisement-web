@@ -7,6 +7,8 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.RequestUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.common.util.VerifyIdcard;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -71,10 +73,16 @@ public class AccountController extends BaseController {
 
 	@Autowired
 	private WithdrawDepositService withdrawDepositServcie;
+
 	@Autowired
 	private UserService userService;
+
 	@Autowired
 	private EarningsService earningsService;
+
+	@Autowired
+	private AgencyService agencyService;
+
 
 	@RequestMapping("/balance")
 	@ResponseBody
@@ -301,7 +309,6 @@ public class AccountController extends BaseController {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String name = parameterMap.get("name");
 			String identityCard = parameterMap.get("identityCard");
-
 			User loginToken = getLoginUser(token);
 			if (!ValidateUtil.isChineseName(name)) {
 				throw new BusinessException(ComRetCode.NAME_FORMAT_ERROR);
@@ -312,6 +319,17 @@ public class AccountController extends BaseController {
 			String userIp = RequestUtil.getRemoteAddr(request);
 			Map<String, Object> map = paymentInterfaceService.verifyIdentity(String.valueOf(loginToken.getUserId()),
 					loginToken.getMobile(), name, identityCard, userIp);
+            Agency agencyParams = new Agency();
+            agencyParams.setUserId(loginToken.getUserId());
+            List<Agency> agency = agencyService.selectAgencys(agencyParams,new PageBounds());
+            for (Agency agen: agency){
+                if (agen.getStatus() == null && agen.getProductId() == null){
+                    Agency updateAgency = new Agency();
+                    updateAgency.setUserId(agen.getUserId());
+                    updateAgency.setAgencyName(name);
+                    agencyService.updateAgency(updateAgency);
+                }
+            }
 			resultMap.putAll(map);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
