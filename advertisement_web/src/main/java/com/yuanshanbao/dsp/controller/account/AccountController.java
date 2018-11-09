@@ -82,9 +82,6 @@ public class AccountController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = getLoginUser(token);
-			if (user == null) {
-				throw new BusinessException(ComRetCode.NOT_LOGIN);
-			}
 			resultMap.putAll(paymentInterfaceService.queryBalance(String.valueOf(user.getUserId())));
 			Object withdrawAmount = paymentInterfaceService.queryBillAmount(String.valueOf(user.getUserId()),
 					PaymentInterfaceService.WITHDRAW).get("amount");
@@ -306,9 +303,6 @@ public class AccountController extends BaseController {
 			String identityCard = parameterMap.get("identityCard");
 
 			User loginToken = getLoginUser(token);
-			if (loginToken == null || StringUtils.isBlank(loginToken.getMobile())) {
-				throw new BusinessException(ComRetCode.NOT_LOGIN);
-			}
 			if (!ValidateUtil.isChineseName(name)) {
 				throw new BusinessException(ComRetCode.NAME_FORMAT_ERROR);
 			}
