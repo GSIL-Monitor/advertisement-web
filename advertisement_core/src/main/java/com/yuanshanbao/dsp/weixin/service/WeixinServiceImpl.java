@@ -363,7 +363,7 @@ public class WeixinServiceImpl implements WeixinService {
 			param.put("page", page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
 			if (byteArr.length < 1024) {
-				String errorLog = new String(byteArr, "UTF-8");
+				String errorLog = HttpUtil.sendPostRequest(url, param.toString(), "UTF-8");
 				LoggerUtil.error("getQrCode error", errorLog);
 				return null;
 			}
