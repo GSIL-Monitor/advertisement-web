@@ -29,81 +29,80 @@ import java.util.*;
 @RequestMapping("/i/agency")
 public class AgencyController extends BaseController {
 
-	@Autowired
-	private AgencyService agencyService;
-	@Autowired
-	private TokenService tokenService;
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private AgencyService agencyService;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private UserService userService;
 
-	@RequestMapping("/list")
-	@ResponseBody
-	public Object getAgencyList(HttpServletRequest request, Agency agency, PageBounds pageBounds, String token) {
+    @RequestMapping("/list")
+    @ResponseBody
+    public Object getAgencyList(HttpServletRequest request, Agency agency, PageBounds pageBounds, String token) {
 
-		Map<Object, Object> resultMap = new HashMap<>();
+        Map<Object, Object> resultMap = new HashMap<>();
 
-		try {
-			// 获取当前用户信息
-//			User user = getLoginUser(token);
-			agency.setInviteUserId(3l);
-			List<Agency> agencyList = agencyService.selectAgencys(agency, pageBounds);
+        try {
+            // 获取当前用户信息
+            User user = getLoginUser(token);
+            agency.setInviteUserId(user.getUserId());
+            List<Agency> agencyList = agencyService.selectAgencys(agency, pageBounds);
+            Map<Long, Agency> agencyMap = new LinkedHashMap<Long, Agency>();
+            for (Agency agen : agencyList) {
+                if (agen.getStatus() != null && agen.getStatus() != AgencyStatus.OFFCHECK) {
+                    agen.setBrokerage(BigDecimal.valueOf(0));
+                }
+                agencyMap.put(agen.getUserId(), agen);
 
-			Map<Long,Agency> agencyMap = new LinkedHashMap<Long,Agency>();
-			for (Agency agen: agencyList){
-				if (agen.getStatus()!=null && agen.getStatus() != AgencyStatus.OFFCHECK){
-					agen.setBrokerage(BigDecimal.valueOf(0));
-				}
-				agencyMap.put(agen.getUserId(),agen);
+            }
+            resultMap.put("agencyList", agencyMap.values());
+        } catch (BusinessException e) {
+            InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+        } catch (Exception e) {
+            LoggerUtil.error("[productList error:]", e);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+        }
+        return resultMap;
+    }
 
-			}
-			resultMap.put("agencyList", agencyMap.values());
-		} catch (BusinessException e) {
-			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
-		} catch (Exception e) {
-			LoggerUtil.error("[productList error:]", e);
-			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-		}
-		return resultMap;
-	}
+    @RequestMapping("/award")
+    @ResponseBody
+    public Object getAwardList(HttpServletRequest request, Agency agency, PageBounds pageBounds, String token) {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<Agency> twoAgencyList = new ArrayList<>();
+        try {
+            User user = getLoginUser(token);
+            agency.setInviteUserId(user.getUserId());
 
-	@RequestMapping("/award")
-	@ResponseBody
-	public Object getAwardList(HttpServletRequest request, Agency agency, PageBounds pageBounds, String token) {
-		Map<String, Object> resultMap = new HashMap<>();
-		List<Agency> twoAgencyList = new ArrayList<>();
-		try {
-			User user = getLoginUser(token);
-			agency.setInviteUserId(user.getUserId());
-
-			List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
-			for (Iterator iterator = oneAgencyList.iterator();iterator.hasNext();){
-				Agency agen = (Agency) iterator.next();
-				if (agen.getBrokerage() == null) {
-					iterator.remove();
-				}
-			}
-			// 总佣金
-			BigDecimal brokerages = agencyService.getBrokerages(agency, pageBounds);
-			for (Agency agen : oneAgencyList) {
-				agency.setInviteUserId(agen.getUserId());
-				twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
-			}
-			for (Iterator iterator = twoAgencyList.iterator();iterator.hasNext();){
-				Agency twoAgen = (Agency) iterator.next();
-				if (twoAgen.getBrokerage() == null) {
-					iterator.remove();
-				}
-			}
-			resultMap.put("oneAgencyList", oneAgencyList);
-			resultMap.put("twoAgencyList", twoAgencyList);
-			resultMap.put("brokerage",brokerages.setScale(2, RoundingMode.HALF_UP));
-		} catch (BusinessException e) {
-			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
-		} catch (Exception e) {
-			LoggerUtil.error("[productList error:]", e);
-			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-		}
-		return resultMap;
-	}
+            List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
+            for (Iterator iterator = oneAgencyList.iterator(); iterator.hasNext(); ) {
+                Agency agen = (Agency) iterator.next();
+                if (agen.getBrokerage() == null) {
+                    iterator.remove();
+                }
+            }
+            // 总佣金
+            BigDecimal brokerages = agencyService.getBrokerages(agency, pageBounds);
+            for (Agency agen : oneAgencyList) {
+                agency.setInviteUserId(agen.getUserId());
+                twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
+            }
+            for (Iterator iterator = twoAgencyList.iterator(); iterator.hasNext(); ) {
+                Agency twoAgen = (Agency) iterator.next();
+                if (twoAgen.getBrokerage() == null) {
+                    iterator.remove();
+                }
+            }
+            resultMap.put("oneAgencyList", oneAgencyList);
+            resultMap.put("twoAgencyList", twoAgencyList);
+            resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
+        } catch (BusinessException e) {
+            InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+        } catch (Exception e) {
+            LoggerUtil.error("[productList error:]", e);
+            InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+        }
+        return resultMap;
+    }
 
 }

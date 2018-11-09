@@ -303,6 +303,7 @@ public class UserController extends BaseController {
                 Agency agency = new Agency();
                 if (wxUser != null && inviteUserId != null) {
                     agency.setUserId(wxUser.getUserId());
+                    agency.setAgencyName(wxUser.getNickName());
                     agency.setInviteUserId(Long.valueOf(inviteUserId));
                     agencyService.insertAgency(agency);
                 }
