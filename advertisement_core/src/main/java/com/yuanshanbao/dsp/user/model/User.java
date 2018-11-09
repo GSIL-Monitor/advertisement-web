@@ -33,7 +33,8 @@ public class User implements Serializable {
 	public Integer getLevel() {
 		return level;
 	}
-	public String getLevelValue(){
+
+	public String getLevelValue() {
 		return UserLevel.getDescription(level);
 	}
 
@@ -72,7 +73,6 @@ public class User implements Serializable {
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-
 
 	public String getPassword() {
 		return password;
@@ -138,7 +138,13 @@ public class User implements Serializable {
 		if (StringUtils.isNotBlank(getName())) {
 			return getName();
 		}
-		return DataFormat.hiddenMobile(mobile);
+		if (StringUtils.isNotBlank(getNickName())) {
+			return getNickName();
+		}
+		if (StringUtils.isNotBlank(getMobile())) {
+			return DataFormat.hiddenMobile(getMobile());
+		}
+		return null;
 	}
 
 	public BaseInfo getBaseInfo() {
@@ -172,8 +178,8 @@ public class User implements Serializable {
 		return userId;
 	}
 
-	public String getUserIdValue(){
-		return String.format("%06d",userId);
+	public String getUserIdValue() {
+		return String.format("%06d", userId);
 	}
 
 	public void setUserId(Long userId) {

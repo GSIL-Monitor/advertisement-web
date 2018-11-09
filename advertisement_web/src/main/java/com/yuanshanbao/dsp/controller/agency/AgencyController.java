@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/10/22.
@@ -50,12 +47,16 @@ public class AgencyController extends BaseController {
 			User user = getLoginUser(token);
 			agency.setInviteUserId(user.getUserId());
 			List<Agency> agencyList = agencyService.selectAgencys(agency, pageBounds);
+
+			Map<Long,Agency> agencyMap = new LinkedHashMap<Long,Agency>();
 			for (Agency agen: agencyList){
 				if (agen.getStatus()!=null && agen.getStatus() != AgencyStatus.OFFCHECK){
 					agen.setBrokerage(BigDecimal.valueOf(0));
 				}
+				agencyMap.put(agen.getUserId(),agen);
+
 			}
-			resultMap.put("agencyList", agencyList);
+			resultMap.put("agencyList", agencyMap.values());
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
@@ -73,15 +74,26 @@ public class AgencyController extends BaseController {
 		try {
 			User user = getLoginUser(token);
 			agency.setInviteUserId(user.getUserId());
+
 			List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
+			for (Iterator iterator = oneAgencyList.iterator();iterator.hasNext();){
+				Agency agen = (Agency) iterator.next();
+				if (agen.getBrokerage() == null) {
+					iterator.remove();
+				}
+			}
 			// 总佣金
 			BigDecimal brokerages = agencyService.getBrokerages(agency, pageBounds);
 			for (Agency agen : oneAgencyList) {
 				agency.setInviteUserId(agen.getUserId());
 				twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
 			}
-
-
+			for (Iterator iterator = twoAgencyList.iterator();iterator.hasNext();){
+				Agency twoAgen = (Agency) iterator.next();
+				if (twoAgen.getBrokerage() == null) {
+					iterator.remove();
+				}
+			}
 			resultMap.put("oneAgencyList", oneAgencyList);
 			resultMap.put("twoAgencyList", twoAgencyList);
 			resultMap.put("brokerage",brokerages.setScale(2, RoundingMode.HALF_UP));
