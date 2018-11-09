@@ -309,7 +309,6 @@ public class AccountController extends BaseController {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String name = parameterMap.get("name");
 			String identityCard = parameterMap.get("identityCard");
-
 			User loginToken = getLoginUser(token);
 			if (!ValidateUtil.isChineseName(name)) {
 				throw new BusinessException(ComRetCode.NAME_FORMAT_ERROR);
@@ -317,16 +316,20 @@ public class AccountController extends BaseController {
 			if (!VerifyIdcard.verifyIdCard(identityCard)) {
 				throw new BusinessException(ComRetCode.IDNO_FORMAT_ERROR);
 			}
-			Agency agency = agencyService.selectAgency(String.valueOf(loginToken.getUserId()));
-			if (agency !=null && agency.getInviteUserId() !=null){
-			    Agency updateAgency= new Agency();
-                updateAgency.setAgencyName(name);
-                updateAgency.setUserId(agency.getUserId());
-			    agencyService.updateAgency(updateAgency);
-            }
 			String userIp = RequestUtil.getRemoteAddr(request);
 			Map<String, Object> map = paymentInterfaceService.verifyIdentity(String.valueOf(loginToken.getUserId()),
 					loginToken.getMobile(), name, identityCard, userIp);
+            Agency agencyParams = new Agency();
+            agencyParams.setUserId(loginToken.getUserId());
+            List<Agency> agency = agencyService.selectAgencys(agencyParams,new PageBounds());
+            for (Agency agen: agency){
+                if (agen.getStatus() == null && agen.getProductId() == null){
+                    Agency updateAgency = new Agency();
+                    updateAgency.setUserId(agen.getUserId());
+                    updateAgency.setAgencyName(name);
+                    agencyService.updateAgency(updateAgency);
+                }
+            }
 			resultMap.putAll(map);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
