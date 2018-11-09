@@ -37,6 +37,9 @@
 				<if test="projectId != null">
 					project_id = #{projectId} and
 				</if>
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
+				</if>
 				<if test="orderId != null">
 					order_id = #{orderId} and
 				</if>

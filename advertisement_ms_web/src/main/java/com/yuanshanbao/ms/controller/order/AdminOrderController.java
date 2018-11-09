@@ -74,6 +74,11 @@ public class AdminOrderController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Order order, HttpServletRequest request, HttpServletResponse response) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			order.setAdvertiserId(advertiser.getAdvertiserId());
+			;
+		}
 		Object object = orderService.selectOrder(order, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);

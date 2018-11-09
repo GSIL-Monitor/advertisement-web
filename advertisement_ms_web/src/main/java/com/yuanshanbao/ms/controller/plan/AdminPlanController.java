@@ -106,7 +106,7 @@ public class AdminPlanController extends PaginationController {
 	public Object query(String range, Plan plan, Order order, HttpServletRequest request, HttpServletResponse response) {
 		Advertiser advertiser = getBindAdvertiserByUser();
 		if (advertiser != null) {
-			order.setAdvertiserId(advertiser.getAdvertiserId());
+			plan.setAdvertiserId(advertiser.getAdvertiserId());
 		}
 		List<Plan> list = planService.selectPlan(plan, getPageBounds(range, request));
 		PageList pageList = (PageList) list;
