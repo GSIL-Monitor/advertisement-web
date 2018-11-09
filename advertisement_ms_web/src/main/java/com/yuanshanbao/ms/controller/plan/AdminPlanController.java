@@ -159,10 +159,18 @@ public class AdminPlanController extends PaginationController {
 	}
 
 	@RequestMapping("/updateWindow.do")
-	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Long planId, Integer type,
+	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Plan plan, Integer type,
 			ModelMap modelMap) {
-		Plan plan = planService.selectPlan(planId);
-		request.setAttribute("itemEdit", plan);
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			plan.setAdvertiserId(advertiser.getAdvertiserId());
+		}
+		List<Plan> list = planService.selectPlan(plan, new PageBounds());
+		Plan result = new Plan();
+		if (list != null && list.size() > 0) {
+			result = list.get(0);
+		}
+		request.setAttribute("itemEdit", result);
 		modelMap.put("categories", ConfigManager.getCategoryMap());
 		return PAGE_UPDATE;
 	}
@@ -235,6 +243,7 @@ public class AdminPlanController extends PaginationController {
 	public Object reviewQuery(String range, Plan plan, Order order, HttpServletRequest request,
 			HttpServletResponse response) {
 		plan.setStatus(PlanStatus.UNREVIEWED);
+		plan.setProjectId(getProjectId(request));
 		List<Plan> list = planService.selectPlan(plan, getPageBounds(range, request));
 		PageList pageList = (PageList) list;
 		return setPageInfo(request, response, pageList);
@@ -280,6 +289,7 @@ public class AdminPlanController extends PaginationController {
 	public String allocatePlanWindow(Long planId, String channel, HttpServletRequest request,
 			HttpServletResponse response, ModelMap modelMap) {
 		Channel params = new Channel();
+		params.setProjectId(getProjectId(request));
 		List<Channel> list = channelService.selectChannels(params, new PageBounds());
 		request.setAttribute("channelList", list);
 		request.setAttribute("planId", planId);
@@ -376,7 +386,7 @@ public class AdminPlanController extends PaginationController {
 		}
 		return resultMap;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/pausePlan.do")
 	public Object pausePlan(HttpServletRequest request, HttpServletResponse response, Plan plan) {
@@ -391,8 +401,8 @@ public class AdminPlanController extends PaginationController {
 			probability.setPlanId(plan.getPlanId());
 			probability.setStatus(ProbabilityStatus.ONLINE);
 			List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
-			
-			for(Probability pro:list) {
+
+			for (Probability pro : list) {
 				pro.setStatus(ProbabilityStatus.OFFLINE);
 				probabilityService.updateProbability(pro);
 			}
@@ -404,7 +414,7 @@ public class AdminPlanController extends PaginationController {
 		}
 		return resultMap;
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("/startPlan.do")
 	public Object startPlan(HttpServletRequest request, HttpServletResponse response, Plan plan) {
@@ -419,8 +429,8 @@ public class AdminPlanController extends PaginationController {
 			probability.setPlanId(plan.getPlanId());
 			probability.setStatus(ProbabilityStatus.OFFLINE);
 			List<Probability> list = probabilityService.selectProbabilitys(probability, new PageBounds());
-			
-			for(Probability pro:list) {
+
+			for (Probability pro : list) {
 				pro.setStatus(ProbabilityStatus.ONLINE);
 				probabilityService.updateProbability(pro);
 			}
@@ -432,6 +442,5 @@ public class AdminPlanController extends PaginationController {
 		}
 		return resultMap;
 	}
-	
-	
+
 }

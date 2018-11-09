@@ -47,6 +47,18 @@
 										</td>
 									</tr>
 									<tr>
+										<td>创意标题：</td>
+										<td>
+											<input type="text" name="title" placeholder="请输入创意标题"  style="width:60%;"></td>
+										</td>
+									</tr>
+									<tr>
+										<td>创意描述：</td>
+										<td>
+											<input type="text" name="description" placeholder="请输入创意描述"  style="width:60%;"></td>
+										</td>
+									</tr>
+									<tr>
 										<td>创意类型：</td>
 										<td>
 											<div style="width:60%;">

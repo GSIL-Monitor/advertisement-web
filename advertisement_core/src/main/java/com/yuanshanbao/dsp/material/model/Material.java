@@ -6,6 +6,7 @@ import com.yuanshanbao.common.util.DateUtils;
 
 public class Material {
 	private Long materialId;
+	private Long projectId;
 	private Long advertiserId;
 	private Long advertisementId;
 	private Long probabilityId;
@@ -155,5 +156,13 @@ public class Material {
 
 	public String getSizeContent() {
 		return width + "*" + height;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 }

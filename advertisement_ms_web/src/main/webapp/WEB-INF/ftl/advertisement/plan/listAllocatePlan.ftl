@@ -3,11 +3,7 @@
 <@htmlHead title="${functionTitle}列表"/>
 <@sideBar />
 <script>
-	function reload() {
-		var newUrl="${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
-		dataTable.ajax.url(newUrl);
-		dataTable.ajax.reload();
-	}
+	
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?orderId=${orderId}";
 		dataTableConfig.columns = [{
@@ -34,11 +30,8 @@
 		
 		$('#queryButton').on('click', function(){
 			var params = "";
-			if (isNotEmpty($('#advertiserId').val())) {
-				params += "advertiserId=" + encodeURI(encodeURI($('#advertiserId').val())) + "&";
-			}
-			if (isNotEmpty($('#title').val())) {
-				params += "title=" + encodeURI(encodeURI($('#title').val())) + "&";
+			if (isNotEmpty($('#name').val())) {
+				params += "name=" + encodeURI(encodeURI($('#name').val())) + "&";
 			}
 			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?" + params;
 			dataTable.ajax.url(newUrl);
@@ -64,7 +57,7 @@
 					<div class="btn-group">
             			<div class="filter-component">
 							<h6>计划名称：</h6>
-							<input type="text" name="title" id="title" placeholder="请输入计划名称" />
+							<input type="text" name="name" id="name" placeholder="请输入计划名称" />
 						</div>	  
 					</div>
 					<div class="btn btn-green" id="queryButton">确定</div>

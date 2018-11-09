@@ -117,6 +117,7 @@ public class AdminMaterialController extends PaginationController {
 			if (image != null && !image.isEmpty()) {
 				material.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
 			}
+			material.setProjectId(getProjectId(request));
 			material.setWidth(bufferedImage.getWidth());
 			material.setHeight(bufferedImage.getHeight());
 			validateParameters(material);
@@ -192,6 +193,7 @@ public class AdminMaterialController extends PaginationController {
 	@RequestMapping("/reviewQuery.do")
 	public Object reviewQuery(String range, Material material, Order order, HttpServletRequest request,
 			HttpServletResponse response) {
+		material.setProjectId(getProjectId(request));
 		material.setStatus(MaterialStatus.UNREVIEWED);
 		Object object = materialService.selectMaterial(material, getPageBounds(range, request));
 		PageList pageList = (PageList) object;

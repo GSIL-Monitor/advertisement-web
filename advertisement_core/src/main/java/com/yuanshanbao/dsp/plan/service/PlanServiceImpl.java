@@ -10,14 +10,17 @@ import org.springframework.stereotype.Repository;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertiser.dao.AdvertiserDao;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.bill.model.BillType;
 import com.yuanshanbao.dsp.bill.service.BillService;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.order.service.OrderService;
@@ -26,6 +29,7 @@ import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.dsp.project.model.Project;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Repository
@@ -203,6 +207,11 @@ public class PlanServiceImpl implements PlanService {
 	}
 
 	private void calculateIncrement(Long planId) {
+		Plan plan = ConfigManager.getPlanById(planId);
+		Project project = ConstantsManager.getProjectById(plan.getProjectId());
+		if ("jy".equals(project.getName())) {
+			return;
+		}
 		try {
 			Integer totalCount = getClickOrShowCount(RedisConstant.getPlanChargeTypeCountKey(planId + ""));
 			Integer lastCount = getClickOrShowCount(RedisConstant.getPlanLastChargeTypeCountKey(planId + ""));
@@ -224,7 +233,7 @@ public class PlanServiceImpl implements PlanService {
 			}
 			redisService.increBy(RedisConstant.getPlanChargeTypeCountKey(planId + ""), difference);
 		} catch (Exception e) {
-
+			LoggerUtil.error("calculateIncrement error", e);
 		}
 
 	}

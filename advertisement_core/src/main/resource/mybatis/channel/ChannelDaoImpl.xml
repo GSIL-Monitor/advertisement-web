@@ -7,6 +7,7 @@
 	<resultMap id="channelMap" type="Channel">
 		<id property="channelId" column="channel_id" jdbcType="NUMERIC" />
 		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="key" column="key" jdbcType="VARCHAR" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
@@ -38,6 +39,9 @@
 			<trim suffixOverrides="and">
 				<if test="channelId != null">
 					channel_id=#{channelId} and
+				</if>
+				<if test="projectId != null">
+					project_id=#{projectId} and
 				</if>
 				<if test="activityId != null">
 					activity_id=#{activityId} and
@@ -91,12 +95,12 @@
 
 	<insert id="insertChannel" parameterType="Channel">
 		insert into
-		tb_channel(`key`,  type, name, description,
+		tb_channel(`key`,project_id, type, name, description,
 		mark, bonus,show_type, show_fields, notify_handler,
 		unit_price,image_url, allocate_type,independent,width,height,
 		status, create_time, update_time)
 		values
-		(#{key},  #{type}, #{name},
+		(#{key},#{projectId}, #{type}, #{name},
 		#{description}, #{mark},
 		#{bonus}, #{showType}, #{showFields},
 		#{notifyHandler},#{unitPrice},#{imageUrl},

@@ -53,6 +53,7 @@ public class AdminProbabilityController extends PaginationController {
 	@RequestMapping("/reviewQuery.do")
 	public Object reviewQuery(String range, Probability probability, Order order, HttpServletRequest request,
 			HttpServletResponse response) {
+		probability.setProjectId(getProjectId(request));
 		probability.setStatus(ProbabilityStatus.UNREVIEWED);
 		Object object = probabilityService.selectProbabilitys(probability, getPageBounds(range, request));
 		PageList pageList = (PageList) object;

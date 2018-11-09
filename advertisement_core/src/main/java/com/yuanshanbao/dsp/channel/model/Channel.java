@@ -7,7 +7,6 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
-import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.tags.model.Tags;
 
 public class Channel {
@@ -17,6 +16,7 @@ public class Channel {
 	 */
 	private Long channelId;
 	private Long appId;
+	private Long projectId;
 	/**
 	 * 渠道key值
 	 */
@@ -227,7 +227,7 @@ public class Channel {
 	}
 
 	public String getStatusValue() {
-		return CommonStatus.getDescription(status);
+		return ChannelStatus.getDescription(status);
 	}
 
 	public String getCreateTimeContent() {
@@ -311,6 +311,14 @@ public class Channel {
 
 	public void setHeight(Integer height) {
 		this.height = height;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 
 }

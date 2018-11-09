@@ -39,7 +39,7 @@
 										<tr>
 											<td style="width:20%;">性别：</td>
 											<td>
-												<input type="radio" name="genderStrategy" value="" checked>不限${strategyValue.genderStrategy}
+												<input type="radio" name="genderStrategy" value="" checked>不限
 												<input type="radio" name="genderStrategy" value="M">男
 												<input type="radio" name="genderStrategy" value="F">女
 											</td>
@@ -67,7 +67,7 @@
 											<td>平台：</td>
 											<td>
 												<input type="radio" name="deviceTypeStrategy" value="" checked>不限
-												<input type="radio" name="deviceTypeStrategy" value="IOS">IOS
+												<input type="radio" name="deviceTypeStrategy" value="iOS">iOS
 												<input type="radio" name="deviceTypeStrategy" value="Android">Android
 												<input type="radio" name="deviceTypeStrategy" value="PC">PC
 											</td>
@@ -76,20 +76,22 @@
 											<td>联网方式：</td>
 											<td>
 												<input type="radio" name="netWorkStrategy" value="不限" checked>不限
-												<input type="radio" name="netWorkStrategy" value="WIFI">以太网
-												<input type="radio" name="netWorkStrategy" value="WIFI">WIFI
-												<input type="radio" name="netWorkStrategy" value="2G">2G
-												<input type="radio" name="netWorkStrategy" value="3G">3G
-												<input type="radio" name="netWorkStrategy" value="4G">4G
+												<input type="radio" name="netWorkStrategy" value="0">以太网
+												<input type="radio" name="netWorkStrategy" value="1">wifi
+												<input type="radio" name="netWorkStrategy" value="2">蜂窝网络
+												<input type="radio" name="netWorkStrategy" value="3">WIFI
+												<input type="radio" name="netWorkStrategy" value="4">2G
+												<input type="radio" name="netWorkStrategy" value="5">3G
+												<input type="radio" name="netWorkStrategy" value="6">4G
 											</td>
 										</tr>	
 										<tr>
 											<td>运营商：</td>
 											<td>
 												<input type="radio" name="tMobileStrategy" value="" checked>不限
-												<input type="radio" name="tMobileStrategy" value="移动">中国移动
-												<input type="radio" name="tMobileStrategy" value="联通">中国联通
-												<input type="radio" name="tMobileStrategy" value="电信">中国电信
+												<input type="radio" name="tMobileStrategy" value="中国移动">中国移动
+												<input type="radio" name="tMobileStrategy" value="中国联通">中国联通
+												<input type="radio" name="tMobileStrategy" value="中国电信">中国电信
 											</td>
 										</tr>	
 										

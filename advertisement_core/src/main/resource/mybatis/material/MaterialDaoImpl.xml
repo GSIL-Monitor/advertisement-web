@@ -6,6 +6,7 @@
 
 	<resultMap id="materialMap" type="Material">
 		<id property="materialId" column="material_id" jdbcType="NUMERIC" />
+		<result property="projectId" column="project_id" jdbcType="NUMERIC" />
 		<result property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
@@ -31,6 +32,9 @@
 			<trim suffixOverrides="and">
 				<if test="materialId != null">
 					material_id = #{materialId} and
+				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
 				</if>
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId} and
@@ -77,11 +81,11 @@
 
 	<insert id="insertMaterial" parameterType="Material">
 		insert into
-		tb_material( advertiser_id, advertisement_id, probability_id, 
+		tb_material(project_id, advertiser_id, advertisement_id, probability_id, 
 		name,title,description,link,image_url,
 		width,height,type,status,create_time, update_time)
 		values
-		( #{advertiserId}, #{advertisementId}, #{probabilityId},
+		( #{projectId},#{advertiserId}, #{advertisementId}, #{probabilityId},
 		#{name}, #{title}, #{description}, #{link}, #{imageUrl},
 		#{width},#{height}, #{type}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"

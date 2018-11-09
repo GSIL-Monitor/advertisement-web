@@ -40,12 +40,12 @@
 				<if test="orderId != null">
 					order_id = #{orderId} and
 				</if>
+				<if test="name != null">
+					name like CONCAT(CONCAT('%', #{name}),'%') and
+				</if>
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId} and
-				</if>
-				<if test="name != null">
-					name = #{name} and
-				</if>
+				</if>	
 				<if test="status != null">
 					status = #{status} and
 				</if>

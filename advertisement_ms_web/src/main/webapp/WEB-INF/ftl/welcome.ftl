@@ -58,7 +58,7 @@ $(document).ready(function(){
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12 span-ajust">
-				<h1>欢迎使用蚂蚁互动广告平台</h1>
+				<h1>欢迎使用蚂蚁智投广告平台</h1>
 			</div>
 		</div>
 	</div>

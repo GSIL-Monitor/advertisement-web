@@ -25,7 +25,7 @@ public class AppAddTest {
 
 	public static void appadd() {
 		try {
-			URL url = new URL(ADD_SHOW_CON);
+			URL url = new URL(ADD_URL);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			connection.setDoInput(true);

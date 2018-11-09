@@ -142,6 +142,7 @@ public class AdminChannelController extends PaginationController {
 				channel.setKey(channel.getKey().trim());
 			}
 			validateParameters(channel);
+			channel.setProjectId(getProjectId(request));
 			channelService.insertChannel(channel);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

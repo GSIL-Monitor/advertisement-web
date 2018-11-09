@@ -124,14 +124,18 @@ public class AdminOrderController extends PaginationController {
 
 	@RequestMapping("/updateWindow.do")
 	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Order order) {
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			order.setAdvertiserId(advertiser.getAdvertiserId());
+		}
 		List<Order> list = orderService.selectOrder(order, new PageBounds());
-
+		Order result = new Order();
 		if (list != null && list.size() >= 0) {
-			order = list.get(0);
+			result = list.get(0);
 		}
 		request.setAttribute("categories", ConfigManager.getCategoryMap());
 		request.setAttribute("tagsList", ConstantsManager.getTagsList(ConstantsManager.ADVERTISEMENT));
-		request.setAttribute("itemEdit", order);
+		request.setAttribute("itemEdit", result);
 		return PAGE_UPDATE;
 	}
 

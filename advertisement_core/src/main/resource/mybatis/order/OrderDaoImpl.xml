@@ -27,6 +27,9 @@
 				<if test="orderId != null">
 					order_id = #{orderId} and
 				</if>
+				<if test="projectId != null">
+					project_id = #{projectId} and
+				</if>
 				<if test="advertiserId != null">
 					advertiser_id = #{advertiserId} and
 				</if>
@@ -62,10 +65,10 @@
 
 	<insert id="insertOrder" parameterType="Order">
 		insert into
-		tb_order( advertiser_id, name, amount, 
+		tb_order( project_id,advertiser_id, name, amount, 
 		status, type,create_time, update_time)
 		values
-		( #{advertiserId}, #{name}, #{amount},
+		( #{projectId},#{advertiserId}, #{name}, #{amount},
 		#{status}, #{type}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="orderId">
