@@ -359,7 +359,7 @@ public class WeixinServiceImpl implements WeixinService {
 	public byte[] dealQRCode(String key, String scene, String page) {
 
 		ApiConfig apiConfig = apiConfigMap.get(key);
-		// String accessToken = apiConfig.getAccessToken();
+//		 String accessToken = apiConfig.getAccessToken();
 		String accessToken = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
 		if (accessToken == null) {
 			String newAssessToken = getAssessToken();
