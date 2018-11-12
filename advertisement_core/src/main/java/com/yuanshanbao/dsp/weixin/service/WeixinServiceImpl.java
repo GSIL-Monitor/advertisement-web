@@ -371,13 +371,15 @@ public class WeixinServiceImpl implements WeixinService {
 	public String getAssessToken() {
         String resultAssessToken = null;
         try {
-            resultAssessToken = HttpsUtil.doGet(getAccessTokenUrl,"grant_type=client_credential&appid="+ getAppId(CONFIG_APP) + "&secret=" + getAppSecret(CONFIG_APP),"UTF-8",30000,30000);
-            Map resultMap = JsonUtil.jsonToMap(resultAssessToken);
-            String accessToken = (String) resultMap.get("access_token");
-            redisCacheService.set("accessToken",60*60+60*30,accessToken);
-            System.out.println(accessToken + "redis中存入accessToken");
-            LoggerUtil.info("存入redis中" + accessToken);
-            return  accessToken;
+            resultAssessToken = HttpsUtil.doGet(getAccessTokenUrl,"grant_type=client_credential&appid="+ getAppId(CONFIG_WZXCX) + "&secret=" + getAppSecret(CONFIG_WZXCX),"UTF-8",30000,30000);
+            if (!StringUtil.isEmpty(resultAssessToken)){
+                Map resultMap = JsonUtil.jsonToMap(resultAssessToken);
+                String accessToken = (String) resultMap.get("access_token");
+                redisCacheService.set("accessToken",60*60+60*30,accessToken);
+                System.out.println(accessToken + "redis中存入accessToken");
+                LoggerUtil.info("存入redis中" + accessToken);
+                return  accessToken;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
