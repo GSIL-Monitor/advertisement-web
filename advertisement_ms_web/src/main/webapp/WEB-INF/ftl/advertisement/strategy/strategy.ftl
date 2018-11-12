@@ -131,6 +131,7 @@
     })
     function initForm() {
     	if($('#ageRangeinput').val()) {
+    		$('#ageRange').removeClass('hidden');
     		$('#startAge').val($('#ageRangeinput').val().split('-')[0]);
     		$('#endAge').val($('#ageRangeinput').val().split('-')[0]);
     		$(":radio[name='age'][value='others']").prop("checked", "checked");
@@ -139,6 +140,7 @@
     	$(":radio[name='deviceTypeStrategy'][value='" + $('#deviceTypeStrategy').val() + "']").prop("checked", "checked");
     	$(":radio[name='netWorkStrategy'][value='" + $('#netWorkStrategy').val() + "']").prop("checked", "checked");
     	$(":radio[name='tMobileStrategy'][value='" + $('#tMobileStrategy').val() + "']").prop("checked", "checked");
+    	$('#citys').val($('#cityDuoXuan').attr('data-id'));
     }
     initForm();
     function checkResult() {
