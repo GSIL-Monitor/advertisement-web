@@ -39,7 +39,7 @@
 										<tr>
 											<td style="width:20%;">性别：</td>
 											<td>
-												<input type="radio" name="genderStrategy" value="" checked>不限
+												<input type="radio" name="genderStrategy" value="no" checked>不限
 												<input type="radio" name="genderStrategy" value="M">男
 												<input type="radio" name="genderStrategy" value="F">女
 											</td>
@@ -52,7 +52,7 @@
 												<span class="hidden" id="ageRange">
 													<input type="number" name="startAge" id="startAge" /><span>-</span>
 													<input type="number" name="endAge" id="endAge"/>
-													<input type="hidden" id="ageRangeinput" value="${strategyValue.ageRange}">
+													<input type="hidden" id="ageRangeinput" name = "ageStrategy" value="${strategyValue.ageStrategy}">
 												</span>
 											</td>
 										</tr>
@@ -66,7 +66,7 @@
 										<tr>
 											<td>平台：</td>
 											<td>
-												<input type="radio" name="deviceTypeStrategy" value="" checked>不限
+												<input type="radio" name="deviceTypeStrategy" value="no" checked>不限
 												<input type="radio" name="deviceTypeStrategy" value="iOS">iOS
 												<input type="radio" name="deviceTypeStrategy" value="Android">Android
 												<input type="radio" name="deviceTypeStrategy" value="PC">PC
@@ -75,7 +75,7 @@
 										<tr>
 											<td>联网方式：</td>
 											<td>
-												<input type="radio" name="netWorkStrategy" value="不限" checked>不限
+												<input type="radio" name="netWorkStrategy" value="no" checked>不限
 												<input type="radio" name="netWorkStrategy" value="0">以太网
 												<input type="radio" name="netWorkStrategy" value="1">wifi
 												<input type="radio" name="netWorkStrategy" value="2">蜂窝网络
@@ -88,10 +88,10 @@
 										<tr>
 											<td>运营商：</td>
 											<td>
-												<input type="radio" name="tMobileStrategy" value="" checked>不限
-												<input type="radio" name="tMobileStrategy" value="中国移动">中国移动
-												<input type="radio" name="tMobileStrategy" value="中国联通">中国联通
-												<input type="radio" name="tMobileStrategy" value="中国电信">中国电信
+												<input type="radio" name="carrierStrategy" value="no" checked>不限
+												<input type="radio" name="carrierStrategy" value="中国移动">中国移动
+												<input type="radio" name="carrierStrategy" value="中国联通">中国联通
+												<input type="radio" name="carrierStrategy" value="中国电信">中国电信
 											</td>
 										</tr>	
 										
@@ -112,7 +112,7 @@
 <input type="hidden" id="genderStrategy" value="${strategyValue.genderStrategy}">
 <input type="hidden" id="deviceTypeStrategy" value="${strategyValue.deviceTypeStrategy}">
 <input type="hidden" id="netWorkStrategy" value="${strategyValue.netWorkStrategy}">
-<input type="hidden" id="tMobileStrategy" value="${strategyValue.tMobileStrategy}">
+<input type="hidden" id="carrierStrategy" value="${strategyValue.carrierStrategy}">
 <script>
 	$('#cityDuoXuan').hsCheckData({
         isShowCheckBox: true, //默认为false
@@ -133,13 +133,13 @@
     	if($('#ageRangeinput').val()) {
     		$('#ageRange').removeClass('hidden');
     		$('#startAge').val($('#ageRangeinput').val().split('-')[0]);
-    		$('#endAge').val($('#ageRangeinput').val().split('-')[0]);
+    		$('#endAge').val($('#ageRangeinput').val().split('-')[1]);
     		$(":radio[name='age'][value='others']").prop("checked", "checked");
     	}
     	$(":radio[name='genderStrategy'][value='" + $('#genderStrategy').val() + "']").prop("checked", "checked");
     	$(":radio[name='deviceTypeStrategy'][value='" + $('#deviceTypeStrategy').val() + "']").prop("checked", "checked");
     	$(":radio[name='netWorkStrategy'][value='" + $('#netWorkStrategy').val() + "']").prop("checked", "checked");
-    	$(":radio[name='tMobileStrategy'][value='" + $('#tMobileStrategy').val() + "']").prop("checked", "checked");
+    	$(":radio[name='carrierStrategy'][value='" + $('#carrierStrategy').val() + "']").prop("checked", "checked");
     	$('#citys').val($('#cityDuoXuan').attr('data-id'));
     }
     initForm();

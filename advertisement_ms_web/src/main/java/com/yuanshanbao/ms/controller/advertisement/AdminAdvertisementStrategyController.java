@@ -28,7 +28,6 @@ import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementStrategyService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
-import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.config.model.Function;
 import com.yuanshanbao.dsp.config.service.FunctionService;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -223,7 +222,8 @@ public class AdminAdvertisementStrategyController extends PaginationController {
 		if (advertiser != null) {
 			request.setAttribute("advertiserId", advertiser.getAdvertiserId());
 		}
-		Map<String, String> map = ConfigManager.getStrategyMap(planId);
+		// Map<String, String> map = ConfigManager.getStrategyMap(planId);
+		Map<String, String> map = strategyService.getPlanStrategy(planId);
 		request.setAttribute("strategyValue", map);
 		request.setAttribute("planId", planId);
 		return PAGE_STRATEGY;

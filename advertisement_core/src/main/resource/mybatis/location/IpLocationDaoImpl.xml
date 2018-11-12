@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ipLocation">
+
+	<resultMap id="ipLocationMap" type="IpLocation">
+		<id property="ipLocationId" column="ip_location_id" jdbcType="NUMERIC" />
+		<result property="prefix" column="prefix" jdbcType="VARCHAR" />
+		<result property="locationCode" column="location_code" jdbcType="VARCHAR" />
+		<result property="operator" column="operator" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 简历sql -->
+	<select id="selectIpLocation" parameterType="IpLocation" resultMap="ipLocationMap">
+		select
+		* from
+		tb_ip_location t
+		<where>
+			<trim suffixOverrides="and">
+				<if test="ipLocationId != null">
+					ip_location_id=#{ipLocationId} and
+				</if>
+				<if test="prefix != null">
+					prefix = #{prefix} and
+				</if>
+				<if test="locationCode != null">
+					location_code = #{locationCode} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectIpLocationByIds" parameterType="List" resultMap="ipLocationMap">
+		select
+		* from
+		tb_ip_location t
+		<where>
+			ip_location_id in
+			<foreach item="id" collection="list" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</select>
+	
+	<insert id="insertIpLocation" parameterType="IpLocation">
+		insert into
+		tb_ip_location(prefix, location_code, operator,  
+		status, create_time, update_time)
+		values
+		(#{prefix}, #{locationCode}, #{operator}, 
+		#{status}, sysdate(), sysdate())
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="ipLocationId">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<update id="updateIpLocation" parameterType="IpLocation">
+		update tb_ip_location
+		<set>
+			<trim suffixOverrides=",">
+				<if test="prefix != null">
+					prefix=#{prefix},
+				</if>
+				<if test="locationCode != null">
+					location_code=#{locationCode},
+				</if>
+				<if test="operator != null">
+					operator=#{operator},
+				</if>
+				<if test="status != null">
+					status=#{status},
+				</if>
+				update_time=sysdate(),
+			</trim>
+		</set>
+		<where>
+			ip_location_id=#{ipLocationId}
+		</where>
+	</update>
+
+	<delete id="deleteIpLocation" parameterType="long">
+		delete from tb_ip_location
+		where
+		ip_location_id=#{ipLocationId}
+	</delete>
+
+</mapper>

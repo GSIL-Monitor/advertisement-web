@@ -47,7 +47,6 @@ import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.page.model.Page;
 import com.yuanshanbao.dsp.page.service.PageService;
 import com.yuanshanbao.dsp.plan.model.Plan;
-import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.position.service.PositionService;
@@ -349,7 +348,6 @@ public class ConstantsManager {
 		ActivityCombine acCombineParam = new ActivityCombine();
 		acCombineParam.setStatus(CommonStatus.ONLINE);
 		Plan plan = new Plan();
-		plan.setStatus(PlanStatus.ONLINE);
 
 		PageBounds pageBounds = new PageBounds();
 		ConfigManager.refreshConfig(channelService.selectChannels(channelParam, pageBounds),

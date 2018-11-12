@@ -45,4 +45,6 @@ public interface AdvertisementStrategyService {
 	void insertOrUpdateAdvertisementStrategy(AdvertisementStrategy advertisementStrategy);
 
 	public Object selectPlanStrategy(AdvertisementStrategy strategy, PageBounds pageBounds);
+
+	public Map<String, String> getPlanStrategy(Long planId);
 }
