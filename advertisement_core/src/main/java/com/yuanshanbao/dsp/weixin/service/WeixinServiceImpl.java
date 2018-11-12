@@ -27,11 +27,16 @@ import com.github.sd4324530.fastweixin.message.TemplateMsg;
 import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.HttpUtil;
+import com.yuanshanbao.common.util.HttpsUtil;
+import com.yuanshanbao.common.util.JsonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.PropertyUtil;
+import com.yuanshanbao.common.util.StringUtil;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.model.Alarm;
 import com.yuanshanbao.dsp.common.model.Feedback;
 import com.yuanshanbao.dsp.common.model.ServerLog;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.common.service.AlarmService;
 import com.yuanshanbao.dsp.common.service.AlarmType;
 import com.yuanshanbao.dsp.user.model.User;
@@ -43,6 +48,7 @@ public class WeixinServiceImpl implements WeixinService {
 	private String config = PropertyUtil.getProperty("weixin.config");
 	private String appId = PropertyUtil.getProperty("weixin.appid");
 	private String appSercet = PropertyUtil.getProperty("weixin.appsecret");
+	public final static String getAccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
 
 	private static String ALARM_SERVER_TEMPLATE = "vSccvYL8jkRmCslTxSxNMtBreeu7nOxqWCOD9YgllKQ";
 
@@ -55,6 +61,9 @@ public class WeixinServiceImpl implements WeixinService {
 
 	@Autowired
 	private AlarmService alarmService;
+
+	@Autowired
+	protected RedisService redisCacheService;
 
 	private Map<String, OauthAPI> oauthApiMap = new HashMap<>();
 	private Map<String, UserAPI> userApiMap = new HashMap<>();
@@ -348,15 +357,42 @@ public class WeixinServiceImpl implements WeixinService {
 	}
 
 	public byte[] dealQRCode(String key, String scene, String page) {
+
 		ApiConfig apiConfig = apiConfigMap.get(key);
-		String accessToken = apiConfig.getAccessToken();
+		 String accessToken = apiConfig.getAccessToken();
+		/*String accessToken = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
+		if (accessToken == null) {
+			String newAssessToken = getAssessToken();
+			byte[] newResult = getQrCode(scene, page, newAssessToken);
+			return newResult;
+		}*/
 		byte[] result = getQrCode(scene, page, accessToken);
 		return result;
 
 	}
 
+	@Override
+	public String getAssessToken() {
+		String resultAssessToken = null;
+		try {
+			resultAssessToken = HttpsUtil.doGet(getAccessTokenUrl, "grant_type=client_credential&appid="
+					+ getAppId(CONFIG_WZXCX) + "&secret=" + getAppSecret(CONFIG_WZXCX), "UTF-8", 30000, 30000);
+			if (!StringUtil.isEmpty(resultAssessToken)) {
+				Map<String, Object> resultMap = JsonUtil.jsonToMap(resultAssessToken);
+				String accessToken = (String) resultMap.get("access_token");
+				redisCacheService.set(RedisConstant.ACCESS_TOKEN, 60 * 60 + 60 * 30, accessToken);
+				LoggerUtil.info("update accessToken" + accessToken);
+				return accessToken;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	private byte[] getQrCode(String scene, String page, String accessToken) {
 		try {
+
 			String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + accessToken;
 			JSONObject param = new JSONObject();
 			param.put("scene", scene);

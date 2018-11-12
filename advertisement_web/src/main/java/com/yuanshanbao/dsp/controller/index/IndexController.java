@@ -114,6 +114,14 @@ public class IndexController extends BaseController {
 			String host = request.getHeader("Host");
 			if (StringUtils.isNotBlank(host) && host.contains("d.xingdk.com")) {
 				return getFtlPath(request, "/site/myzt");
+			} else if (StringUtils.isNotBlank(host) && host.contains("xingdk.cn")) {
+				return getFtlPath(request, "/site/myzt");
+			} else if (StringUtils.isNotBlank(host) && host.contains("honghongcai.cn")) {
+				return getFtlPath(request, "/site/myzt");
+			} else if (StringUtils.isNotBlank(host) && host.contains("huhacai.com")) {
+				return getFtlPath(request, "/site/myzt");
+			} else if (StringUtils.isNotBlank(host) && host.contains("huhacp.com")) {
+				return getFtlPath(request, "/site/myzt");
 			}
 			return redirect("/404.html");
 		} catch (BusinessException e) {

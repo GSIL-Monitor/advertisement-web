@@ -251,16 +251,8 @@
 </#macro>
 
 <#macro beianNumber>
-	<#if isDachuanbao??&&isDachuanbao=="true">
-  	京ICP备16050725号-1
-  	<#elseif isYuanshanbx?? && isYuanshanbx=="true">
-  	京ICP备16055004号-2
-  	<#elseif isHuhabao?? && isHuhabao=="true">
-  	京ICP备17008756号-1
-  	<#elseif isRjbbx?? && isRjbbx=="true">
- 	京ICP备14033532号-1
-  	<#else>
-  	京ICP备16055004号-1
+	<#if isMayizhitou??&&isMayizhitou=="true">
+    津ICP备18004822号-1
   	</#if>
 </#macro>
 

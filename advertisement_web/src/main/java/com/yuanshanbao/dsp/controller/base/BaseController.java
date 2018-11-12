@@ -11,8 +11,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yuanshanbao.dsp.tags.model.Tags;
-import com.yuanshanbao.dsp.user.service.TokenService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +51,7 @@ import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.dsp.sms.model.SmsConstant;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserStatus;
+import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
@@ -141,7 +140,7 @@ public class BaseController {
 			throw new BusinessException(ComRetCode.NOT_LOGIN);
 		}
 		User user = userService.selectUserById(loginToken.getUserId());
-//		User user = userService.selectUserById(2L);
+		// User user = userService.selectUserById(2L);
 		if (user == null || user.getUserId() == 0) {
 			throw new BusinessException(ComRetCode.NOT_LOGIN);
 
@@ -254,15 +253,7 @@ public class BaseController {
 	private void setHost(HttpServletRequest request) {
 		try {
 			String host = request.getHeader("Host");
-			if (StringUtils.isNotBlank(host) && host.contains("yuanshanbao")) {
-				request.setAttribute("isYuanshanbao", "true");
-			} else if (StringUtils.isNotBlank(host) && host.contains("dachuanbao")) {
-				request.setAttribute("isDachuanbao", "true");
-			} else if (StringUtils.isNotBlank(host) && host.contains("yuanshanbx.com")) {
-				request.setAttribute("isYuanshanbx", "true");
-			} else if (StringUtils.isNotBlank(host) && host.contains("huhabao.com")) {
-				request.setAttribute("isHuhabao", "true");
-			}
+			request.setAttribute("isMayizhitou", "true");
 			String isHttps = request.getHeader("IsHttps");
 			if ("false".equals(isHttps)) {
 				request.setAttribute("isHttps", "false");

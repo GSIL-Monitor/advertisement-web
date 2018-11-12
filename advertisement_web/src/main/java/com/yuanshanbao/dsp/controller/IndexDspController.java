@@ -69,7 +69,7 @@ public class IndexDspController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			String channel = info.getChannel();
-			String pId = info.getpId();
+			String pId = info.getPid();
 			String key = info.getKey();
 			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
@@ -100,7 +100,7 @@ public class IndexDspController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			String channel = info.getChannel();
-			String pId = info.getpId();
+			String pId = info.getPid();
 			String key = info.getKey();
 			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
@@ -131,7 +131,7 @@ public class IndexDspController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			String channel = info.getChannel();
-			String pId = info.getpId();
+			String pId = info.getPid();
 			String key = info.getKey();
 			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
@@ -140,7 +140,7 @@ public class IndexDspController {
 			if (project != null) {
 				Channel channelObject = ConfigManager.getChannel(info.getChannel());
 				if (channelObject != null) {
-					probabilityService.recordPlanCount(info.getpId(), info.getKey(), info.getChannel(), false);
+					probabilityService.recordPlanCount(info.getPid(), info.getKey(), info.getChannel(), false);
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
@@ -161,7 +161,7 @@ public class IndexDspController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			String channel = info.getChannel();
-			String pId = info.getpId();
+			String pId = info.getPid();
 			String key = info.getKey();
 			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
@@ -170,7 +170,7 @@ public class IndexDspController {
 			if (project != null) {
 				Channel channelObject = ConfigManager.getChannel(info.getChannel());
 				if (channelObject != null) {
-					probabilityService.recordPlanCount(info.getpId(), info.getKey(), info.getChannel(), true);
+					probabilityService.recordPlanCount(info.getPid(), info.getKey(), info.getChannel(), true);
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
