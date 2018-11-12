@@ -69,7 +69,7 @@ public class IndexDspController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			String channel = info.getChannel();
-			String pId = info.getpId();
+			String pId = info.getPid();
 			String key = info.getKey();
 			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
@@ -100,7 +100,7 @@ public class IndexDspController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			String channel = info.getChannel();
-			String pId = info.getpId();
+			String pId = info.getPid();
 			String key = info.getKey();
 			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
