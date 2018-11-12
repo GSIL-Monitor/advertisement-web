@@ -47,6 +47,6 @@ public interface WeixinService {
 
 	public byte[] dealQRCode(String key, String scene, String page);
 
-	public String getAssessToken();
+	public String getAccessToken();
 
 }
