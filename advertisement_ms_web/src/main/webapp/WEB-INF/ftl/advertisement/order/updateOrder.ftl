@@ -34,14 +34,9 @@
 											<input type="text" name="name" style="width:60%;"<#if itemEdit.name??>value="${itemEdit.name}"</#if>></td>
 									</tr>
 									<tr>
-										<td width="20%">客户性别：</td>
-										<td width="80%">
-											<@radioButton name="gender" labels="男,女" values="1,2" defaultValue="${itemEdit.informationInsurance.gender?c}"/>
-									</tr>
-									<tr>
 										<td width="20%">订单金额：</td>
 										<td width="80%">
-											<input type="text" name="amount" style="width:60%;"<#if itemEdit.amount??>value="${itemEdit.amount}"</#if>></td>
+											<input type="text" name="amount" style="width:60%;"<#if itemEdit.amount??>value="${itemEdit.amount?c}"</#if>></td>
 									</tr>
 									<tr>
 										<td colspan="4" style="text-align:center">
