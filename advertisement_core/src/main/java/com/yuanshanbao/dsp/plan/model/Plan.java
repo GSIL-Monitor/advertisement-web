@@ -16,6 +16,7 @@ public class Plan {
 	private Long orderId;
 	private Long advertiserId;
 	private BigDecimal spend;
+	private BigDecimal dayLimit;
 	private String consumed;
 	private String name;
 	private String link;
@@ -225,5 +226,13 @@ public class Plan {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	public BigDecimal getDayLimit() {
+		return dayLimit;
+	}
+
+	public void setDayLimit(BigDecimal dayLimit) {
+		this.dayLimit = dayLimit;
 	}
 }

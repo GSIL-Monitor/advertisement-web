@@ -183,7 +183,6 @@ public class PlanServiceImpl implements PlanService {
 		Probability params = new Probability();
 		params.setPlanId(plan.getPlanId());
 		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
-		Integer totalCount = 0;
 		for (Probability probability : list) {
 			// 总消耗
 			double nowCount = getCount(RedisConstant
@@ -197,11 +196,8 @@ public class PlanServiceImpl implements PlanService {
 				billService.createBill(plan, probability, nowCount, lastCount, BillType.DEDUCTION);
 				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
 						String.valueOf(nowCount));
+				redisService.increByDouble(RedisConstant.getPlanDayBalanceCountKey(null, plan.getPlanId()), difference);
 			}
-
-			totalCount = totalCount
-					+ getClickOrShowCount(RedisConstant.getPlanClickCountPVKey(null, plan.getPlanId() + "",
-							probability.getChannel()));
 		}
 		calculateIncrement(plan.getPlanId());
 	}

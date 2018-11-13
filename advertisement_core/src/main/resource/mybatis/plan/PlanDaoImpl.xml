@@ -12,6 +12,7 @@
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="link" column="link" jdbcType="VARCHAR" />
 		<result property="spend" column="spend" jdbcType="NUMERIC" />
+		<result property="dayLimit" column="day_limit" jdbcType="NUMERIC" />
 		<result property="material" column="material" jdbcType="VARCHAR" />
 		<result property="bestBid" column="best_bid" jdbcType="NUMERIC" />
 		<result property="chargeType" column="charge_type" jdbcType="NUMERIC" />
@@ -76,12 +77,12 @@
 	<insert id="insertPlan" parameterType="Plan">
 		insert into
 		tb_plan(project_id, advertiser_id,order_id,name,link,
-		spend,material,best_bid,charge_type, allow_channel_category,
+		spend,day_limit,material,best_bid,charge_type, allow_channel_category,
 		forbid_channel_category,start_time, end_time,status, 
 		create_time, update_time)
 		values
 		(#{projectId}, #{advertiserId},#{orderId}, #{name},#{link},
-		 #{spend}, #{material}, #{bestBid},  #{chargeType},  #{allowChannelCategory}, 
+		 #{spend}, #{dayLimit},#{material}, #{bestBid},  #{chargeType},  #{allowChannelCategory}, 
 		 #{forbidChannelCategory}, #{startTime}, #{endTime}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="planId">

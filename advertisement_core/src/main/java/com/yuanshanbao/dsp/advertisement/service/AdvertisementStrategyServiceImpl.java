@@ -479,7 +479,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 					strategy = exist;
 				}
 				strategy.setValue(params);
-				strategy.setStatus(AdvertisementStrategyStatus.UNREVIEWED);
+				strategy.setStatus(AdvertisementStrategyStatus.ONLINE);
 				if (advertiserId != null) {
 					strategy.setAdvertiserId(advertiserId);
 				}

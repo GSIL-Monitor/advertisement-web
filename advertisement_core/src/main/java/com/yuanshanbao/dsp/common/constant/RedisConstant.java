@@ -26,7 +26,7 @@ public class RedisConstant {
 	public final static String PREFIX_LOG_HITS = "advertisement_log:hits:";
 	public final static String WX_XCX_CODE = "wz_code";
 	public final static String WX_XCX_DETAIL_CODE = "wz_detail_code";
-	public final static String ACCESS_TOKEN =  "access_token";           //assess_token 缓存
+	public final static String ACCESS_TOKEN = "access_token"; // assess_token 缓存
 
 	public static final String ADVERTISEMENT_CLICK_PV_COUNT = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String UV_COUNT = "uv_stat_count" + COMMON_REDIS_PREFIX;
@@ -84,6 +84,7 @@ public class RedisConstant {
 	// 计划余额
 	public static final String PLAN_BALANCE_COUNT = "plan_balance_count" + COMMON_REDIS_PREFIX;
 	public static final String PLAN_LAST_BALANCE_COUNT = "plan_last_balance_count" + COMMON_REDIS_PREFIX;
+	public static final String PLAN_DAY_BALANCE_COUNT = "plan_day_balance_count" + COMMON_REDIS_PREFIX;
 
 	// 各个渠道计划的ctr
 	public static final String PROBABILITY_CHANNEL_CTR = "probability_channel_ctr" + COMMON_REDIS_PREFIX;
@@ -390,6 +391,14 @@ public class RedisConstant {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(PLAN_LAST_BALANCE_COUNT, date + "_" + orderId + "");
+	}
+
+	// 计划余额消耗
+	public static String getPlanDayBalanceCountKey(String date, Long planId) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(PLAN_DAY_BALANCE_COUNT, date + "_" + planId);
 	}
 
 	// -------------------------------------------------------------------------
