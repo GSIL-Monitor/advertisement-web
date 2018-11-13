@@ -37,7 +37,7 @@
 	  	<div id="user-nav" class="navbar navbar-inverse">
 			<ul class="nav">
 				<li  class="dropdown" id="profile-messages" >
-					<a title="${rc.contextPath}/admin/main.do" href="" data-toggle="dropdown" data-target="#profile-messages" class="dropdown-toggle"> <i class="icon icon-home"></i>
+					<a title="" href="${rc.contextPath}/admin/main.do"> <i class="icon icon-home"></i>
 						<span class="text">首页</span>
 					</a>
 				</li>

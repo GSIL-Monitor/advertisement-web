@@ -7,7 +7,7 @@
 <div id="content">
 	<div id="content-header">
 		<div id="breadcrumb">
-			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
+			<a href="${rc.contextPath}/admin/${functionName}/list.do" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
 				${functionTitle}管理
 			</a>
 			<a href="#" class="current">修改${itemEdit.typeContent}</a>
@@ -31,7 +31,7 @@
 									<tr>
 										<td>计划名称：</td>
 										<td>
-											<input type="text" name="title" style="width:60%;" value="${itemEdit.name}"></td>
+											<input type="text" name="name" style="width:60%;" value="${itemEdit.name}"></td>
 										</td>
 									</tr>
 									<tr>
@@ -71,13 +71,21 @@
 									<tr>
 										<td>允许投放的媒体分类：</td>
 										<td>
-											<input type="text" name="allowChannelType" value="${itemEdit.description}" style="width:60%;">
+											<input type="text" name="allowChannelCategory" value="${itemEdit.allowChannelCategory}" style="width:60%;">
+											<div style="width:60%;">
+												<select multiple data-live-search="true" class="selectpicker form-control" id="allowChannelType">
+													<#list channelTypeList as type>
+														<option value="${type.value}">${type.name}</option>
+													</#list>
+												</select>
+												<input type="hidden" name="allowChannelCategory" id="allowChannelTypeVal">
+											</div>
 										</td>
 									</tr>
 									<tr>
 										<td>禁止投放的媒体分类：</td>
 										<td>
-											<input type="text" name="forbidChannelType" value="${itemEdit.description}" style="width:60%;">
+											<input type="text" name="forbidChannelCategory" value="${itemEdit.forbidChannelCategory}" style="width:60%;">
 										</td>
 									</tr>
 									<tr>
@@ -120,6 +128,16 @@
 			defaultTime: '08:00',
 			format:'Y-m-d H:i'
 		});
+		$('#allowChannelType').on('changed.bs.select',function(e) {
+			var allowChannelType = $('#allowChannelType').selectpicker('val');
+  			allowChannelType = allowChannelType.join(',');
+  			$('#allowChannelTypeVal').attr('value', allowChannelType);
+		})
+		$('#forbidChannelType').on('changed.bs.select',function(e) {
+			var forbidChannelType = $('#forbidChannelType').selectpicker('val');
+  			forbidChannelType = forbidChannelType.join(',');
+  			$('#forbidChannelTypeVal').attr('value', forbidChannelType);
+		})
 	});
 </script>
 <@resultTipDialog retUrl="${rc.contextPath}/admin/${functionName}/list.do" />

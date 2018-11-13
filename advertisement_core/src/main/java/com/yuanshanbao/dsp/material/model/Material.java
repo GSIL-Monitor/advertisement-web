@@ -119,7 +119,7 @@ public class Material {
 	}
 
 	public String getCreateTimeContent() {
-		return DateUtils.format(createTime, DateUtils.DATE_FORMAT_YYYYMMDD_HHMMSS);
+		return DateUtils.format(createTime, "yyyy-MM-dd HH:mm:ss");
 	}
 
 	public void setCreateTime(Timestamp createTime) {

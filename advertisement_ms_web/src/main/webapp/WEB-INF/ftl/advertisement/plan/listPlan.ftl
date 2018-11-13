@@ -66,11 +66,6 @@
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">预览</a></div>';
-			       }
-		        },{
-			    	"data": "${functionId}",
-			        "render": function ( data, type, full, meta ) {
 			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-yellow" target="_blank">修改</a></div>';
 			       }
 		        },{
@@ -139,7 +134,6 @@
 							<th>出价</th>
 							<th>预算</th>
 							<th>已消耗预算</th>
-							<th>查看详情</th>
 							<th>修改</th>
 							<th>设置创意</th>
 							<th>定向</th>

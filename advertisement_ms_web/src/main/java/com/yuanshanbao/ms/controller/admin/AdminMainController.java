@@ -268,6 +268,7 @@ public class AdminMainController extends PaginationController {
 			user.setUsername(userDetail.getUsername());
 			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
 			user.setPassword(encoder.encodePassword(password, null));
+			user.setProjectId(getProjectId(request));
 			if (userService.updateUserPwd(user)) {
 				result.put(RET_CODE_PARAM, RET_SUCCESS);
 				result.put(RET_HTML, getSuccessHtml("更新密码成功"));
