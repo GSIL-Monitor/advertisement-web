@@ -1,5 +1,5 @@
 <#include "../common/core.ftl" />
-<#assign title="蚂蚁智投">
+<#assign title="坤涛科技">
 <@htmlHead title="${title}" description="">
 	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
 	<@cssFile file=["../js/plugins/bootstrap/css/bootstrap.min.css", "web/site/ysb.css", "../js/plugins/WOW/css/libs/animate.css"] />
@@ -94,7 +94,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-md-6 col-md-offset-3 wow fadeInDown" data-wow-duration="2s" data-wow-delay="0.6s">
-					<p class="subtitle">每天有超过1.5亿用户通过支付宝，微信，ofo，抖音等，观看到蚂蚁智投的广告； <br>内容涉及金融类、教育类、母婴育儿、电商类等。我们帮助您与这些受众建立联系，<br> 将优质商业信息推送给真正需要的人。</p>
+					<p class="subtitle">每天有超过1.5亿用户通过支付宝，微信，ofo，抖音等，观看到坤涛科技的广告； <br>内容涉及金融类、教育类、母婴育儿、电商类等。我们帮助您与这些受众建立联系，<br> 将优质商业信息推送给真正需要的人。</p>
 				</div>
 			</div>
 		</div>
@@ -109,7 +109,7 @@
 				<div class="col-md-4 col-sm-12 wow bounceInUp" data-wow-duration="2s" data-wow-delay="0.2s">
 					<div class="other-field">	
 						<img src="${cdnUrl}/img/web/site/ysb/icon-first@3x.png" alt="">
-						<p class="title">依托蚂蚁智投丰富数据基础</p>
+						<p class="title">依托坤涛科技丰富数据基础</p>
 						<p class="subtitle">广告主实现自身数据增值</p>
 					</div>
 				</div>
@@ -139,7 +139,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-md-6 col-md-offset-3 wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.2s">
-					<p class="subtitle">蚂蚁智能是一个汇集多资源主流媒体和优质广告的DSP平台， <br>覆盖行业广泛、平台流量大、用户质量高，同时通过大数据分析能力，对广告和媒体实现精准营销和智能管理，<br> 提供智能、高效、精准的服务</p>
+					<p class="subtitle">坤涛科技是一个汇集多资源主流媒体和优质广告的DSP平台， <br>覆盖行业广泛、平台流量大、用户质量高，同时通过大数据分析能力，对广告和媒体实现精准营销和智能管理，<br> 提供智能、高效、精准的服务</p>
 				</div>
 			</div>
 		</div>
@@ -239,7 +239,7 @@
 				</div>
 				<div class="col-xs-12 col-md-5">
 					<div>
-						<p><img src="${cdnUrl}/img/web/site/ysb/icon-addr@3x.png" alt="">蚂蚁智投： 010-64010062 </p>
+						<p><img src="${cdnUrl}/img/web/site/ysb/icon-addr@3x.png" alt="">坤涛科技： 010-64010062 </p>
 						<p class="addr">地址：北京市丰台区双营路9号亿达丽泽中心708A</p>
 					</div>
 					<div>
@@ -252,7 +252,7 @@
 	</div>
 	<div class="row footer">
 		<div class="row first-line">
-			<div class="col-md-offset-1 col-xs-12 col-md-2 text-center">蚂蚁智投</div>
+			<div class="col-md-offset-1 col-xs-12 col-md-2 text-center">坤涛科技</div>
 		</div>
 		<div class="row second-line">
 			<div class="col-md-3 col-xs-12 text-center"><a href="http://www.mayi-ai.com">网址：http://www.mayi-ai.com</a></div>
