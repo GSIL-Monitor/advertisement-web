@@ -1,5 +1,5 @@
 <#include "../common/core.ftl" />
-<@htmlHead title="${companyName}" description="">
+<@htmlHead title="${company}" description="">
 	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
 	<@cssFile file=["../js/plugins/bootstrap/css/bootstrap.min.css", "web/site/ysb.css", "../js/plugins/WOW/css/libs/animate.css"] />
 	<@jsFile file=["plugins/bootstrap/js/bootstrap.min.js", "plugins/WOW/dist/wow.js"] />
@@ -20,7 +20,7 @@
       </button>
       <a class="navbar-brand brand" href="#">
 		<img class="logo" style="width: 0.35rem;height: 0.52rem;display: inline-block;vertical-align: bottom;" src="${cdnUrl}/img/web/site/myzt/myzt-logo@2x.png" alt="">
-		<span style="color: #FFA200;font-size: 0.3rem;vertical-align: super;">${companyName}</span>
+		<span style="color: #FFA200;font-size: 0.3rem;vertical-align: super;">${company!""}</span>
       </a>
     </div>
 
@@ -94,7 +94,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-md-6 col-md-offset-3 wow fadeInDown" data-wow-duration="2s" data-wow-delay="0.6s">
-					<p class="subtitle">每天有超过1.5亿用户通过支付宝，微信，ofo，抖音等，观看到${companyName}的广告； <br>内容涉及金融类、教育类、母婴育儿、电商类等。我们帮助您与这些受众建立联系，<br> 将优质商业信息推送给真正需要的人。</p>
+					<p class="subtitle">每天有超过1.5亿用户通过支付宝，微信，ofo，抖音等，观看到${company!""}的广告； <br>内容涉及金融类、教育类、母婴育儿、电商类等。我们帮助您与这些受众建立联系，<br> 将优质商业信息推送给真正需要的人。</p>
 				</div>
 			</div>
 		</div>
@@ -109,7 +109,7 @@
 				<div class="col-md-4 col-sm-12 wow bounceInUp" data-wow-duration="2s" data-wow-delay="0.2s">
 					<div class="other-field">	
 						<img src="${cdnUrl}/img/web/site/ysb/icon-first@3x.png" alt="">
-						<p class="title">依托${companyName}丰富数据基础</p>
+						<p class="title">依托${company!""}丰富数据基础</p>
 						<p class="subtitle">广告主实现自身数据增值</p>
 					</div>
 				</div>
@@ -139,7 +139,7 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-md-6 col-md-offset-3 wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.2s">
-					<p class="subtitle">${companyName}是一个汇集多资源主流媒体和优质广告的DSP平台， <br>覆盖行业广泛、平台流量大、用户质量高，同时通过大数据分析能力，对广告和媒体实现精准营销和智能管理，<br> 提供智能、高效、精准的服务</p>
+					<p class="subtitle">${company!""}是一个汇集多资源主流媒体和优质广告的DSP平台， <br>覆盖行业广泛、平台流量大、用户质量高，同时通过大数据分析能力，对广告和媒体实现精准营销和智能管理，<br> 提供智能、高效、精准的服务</p>
 				</div>
 			</div>
 		</div>
@@ -239,7 +239,7 @@
 				</div>
 				<div class="col-xs-12 col-md-5">
 					<div>
-						<p><img src="${cdnUrl}/img/web/site/ysb/icon-addr@3x.png" alt="">${companyName}： 010-64010062 </p>
+						<p><img src="${cdnUrl}/img/web/site/ysb/icon-addr@3x.png" alt="">${company!""}： 010-64010062 </p>
 						<p class="addr">地址：北京市丰台区双营路9号亿达丽泽中心708A</p>
 					</div>
 					<div>
@@ -252,7 +252,7 @@
 	</div>
 	<div class="row footer">
 		<div class="row first-line">
-			<div class="col-md-offset-1 col-xs-12 col-md-2 text-center">${companyName}</div>
+			<div class="col-md-offset-1 col-xs-12 col-md-2 text-center">${company!""}</div>
 		</div>
 		<div class="row second-line">
 			<div class="col-md-3 col-xs-12 text-center"><a href="http://www.mayi-ai.com">网址：http://www.mayi-ai.com</a></div>
