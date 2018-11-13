@@ -43,6 +43,7 @@ import com.yuanshanbao.dsp.location.service.IpLocationService;
 import com.yuanshanbao.dsp.material.model.Material;
 import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.plan.model.Plan;
+import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.probability.dao.ProbabilityDao;
 import com.yuanshanbao.dsp.probability.model.Probability;
@@ -551,7 +552,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		}
 		Plan plan = ConfigManager.getPlanById(Long.valueOf(values[0]));
 		if (QuotaType.CPM.equals(plan.getChargeType())) {
-			recordPlanCount(values[0], values[1], channelObject.getKey(), false);
+			// recordPlanCount(values[0], values[1], channelObject.getKey(),
+			// false);
 		} else if (QuotaType.CPC.equals(plan.getChargeType())) {
 			recordPlanCount(values[0], values[1], channelObject.getKey(), true);
 			String planKey = getEncryptKey(values[0]);
@@ -603,10 +605,16 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 					continue;
 				}
 			}
+			if (!plan.getStatus().equals(PlanStatus.ONLINE)) {
+				continue;
+			}
 			// 验证金额是否已经达到上限
 			Double consumed = getDoubleCount(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()));
+			Double dayConsumed = getDoubleCount(RedisConstant.getPlanDayBalanceCountKey(null, plan.getPlanId()));
 			if (BigDecimal.valueOf(consumed).compareTo(plan.getSpend()) < 0) {
-				availableList.add(probability);
+				if (BigDecimal.valueOf(dayConsumed).compareTo(plan.getDayLimit()) < 0) {
+					availableList.add(probability);
+				}
 			}
 		}
 

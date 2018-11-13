@@ -29,9 +29,9 @@ public class AdvertisementStrategyType {
 
 	public static final Integer CARRIER = 5;
 	public static final String CARRIER_DESCRIPTION = "运营商";
-	public static final String CARRIER_KEY = "tMobileStrategy";
+	public static final String CARRIER_KEY = "carrierStrategy";
 
-	public static final Integer GENDER = 5;
+	public static final Integer GENDER = 6;
 	public static final String GENDER_DESCRIPTION = "性别";
 	public static final String GENDER_KEY = "genderStrategy";
 

@@ -133,10 +133,10 @@ public class ConfigManager implements ConfigConstants {
 		Map<String, List<AdvertisementStrategy>> tempPlanStrategyMap = new LinkedHashMap<String, List<AdvertisementStrategy>>();
 		if (advertisementStrategies != null) {
 			for (AdvertisementStrategy strategy : advertisementStrategies) {
-				List<AdvertisementStrategy> list = tempAdvertisementStrategyMap.get(strategy.getPlanId() + "");
+				List<AdvertisementStrategy> list = tempPlanStrategyMap.get(strategy.getPlanId() + "");
 				if (list == null) {
 					list = new ArrayList<AdvertisementStrategy>();
-					tempAdvertisementStrategyMap.put(strategy.getPlanId() + "", list);
+					tempPlanStrategyMap.put(strategy.getPlanId() + "", list);
 				}
 				list.add(strategy);
 			}

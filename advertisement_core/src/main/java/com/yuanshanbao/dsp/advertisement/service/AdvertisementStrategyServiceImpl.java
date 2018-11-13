@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.UserAgentUtils;
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertisement.dao.AdvertisementStrategyDao;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementStrategy;
@@ -255,12 +257,12 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	private boolean checkNetWay(HttpServletRequest request, List<AdvertisementStrategy> list,
 			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (mediaInformation.getConnectiontype() != null) {
+		if (mediaInformation.getConnectiontype() == null) {
 			return strategyPass;
 		}
 		if (list != null) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (mediaInformation.getConnectiontype().equals(advertisementStrategy.getValue())) {
+				if (mediaInformation.getConnectiontype().toString().equals(advertisementStrategy.getValue())) {
 					return strategyPass;
 				}
 			}
@@ -269,17 +271,24 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 		return strategyPass;
 	}
 
-	// TODO
 	private boolean checkAge(HttpServletRequest request, List<AdvertisementStrategy> list,
 			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (StringUtils.isEmpty(mediaInformation.getAge())) {
+		String ageValue = mediaInformation.getAge();
+		if (StringUtils.isEmpty(ageValue) || !ValidateUtil.isNumber(ageValue)) {
 			return strategyPass;
 		}
+		int age = Integer.valueOf(ageValue);
 		if (list != null && list.size() > 0) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (mediaInformation.getOs().equals(advertisementStrategy.getValue())) {
-					return strategyPass;
+				String ageRangeValue = advertisementStrategy.getValue();
+				String[] ageRange = ageRangeValue.split("-");
+				if (ValidateUtil.isNumber(ageRange[0]) && ValidateUtil.isNumber(ageRange[1])) {
+					int minAge = Integer.valueOf(ageRange[0]);
+					int maxAge = Integer.valueOf(ageRange[1]);
+					if (age >= minAge && age <= maxAge) {
+						return strategyPass;
+					}
 				}
 			}
 		}
@@ -307,12 +316,13 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	private boolean checkDeviceType(HttpServletRequest request, List<AdvertisementStrategy> list,
 			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (StringUtils.isEmpty(mediaInformation.getOs())) {
+		if (StringUtils.isEmpty(mediaInformation.getUa())) {
 			return strategyPass;
 		}
+		String os = UserAgentUtils.getSystemName(mediaInformation.getUa());
 		if (list != null && list.size() > 0) {
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (mediaInformation.getOs().equals(advertisementStrategy.getValue())) {
+				if (os.equals(advertisementStrategy.getValue())) {
 					return strategyPass;
 				}
 			}
@@ -323,20 +333,22 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 
 	private boolean checkIpRegion(HttpServletRequest request, List<AdvertisementStrategy> list,
 			MediaInformation instance) {
-		boolean strategyPass = true;
+		boolean strategyPass = false;
 		if (StringUtils.isEmpty(instance.getIp())) {
 			return strategyPass;
 		}
 		if (list != null && list.size() > 0) {
-			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (advertisementStrategy.getType().equals(AdvertisementStrategyType.REGION)) {
-					Location location = ipLocationService.queryIpLocation(instance.getIp());
-					Location configLocation = ConstantsManager.getLocationByCode(advertisementStrategy.getValue());
-					// 配置了该地域，该地域即可通过
-					if (location != null && configLocation != null && !configLocation.contains(location.getCode())) {
-						strategyPass = false;
-						break;
-					}
+			String regionValue = list.get(0).getValue();
+			String[] regionList = regionValue.split("-");
+			for (String region : regionList) {
+				Location location = ipLocationService.queryIpLocation(instance.getIp());
+				Location configLocation = ConstantsManager.getLocationByCode(region);
+				// 配置了该地域，该地域即可通过
+				// if (location != null && configLocation != null &&
+				// !configLocation.contains(location.getCode())) {
+				if (location != null && configLocation != null && !location.contains(configLocation.getCode())) {
+					strategyPass = true;
+					break;
 				}
 			}
 		}
@@ -449,7 +461,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 
 	@Override
 	public void updatePlanStrategy(HttpServletRequest request, Long planId, Long advertiserId) {
-		Map<String, String> map = ConfigManager.getStrategyMap(planId);
+		Map<String, String> map = getPlanStrategy(planId);
 		Map<Integer, String> keysMap = AdvertisementStrategyType.getStrategyKeyMap();
 		Collection<String> keys = keysMap.values();
 		for (String key : keys) {
@@ -467,7 +479,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 					strategy = exist;
 				}
 				strategy.setValue(params);
-				strategy.setStatus(AdvertisementStrategyStatus.UNREVIEWED);
+				strategy.setStatus(AdvertisementStrategyStatus.ONLINE);
 				if (advertiserId != null) {
 					strategy.setAdvertiserId(advertiserId);
 				}
@@ -485,10 +497,25 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	private List<AdvertisementStrategy> getStrategyTypeList(String typeKey, List<AdvertisementStrategy> list) {
 		List<AdvertisementStrategy> resultList = new ArrayList<AdvertisementStrategy>();
 		for (AdvertisementStrategy advertisementStrategy : list) {
-			if (typeKey.equals(advertisementStrategy.getType())) {
+			if (typeKey.equals(advertisementStrategy.getKey())) {
 				resultList.add(advertisementStrategy);
 			}
 		}
 		return resultList;
+	}
+
+	@Override
+	public Map<String, String> getPlanStrategy(Long planId) {
+		Map<String, String> resultMap = new HashMap<String, String>();
+		AdvertisementStrategy param = new AdvertisementStrategy();
+		param.setPlanId(planId);
+		List<AdvertisementStrategy> list = selectAdvertisementStrategy(param, new PageBounds());
+		if (list == null || list.size() == 0) {
+			return resultMap;
+		}
+		for (AdvertisementStrategy strategy : list) {
+			resultMap.put(strategy.getKey(), strategy.getValue());
+		}
+		return resultMap;
 	}
 }

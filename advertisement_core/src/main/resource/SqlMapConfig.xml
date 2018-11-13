@@ -74,7 +74,7 @@
         <typeAlias type="com.yuanshanbao.dsp.message.model.Message" alias="Message"/>
         <typeAlias type="com.yuanshanbao.dsp.earnings.model.Earnings" alias="Earnings"/>
         <typeAlias type="com.yuanshanbao.dsp.withdrawdeposit.model.WithdrawDeposit" alias="WithdrawDeposit"/>
-
+        <typeAlias type="com.yuanshanbao.dsp.location.model.IpLocation" alias="IpLocation"/>
     </typeAliases>
 
     <mappers>
@@ -106,6 +106,7 @@
         <mapper resource="mybatis/information/ExtendInfoDaoImpl.xml"/>
         <mapper resource="mybatis/information/FieldConstrainsDaoImpl.xml"/>
         <mapper resource="mybatis/location/LocationDaoImpl.xml"/>
+        <mapper resource="mybatis/location/IpLocationDaoImpl.xml"/>
         <mapper resource="mybatis/location/MobileLocationDaoImpl.xml"/>
         
         <mapper resource="mybatis/activity/ActivityDaoImpl.xml"/>

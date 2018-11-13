@@ -31,6 +31,7 @@ import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
@@ -82,8 +83,6 @@ public class AdminStatisticsController extends PaginationController {
 
 	private static final String PAGE_REALTIME_CHANNEL = "advertisement/statistics/channelRealtimeStatistics";
 
-	private static final String PAGE_DOWNadvertisement_CHANNEL = "advertisement/statistics/downloadChannel";
-
 	private static final String PAGE_RESULT_CLICK_LIST = "advertisement/statistics/resultPageClick";
 
 	private static final String PAGE_MONTH_LIST = "advertisement/statistics/listMonthStatistics";
@@ -93,6 +92,10 @@ public class AdminStatisticsController extends PaginationController {
 	private static final String PAGE_PLAN_STATISTICS_LIST = "advertisement/statistics/listPlanStatistics";
 
 	private static final String PAGE_MEDIA_ADVERTISEMENT_LIST = "advertisement/statistics/listMediaAdvertisementStatistics";
+
+	private static final String PAGE_DSP_ADVERTISER_STATISTICS_LIST = "advertisement/statistics/dsp/listDspAdvertiserStatistics";
+
+	private static final String PAGE_DSP_MEDIA_STATISTICS_LIST = "advertisement/statistics/dsp/listDspMediaAdvertisementStatistics";
 
 	public static String OSS_HOST_FILES = PropertyUtil.getProperty("oss.host.files");
 
@@ -116,6 +119,9 @@ public class AdminStatisticsController extends PaginationController {
 
 	@Autowired
 	private ProbabilityService probabilityService;
+
+	@Autowired
+	private PlanService planService;
 
 	/**
 	 * 合作方渠道页面窗口
@@ -1033,5 +1039,69 @@ public class AdminStatisticsController extends PaginationController {
 		modelMap.put("channelkey", channelkey);
 		addDateList(modelMap, 0);
 		return PAGE_CHANNEL_ADVERTISEMENTS_LIST;
+	}
+
+	// -------------------------dsp广告主数据----------------------------
+	@RequestMapping("/advertiserDspStatistic.do")
+	public String advertiserDspStatistic(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
+			Long advertisementId) {
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
+		modelMap.put("advertisement", ConfigManager.getAdvertisement(advertisementId + ""));
+		modelMap.put("advertisementId", advertisementId);
+		addDateList(modelMap, 0);
+		return PAGE_DSP_ADVERTISER_STATISTICS_LIST;
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryAdvertiserDspStatistic.do")
+	public Object queryAdvertiserDspStatistic(HttpServletRequest request, HttpServletResponse response,
+			AdvertisementStatistics advertisementStatistics, Boolean isPv, ModelMap modelMap) {
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser == null) {
+			return resultList;
+		}
+		List<AdvertisementStatistics> list = advertisementStatisticsService.selectPlanStatistic(
+				advertisementStatistics, isPv, null, getProjectId(request));
+		for (AdvertisementStatistics statistic : list) {
+			if (advertiser.getAdvertiserId().equals(statistic.getPlan().getAdvertiserId())) {
+				resultList.add(statistic);
+			}
+		}
+		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(resultList, new Paginator()));
+	}
+
+	// -------------------------dsp媒体数据----------------------------
+	@RequestMapping("/mediaDspStatistic.do")
+	public String mediaDspStatistic(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
+			Long advertisementId) {
+		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
+		modelMap.put("advertisement", ConfigManager.getAdvertisement(advertisementId + ""));
+		modelMap.put("advertisementId", advertisementId);
+		addDateList(modelMap, 0);
+		return PAGE_DSP_MEDIA_STATISTICS_LIST;
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryMediaDspStatistic.do")
+	public Object queryMediaDspStatistic(HttpServletRequest request, HttpServletResponse response,
+			AdvertisementStatistics advertisementStatistics, Boolean isPv, ModelMap modelMap) {
+		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		User user = getCurrentUser();
+		String channelsValue = user.getBindChannel();
+		if (StringUtils.isEmpty(channelsValue)) {
+			return resultList;
+		}
+		String[] channels = channelsValue.split(",");
+		List<AdvertisementStatistics> list = advertisementStatisticsService.selectMediaAdvertisementStatistic(
+				advertisementStatistics, isPv, null, getProjectId(request));
+		for (AdvertisementStatistics statistics : list) {
+			for (String channel : channels) {
+				if (channel.equals(statistics.getChannel())) {
+					resultList.add(statistics);
+				}
+			}
+		}
+		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(resultList, new Paginator()));
 	}
 }

@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.weixin.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -359,47 +360,62 @@ public class WeixinServiceImpl implements WeixinService {
 	public byte[] dealQRCode(String key, String scene, String page) {
 
 		ApiConfig apiConfig = apiConfigMap.get(key);
-		 String accessToken = apiConfig.getAccessToken();
-		/*String accessToken = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
+		/* String accessToken = apiConfig.getAccessToken();
+		String accessToken = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
 		if (accessToken == null) {
 			String newAssessToken = getAssessToken();
 			byte[] newResult = getQrCode(scene, page, newAssessToken);
 			return newResult;
 		}*/
-		byte[] result = getQrCode(scene, page, accessToken);
-		return result;
-
-	}
+        byte[] result = getQrCode(scene, page, getAccessToken());
+        if (result == null) {
+            for (int i = 0; i < 10; i++) {
+                byte[] qrCode = getQrCode(scene, page, getAccessToken());
+                if (qrCode != null) {
+                    return qrCode;
+                }
+            }
+        } else {
+            return result;
+        }
+        return null;
+    }
 
 	@Override
-	public String getAssessToken() {
-		String resultAssessToken = null;
-		try {
-			resultAssessToken = HttpsUtil.doGet(getAccessTokenUrl, "grant_type=client_credential&appid="
-					+ getAppId(CONFIG_WZXCX) + "&secret=" + getAppSecret(CONFIG_WZXCX), "UTF-8", 30000, 30000);
-			if (!StringUtil.isEmpty(resultAssessToken)) {
-				Map<String, Object> resultMap = JsonUtil.jsonToMap(resultAssessToken);
-				String accessToken = (String) resultMap.get("access_token");
-				redisCacheService.set(RedisConstant.ACCESS_TOKEN, 60 * 60 + 60 * 30, accessToken);
-				LoggerUtil.info("update accessToken" + accessToken);
-				return accessToken;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	public String getAccessToken() {
+        String resultAssessToken = null;
+        try {
+            String access = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
+            if (!StringUtil.isEmpty(access)) {
+                return access;
+            } else {
+                resultAssessToken = HttpsUtil.doGet(getAccessTokenUrl, "grant_type=client_credential&appid="
+                        + getAppId(CONFIG_WZXCX) + "&secret=" + getAppSecret(CONFIG_WZXCX), "UTF-8", 30000, 30000);
+                if (!StringUtil.isEmpty(resultAssessToken)) {
+                    Map<String, Object> resultMap = JsonUtil.jsonToMap(resultAssessToken);
+                    String accessToken = (String) resultMap.get("access_token");
+                    redisCacheService.set(RedisConstant.ACCESS_TOKEN, 60 * 60 + 60 * 30, accessToken);
+                    LoggerUtil.info("update accessToken" + accessToken);
+                    return accessToken;
+                }else {
+                    return null;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 	private byte[] getQrCode(String scene, String page, String accessToken) {
 		try {
-
 			String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + accessToken;
 			JSONObject param = new JSONObject();
 			param.put("scene", scene);
 			param.put("page", page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
 			if (byteArr.length < 1024) {
-				String errorLog = new String(byteArr, "UTF-8");
+                String errorLog = new String(byteArr, "UTF-8");
 				LoggerUtil.info("getQrCode error info=" + errorLog);
 				return null;
 			}

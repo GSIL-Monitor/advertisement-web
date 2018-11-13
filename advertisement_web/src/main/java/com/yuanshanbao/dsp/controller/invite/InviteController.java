@@ -36,7 +36,6 @@ public class InviteController extends BaseController {
 
 	private static final String URL = "pages/invitecard/invitecard";
 	private static final String H5URL = "https://wz.huhad.com/w/applicants.html";
-	private static final String IMAGE_URL = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/image/avatar132529743323965055.png";
 	private static final String DETAILURL = "pages/index/detail/detail";
 	@Autowired
 	private UserService userService;
@@ -53,6 +52,9 @@ public class InviteController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = getLoginUser(token);
+            if (user == null){
+                throw new BusinessException(ComRetCode.NOT_LOGIN);
+            }
 			String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
 			if (StringUtils.isEmpty(code)) {
 				byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, String.valueOf(user.getUserId()),
@@ -90,6 +92,7 @@ public class InviteController extends BaseController {
 			User user = tokenService.verifyLoginToken(token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
+
 			}
 			// H5二维码
 			String H5Url = H5URL + "?userId=" + user.getUserId() + "&productId=" + productId;
@@ -118,6 +121,9 @@ public class InviteController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = tokenService.verifyLoginToken(token);
+			if (user == null){
+			    throw new BusinessException(ComRetCode.NOT_LOGIN);
+            }
 			String code = redisCacheService.get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() +productId);
 			if (StringUtils.isEmpty(code)) {
 				byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId + "," + user.getUserId(),
@@ -148,6 +154,9 @@ public class InviteController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = tokenService.verifyLoginToken(token);
+			if (user == null) {
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
+			}
 			Product product = productService.selectProduct(Long.valueOf(productId));
 			resultMap.put("url", product.getDetailImageUrl());
 		} catch (BusinessException e) {

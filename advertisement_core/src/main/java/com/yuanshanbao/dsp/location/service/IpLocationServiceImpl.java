@@ -30,6 +30,9 @@ public class IpLocationServiceImpl implements IpLocationService {
 	private static final String ALIYUN_IP_LOCATION_PATH = "/rest/160601/ip/getIpInfo.json";
 	private static final String ALIYUN_IP_LOCATION_KEY = "d13e5b1909d34a7483098e2bc428a29a";
 
+	private static final String YIYUAN_IP_LOCATION_HOST = "https://ali-ip.showapi.com";
+	private static final String YIYUAN_IP_LOCATION_PATH = "/ip";
+
 	@Autowired
 	IpLocationDao ipLocationDao;
 
@@ -130,9 +133,43 @@ public class IpLocationServiceImpl implements IpLocationService {
 		if (ipLocation != null) {
 			location = ConstantsManager.getLocationByCode(ipLocation.getLocationCode());
 		} else {
-			location = queryAliyunInterface(ipAddress);
+			location = queryYiYuanInterface(ipAddress);
+			if (location == null) {
+				location = queryAliyunInterface(ipAddress);
+			}
+			// location = queryAliyunInterface(ipAddress);
 		}
 		return location;
+	}
+
+	private Location queryYiYuanInterface(String ipAddress) {
+		try {
+			Map<String, Object> resultMap = doGetIpInterface(ipAddress, "YIYUAN");
+			Object obj = resultMap.get("showapi_res_body");
+			if (obj instanceof Map) {
+				String operator = (String) ((Map) obj).get("country") + ((Map) obj).get("isp");
+				String cityCode = (String) ((Map) obj).get("city_code");
+				Location location = null;
+				if (StringUtils.isNotBlank(cityCode)) {
+					location = ConstantsManager.getLocationByCode(cityCode);
+				}
+				if (location != null) {
+					IpLocation ipLocation = new IpLocation();
+					ipLocation.setPrefix(ipAddress.substring(0, ipAddress.lastIndexOf(".")));
+					ipLocation.setLocationCode(location.getCode());
+					ipLocation.setOperator(operator);
+					ipLocation.setStatus(CommonStatus.ONLINE);
+					insertIpLocation(ipLocation);
+				} else {
+					LoggerUtil.info("[queryYiYuanInterface]city not exist: cityCode={}, ipAddress={}, response={}",
+							cityCode, ipAddress, JacksonUtil.obj2json(resultMap));
+				}
+				return location;
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("[queryYiYuanIpError]", e);
+		}
+		return null;
 	}
 
 	private Location queryAliyunInterface(String ipAddress) {
@@ -190,6 +227,28 @@ public class IpLocationServiceImpl implements IpLocationService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 
+	 * @param ip
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	private Map<String, Object> doGetIpInterface(String ipAddress, String type) throws Exception {
+		Map<String, String> querys = new HashMap<String, String>();
+		Map<String, String> header = new HashMap<String, String>();
+		header.put("Authorization", "APPCODE " + ALIYUN_IP_LOCATION_KEY);
+		querys.put("ip", ipAddress);
+		String host = ALIYUN_IP_LOCATION_HOST;
+		String path = ALIYUN_IP_LOCATION_PATH;
+		if ("YIYUAN".equals(type)) {
+			host = YIYUAN_IP_LOCATION_HOST;
+			path = YIYUAN_IP_LOCATION_PATH;
+		}
+		HttpResponse response = HttpsUtil.doGet(host, path, "GET", header, querys);
+		return JacksonUtil.json2map(EntityUtils.toString(response.getEntity()));
 	}
 
 }
