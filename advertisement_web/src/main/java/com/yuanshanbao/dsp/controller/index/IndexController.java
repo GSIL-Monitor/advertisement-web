@@ -113,6 +113,7 @@ public class IndexController extends BaseController {
 		try {
 			String host = request.getHeader("Host");
 			if (StringUtils.isNotBlank(host) && host.contains("d.xingdk.com")) {
+				request.setAttribute("isMyzt", true);
 				return getFtlPath(request, "/site/myzt");
 			} else if (StringUtils.isNotBlank(host) && host.contains("xingdk.cn")) {
 				return getFtlPath(request, "/site/myzt");

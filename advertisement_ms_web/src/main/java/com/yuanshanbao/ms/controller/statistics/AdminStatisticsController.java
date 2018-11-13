@@ -1058,14 +1058,13 @@ public class AdminStatisticsController extends PaginationController {
 			AdvertisementStatistics advertisementStatistics, Boolean isPv, ModelMap modelMap) {
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		Advertiser advertiser = getBindAdvertiserByUser();
-		if (advertiser == null) {
-			return resultList;
-		}
-		List<AdvertisementStatistics> list = advertisementStatisticsService.selectPlanStatistic(
-				advertisementStatistics, isPv, null, getProjectId(request));
-		for (AdvertisementStatistics statistic : list) {
-			if (advertiser.getAdvertiserId().equals(statistic.getPlan().getAdvertiserId())) {
-				resultList.add(statistic);
+		if (advertiser != null) {
+			List<AdvertisementStatistics> list = advertisementStatisticsService.selectPlanStatistic(
+					advertisementStatistics, isPv, null, getProjectId(request));
+			for (AdvertisementStatistics statistic : list) {
+				if (advertiser.getAdvertiserId().equals(statistic.getPlan().getAdvertiserId())) {
+					resultList.add(statistic);
+				}
 			}
 		}
 		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(resultList, new Paginator()));
@@ -1089,16 +1088,15 @@ public class AdminStatisticsController extends PaginationController {
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		User user = getCurrentUser();
 		String channelsValue = user.getBindChannel();
-		if (StringUtils.isEmpty(channelsValue)) {
-			return resultList;
-		}
-		String[] channels = channelsValue.split(",");
-		List<AdvertisementStatistics> list = advertisementStatisticsService.selectMediaAdvertisementStatistic(
-				advertisementStatistics, isPv, null, getProjectId(request));
-		for (AdvertisementStatistics statistics : list) {
-			for (String channel : channels) {
-				if (channel.equals(statistics.getChannel())) {
-					resultList.add(statistics);
+		if (!StringUtils.isEmpty(channelsValue)) {
+			String[] channels = channelsValue.split(",");
+			List<AdvertisementStatistics> list = advertisementStatisticsService.selectMediaAdvertisementStatistic(
+					advertisementStatistics, isPv, null, getProjectId(request));
+			for (AdvertisementStatistics statistics : list) {
+				for (String channel : channels) {
+					if (channel.equals(statistics.getChannel())) {
+						resultList.add(statistics);
+					}
 				}
 			}
 		}
