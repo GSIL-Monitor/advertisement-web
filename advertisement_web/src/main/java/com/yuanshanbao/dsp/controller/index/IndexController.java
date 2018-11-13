@@ -40,6 +40,8 @@ import com.yuanshanbao.paginator.domain.PageList;
 public class IndexController extends BaseController {
 
 	private static final String WANGZHUAN = "wangzhuan";
+	private static final String MYZT = "蚂蚁智投";
+	private static final String TJKT = "天津坤涛科技有限公司";
 
 	@Autowired
 	private ProductService productService;
@@ -113,15 +115,19 @@ public class IndexController extends BaseController {
 		try {
 			String host = request.getHeader("Host");
 			if (StringUtils.isNotBlank(host) && host.contains("d.xingdk.com")) {
-				request.setAttribute("isMyzt", true);
+				request.setAttribute("companyName", MYZT);
 				return getFtlPath(request, "/site/myzt");
 			} else if (StringUtils.isNotBlank(host) && host.contains("xingdk.cn")) {
+				request.setAttribute("companyName", TJKT);
 				return getFtlPath(request, "/site/myzt");
 			} else if (StringUtils.isNotBlank(host) && host.contains("honghongcai.cn")) {
+				request.setAttribute("companyName", TJKT);
 				return getFtlPath(request, "/site/myzt");
 			} else if (StringUtils.isNotBlank(host) && host.contains("huhacai.com")) {
+				request.setAttribute("companyName", TJKT);
 				return getFtlPath(request, "/site/myzt");
 			} else if (StringUtils.isNotBlank(host) && host.contains("huhacp.com")) {
+				request.setAttribute("companyName", TJKT);
 				return getFtlPath(request, "/site/myzt");
 			}
 			return redirect("/404.html");
