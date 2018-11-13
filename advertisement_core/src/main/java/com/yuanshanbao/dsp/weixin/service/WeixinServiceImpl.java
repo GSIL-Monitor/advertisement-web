@@ -360,14 +360,14 @@ public class WeixinServiceImpl implements WeixinService {
 	public byte[] dealQRCode(String key, String scene, String page) {
 
 		ApiConfig apiConfig = apiConfigMap.get(key);
-		 String accessToken = apiConfig.getAccessToken();
-		/*String accessToken = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
+		/* String accessToken = apiConfig.getAccessToken();
+		String accessToken = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
 		if (accessToken == null) {
 			String newAssessToken = getAssessToken();
 			byte[] newResult = getQrCode(scene, page, newAssessToken);
 			return newResult;
 		}*/
-        byte[] result = getQrCode(scene, page, accessToken);
+        byte[] result = getQrCode(scene, page, getAccessToken());
         if (result == null) {
             for (int i = 0; i < 10; i++) {
                 byte[] qrCode = getQrCode(scene, page, getAccessToken());
@@ -401,7 +401,6 @@ public class WeixinServiceImpl implements WeixinService {
                     return null;
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
