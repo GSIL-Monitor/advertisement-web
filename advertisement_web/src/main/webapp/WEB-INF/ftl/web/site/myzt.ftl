@@ -8,6 +8,10 @@
 	html{
 		font-size: 100px;
 	}
+	.list-title {
+		margin: 0.2rem auto;
+		line-height: .4rem;
+	}
 </style>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container navbar-top">
