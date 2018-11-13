@@ -21,7 +21,6 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementType;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
@@ -120,7 +119,8 @@ public class AdminPlanController extends PaginationController {
 		request.setAttribute("projectId", projectId);
 		request.setAttribute("positionList", ConstantsManager.getPositionList(projectId));
 		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
-		request.setAttribute("typeList", AdvertisementType.getCodeDescriptionMap().entrySet());
+		// request.setAttribute("typeList",
+		// AdvertisementType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
 		request.setAttribute("channelTypeList", ChannelType.getTypeDescriptionMap().entrySet());
 	}
@@ -184,7 +184,6 @@ public class AdminPlanController extends PaginationController {
 			if (plan.getPlanId() == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			plan.setStatus(PlanStatus.UNREVIEWED);
 			planService.updatePlan(plan);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -303,7 +302,7 @@ public class AdminPlanController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			validateParameters(probability);
-			Plan plan = ConfigManager.getPlanById(probability.getPlanId());
+			Plan plan = planService.selectPlan(probability.getPlanId());
 			probability.setProjectId(getProjectId(request));
 			probability.setStatus(ProbabilityStatus.UNREVIEWED);
 			probability.setOrderId(plan.getOrderId());

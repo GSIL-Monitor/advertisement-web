@@ -106,6 +106,9 @@
 				<if test="spend != null">
 					spend=#{spend},
 				</if>
+				<if test="dayLimit != null">
+					day_limit=#{dayLimit},
+				</if>
 				<if test="material != null">
 					material=#{material},
 				</if>

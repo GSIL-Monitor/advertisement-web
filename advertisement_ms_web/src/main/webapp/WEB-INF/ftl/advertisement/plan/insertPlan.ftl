@@ -56,7 +56,7 @@
 									<tr>
 										<td>日限额（元）：</td>
 										<td>
-											<input type="text" name="spend" placeholder="请输入日限金额" style="width:60%;">
+											<input type="text" name="dayLimit" placeholder="请输入日限金额" style="width:60%;">
 										</td>
 									</tr>
 									<tr>

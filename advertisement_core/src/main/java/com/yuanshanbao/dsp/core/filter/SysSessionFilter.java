@@ -20,7 +20,6 @@ import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.MD5Util;
-import com.yuanshanbao.common.util.RequestUtil;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
@@ -91,11 +90,12 @@ public class SysSessionFilter extends HttpServlet implements Filter {
 				}
 			}
 			if (user == null && !CommonUtil.isApp(request)) {
-				if (RequestUtil.redirectToWeixin(request, response)) {
-					return null;
-				} else {
-					return requestWrapper;
-				}
+				// 2018/11/13 允许微信登陆
+				// if (RequestUtil.redirectToWeixin(request, response)) {
+				// return null;
+				// } else {
+				return requestWrapper;
+				// }
 			}
 		} else {
 			requestWrapper = new HttpServletRequestWrapper(sid, request);

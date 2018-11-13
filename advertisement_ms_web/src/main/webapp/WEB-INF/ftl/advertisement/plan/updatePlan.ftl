@@ -41,9 +41,21 @@
 										</td>
 									</tr>
 									<tr>
-										<td>最高出价：</td>
+										<td>预算：</td>
 										<td>
-											<input type="text" name="description" style="width:60%;" value="${itemEdit.bestBid}"></td>
+											<input type="text" name="spend" style="width:60%;" value="${itemEdit.spend?c}"></td>
+										</td>
+									</tr>
+									<tr>
+										<td>日限额：</td>
+										<td>
+											<input type="text" name="dayLimit" style="width:60%;" value="${itemEdit.dayLimit?c}"></td>
+										</td>
+									</tr>
+									<tr>
+										<td>出价：</td>
+										<td>
+											<input type="text" name="bestBid" style="width:60%;" value="${itemEdit.bestBid?c}"></td>
 										</td>
 									</tr>
 									<tr>
