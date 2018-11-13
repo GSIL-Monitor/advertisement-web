@@ -8,6 +8,10 @@
 	html{
 		font-size: 100px;
 	}
+	.list-title {
+		margin: 0.2rem auto;
+		line-height: .4rem;
+	}
 </style>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container navbar-top">
@@ -252,7 +256,7 @@
 	</div>
 	<div class="row footer">
 		<div class="row first-line">
-			<div class="col-md-offset-1 col-xs-12 col-md-2 text-center">${company!""}</div>
+			<div class="col-xs-12 col-md-3 text-center">${company!""}</div>
 		</div>
 		<div class="row second-line">
 			<div class="col-md-3 col-xs-12 text-center"><a href="http://www.mayi-ai.com">网址：http://www.mayi-ai.com</a></div>
