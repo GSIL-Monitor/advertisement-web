@@ -55,7 +55,7 @@
 									<tr>
 										<td>出价：</td>
 										<td>
-											<input type="text" name="description" style="width:60%;" value="${itemEdit.bestBid?c}"></td>
+											<input type="text" name="bestBid" style="width:60%;" value="${itemEdit.bestBid?c}"></td>
 										</td>
 									</tr>
 									<tr>
