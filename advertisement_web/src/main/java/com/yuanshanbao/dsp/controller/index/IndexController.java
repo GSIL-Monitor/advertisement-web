@@ -41,7 +41,7 @@ public class IndexController extends BaseController {
 
 	private static final String WANGZHUAN = "wangzhuan";
 	private static final String MYZT = "蚂蚁智投";
-	private static final String TJKT = "天津坤涛科技有限公司";
+	private static final String TJKT = "坤涛科技";
 
 	@Autowired
 	private ProductService productService;
