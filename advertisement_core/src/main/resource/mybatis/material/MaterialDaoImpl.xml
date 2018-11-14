@@ -17,6 +17,7 @@
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
 		<result property="width" column="width" jdbcType="NUMERIC" />
 		<result property="height" column="height" jdbcType="NUMERIC" />
+		<result property="remark" column="remark" jdbcType="VARCHAR" />
 		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
@@ -82,11 +83,11 @@
 	<insert id="insertMaterial" parameterType="Material">
 		insert into
 		tb_material(project_id, advertiser_id, advertisement_id, probability_id, 
-		name,title,description,link,image_url,
+		name,title,description,link,image_url,remark,
 		width,height,type,status,create_time, update_time)
 		values
 		( #{projectId},#{advertiserId}, #{advertisementId}, #{probabilityId},
-		#{name}, #{title}, #{description}, #{link}, #{imageUrl},
+		#{name}, #{title}, #{description}, #{link}, #{imageUrl},#{remark},
 		#{width},#{height}, #{type}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="materialId">
@@ -112,6 +113,9 @@
 				</if>
 				<if test="imageUrl != null">
 					image_url=#{imageUrl},
+				</if>
+				<if test="remark != null">
+					remark=#{remark},
 				</if>
 				<if test="status != null">
 					status=#{status},

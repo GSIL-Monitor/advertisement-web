@@ -15,6 +15,7 @@ public class Material {
 	private String description;
 	private String link;
 	private String imageUrl;
+	private String remark;
 	private Integer width;
 	private Integer height;
 	private Integer type;
@@ -164,5 +165,13 @@ public class Material {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

@@ -17,9 +17,15 @@
 			    },{
 			    	"data": "typeContent"
 			    },{
+			    	"data": "title"
+			    },{
+			    	"data": "description"
+			    },{
 			    	"data": "sizeContent"
 			    },{
 			    	"data": "statusValue"
+			    },{
+			    	"data": "remark"
 			    },{
 			    	"data": "imageUrl",
 			        "render": function ( data, type, full, meta ) {
@@ -33,8 +39,8 @@
 			if (isNotEmpty($('#advertiserId').val())) {
 				params += "advertiserId=" + encodeURI(encodeURI($('#advertiserId').val())) + "&";
 			}
-			if (isNotEmpty($('#title').val())) {
-				params += "title=" + encodeURI(encodeURI($('#title').val())) + "&";
+			if (isNotEmpty($('#type').val())) {
+				params += "type=" + encodeURI(encodeURI($('#type').val())) + "&";
 			}
 			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?" + params;
 			dataTable.ajax.url(newUrl);
@@ -81,8 +87,11 @@
 							<th>ID</th>
 							<th>创意名称</th>
 							<th>创意类型</th>
+							<th>标题</th>
+							<th>描述</th>
 							<th>素材尺寸</th>
 							<th>状态</th>
+							<th>备注</th>
 							<th>查看图片</th>
 						</tr>
 					</thead>

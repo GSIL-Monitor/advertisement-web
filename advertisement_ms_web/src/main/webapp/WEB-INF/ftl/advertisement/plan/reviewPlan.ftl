@@ -74,7 +74,7 @@
 									<tr>
 										<td style="width:20%;">备注：</td>
 										<td>
-											<input type="text" name="link" placeholder="请填写备注" style="width:60%;">
+											<input type="text" name="remark" placeholder="请填写备注" style="width:60%;">
 										</td>
 									</tr>
 									<tr>

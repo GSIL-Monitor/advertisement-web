@@ -29,6 +29,14 @@
 										<td>${itemEdit.name}</td>
 									</tr>
 									<tr>
+										<td>素材标题：</td>
+										<td>${itemEdit.title}</td>
+									</tr>
+									<tr>
+										<td>素材描述：</td>
+										<td>${itemEdit.description}</td>
+									</tr>
+									<tr>
 										<td>图片：</td>
 										<td><img src="${itemEdit.imageUrl}" style="max-height: 100px;"/></td>
 									</tr>
@@ -60,6 +68,12 @@
 													</#list>
 												</select>
 											</div>
+										</td>
+									</tr>
+									<tr>
+										<td style="width:20%;">备注：</td>
+										<td>
+											<input type="text" name="remark" placeholder="请填写备注" style="width:60%;">
 										</td>
 									</tr>
 									<tr>

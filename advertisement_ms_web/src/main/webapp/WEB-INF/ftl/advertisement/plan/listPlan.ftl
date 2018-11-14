@@ -64,6 +64,8 @@
 		        },{
 			    	"data": "consumed"
 		        },{
+			    	"data": "remark"
+		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
 			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-yellow" target="_blank">修改</a></div>';
@@ -87,7 +89,7 @@
 				params += "advertiserId=" + encodeURI(encodeURI($('#advertiserId').val())) + "&";
 			}
 			if (isNotEmpty($('#title').val())) {
-				params += "title=" + encodeURI(encodeURI($('#title').val())) + "&";
+				params += "name=" + encodeURI(encodeURI($('#title').val())) + "&";
 			}
 			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?" + params;
 			dataTable.ajax.url(newUrl);
@@ -134,6 +136,7 @@
 							<th>出价</th>
 							<th>预算</th>
 							<th>已消耗预算</th>
+							<th>备注</th>
 							<th>修改</th>
 							<th>设置创意</th>
 							<th>定向</th>

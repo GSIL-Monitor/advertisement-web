@@ -184,6 +184,9 @@ public class AdminPlanController extends PaginationController {
 			if (plan.getPlanId() == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
+			if (plan.getStatus() == PlanStatus.DENIED) {
+				plan.setStatus(PlanStatus.UNREVIEWED);
+			}
 			planService.updatePlan(plan);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -264,6 +267,9 @@ public class AdminPlanController extends PaginationController {
 		try {
 			if (plan.getPlanId() == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			if (PlanStatus.ONLINE == plan.getStatus()) {
+				plan.setStatus(PlanStatus.OFFLINE);
 			}
 			planService.updatePlan(plan);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);

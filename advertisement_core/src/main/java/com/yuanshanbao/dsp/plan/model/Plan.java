@@ -28,6 +28,7 @@ public class Plan {
 	private Timestamp startTime;
 	private Timestamp endTime;
 	private Integer status;
+	private String remark;
 	private Timestamp createTime;
 	private Timestamp updateTime;
 
@@ -234,5 +235,13 @@ public class Plan {
 
 	public void setDayLimit(BigDecimal dayLimit) {
 		this.dayLimit = dayLimit;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

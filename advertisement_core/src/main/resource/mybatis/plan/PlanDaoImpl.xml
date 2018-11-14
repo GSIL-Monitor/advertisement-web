@@ -18,6 +18,7 @@
 		<result property="chargeType" column="charge_type" jdbcType="NUMERIC" />
 		<result property="allowChannelCategory" column="allow_channel_category" jdbcType="VARCHAR" />
 		<result property="forbidChannelCategory" column="forbid_channel_category" jdbcType="VARCHAR" />
+		<result property="remark" column="remark" jdbcType="VARCHAR" />
 		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
 		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
@@ -78,12 +79,12 @@
 		insert into
 		tb_plan(project_id, advertiser_id,order_id,name,link,
 		spend,day_limit,material,best_bid,charge_type, allow_channel_category,
-		forbid_channel_category,start_time, end_time,status, 
+		forbid_channel_category,remark,start_time, end_time,status, 
 		create_time, update_time)
 		values
 		(#{projectId}, #{advertiserId},#{orderId}, #{name},#{link},
 		 #{spend}, #{dayLimit},#{material}, #{bestBid},  #{chargeType},  #{allowChannelCategory}, 
-		 #{forbidChannelCategory}, #{startTime}, #{endTime}, #{status}, sysdate(), sysdate())
+		 #{forbidChannelCategory}, #{remark}, #{startTime}, #{endTime}, #{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="planId">
 			SELECT LAST_INSERT_ID()
@@ -117,6 +118,9 @@
 				</if>
 				<if test="forbidChannelCategory != null">
 					forbid_channel_category=#{forbidChannelCategory},
+				</if>
+				<if test="remark != null">
+					remark=#{remark},
 				</if>
 				<if test="startTime != null">
 					start_time=#{startTime},
