@@ -71,7 +71,6 @@
 									<tr>
 										<td>允许投放的媒体分类：</td>
 										<td>
-											<input type="text" name="allowChannelCategory" value="${itemEdit.allowChannelCategory}" style="width:60%;">
 											<div style="width:60%;">
 												<select multiple data-live-search="true" class="selectpicker form-control" id="allowChannelType">
 													<#list channelTypeList as type>
@@ -85,7 +84,14 @@
 									<tr>
 										<td>禁止投放的媒体分类：</td>
 										<td>
-											<input type="text" name="forbidChannelCategory" value="${itemEdit.forbidChannelCategory}" style="width:60%;">
+											<div style="width:60%;">
+												<select multiple data-live-search="true" class="selectpicker form-control" id="forbidChannelType">
+													<#list channelTypeList as type>
+														<option value="${type.value}">${type.name}</option>
+													</#list>
+												</select>
+												<input type="hidden" name="forbidChannelCategory" id="forbidChannelTypeVal">
+											</div>
 										</td>
 									</tr>
 									<tr>

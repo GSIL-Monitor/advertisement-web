@@ -24,7 +24,6 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
-import com.yuanshanbao.dsp.channel.model.ChannelType;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -122,7 +121,7 @@ public class AdminPlanController extends PaginationController {
 		// request.setAttribute("typeList",
 		// AdvertisementType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
-		request.setAttribute("channelTypeList", ChannelType.getTypeDescriptionMap().entrySet());
+		request.setAttribute("channelTypeList", ConstantsManager.getTagsList(Long.valueOf(37)));
 	}
 
 	@RequestMapping("/insertWindow.do")
@@ -172,6 +171,7 @@ public class AdminPlanController extends PaginationController {
 			result = list.get(0);
 		}
 		request.setAttribute("itemEdit", result);
+		request.setAttribute("channelTypeList", ConstantsManager.getTagsList(Long.valueOf(37)));
 		modelMap.put("categories", ConfigManager.getCategoryMap());
 		return PAGE_UPDATE;
 	}
@@ -184,7 +184,7 @@ public class AdminPlanController extends PaginationController {
 			if (plan.getPlanId() == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			if (plan.getStatus() == PlanStatus.DENIED) {
+			if (plan.getStatus() != null && plan.getStatus() == PlanStatus.DENIED) {
 				plan.setStatus(PlanStatus.UNREVIEWED);
 			}
 			planService.updatePlan(plan);
