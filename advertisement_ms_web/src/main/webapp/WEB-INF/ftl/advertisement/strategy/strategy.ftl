@@ -117,7 +117,7 @@
     <p>操作成功！</p>
   </div>
   <div class="modal-footer">
-    <a href="#" data-dismiss="modal" class="btn">关闭</a>
+    <a href="#" data-dismiss="modal" class="btn" onclick = "window.close()">关闭</a>
     <a href="#" data-dismiss="modal" class="btn btn-primary">确定</a>
   </div>
 </div>
@@ -163,10 +163,12 @@
     function checkResult() {
     	if($('input[name="age"]:checked').val() == 'no') {
     		$('#ageRangeinput').val('no');
+    		$('#myModal').modal('toggle');
     		return true;
     	}
     	if($('#startAge').val()=="" || $('#endAge').val()==""){
     		$('#ageRangeinput').val("no");
+    		$('#myModal').modal('toggle');
     		return true;
     	}
     	var ageRange = $('#startAge').val() + '-' + $('#endAge').val();
