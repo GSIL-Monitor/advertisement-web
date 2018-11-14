@@ -108,6 +108,19 @@
 			</div>
 	</div>
 </div>
+<div class="modal hide fade" id="myModal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>提示</h3>
+  </div>
+  <div class="modal-body">
+    <p>操作成功！</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" data-dismiss="modal" class="btn">关闭</a>
+    <a href="#" data-dismiss="modal" class="btn btn-primary">确定</a>
+  </div>
+</div>
 <input type="hidden" id="reqData" value="${strategyValue}">
 <input type="hidden" id="genderStrategy" value="${strategyValue.genderStrategy}">
 <input type="hidden" id="deviceTypeStrategy" value="${strategyValue.deviceTypeStrategy}">
@@ -146,6 +159,7 @@
     function checkResult() {
     	var ageRange = $('#startAge').val() + '-' + $('#endAge').val();
     	$('#ageRangeinput').val(ageRange);
+    	$('#myModal').modal('toggle')；
     	return true;
     }
 </script>
