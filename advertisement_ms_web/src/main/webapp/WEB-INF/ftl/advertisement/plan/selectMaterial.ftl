@@ -22,7 +22,7 @@ $(document).ready(function(){
 	        	return '<img src="'+data+'" style="max-height: 100px;"/>';
 	        }
 	    },{
-	      	"data": "createTimeValue"
+	      	"data": "createTimeContent"
 	    }];
 	
 	$('#unselectTable').DataTable(dataTableConfig);
@@ -47,7 +47,7 @@ $(document).ready(function(){
 	        	return '<img src="'+data+'" style="max-height: 100px;"/>';
 	        }
 	    },{
-	      	"data": "createTimeValue"
+	      	"data": "createTimeContent"
 	    }];
 	$('#selectTable').DataTable(dataTableConfig);
 	
@@ -87,7 +87,7 @@ function deleteSelectRights() {
 	<@headerPart />
 	<div id="content-header">
 		<div id="breadcrumb">
-			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a> 
+			<a href="${rc.contextPath}/admin/${functionName}/list.do" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a> 
 			<a href="#" class="current">设置创意列表</a>
       </div>
   </div>

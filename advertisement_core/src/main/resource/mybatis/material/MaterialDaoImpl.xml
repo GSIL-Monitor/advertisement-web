@@ -11,8 +11,8 @@
 		<result property="advertisementId" column="advertisement_id" jdbcType="NUMERIC" />
 		<result property="probabilityId" column="probability_id" jdbcType="NUMERIC" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
-		<result property="title" column="name" jdbcType="VARCHAR" />
-		<result property="description" column="name" jdbcType="VARCHAR" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
 		<result property="link" column="link" jdbcType="VARCHAR" />
 		<result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
 		<result property="width" column="width" jdbcType="NUMERIC" />

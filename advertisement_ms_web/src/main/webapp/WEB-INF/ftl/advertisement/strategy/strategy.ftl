@@ -15,8 +15,8 @@
 <div id="content">
 	<div id="content-header">
 		<div id="breadcrumb">
-			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
-				${functionTitle}管理
+			<a href="${rc.contextPath}/admin/plan/list.do" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
+				计划管理
 			</a>
 			<a href="${rc.contextPath}/admin/${functionName}/list.do" class="current">添加${functionTitle}</a>
 		</div>
@@ -47,7 +47,7 @@
 										<tr>
 											<td>年龄：</td>
 											<td>
-												<input type="radio" name="age" value="" checked>不限
+												<input type="radio" name="age" value="no" checked>不限
 												<input type="radio" name="age" value="others">自定义
 												<span class="hidden" id="ageRange">
 													<input type="number" name="startAge" id="startAge" /><span>-</span>
@@ -144,10 +144,14 @@
     })
     function initForm() {
     	if($('#ageRangeinput').val()) {
-    		$('#ageRange').removeClass('hidden');
-    		$('#startAge').val($('#ageRangeinput').val().split('-')[0]);
-    		$('#endAge').val($('#ageRangeinput').val().split('-')[1]);
-    		$(":radio[name='age'][value='others']").prop("checked", "checked");
+    		if($('#ageRangeinput').val()=="no"){
+    			$(":radio[name='age'][value='no']").prop("checked", "checked");
+    		}else{
+	    		$('#ageRange').removeClass('hidden');
+	    		$('#startAge').val($('#ageRangeinput').val().split('-')[0]);
+	    		$('#endAge').val($('#ageRangeinput').val().split('-')[1]);
+	    		$(":radio[name='age'][value='others']").prop("checked", "checked");
+    		}
     	}
     	$(":radio[name='genderStrategy'][value='" + $('#genderStrategy').val() + "']").prop("checked", "checked");
     	$(":radio[name='deviceTypeStrategy'][value='" + $('#deviceTypeStrategy').val() + "']").prop("checked", "checked");
@@ -157,6 +161,14 @@
     }
     initForm();
     function checkResult() {
+    	if($('input[name="age"]:checked').val() == 'no') {
+    		$('#ageRangeinput').val('no');
+    		return true;
+    	}
+    	if($('#startAge').val()=="" || $('#endAge').val()==""){
+    		$('#ageRangeinput').val("no");
+    		return true;
+    	}
     	var ageRange = $('#startAge').val() + '-' + $('#endAge').val();
     	$('#ageRangeinput').val(ageRange);
     	$('#myModal').modal('toggle')；

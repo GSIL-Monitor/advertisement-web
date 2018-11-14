@@ -6,7 +6,7 @@
 	<@headerPart />
 	<div id="content-header">
 		<div id="breadcrumb">
-			<a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
+			<a href="${rc.contextPath}/admin/${functionName}/list.do" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>
 				${functionTitle}管理
 			</a>
 			<a href="#" class="current">${functionTitle}修改</a>
