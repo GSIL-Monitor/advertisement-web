@@ -171,7 +171,7 @@
     	}
     	var ageRange = $('#startAge').val() + '-' + $('#endAge').val();
     	$('#ageRangeinput').val(ageRange);
-    	$('#myModal').modal('toggle')；
+    	$('#myModal').modal('toggle');
     	return true;
     }
 </script>
