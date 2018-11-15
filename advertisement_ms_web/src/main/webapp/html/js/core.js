@@ -481,7 +481,10 @@ var TipWindow = {
             $(tipId).find('.tip-single-button-text').html(text);
         }
         if (isNotNull(handler)) {
-            $(tipId).find('.tip-single-button').attr('onclick', handler);
+            $(tipId).find('.tip-single-button').removeAttr('onclick');
+            $(tipId).find('.tip-single-button').click(function(){
+                handler();
+            });
         }
         $(tipId).find('.tip-left-button').addClass('hide');
         $(tipId).find('.tip-right-button').addClass('hide');

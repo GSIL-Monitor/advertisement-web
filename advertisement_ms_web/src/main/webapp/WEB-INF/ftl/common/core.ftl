@@ -129,8 +129,7 @@
 <#macro tipHtml>
 <div name="tipWindow" class="tip-window center">
 	<div class="tip-content">
-		<#-- <span class="tip-close-icon"><img src="${cdnUrl}/img/wap/common/tip-close.png" onclick="TipWindow.hide();" /></span> -->
-		<#-- <span class="tip-icon"><img src="${cdnUrl}/img/tip/${type}.png"/></span> -->
+		<span class="tip-close-icon"><img src="${cdnUrl}/img/close.png" onclick="TipWindow.hide();" /></span>
 		<div class="tip-title"></div>
 		<div class="tip-text hide" name="tipText"></div>
 		<div class="tip-button">

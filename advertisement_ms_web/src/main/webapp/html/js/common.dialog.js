@@ -50,7 +50,7 @@ function hideTipDialog(tipId) {
 	body.innerHTML = '';
 }
 
-function showTipDialogAndSetContent(content, error, noClose) {
+function showTipDialogAndSetContent(content, error, isClose, isReload, jumpUrl) {
 	// showTipDialog('#tipDialog');
 	// $('#tipInnerText').text(content);
 	// if (error) {
@@ -67,7 +67,24 @@ function showTipDialogAndSetContent(content, error, noClose) {
 	// if (error || noClose) {
 	// 	$('#tipCloseBtn').css('display', 'none');
 	// }
-	TipWindow.showSingleWithContent(content);
+	hideLoading();
+	if (error) {
+		TipWindow.showSingleWithContent(content);
+	} else if (jumpUrl) {
+		location.href = jumpUrl;
+	} else if (isReload) {
+		TipWindow.showSingle(content, '好的', function(){
+			location.reload();
+		});
+	} else if (isClose) {
+		TipWindow.showSingle(content, '好的', function(){
+			window.opener=null;
+			window.close();
+		});
+	} else {
+		TipWindow.showSingleWithContent(content);
+	}
+	
 }
 
 function getCommitIFrame() {
@@ -76,7 +93,7 @@ function getCommitIFrame() {
 			|| formCommitIframe.contentWindow.document;
 }
 
-function checkResultAndShowDialog() {
+function checkResultAndShowDialog(isClose, isReload, jumpUrl) {
 	var innerDoc = getCommitIFrame();
 	var body = findFirstElement(innerDoc, 'body');
 	if (body.innerHTML.length == 0) {
@@ -92,14 +109,14 @@ function checkResultAndShowDialog() {
 		content = data.retDesc;
 	}
 	if (data.retcode == '200' || data.retCode == '200') {
-		showTipDialogAndSetContent(content, false);
+		showTipDialogAndSetContent(content, false, isClose, isReload, jumpUrl);
 		return true;
 	} else {
-		showTipDialogAndSetContent(content, true);
+		showTipDialogAndSetContent(content, true, isClose, isReload, jumpUrl);
 		return true;
 	}
 
-	showTipDialogAndSetContent('系统错误', true);
+	showTipDialogAndSetContent('系统错误', true, isClose, isReload, jumpUrl);
 	return true;
 }
 
@@ -127,16 +144,17 @@ function showError(error) {
 	}
 
 }
-function checkResult() {
+function checkResult(isClose, isReload, jumpUrl) {
+	showLoading();
 	interval = setInterval(function() {
 		if (intervalTimes++ == 60) {
-			checkResultAndShowDialog();
+			checkResultAndShowDialog(isClose, isReload, jumpUrl);
 		} else {
 			try {
-				checkResultAndShowDialog();
+				checkResultAndShowDialog(isClose, isReload, jumpUrl);
 			} catch (e) {
 				if (errorTimes++ == 10) {
-					checkResultAndShowDialog();
+					checkResultAndShowDialog(isClose, isReload, jumpUrl);
 				}
 			}
 		}
