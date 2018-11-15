@@ -85,4 +85,5 @@ NO_AGENCY_DESC = 抱歉，还没有代理人
 BANK_CAED_ERRO_DESC = 请输入正确的银行卡号
 NO_OPIOION_DESC = 内容不能为空
 MOBILE_EXIST_DESC = 手机号已存在
+TOKEN_LOSE_EFFICACY_DESC = token已失效
 

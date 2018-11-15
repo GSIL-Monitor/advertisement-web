@@ -296,6 +296,14 @@ public class ComRetCode {
 	public static final int NO_OPIOION = 810;
 	public static final String NO_OPIOION_DESC = "内容不能为空";
 
+	/* 811手机号已存在 */
+	public static final int MOBILE_EXIST = 811;
+	public static final String MOBILE_EXIST_DESC = "手机号已存在";
+
+	/* 812token已失效 */
+	public static final int TOKEN_LOSE_EFFICACY = 812;
+	public static final String TOKEN_LOSE_EFFICACY_DESC = "token已失效";
+
 	public static Map<Integer, String> retCodeMap = new LinkedHashMap<Integer, String>();
 
 	static {
