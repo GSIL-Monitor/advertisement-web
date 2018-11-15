@@ -269,7 +269,7 @@ public class UserController extends BaseController {
                                         String params) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
         try {
-            Map<String, String> parameterMap = appService.decryptParameters(appId, params);
+            Map<String, String> parameterMap = appService.decryptParameters(appId,params);
             String code = parameterMap.get("code");
             String from = parameterMap.get("from");
             String inviteUserId = parameterMap.get("inviteUserId");
@@ -303,7 +303,11 @@ public class UserController extends BaseController {
                 Agency agency = new Agency();
                 if (wxUser != null && inviteUserId != null) {
                     agency.setUserId(wxUser.getUserId());
-                    agency.setAgencyName(wxUser.getNickName());
+                    if (!StringUtil.isEmpty(wxUser.getNickName()) && !("undefined".equals(wxUser.getNickName()))){
+                        agency.setAgencyName(wxUser.getNickName());
+                    }else {
+                        agency.setAgencyName("");
+                    }
                     agency.setInviteUserId(Long.valueOf(inviteUserId));
                     agencyService.insertAgency(agency);
                 }
@@ -311,10 +315,12 @@ public class UserController extends BaseController {
             LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "",
                     JSPHelper.getRemoteAddr(request));
             loginToken.setRegister(register);
-            loginToken.setUser(user);
-
             setSession(request, loginToken.getToken(), user);
             resultMap.put("loginToken", loginToken);
+            Agency agency = new Agency();
+            agency.setUserId(user.getUserId());
+            agency.setAgencyName(user.getNickName());
+            agencyService.updateAgency(agency);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
             return resultMap;
         } catch (BusinessException e) {
@@ -349,7 +355,11 @@ public class UserController extends BaseController {
             updateUser.setAvatar(avatar);
             userService.updateUser(updateUser);
             Agency agency = new Agency();
-            agency.setAgencyName(name);
+            if (!StringUtil.isEmpty(name) && !("undefined".equals(name))){
+                agency.setAgencyName(name);
+            }else {
+                agency.setAgencyName("");
+            }
             agency.setUserId(user.getUserId());
             agencyService.updateAgency(agency);
             request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, user);
