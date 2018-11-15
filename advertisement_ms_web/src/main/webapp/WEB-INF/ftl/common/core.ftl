@@ -1,13 +1,13 @@
 <#include 'config.ftl'/>
 <#macro cssFile file=[]>
-    <#list file as x><link rel="stylesheet" href="${cdnUrl}/css/${x}?${cdnFileVersion}"/></#list>
+    <#list file as x><link rel="stylesheet" href="${ossUrl}/css/${x}"/></#list>
 </#macro>
 <#macro fontsomeCssFile file=[]>
-    <#list file as x><link rel="stylesheet" href="${cdnUrl}/font-awesome/css/${x}?${cdnFileVersion}"/></#list>
+    <#list file as x><link rel="stylesheet" href="${cdnUrl}/font-awesome/css/${x}"/></#list>
 </#macro>
 
 <#macro jsFile file=[]>
-    <#list file as x><script src="${cdnUrl}/js/${x}?${cdnFileVersion}"></script></#list>
+    <#list file as x><script src="${ossUrl}/js/${x}"></script></#list>
 </#macro>
 <#macro htmlHead title="">
 	<!doctype html>

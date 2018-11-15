@@ -1442,7 +1442,7 @@ form {
 }
 
 .table-bordered td {
-	text-align: left;
+	text-align: center;
 	border-left: 1px solid #CCC;
 	border-radius: 0 !important;
 	input {
@@ -1564,18 +1564,30 @@ select {
 }
 
 .filter-box {
-	padding: .16rem 0 .2rem .3rem;
+	padding: .1rem 0 .2rem .3rem;
 }
 
 .filter-box .btn {
 	margin-right: .12rem;
 }
 
+.dropdown-menu li.selected:after {
+	content: "\f00c";
+	color: #1AB394;
+	font-family: FontAwesome;
+	position: absolute;
+	right: .05rem;
+	top: .1rem;
+	font-size: .18rem;
+}
+
 .filter-box .dropdown-toggle {
 	height: .44rem;
+	width: 1.6rem;
 	line-height: .44rem;
 	padding-top: 0;
 	padding-bottom: 0;
+	padding-left: .1rem;
 	box-sizing: border-box;
 	background-color: #fff;
 	border-radius: .02rem;
@@ -1585,6 +1597,7 @@ select {
 .filter-box .dropdown-toggle .caret{
 	margin-top: -2px;
     margin-left: 0;
+    right: .05rem;
     vertical-align: middle;
 }
 

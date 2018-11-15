@@ -16,35 +16,33 @@
 			<form action="${rc.contextPath}/admin/${functionName}/allocatePlan.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
 				<input type="hidden" name="planId" value="${planId}" style="width:60%;">
 				<input type="hidden" name="advertiserId" value="${advertiserId}" style="width:60%;">
-				<div class="span12">
-					<div class="widget-box">
-						<div class="widget-title">
-							<span class="icon"><i class="icon-th"></i>
-							</span>
-						</div>
-						<div class="widget-content nopadding">
-							<table class="table table-bordered table-striped" id="">
-								<tbody>
-									<tr>
-										<td>选择媒体：</td>
-										<td>
-											<div style="width:60%;">
-												<select name="channel" class="selectpicker form-control">
-													<#list channelList as channel>
-														<option value="${channel.key}">${channel.name}</option>
-													</#list>
-												</select>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" style="text-align:center">
-											<input type="submit" name="" value="提交" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();">
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+				<div class="widget-box">
+					<div class="widget-title">
+						<span class="icon"><i class="icon-th"></i>
+						</span>
+					</div>
+					<div class="widget-content nopadding">
+						<table class="table table-bordered table-striped" id="">
+							<tbody>
+								<tr>
+									<td>选择媒体：</td>
+									<td>
+										<div style="width:60%;">
+											<select name="channel" class="selectpicker form-control" multiple>
+												<#list channelList as channel>
+													<option value="${channel.key}">${channel.name}</option>
+												</#list>
+											</select>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4" style="text-align:center">
+										<input type="submit" name="" value="提交" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();">
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</form>

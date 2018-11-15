@@ -6,6 +6,9 @@
 <#-- cdn -->
 <#assign cdnUrl = cdnUrl!'/ms/html' />
 
+<#-- oss -->
+<#assign ossUrl = '//ktadtech.oss-cn-beijing.aliyuncs.com/ms/html' />
+
 <#-- 时间戳 -->
 <#assign cdnFileVersion = cdnFileVersion!(.now?string('yyyyMMddhhmmss'))/>
 
