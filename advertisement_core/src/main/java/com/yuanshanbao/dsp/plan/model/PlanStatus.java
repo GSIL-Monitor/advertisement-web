@@ -19,7 +19,7 @@ public class PlanStatus {
 	public static final int UNDERREVIEWED = 5;
 	public static final String UNDERREVIEWED_DESCRIPTION = "审核中";
 	public static final int DENIED = 6;
-	public static final String DENIEDD_DESCRIPTION = "驳回";
+	public static final String DENIED_DESCRIPTION = "驳回";
 	public static final int DELETE = -1;
 	public static final String DELETE_DESCRIPTION = "已删除";
 
@@ -33,7 +33,7 @@ public class PlanStatus {
 		codeDescriptionMap.put(INVALID, INVALID_DESCRIPTION);
 		codeDescriptionMap.put(UNREVIEWED, UNREVIEWED_DESCRIPTION);
 		codeDescriptionMap.put(UNDERREVIEWED, UNDERREVIEWED_DESCRIPTION);
-		codeDescriptionMap.put(DENIED, DENIEDD_DESCRIPTION);
+		codeDescriptionMap.put(DENIED, DENIED_DESCRIPTION);
 	}
 
 	public static String getDescription(Integer code) {

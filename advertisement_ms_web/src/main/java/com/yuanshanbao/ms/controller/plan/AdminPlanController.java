@@ -245,7 +245,7 @@ public class AdminPlanController extends PaginationController {
 	@RequestMapping("/reviewQuery.do")
 	public Object reviewQuery(String range, Plan plan, Order order, HttpServletRequest request,
 			HttpServletResponse response) {
-		plan.setStatus(PlanStatus.UNREVIEWED);
+		// plan.setStatus(PlanStatus.UNREVIEWED);
 		plan.setProjectId(getProjectId(request));
 		List<Plan> list = planService.selectPlan(plan, getPageBounds(range, request));
 		PageList pageList = (PageList) list;
@@ -256,7 +256,10 @@ public class AdminPlanController extends PaginationController {
 	public String reviewDetails(String range, Long planId, HttpServletRequest request, HttpServletResponse response) {
 		Plan plan = planService.selectPlan(planId);
 		request.setAttribute("itemEdit", plan);
-		request.setAttribute("statusList", PlanStatus.getCodeDescriptionMap().entrySet());
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		map.put(PlanStatus.ONLINE, PlanStatus.ONLINE_DESCRIPTION);
+		map.put(PlanStatus.DENIED, PlanStatus.DENIED_DESCRIPTION);
+		request.setAttribute("statusList", map.entrySet());
 		return PAGE_REVIEW;
 	}
 

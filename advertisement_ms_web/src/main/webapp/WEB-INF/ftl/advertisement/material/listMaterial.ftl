@@ -31,6 +31,11 @@
 			        "render": function ( data, type, full, meta ) {
 			            return '<div class="list-btn"><a href="'+data+'"  class="btn btn-green" target="_blank">查看</a></div>';
 			       }
+		        },{
+			    	"data": "${functionId}",
+			        "render": function ( data, type, full, meta ) {
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-yellow" target="_blank">修改</a></div>';
+			       }
 		        }];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
 		
@@ -93,6 +98,7 @@
 							<th>状态</th>
 							<th>备注</th>
 							<th>查看图片</th>
+							<th>修改</th>
 						</tr>
 					</thead>
 					<tbody>

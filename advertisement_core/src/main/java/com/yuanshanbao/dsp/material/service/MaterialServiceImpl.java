@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.material.dao.MaterialDao;
 import com.yuanshanbao.dsp.material.model.Material;
@@ -23,6 +25,8 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Autowired
 	private MaterialDao materialDao;
+	@Autowired
+	private AdvertiserService advertiserService;
 
 	@Override
 	public void insertMaterial(Material material) {
@@ -84,6 +88,15 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	private List<Material> setProperty(List<Material> list) {
+		List<Long> advertiserIds = new ArrayList<Long>();
+		for (Material material : list) {
+			advertiserIds.add(material.getAdvertiserId());
+		}
+
+		Map<Long, Advertiser> map = advertiserService.selectAdvertiserByIds(advertiserIds);
+		for (Material material : list) {
+			material.setAdvertiser(map.get(material.getAdvertiserId()));
+		}
 		return list;
 	}
 
@@ -112,7 +125,7 @@ public class MaterialServiceImpl implements MaterialService {
 		if (materialIds == null || materialIds.size() == 0) {
 			return map;
 		}
-		List<Material> list = materialDao.selectMaterialByIds(materialIds);
+		List<Material> list = setProperty(materialDao.selectMaterialByIds(materialIds));
 
 		for (Material param : list) {
 			map.put(param.getMaterialId(), param);

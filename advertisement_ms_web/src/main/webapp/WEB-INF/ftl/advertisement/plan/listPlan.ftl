@@ -78,7 +78,7 @@
 		        },{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/strategy/strategyWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">添加定向</a></div>';
+			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/strategy/strategyWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">定向</a></div>';
 			       }
 		        }];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);

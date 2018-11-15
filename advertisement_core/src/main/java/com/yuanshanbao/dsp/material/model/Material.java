@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.material.model;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 
 public class Material {
 	private Long materialId;
@@ -22,6 +23,8 @@ public class Material {
 	private Integer status;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+
+	private Advertiser advertiser;
 
 	public Long getMaterialId() {
 		return materialId;
@@ -173,5 +176,13 @@ public class Material {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public Advertiser getAdvertiser() {
+		return advertiser;
+	}
+
+	public void setAdvertiser(Advertiser advertiser) {
+		this.advertiser = advertiser;
 	}
 }

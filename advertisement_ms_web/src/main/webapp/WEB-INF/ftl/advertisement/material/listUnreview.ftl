@@ -19,6 +19,17 @@
 			    },{
 			    	"data": "createTimeContent"
 				},{
+			    	"data": null,
+		        	"render": function ( data, type, full, meta ) {
+			        	if(data.status ==1){
+			            	return "<a href='javascript:;'  target='_blank'>已审核</a>";
+			        	}else if(data.status ==2){
+			        		return "<a href='javascript:;'  target='_blank'>未审核</a>";
+			        	}else if(data.status ==4){
+			        		return "<a href='javascript:;'  class='' target='_blank'>驳回</a>";
+			        	}
+		        	}
+				},{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
 			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/reviewDetails.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">审核</a></div>';
@@ -58,7 +69,7 @@
 					<div class="btn-group">
             			<div class="filter-component">
 							<h6>计划名称：</h6>
-							<input type="text" name="title" id="title" placeholder="请输入计划名称" />
+							<input type="text" name="title" id="title" placeholder="请输入创意名称" />
 						</div>	  
 					</div>
 					<div class="btn btn-green" id="queryButton">确定</div>
@@ -73,6 +84,7 @@
 							<th>广告主</th>
 							<th>图片链接</th>
 							<th>创建时间</th>
+							<th>状态</th>
 							<th>审核</th>
 						</tr>
 					</thead>

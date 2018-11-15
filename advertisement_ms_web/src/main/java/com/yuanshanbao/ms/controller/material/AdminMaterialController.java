@@ -22,7 +22,6 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
-import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -31,6 +30,7 @@ import com.yuanshanbao.dsp.material.model.MaterialStatus;
 import com.yuanshanbao.dsp.material.model.MaterialType;
 import com.yuanshanbao.dsp.material.service.MaterialService;
 import com.yuanshanbao.dsp.order.model.Order;
+import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
@@ -136,37 +136,35 @@ public class AdminMaterialController extends PaginationController {
 	@RequestMapping("/updateWindow.do")
 	public String updateWindow(HttpServletRequest request, HttpServletResponse response, Material material,
 			Probability probability, Quota quota) {
-		String isDisplay = "false";
+		Advertiser advertiser = getBindAdvertiserByUser();
+		if (advertiser != null) {
+			material.setAdvertiserId(advertiser.getAdvertiserId());
+		}
 		List<Material> list = materialService.selectMaterial(material, new PageBounds());
-		List<Probability> proList = probabilityService.selectProbabilitys(probability, new PageBounds());
-		List<Quota> quotaList = quotaService.selectQuota(quota, new PageBounds());
-		if (list != null && list.size() >= 0) {
-			material = list.get(0);
+		Material result = new Material();
+		if (list != null && list.size() > 0) {
+			result = list.get(0);
 		}
-		if (proList != null && proList.size() == 1) {
-			if (quotaList != null && quotaList.size() == 1) {
-				probability = proList.get(0);
-				quota = quotaList.get(0);
-				isDisplay = "true";
-			}
-		}
-		Long advertiserId = null;
-		request.setAttribute("isDisplay", isDisplay);
-		// setProperty(request, getProjectId(request), advertiserId);
-		request.setAttribute("categories", ConfigManager.getCategoryMap());
-		request.setAttribute("tagsList", ConstantsManager.getTagsList(ConstantsManager.ADVERTISEMENT));
-		request.setAttribute("itemEdit", material);
-		request.setAttribute("probability", probability);
-		request.setAttribute("quota", quota);
+		request.setAttribute("itemEdit", result);
 		return PAGE_UPDATE;
 	}
 
 	@ResponseBody
 	@RequestMapping("/update.do")
-	public Object update(Material material, String prizeDesc, HttpServletRequest request, HttpServletResponse response) {
+	public Object update(Material material, MultipartFile image, HttpServletRequest request,
+			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
+			BufferedImage bufferedImage = ImageIO.read(image.getInputStream());
+			if (bufferedImage == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			if (image != null && !image.isEmpty()) {
+				material.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
+				material.setWidth(bufferedImage.getWidth());
+				material.setHeight(bufferedImage.getHeight());
+			}
 			validateParameters(material);
 			materialService.updateMaterial(material);
 			AdminServerController.refreshConfirm();
@@ -194,7 +192,6 @@ public class AdminMaterialController extends PaginationController {
 	public Object reviewQuery(String range, Material material, Order order, HttpServletRequest request,
 			HttpServletResponse response) {
 		material.setProjectId(getProjectId(request));
-		material.setStatus(MaterialStatus.UNREVIEWED);
 		Object object = materialService.selectMaterial(material, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
@@ -204,7 +201,10 @@ public class AdminMaterialController extends PaginationController {
 	public String reviewDetails(String range, Long materialId, HttpServletRequest request, HttpServletResponse response) {
 		Material material = materialService.selectMaterial(materialId);
 		request.setAttribute("itemEdit", material);
-		request.setAttribute("statusList", MaterialStatus.getCodeDescriptionMap().entrySet());
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		map.put(PlanStatus.ONLINE, PlanStatus.ONLINE_DESCRIPTION);
+		map.put(PlanStatus.DENIED, PlanStatus.DENIED_DESCRIPTION);
+		request.setAttribute("statusList", map.entrySet());
 		return PAGE_REVIEW;
 	}
 
