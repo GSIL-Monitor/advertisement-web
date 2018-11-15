@@ -612,7 +612,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			Double consumed = getDoubleCount(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()));
 			Double dayConsumed = getDoubleCount(RedisConstant.getPlanDayBalanceCountKey(null, plan.getPlanId()));
 			if (BigDecimal.valueOf(consumed).compareTo(plan.getSpend()) < 0) {
-				if (BigDecimal.valueOf(dayConsumed).compareTo(plan.getDayLimit()) < 0) {
+				if (plan.getDayLimit() != null && BigDecimal.valueOf(dayConsumed).compareTo(plan.getDayLimit()) < 0) {
+					availableList.add(probability);
+				} else {
 					availableList.add(probability);
 				}
 			}
