@@ -7,7 +7,6 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
-import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.plan.model.Plan;
 
@@ -162,7 +161,7 @@ public class Probability {
 	}
 
 	public String getStatusValue() {
-		return CommonStatus.getDescription(status);
+		return ProbabilityStatus.getDescription(status);
 	}
 
 	public String getCreateTimeContent() {

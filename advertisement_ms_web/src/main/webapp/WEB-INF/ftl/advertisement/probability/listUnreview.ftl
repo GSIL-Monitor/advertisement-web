@@ -4,7 +4,7 @@
 <@sideBar />
 <script>
 	function reload() {
-		var newUrl="${rc.contextPath}/admin/${functionName}/query.do?advertiserId=${advertiserId}";
+		var newUrl="${rc.contextPath}/admin/${functionName}/reviewQuery.do?advertiserId=${advertiserId}";
 		dataTable.ajax.url(newUrl);
 		dataTable.ajax.reload();
 	}
@@ -13,13 +13,24 @@
 		dataTableConfig.columns = [{
 			    	"data": "probabilityId"
 			    },{
+			    	"data": "plan.advertiser.companyName"
+			    },{
 			    	"data": "plan.order.name"
 			    },{
 			    	"data": "plan.name"
 			    },{
-			    	"data": "plan.advertiser.companyName"
+			    	"data": "channel"
 			    },{
 			    	"data": "createTimeContent"
+				},{
+			    	"data": null,
+		        	"render": function ( data, type, full, meta ) {
+			        	if(data.status ==1){
+			            	return "<a href='javascript:;'  target='_blank'>已审核</a>";
+			        	}else if(data.status ==3){
+			        		return "<a href='javascript:;'  target='_blank'>未审核</a>";
+			        	}
+			        }
 				},{
 			    	"data": "${functionId}",
 			        "render": function ( data, type, full, meta ) {
@@ -33,10 +44,10 @@
 			if (isNotEmpty($('#advertiserId').val())) {
 				params += "advertiserId=" + encodeURI(encodeURI($('#advertiserId').val())) + "&";
 			}
-			if (isNotEmpty($('#title').val())) {
-				params += "title=" + encodeURI(encodeURI($('#title').val())) + "&";
+			if (isNotEmpty($('#channel').val())) {
+				params += "channel=" + encodeURI(encodeURI($('#channel').val())) + "&";
 			}
-			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?" + params;
+			var newUrl="${rc.contextPath}/admin/${functionName}/reviewQuery.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
@@ -59,8 +70,8 @@
             	<div class="filter-box">
 					<div class="btn-group">
             			<div class="filter-component">
-							<h6>计划名称：</h6>
-							<input type="text" name="title" id="title" placeholder="请输入计划名称" />
+							<h6>渠道key：</h6>
+							<input type="text" name="channel" id="channel" placeholder="请输入渠道key" />
 						</div>	  
 					</div>
 					<div class="btn btn-green" id="queryButton">确定</div>
@@ -72,10 +83,12 @@
 					<thead>
 						<tr>
 							<th>ID</th>
+							<th>广告主</th>
 							<th>订单名称</th>
 							<th>计划名称</th>
-							<th>广告主</th>
+							<th>投放渠道</th>
 							<th>创建时间</th>
+							<th>状态</th>
 							<th>审核</th>
 						</tr>
 					</thead>

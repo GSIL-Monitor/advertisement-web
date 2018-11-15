@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
@@ -156,18 +157,19 @@ public class AdminMaterialController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			BufferedImage bufferedImage = ImageIO.read(image.getInputStream());
-			if (bufferedImage == null) {
-				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
-			}
 			if (image != null && !image.isEmpty()) {
+				BufferedImage bufferedImage = ImageIO.read(image.getInputStream());
+				if (bufferedImage == null) {
+					throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+				}
 				material.setImageUrl(UploadUtils.uploadFile(image, "test/img"));
 				material.setWidth(bufferedImage.getWidth());
 				material.setHeight(bufferedImage.getHeight());
 			}
 			validateParameters(material);
+			material.setStatus(MaterialStatus.UNREVIEWED);
 			materialService.updateMaterial(material);
-			AdminServerController.refreshConfirm();
+			// AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
@@ -216,12 +218,14 @@ public class AdminMaterialController extends PaginationController {
 			if (material.getMaterialId() == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
+			LoggerUtil.info("reviewMaterial, 计划详情信息={},操作人员={}", JacksonUtil.obj2json(material), getCurrentUser()
+					.getUsername());
 			materialService.updateMaterial(material);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
-			LoggerUtil.error("plan update function - upload image error", e2);
+			LoggerUtil.error("review material function", e2);
 		}
 		return result;
 	}

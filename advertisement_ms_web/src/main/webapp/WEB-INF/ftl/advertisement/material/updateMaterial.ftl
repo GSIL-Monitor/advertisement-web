@@ -16,7 +16,8 @@
 		<div class="row-fluid">
 			<form action="${rc.contextPath}/admin/${functionName}/update.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
 				<input type="hidden" name="${functionId}" value="${itemEdit.materialId?c}"/>
-				<div class="span12">
+				<input type="hidden" name="status" value="${itemEdit.status}"/>
+				<div>
 					<div class="widget-box">
 						<div class="widget-title">
 							<h5>${functionTitle}修改</h5>
@@ -26,15 +27,21 @@
 								<tbody>
 									<tr>
 										<td width="20%">名称：</td>
-										<td width="80%">${itemEdit.name?c}</td>
+										<td>
+											<input type="text" name="name" style="width:60%;" value="${itemEdit.name}"></td>
+										</td>
 									</tr>
 									<tr>
 										<td width="20%">标题：</td>
-										<td width="80%">${itemEdit.title}</td>	
+										<td>
+											<input type="text" name="title" style="width:60%;" value="${itemEdit.title}"></td>
+										</td>
 									</tr>
 									<tr>
 										<td width="20%">描述：</td>
-										<td width="80%">${itemEdit.description}</td>	
+										<td>
+											<input type="text" name="description" style="width:60%;" value="${itemEdit.description}"></td>
+										</td>
 									</tr>
 									<tr>
 										<td>图片：</td>

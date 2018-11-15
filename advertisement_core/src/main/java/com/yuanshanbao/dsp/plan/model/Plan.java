@@ -27,6 +27,8 @@ public class Plan {
 	private String forbidChannelCategory;
 	private Timestamp startTime;
 	private Timestamp endTime;
+	private Timestamp dayStartTime;
+	private Timestamp dayEndTime;
 	private Integer status;
 	private String remark;
 	private Timestamp createTime;
@@ -243,5 +245,29 @@ public class Plan {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public Timestamp getDayStartTime() {
+		return dayStartTime;
+	}
+
+	public void setDayStartTime(Timestamp dayStartTime) {
+		this.dayStartTime = dayStartTime;
+	}
+
+	public void setDayStartTimeValue(String dayStartTimeValue) {
+		this.dayStartTime = DateUtils.formatToTimestamp(dayStartTimeValue, "yyyy-MM-dd HH:mm");
+	}
+
+	public Timestamp getDayEndTime() {
+		return dayEndTime;
+	}
+
+	public void setDayEndTime(Timestamp dayEndTime) {
+		this.dayEndTime = dayEndTime;
+	}
+
+	public void setDayEndTimeValue(String dayEndTimeValue) {
+		this.dayEndTime = DateUtils.formatToTimestamp(dayEndTimeValue, "yyyy-MM-dd HH:mm");
 	}
 }

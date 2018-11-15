@@ -71,9 +71,13 @@
 			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-yellow" target="_blank">修改</a></div>';
 			       }
 		        },{
-			    	"data": "${functionId}",
+			    	"data": null,
 			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/setMaterialWindow.do?${functionId}='+data+'"  class="btn btn-green" target="_blank">设置创意</a></div>';
+			        	if(data.material=="" || data.material==null){
+			        		return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/setMaterialWindow.do?${functionId}='+data.planId+'"  class="btn btn-green" target="_blank">未设置</a></div>';
+			        	}else{
+				            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/setMaterialWindow.do?${functionId}='+data.planId+'"  class="btn btn-green" target="_blank">已设置</a></div>';
+			        	}
 			       }
 		        },{
 			    	"data": "${functionId}",

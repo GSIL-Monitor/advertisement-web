@@ -44,6 +44,10 @@ public class ComRetCode {
 	public static final int FAIL_DB = 204;
 	public static final String FAIL_DB_DESC = "网络异常，请稍后再试！";
 
+	/* 206暂无广告可以展示！ */
+	public static final int NO_ADVERTISEMENT = 206;
+	public static final String NO_ADVERTISEMENT_DESC = "暂无广告可以展示！";
+
 	/** #21 登录相关错误 **/
 
 	/* 211用户已存在。 */
@@ -230,7 +234,7 @@ public class ComRetCode {
 	public static final int INFORMATION_EMPTY_ERROR = 409;
 	public static final String INFORMATION_EMPTY_ERROR_DESC = "提交信息不能为空";
 
-	/* 408您已经领取过该产品 */
+	/* 408您已经办理过该产品 */
 	public static final int APPLY_EXIST_ERROR = 408;
 	public static final String APPLY_EXIST_ERROR_DESC = "您已经办理过该产品";
 
