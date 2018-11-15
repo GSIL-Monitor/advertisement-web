@@ -274,6 +274,8 @@ public class AdminPlanController extends PaginationController {
 			if (PlanStatus.ONLINE == plan.getStatus()) {
 				plan.setStatus(PlanStatus.OFFLINE);
 			}
+			LoggerUtil
+					.info("reviewPlan, 计划详情信息={},操作人员={}", JacksonUtil.obj2json(plan), getCurrentUser().getUsername());
 			planService.updatePlan(plan);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -307,18 +309,24 @@ public class AdminPlanController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/allocatePlan.do")
-	public Object allocatePlan(HttpServletRequest request, HttpServletResponse response, Probability probability) {
+	public Object allocatePlan(HttpServletRequest request, HttpServletResponse response, String channel, Long planId) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
-			validateParameters(probability);
-			Plan plan = planService.selectPlan(probability.getPlanId());
-			probability.setProjectId(getProjectId(request));
-			probability.setStatus(ProbabilityStatus.UNREVIEWED);
-			probability.setOrderId(plan.getOrderId());
-			probabilityService.insertProbability(probability);
+			String[] keys = channel.split(",");
+			Plan plan = planService.selectPlan(planId);
+			for (String key : keys) {
+				Probability probability = new Probability();
+				probability.setPlanId(planId);
+				probability.setChannel(key);
+				probability.setProjectId(getProjectId(request));
+				probability.setStatus(ProbabilityStatus.UNREVIEWED);
+				probability.setOrderId(plan.getOrderId());
+				probability.setAdvertiserId(plan.getAdvertiserId());
+				probabilityService.insertProbability(probability);
+				LoggerUtil.info("allocatePlan, 分配详情信息={},操作人员={}", JacksonUtil.obj2json(probability), getCurrentUser()
+						.getUsername());
+			}
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
-			LoggerUtil.info("allocatePlan, 分配详情信息={},操作人员={}", JacksonUtil.obj2json(probability), getCurrentUser()
-					.getUsername());
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
@@ -346,6 +354,7 @@ public class AdminPlanController extends PaginationController {
 			} else {
 				plan.setMaterial(material);
 			}
+			plan.setStatus(PlanStatus.UNREVIEWED);
 			planService.updatePlan(plan);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -385,7 +394,7 @@ public class AdminPlanController extends PaginationController {
 				resultMaterial.deleteCharAt(0);
 			}
 			plan.setMaterial(resultMaterial.toString());
-			// plan.setStatus(PlanStatus.UNREVIEWED);
+			plan.setStatus(PlanStatus.UNREVIEWED);
 			planService.updatePlan(plan);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

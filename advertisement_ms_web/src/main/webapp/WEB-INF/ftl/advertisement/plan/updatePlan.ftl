@@ -19,6 +19,7 @@
 			<div class="row-fluid">
 				<form action="${rc.contextPath}/admin/${functionName}/update.do" method="post" name="form" enctype="multipart/form-data" target="formCommitIframe">
 					<input type="hidden" name="${functionId}" value="${itemEdit.planId?c}"/>
+					<input type="hidden" name="status" value="${itemEdit.status}"/>
 					<div class="span12">
 						<div class="widget-box">
 							<div class="widget-title">

@@ -15,6 +15,8 @@
 			    },{
 			    	"data": "advertiser.companyName"
 			    },{
+			    	"data": "name"
+			    },{
 			    	"data": "imageUrl"
 			    },{
 			    	"data": "createTimeContent"
@@ -43,7 +45,7 @@
 				params += "advertiserId=" + encodeURI(encodeURI($('#advertiserId').val())) + "&";
 			}
 			if (isNotEmpty($('#title').val())) {
-				params += "title=" + encodeURI(encodeURI($('#title').val())) + "&";
+				params += "name=" + encodeURI(encodeURI($('#title').val())) + "&";
 			}
 			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?" + params;
 			dataTable.ajax.url(newUrl);
@@ -82,6 +84,7 @@
 						<tr>
 							<th>ID</th>
 							<th>广告主</th>
+							<th>创意名称</th>
 							<th>图片链接</th>
 							<th>创建时间</th>
 							<th>状态</th>

@@ -48,6 +48,16 @@
 											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;"></td>
 									</tr>
 									<tr>
+										<td>每日开启时间：</td>
+										<td>
+											<input type="text" name="dayStartTimeValue" id="dayStartTimeValue" style="width:60%;"></td>
+									</tr>
+									<tr>
+										<td>每日结束时间：</td>
+										<td>
+											<input type="text" name="dayEndTimeValue" id="dayEndTimeValue" style="width:60%;"></td>
+									</tr>
+									<tr>
 										<td>该计划预算金额（元）：</td>
 										<td>
 											<input type="text" name="spend" placeholder="最高预算不得超过剩余预算" style="width:60%;">
@@ -137,6 +147,30 @@
 			onShow:function( ct ){
 				this.setOptions({
 					minDate:$('#startTimeValue').val()?$('#startTimeValue').val():false
+				})
+			},
+			step: 15,
+			defaultTime: '08:00',
+			format:'Y-m-d H:i'
+		});
+		timer('#dayStartTimeValue');
+		$('#dayStartTimeValue').datetimepicker({
+			minDate:0,
+			onShow:function( ct ){
+				this.setOptions({
+					minDate:$('#dayStartTimeValue').val()?$('#dayStartTimeValue').val():false
+				})
+			},
+			step: 15,
+			defaultTime: '08:00',
+			format:'Y-m-d H:i'
+		});
+		timer('#dayEndTimeValue');
+		$('#dayEndTimeValue').datetimepicker({
+			minDate:0,
+			onShow:function( ct ){
+				this.setOptions({
+					minDate:$('#dayEndTimeValue').val()?$('#dayEndTimeValue').val():false
 				})
 			},
 			step: 15,

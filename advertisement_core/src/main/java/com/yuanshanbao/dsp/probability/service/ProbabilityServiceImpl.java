@@ -488,17 +488,20 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	public List<AdvertisementDetails> pickProbabilityByPlan(HttpServletRequest request, Long projectId,
 			Channel channelObject, MediaInformation mediaInformation) {
 		List<AdvertisementDetails> resultList = new ArrayList<AdvertisementDetails>();
-		Map<Long, Probability> probabilitymap = selectPlanFromCache(request, projectId, channelObject.getKey(),
+		Map<Long, Probability> probabilityMap = selectPlanFromCache(request, projectId, channelObject.getKey(),
 				mediaInformation);
-		if (probabilitymap.size() <= 0) {
+		if (probabilityMap.size() <= 0) {
 			return resultList;
 		}
 		Map<Long, BigDecimal> bidMap = DspConstantsManager.getBidByChannel(channelObject.getKey());
+		if (bidMap == null) {
+			return resultList;
+		}
 		Long probabilityId = dealWithCTRAndBid(bidMap);
 		if (probabilityId == null) {
 			return resultList;
 		}
-		Probability probability = probabilitymap.get(probabilityId);
+		Probability probability = probabilityMap.get(probabilityId);
 		resultList = getContent(probability, channelObject);
 		return resultList;
 	}
@@ -602,6 +605,16 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			}
 			if (plan.getEndTime() != null) {
 				if (plan.getEndTime().before(new Date())) {
+					continue;
+				}
+			}
+			if (plan.getDayStartTime() != null) {
+				if (plan.getDayStartTime().after(new Date())) {
+					continue;
+				}
+			}
+			if (plan.getDayEndTime() != null) {
+				if (plan.getDayEndTime().before(new Date())) {
 					continue;
 				}
 			}

@@ -32,6 +32,7 @@ import com.yuanshanbao.dsp.project.model.Project;
 @Controller
 public class IndexDspController {
 
+	private final static String EMPTYINFO = "emptyInfo";
 	@Autowired
 	private ProbabilityService probabilityService;
 
@@ -49,14 +50,19 @@ public class IndexDspController {
 					List<AdvertisementDetails> seatBid = probabilityService.pickProbabilityByPlan(request,
 							project.getProjectId(), channelObject, mediaInformation);
 					resultMap.put("seatBid", seatBid);
+					if (seatBid.size() == 0) {
+						throw new Exception(EMPTYINFO);
+					}
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
-			LoggerUtil.error("[advertisement dsp]: ", e);
-			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			if (!EMPTYINFO.equals(e.getMessage())) {
+				LoggerUtil.error("[advertisement dsp]: ", e);
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NO_ADVERTISEMENT);
 		}
 		return resultMap;
 	}

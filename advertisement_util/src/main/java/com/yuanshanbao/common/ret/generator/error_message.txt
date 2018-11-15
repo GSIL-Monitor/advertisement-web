@@ -4,6 +4,7 @@ FAIL_DESC = 网络异常，请稍后再试！
 COMMON_FAIL_DESC = 系统错误
 FAIL_PARTNER_DESC = 网络异常，请稍后再试！
 FAIL_DB_DESC = 网络异常，请稍后再试！
+NO_ADVERTISEMENT_DESC = 暂无广告可以展示！
 
 #21 登录相关错误
 USER_EXIST_DESC = 用户已存在。
@@ -83,5 +84,6 @@ NO_USERNAME_DESC = 姓名与上一次不一致
 NO_AGENCY_DESC = 抱歉，还没有代理人
 BANK_CAED_ERRO_DESC = 请输入正确的银行卡号
 NO_OPIOION_DESC = 内容不能为空
-
+MOBILE_EXIST_DESC = 手机号已存在
+TOKEN_LOSE_EFFICACY_DESC = token已失效
 
