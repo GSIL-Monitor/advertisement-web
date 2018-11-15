@@ -187,7 +187,7 @@ function confirmSend(url, title) {
 	}
 }
 
-function sendAjax(url, handleSuccess) {
+function sendAjax(url, handleSuccess, isReload, jumpUrl) {
 	$.ajax({
 		url : url,
 		dataType : 'json'
@@ -197,7 +197,7 @@ function sendAjax(url, handleSuccess) {
 			if (typeof (content) == "undefined" || content.length == 0) {
 				content = '操作成功';
 			}
-			showTipDialogAndSetContent(content, false, true);
+			showTipDialogAndSetContent(content, false, true, isReload, jumpUrl);
 			if (isNotNull(handleSuccess)) {
 				handleSuccess(data);
 			}
@@ -206,11 +206,11 @@ function sendAjax(url, handleSuccess) {
 			if (typeof (content) == "undefined" || content.length == 0) {
 				content = '操作失败';
 			}
-			showTipDialogAndSetContent(data.retDesc, true, true);
+			showTipDialogAndSetContent(data.retDesc, true, true, isReload, jumpUrl);
 		}
 		console.log(data);
 	}, function() {
-		showTipDialogAndSetContent('网络错误，请重试', true, true);
+		showTipDialogAndSetContent('网络错误，请重试', true, true, isReload, jumpUrl);
 	});
 }
 
