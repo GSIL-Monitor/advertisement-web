@@ -8,4 +8,6 @@ public class TimesLimitConstants {
 	public static final String SEND_SMS_RANDOM_CODE = "send_sms_random_code";
 	public static final String VERIFY_SMS_RANDOM_CODE_FAIL = "verify_sms_random_code_fail";
 
+	public static final String REGISTER = "register";
+
 }

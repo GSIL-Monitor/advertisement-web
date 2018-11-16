@@ -150,17 +150,29 @@
 		order by invite_time desc
 	</select>
 
+	<select id="selectAgencysByInviteUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+		select count(user_id)
+		from tb_agency
+		where
+		invite_user_id = #{inviteUserId} and status = 1
+	</select>
+
+
+
+
+
 	<insert id="insertAgency" parameterType="Agency">
 		insert into
-		tb_agency(user_id,invite_user_id,name,mobile,agency_name,brokerage,product_id,product_name,status,invite_time,create_time)
+		tb_agency(user_id,invite_user_id,name,mobile,agency_name,brokerage,product_id,product_name,status,invite_time,create_time,update_time)
 		values
 		(#{userId}, #{inviteUserId}, #{name},#{mobile}, #{agencyName},#{brokerage},#{productId},#{productName},
-		#{status},sysdate(), sysdate())
+		#{status},sysdate(), sysdate(),sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 				   keyProperty="userId">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>
+
 
 
 </mapper>

@@ -182,6 +182,10 @@ public class UserController extends BaseController {
                     if (user.getStatus() != null && user.getStatus() == UserStatus.LOCK) {
                         throw new BusinessException(ComRetCode.USER_LOCKED);
                     }
+                    if (StringUtils.isNotBlank(user.getMobile())){
+                        user.setMobile(null);
+                        userService.updateUserByMobile(user);
+                    }
                 } else if (tokenUser != null) {
                     tokenUser.setMobile(mobile);
                     user = tokenUser;
@@ -191,7 +195,7 @@ public class UserController extends BaseController {
                     user.setMobile(mobile);
                     user.setRegisterFrom(registerFrom);
                     user.setStatus(UserStatus.NORMAL);
-                    user.setLevel(UserLevel.ONLEVEL);
+                    user.setLevel(UserLevel.MANAGER);
                     String password = RandomUtil.generateNumberString(8);
                     generateUser(user, password, inviteCode);
                 }
@@ -293,7 +297,7 @@ public class UserController extends BaseController {
                 user.setWeixinId(unionId);
                 user.setRegisterFrom(from);
                 user.setStatus(UserStatus.NORMAL);
-                user.setLevel(UserLevel.ONLEVEL);
+                user.setLevel(UserLevel.MANAGER);
                 if (inviteUserId != null) {
                     user.setInviteUserId(Long.valueOf(inviteUserId));
                 }
@@ -642,7 +646,6 @@ public class UserController extends BaseController {
         userService.insertOrUpdateUser(user);
         user.setPassword(MD5Util.encryptPassword(password, user.getUserId() + ""));
         userService.updateUser(user);
-        User inviteUser = userService.selectUserById(user.getInviteUserId());
         BaseInfo baseInfo = new BaseInfo();
         baseInfo.setUserId(user.getUserId() + "");
         baseInfo.setName(DataFormat.hiddenMobile(user.getMobile()));

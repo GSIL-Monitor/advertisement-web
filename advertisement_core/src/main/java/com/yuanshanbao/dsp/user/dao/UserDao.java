@@ -26,4 +26,8 @@ public interface UserDao {
 
 	public LoginToken getLoginToken(LoginToken loginToken);
 
+	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId, Integer level);
+
+
+	public int updateUserBymobile(User user);
 }

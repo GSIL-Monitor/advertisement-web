@@ -7,10 +7,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yuanshanbao.common.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
@@ -51,6 +53,9 @@ public class SmsController extends BaseController {
 	@Autowired
 	private AppService appService;
 
+	@Autowired
+	private UserService userService;
+
 	/**
 	 * 开户接口2.短信发送接口
 	 * 
@@ -61,9 +66,10 @@ public class SmsController extends BaseController {
 	@RequestMapping("/send")
 	@ResponseBody
 	public Map<String, Object> SendSMSMob(HttpServletRequest request, HttpServletResponse response, String voice,
-			String smsToken) {
+										  String smsToken) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+
 			String mobile = request.getParameter("mobile");
 			String type = request.getParameter("type");
 			String channel = request.getParameter("from");
@@ -96,6 +102,9 @@ public class SmsController extends BaseController {
 			} else if (!ValidateUtil.isPhoneNo(mobile)) {
 				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.WRONG_MOBILE);
 				return resultMap;
+			}else if (TimesLimitConstants.REGISTER.equals(type)){
+				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.MOBILE_EXIST);
+				return resultMap;
 			}
 
 			// String signature = getSignatureValue(type, mobile, appKey);
@@ -121,7 +130,6 @@ public class SmsController extends BaseController {
 				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 				return resultMap;
 			}
-
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
 			return resultMap;

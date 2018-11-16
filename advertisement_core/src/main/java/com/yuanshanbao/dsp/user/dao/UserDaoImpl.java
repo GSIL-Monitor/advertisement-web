@@ -1,6 +1,8 @@
 package com.yuanshanbao.dsp.user.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -55,5 +57,20 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
 	public LoginToken getLoginToken(LoginToken token) {
 		return getSqlSession().selectOne("User.selectLoginToken", token);
 	}
+
+	@Override
+	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId,Integer level) {
+        Map<String ,Object> map = new HashMap<>();
+        map.put("inviteUserId",inviteUserId);
+        map.put("level",level);
+		return getSqlSession().selectOne("User.selectManagerCount",map);
+	}
+
+	@Override
+	public int updateUserBymobile(User user) {
+		user.setUpdateTime(DateUtils.getCurrentTime());
+		return getSqlSession().update("User.updateUserMobile", user);
+	}
+
 
 }

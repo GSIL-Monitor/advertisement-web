@@ -55,8 +55,8 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
     }
 
     @Override
-    public List<Agency> selectAgencysByInviteId(Long inviteId) {
-        return getSqlSession().selectList("agency.selectAgencysByInviteId",inviteId);
+    public int selectAgencyByInviteId(Long inviteId) {
+        return getSqlSession().selectOne("agency.selectAgencysByInviteUserId",inviteId);
     }
 
     @Override
@@ -73,5 +73,10 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
             return null;
         }
         return getSqlSession().selectOne("agency.getSumBrokerage", inviteUserIds);
+    }
+
+    @Override
+    public int selectAgencyByInviteIdCount(Long inviteUserId) {
+        return getSqlSession().selectOne("agency.selectAgencyByInviteIdCount",inviteUserId);
     }
 }

@@ -3,15 +3,19 @@ package com.yuanshanbao.dsp.controller.agency;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,21 +45,12 @@ public class AgencyController extends BaseController {
     public Object getAgencyList(HttpServletRequest request, Agency agency, PageBounds pageBounds, String token) {
 
         Map<Object, Object> resultMap = new HashMap<>();
-
         try {
             // 获取当前用户信息
             User user = getLoginUser(token);
-            agency.setInviteUserId(user.getUserId());
-            List<Agency> agencyList = agencyService.selectAgencys(agency, pageBounds);
-            Map<Long, Agency> agencyMap = new LinkedHashMap<Long, Agency>();
-            for (Agency agen : agencyList) {
-                if (agen.getStatus() != null && agen.getStatus() != AgencyStatus.OFFCHECK) {
-                    agen.setBrokerage(BigDecimal.valueOf(0));
-                }
-                agencyMap.put(agen.getUserId(), agen);
-
-            }
-            resultMap.put("agencyList", agencyMap.values());
+            List<AgencyVo> agencyInfos = agencyService.getAgencyInfos(user, agency, pageBounds);
+            resultMap.put("agencyList", agencyInfos);
+            InterfaceRetCode.setAppCodeDesc(resultMap,ComRetCode.SUCCESS);
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
         } catch (Exception e) {

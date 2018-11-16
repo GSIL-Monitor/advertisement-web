@@ -58,6 +58,10 @@ public class Agency implements Serializable  {
         return updateTime;
     }
 
+    public  String getUpdateTimeValue(){
+        return DateUtils.format(updateTime,DateUtils.DEFAULT_DATE_FORMAT);
+    }
+
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
     }

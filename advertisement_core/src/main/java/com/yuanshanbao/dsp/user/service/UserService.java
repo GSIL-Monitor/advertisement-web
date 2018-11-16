@@ -53,5 +53,20 @@ public interface UserService {
 
 	public void updateUserBaseInfoIfNotExists(User user, String name, String avatar, String gender);
 
+	/**
+	 *当前用户等级详情
+	 * @param userId
+	 * @return
+	 */
+    public void getLevelDetails(Long userId);
+
+	/**
+	 * 查询用户等级为经理的人个数
+	 * @param inviteUserId
+	 * @return
+	 */
+	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId,Integer level);
+
+	void updateUserByMobile(User user);
 
 }

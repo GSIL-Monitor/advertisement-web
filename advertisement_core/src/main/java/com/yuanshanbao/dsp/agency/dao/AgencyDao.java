@@ -23,17 +23,15 @@ public interface AgencyDao {
 
     public List<Agency> selectAgencys(List<Long> IdList);
 
-    BigDecimal getAgencyBrokerage(Long inviteUserId);
+    public BigDecimal getAgencyBrokerage(Long inviteUserId);
 
-    List<Agency> selectAgencysByInviteId(Long inviteId);
+    public int selectAgencyByInviteId(Long inviteUserId);
 
 
-    /**
-     * ids
-     * @return
-     * @param inviteUserIds
-     */
+
     List<Agency> selectAgencysByInviteUserIds(List<Long> inviteUserIds);
 
     BigDecimal getSumBrokerage(List<Long> inviteUserIds);
+
+    int selectAgencyByInviteIdCount(Long inviteUserId);
 }

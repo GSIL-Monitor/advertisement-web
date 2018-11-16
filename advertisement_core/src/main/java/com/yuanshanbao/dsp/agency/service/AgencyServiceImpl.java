@@ -2,16 +2,23 @@ package com.yuanshanbao.dsp.agency.service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
+import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
+import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Administrator on 2018/10/22.
@@ -21,6 +28,9 @@ public class AgencyServiceImpl implements AgencyService {
 
     @Autowired
     private AgencyDao agencyDao;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public List<Agency> selectAgencys(Agency agency, PageBounds pageBounds) {
@@ -71,11 +81,47 @@ public class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
-    public List<Agency> selectAgencyByInviteId(Long inviteId) {
-        if (inviteId > 0) {
-            agencyDao.selectAgencysByInviteId(inviteId);
+    public int selectAgencyByInviteId(Long inviteUserId) {
+       return  agencyDao.selectAgencyByInviteId(inviteUserId);
+    }
+
+    @Override
+    public int selectAgencyByInviteIdCount(Long inviteUserId) {
+        return agencyDao.selectAgencyByInviteIdCount(inviteUserId);
+    }
+
+    @Override
+    public List<AgencyVo> getAgencyInfos(User user,Agency agency,PageBounds pageBounds) {
+
+        List<AgencyVo> agencyVoList = new LinkedList<>();
+        agency.setInviteUserId(user.getUserId());
+        List<Agency> agencyList = agencyDao.selectAgencys(agency, pageBounds);
+
+        for (Iterator iterator = agencyList.iterator(); iterator.hasNext(); ) {
+            Agency agen = (Agency) iterator.next();
+            if (agen.getProductId() != null) {
+                iterator.remove();
+            }
         }
-        return null;
+        if (agencyList.size() != 0){
+            for (Agency agen : agencyList) {
+                    User agencyUser =  userService.selectUserById(agen.getUserId());
+                    AgencyVo agencyVo = new AgencyVo();
+                    agencyVo.setUserId(agen.getUserId());
+                    agencyVo.setInviteTime(agen.getInviteTimeValue());
+                    agencyVo.setAgencyName(agencyUser.getNickName());
+                    agencyVo.setUserLevel(agencyUser.getLevelValue());
+                    agencyVo.setInviteUserLevel(userService.selectUserById(agen.getInviteUserId()).getLevelValue());
+                    agencyVoList.add(agencyVo);
+                    LoggerUtil.info("agencyVo success" +agencyVoList);
+            }
+        }else {
+            LoggerUtil.info("agencyVo error" + agencyList );
+           return agencyVoList;
+
+        }
+
+        return agencyVoList;
     }
 
     @Override
