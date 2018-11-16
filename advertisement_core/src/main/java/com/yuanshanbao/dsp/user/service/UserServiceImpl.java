@@ -436,7 +436,7 @@ public class UserServiceImpl implements UserService {
 
 		int result = -1;
 
-		result = userDao.updateUserMobile(user);
+		result = userDao.changeMobile(user);
 
 		if (result < 0) {
 			LoggerUtil.info("updateUserMobile：error"  + result);
@@ -446,13 +446,17 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public void channelMobile(User tokenUser, User user,String mobile) {
+	public Boolean changeMobile(User tokenUser, User user,String mobile) {
 		if (tokenUser != null && !user.getUserId().equals(tokenUser.getUserId())) {
 			tokenUser.setMobile(mobile);
 			userDao.updateUser(tokenUser);
 			user.setMobile(null);
-			userDao.updateUserMobile(user);
+			userDao.changeMobile(user);
+			return true;
+		}else {
+			return false;
 		}
+
 	}
 
 

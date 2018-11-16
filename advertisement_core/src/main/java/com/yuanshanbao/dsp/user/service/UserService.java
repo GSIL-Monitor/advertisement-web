@@ -69,6 +69,6 @@ public interface UserService {
 
 	void updateUserMobile(User user);
 
-	void channelMobile(User tokenUser, User user,String mobile);
+	Boolean changeMobile(User tokenUser, User user,String mobile);
 
 }

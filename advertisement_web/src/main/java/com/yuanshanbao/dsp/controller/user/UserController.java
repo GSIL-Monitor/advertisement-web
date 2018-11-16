@@ -183,7 +183,10 @@ public class UserController extends BaseController {
                     if (user.getStatus() != null && user.getStatus() == UserStatus.LOCK) {
                         throw new BusinessException(ComRetCode.USER_LOCKED);
                     }
-                    userService.channelMobile(tokenUser,user,mobile);
+                    Boolean UserBoolean = userService.changeMobile(tokenUser, user, mobile);
+                    if (UserBoolean){
+                        user = tokenUser;
+                    }
                 } else if (tokenUser != null) {
                     tokenUser.setMobile(mobile);
                     user = tokenUser;

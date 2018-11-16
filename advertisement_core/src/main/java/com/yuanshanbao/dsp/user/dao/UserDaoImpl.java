@@ -67,7 +67,7 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
 	}
 
 	@Override
-	public int updateUserMobile(User user) {
+	public int changeMobile(User user) {
 		user.setUpdateTime(DateUtils.getCurrentTime());
 		return getSqlSession().update("User.updateUserMobile", user);
 	}
