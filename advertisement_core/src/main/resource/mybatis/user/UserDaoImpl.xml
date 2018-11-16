@@ -149,6 +149,9 @@
 				<if test="registerFrom != null">
 					register_from=#{registerFrom},
 				</if>
+				<if test="level != null">
+					level=#{level},
+				</if>
 				<if test="status != null">
 					status=#{status},
 				</if>
