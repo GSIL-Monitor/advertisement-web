@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -522,15 +524,32 @@ public class BillServiceImpl implements BillService {
 	}
 
 	@Override
-	public Bill selectAdvertiserConsume(Bill bill) {
-		if (bill.getAdvertiserId() == null) {
-			return new Bill();
-		}
-		List<Bill> list = billDao.selectAdvertiserConsume(bill);
-		if (list.size() > 0) {
-			return list.get(0);
-		} else {
-			return new Bill();
-		}
+	public Map<String, BigDecimal> selectAdvertiserConsume(Long advertiserId, HttpServletRequest request) {
+		Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+		Bill param = new Bill();
+		param.setQueryEndTime(DateUtils.format(new Date()));
+		// 当日消耗
+		param.setQueryStartTime(DateUtils.format(new Date()));
+		Bill todayBill = billDao.selectAdvertiserConsume(param);
+		request.setAttribute("today", todayBill != null ? todayBill.getAmount() : 0);
+		// 昨日消耗
+		param.setQueryStartTime(DateUtils.format(DateUtils.addDays(new Date(), -1)));
+		param.setQueryEndTime(DateUtils.format(DateUtils.addDays(new Date(), -1)));
+		Bill yesterdayBill = billDao.selectAdvertiserConsume(param);
+		request.setAttribute("yesterday", yesterdayBill != null ? yesterdayBill.getAmount() : 0);
+		// 7日消耗
+		param.setQueryEndTime(DateUtils.format(new Date()));
+		param.setQueryStartTime(DateUtils.format(DateUtils.addDays(new Date(), -7)));
+		Bill sevenBill = billDao.selectAdvertiserConsume(param);
+		request.setAttribute("seven", sevenBill != null ? sevenBill.getAmount() : 0);
+		// 30天消耗
+		param.setQueryStartTime(DateUtils.format(DateUtils.addDays(new Date(), -30)));
+		Bill thirtyBill = billDao.selectAdvertiserConsume(param);
+		request.setAttribute("thirtyDay", thirtyBill != null ? thirtyBill.getAmount() : 0);
+		// 当月消耗
+		param.setQueryStartTime(DateUtils.format(DateUtils.getFirstDayOfMonth(new Date())));
+		Bill monthBill = billDao.selectAdvertiserConsume(param);
+		request.setAttribute("month", monthBill != null ? monthBill.getAmount() : 0);
+		return map;
 	}
 }

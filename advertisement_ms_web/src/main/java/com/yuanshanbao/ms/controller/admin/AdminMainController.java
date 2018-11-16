@@ -37,7 +37,6 @@ import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
-import com.yuanshanbao.dsp.bill.model.Bill;
 import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
@@ -120,11 +119,8 @@ public class AdminMainController extends PaginationController {
 		}
 		Advertiser currentAdvertiser = getBindAdvertiserByUser();
 		if (currentAdvertiser != null) {
-			Bill bill = new Bill();
-			bill.setAdvertiserId(currentAdvertiser.getAdvertiserId());
-			bill.setDate(DateUtils.format(new Date()));
+			billService.selectAdvertiserConsume(currentAdvertiser.getAdvertiserId(), request);
 			request.setAttribute("balance", currentAdvertiser.getBalance());
-			request.setAttribute("today", billService.selectAdvertiserConsume(bill).getAmount());
 		}
 		request.setAttribute("project", projectService.selectProject(getProjectId(request)));
 		request.setAttribute("user", user);

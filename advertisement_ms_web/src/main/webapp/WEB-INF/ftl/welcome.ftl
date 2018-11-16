@@ -73,10 +73,10 @@ $(document).ready(function(){
                         <ul class="widget-lists clearfix">
                             <li>余额：<p>${balance}</p></li>
                             <li>今日消耗：<p>${today}</p></li>
-                            <li>昨日消耗：<p>${today}</p></li>
-                            <li>7日消费：<p>${today}</p></li>
-                            <li>当月消费：<p>${today}</p></li>
-                            <li>最近30天消费：<p>${today}</p></li>
+                            <li>昨日消耗：<p>${yesterday}</p></li>
+                            <li>7日消耗：<p>${seven}</p></li>
+                            <li>当月消耗：<p>${month}</p></li>
+                            <li>最近30天消耗：<p>${thirtyDay}</p></li>
                         </ul>
                     </div>
                 </div>

@@ -720,6 +720,12 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		}
 	}
 
+	public static void main(String[] args) {
+		String planKey = AESUtils.encrypt(PLAN_ENCRYPT_KEY, "1");
+		String proKey = AESUtils.encrypt(PLAN_ENCRYPT_KEY, "111");
+		System.err.println(planKey + "   " + proKey);
+	}
+
 	private void increConsume(String planId, String probabilityId, String channel) {
 		try {
 			Map<Long, BigDecimal> proCostMap = DspConstantsManager.getBidByChannel(channel);

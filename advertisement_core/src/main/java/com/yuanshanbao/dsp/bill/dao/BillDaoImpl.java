@@ -32,7 +32,7 @@ public class BillDaoImpl extends BaseDaoImpl implements BillDao {
 	}
 
 	@Override
-	public List<Bill> selectAdvertiserConsume(Bill bill) {
-		return getSqlSession().selectList("bill.selectAdvertiserConsumeByDate", bill);
+	public Bill selectAdvertiserConsume(Bill bill) {
+		return getSqlSession().selectOne("bill.selectAdvertiserConsumeByDate", bill);
 	}
 }

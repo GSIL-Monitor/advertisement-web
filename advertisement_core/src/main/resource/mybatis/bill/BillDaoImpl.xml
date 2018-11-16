@@ -110,6 +110,12 @@
 				</if>
 				<if test="date != null">
 					date = #{date} and
+				</if>
+				<if test="queryStartTime != null">
+					 date &gt;= #{queryStartTime} and
+				</if>
+				<if test="queryEndTime != null">
+					 date &lt;= #{queryEndTime} and
 				</if>				
 			</trim>
 			and status != -1

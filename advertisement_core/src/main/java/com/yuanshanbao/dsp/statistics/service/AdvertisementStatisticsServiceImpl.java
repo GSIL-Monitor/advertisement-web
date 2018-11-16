@@ -31,6 +31,7 @@ import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.position.model.Position;
 import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
@@ -111,13 +112,17 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 	private List<AdvertisementStatistics> setProperty(List<AdvertisementStatistics> selectAdvertisementStatistics) {
 		List<Long> advertisementIds = new ArrayList<Long>();
+		List<Long> planIds = new ArrayList<Long>();
 		for (AdvertisementStatistics adStatistics : selectAdvertisementStatistics) {
 			advertisementIds.add(adStatistics.getAdvertisementId());
+			planIds.add(adStatistics.getPlanId());
 		}
 
 		Map<Long, Advertisement> map = advertisementService.selectAdvertisementByIds(advertisementIds);
+		Map<Long, Plan> planMap = planService.selectPlanByIds(planIds);
 		for (AdvertisementStatistics adStatistics : selectAdvertisementStatistics) {
 			adStatistics.setAdvertisement(map.get(adStatistics.getAdvertisementId()));
+			adStatistics.setPlan(planMap.get(adStatistics.getPlanId()));
 		}
 		return selectAdvertisementStatistics;
 	}
@@ -866,7 +871,6 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private int getDays(AdvertisementStatistics advertisementStatistics) {
 		Date s = DateUtils.formatToDate(advertisementStatistics.getQueryStartTime(), DateUtils.DEFAULT_DATE_FORMAT);
 		Date e = DateUtils.formatToDate(advertisementStatistics.getQueryEndTime(), DateUtils.DEFAULT_DATE_FORMAT);
-		System.err.println(DateUtils.getDays(s, e));
 		return DateUtils.getDays(s, e) + 1;
 	}
 
@@ -891,7 +895,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		for (AdvertisementStatistics advertisementStatistics : list) {
 			advertisementStatistics.setStatus(CommonStatus.ONLINE);
 			AdvertisementStatistics param = new AdvertisementStatistics();
-			param.setAdvertisementId(advertisementStatistics.getAdvertisementId());
+			param.setPlanId(advertisementStatistics.getPlanId());
 			param.setChannel(advertisementStatistics.getChannel());
 			param.setType(advertisementStatistics.getType());
 			param.setDate(date);
@@ -912,10 +916,13 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private List<AdvertisementStatistics> intervalPlanStatistics(int dateDiff, boolean fromDB, Integer dataType) {
 		String date = DateUtils.format(DateUtils.addDays(new Date(), -dateDiff));
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
+		Probability param = new Probability();
+		param.setStatus(ProbabilityStatus.ONLINE);
+		param.setProjectId(Long.valueOf(2));
+		List<Probability> list = probabilityService.selectProbabilitys(param, new PageBounds());
 		Set<String> channelAndIdList = redisCacheService.smembers(RedisConstant.getAdvertisementChannelAndIdKey(date));
-		for (String channelAndId : channelAndIdList) {
-			String[] segs = channelAndId.split(":");
-			dataPlanTypeFunction(dataType, date, segs[1], resultList, Long.parseLong(segs[0]));
+		for (Probability probability : list) {
+			dataPlanTypeFunction(dataType, date, probability.getChannel(), resultList, probability.getPlanId());
 		}
 		return resultList;
 	}
@@ -1035,7 +1042,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 						if (advertisementStatistics.getQueryStartTime() != null
 								&& incDate(advertisementStatistics.getQueryStartTime(), i).equals(
 										adStatistics.getDate())) {
-							AdvertisementStatistics total = totalMap.get(adStatistics.getChannel());
+							AdvertisementStatistics total = totalMap.get(adStatistics.getPlanId());
 							if (total == null) {
 								total = new AdvertisementStatistics();
 								total.setPlan(adStatistics.getPlan());
@@ -1043,7 +1050,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 								total.setChannel(adStatistics.getChannel());
 								total.addClickCount(adStatistics.getClickCount());
 								total.addShowCount(adStatistics.getShowCount());
-								totalMap.put(adStatistics.getAdvertisementId(), total);
+								totalMap.put(adStatistics.getPlanId(), total);
 								continue;
 							}
 							total.addClickCount(adStatistics.getClickCount());

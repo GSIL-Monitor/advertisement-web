@@ -33,9 +33,8 @@
 		$('#queryButton').on('click', function(){
 			var queryStartTime=$('#createTimeStart').val();
 			var queryEndTime=$('#createTimeEnd').val();
-			var pv=$('#pv').val();
 			
-			var params = "isPv=" + pv+"&";
+			var params = "isPv=" + true+"&";
 			if (isNotEmpty($('#createTimeStart').val())) {
 				params += "queryStartTime=" + encodeURI(encodeURI($('#createTimeStart').val())) + "&";
 			}
@@ -48,7 +47,7 @@
 			if (isNotEmpty($('#positionName').val())) {
 				params += "positionName=" +encodeURI(encodeURI($('#positionName').val())) + "&";
 			}
-			var newUrl="${rc.contextPath}/admin/${functionName}/queryPlanStatistic.do?" + params;
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryAdvertiserDspStatistic.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});

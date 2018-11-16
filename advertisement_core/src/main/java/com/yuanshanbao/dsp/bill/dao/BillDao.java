@@ -14,5 +14,5 @@ public interface BillDao {
 
 	public int deleteBill(Long billId);
 
-	public List<Bill> selectAdvertiserConsume(Bill bill);
+	public Bill selectAdvertiserConsume(Bill bill);
 }

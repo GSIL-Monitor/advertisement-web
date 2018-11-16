@@ -1,6 +1,10 @@
 package com.yuanshanbao.dsp.bill.service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.bill.model.Bill;
@@ -32,7 +36,7 @@ public interface BillService {
 
 	public void combineProbabilityBill(Plan plan);
 
-	public Bill selectAdvertiserConsume(Bill bill);
+	public Map<String, BigDecimal> selectAdvertiserConsume(Long advertiserId, HttpServletRequest request);
 
 	public void createBill(Plan plan, Probability probability, double nowCount, double lastCount, int type);
 
