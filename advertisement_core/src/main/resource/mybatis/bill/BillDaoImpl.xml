@@ -37,6 +37,9 @@
 				<if test="orderId != null">
 					order_id = #{orderId} and
 				</if>
+				<if test="probabilityId != null">
+					probability_id = #{probabilityId} and
+				</if>
 				<if test="date != null">
 					date = #{date} and
 				</if>

@@ -184,6 +184,7 @@ public class BillServiceImpl implements BillService {
 		param.setOrderId(plan.getOrderId());
 		param.setDate(DateUtils.format(new Date()));
 		param.setChannel(probability.getChannel());
+		param.setProbabilityId(probability.getProbabilityId());
 		param.setType(BillType.DEDUCTION);
 		List<Bill> list = selectBill(param, new PageBounds());
 		if (list != null && list.size() > 0) {
