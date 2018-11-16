@@ -444,11 +444,11 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+
 	@Override
 	public void channelMobile(User tokenUser, User user,String mobile) {
 		if (tokenUser != null && !user.getUserId().equals(tokenUser.getUserId())) {
 			tokenUser.setMobile(mobile);
-			user = tokenUser;
 			userDao.updateUser(tokenUser);
 			user.setMobile(null);
 			userDao.updateUserMobile(user);
