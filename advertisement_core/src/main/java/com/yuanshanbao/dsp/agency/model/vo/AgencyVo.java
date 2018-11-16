@@ -1,5 +1,8 @@
 package com.yuanshanbao.dsp.agency.model.vo;
 
+import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.dsp.agency.model.Agency;
+
 import java.math.BigDecimal;
 
 
@@ -15,22 +18,20 @@ public class AgencyVo {
     private Long productId;
     private String productName;
     private BigDecimal brokerage;
-    private Integer status;                //0:待审核 1:审核通过 2:审核未通过
+    private Integer status;  //0:待审核 1:审核通过 2:审核未通过
+    private String userLevel;
+    private String inviteUserLevel;
     private String inviteTime;
     private String createTime;
     private String updateTime;
-    private String userLevel;
-    private String inviteUserLevel;
 
-
-    public String getInviteTime() {
+    public String getInviteTimeValue() {
         return inviteTime;
     }
 
     public void setInviteTime(String inviteTime) {
         this.inviteTime = inviteTime;
     }
-
     public String getCreateTime() {
         return createTime;
     }
