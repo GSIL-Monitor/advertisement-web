@@ -8,6 +8,7 @@ import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.UserService;
@@ -94,21 +95,22 @@ public class AgencyServiceImpl implements AgencyService {
     public List<AgencyVo> getAgencyInfos(User user,Agency agency,PageBounds pageBounds) {
 
         List<AgencyVo> agencyVoList = new LinkedList<>();
-        agency.setInviteUserId(user.getUserId());
-        List<Agency> agencyList = agencyDao.selectAgencys(agency, pageBounds);
+        try{
+            agency.setInviteUserId(user.getUserId());
+            List<Agency> agencyList = agencyDao.selectAgencys(agency, pageBounds);
 
-        for (Iterator iterator = agencyList.iterator(); iterator.hasNext(); ) {
-            Agency agen = (Agency) iterator.next();
-            if (agen.getProductId() != null) {
-                iterator.remove();
+            for (Iterator iterator = agencyList.iterator(); iterator.hasNext(); ) {
+                Agency agen = (Agency) iterator.next();
+                if (agen.getProductId() != null) {
+                    iterator.remove();
+                }
             }
-        }
-        if (agencyList.size() != 0){
-            for (Agency agen : agencyList) {
+            if (agencyList.size() != 0){
+                for (Agency agen : agencyList) {
                     User agencyUser =  userService.selectUserById(agen.getUserId());
-                User inviteUser = userService.selectUserById(agen.getInviteUserId());
+                    User inviteUser = userService.selectUserById(agen.getInviteUserId());
 
-                AgencyVo agencyVo = new AgencyVo();
+                    AgencyVo agencyVo = new AgencyVo();
                     agencyVo.setUserId(agen.getUserId());
                     agencyVo.setInviteTime(agen.getInviteTimeValue());
                     agencyVo.setAgencyName(agencyUser.getNickName());
@@ -120,12 +122,16 @@ public class AgencyServiceImpl implements AgencyService {
                     }
                     agencyVoList.add(agencyVo);
                     LoggerUtil.info("agencyVo success" +agen.getUserId());
-            }
-        }else {
-            LoggerUtil.info("agencyVo error" + agencyList );
-           return agencyVoList;
+                }
+            }else {
+                LoggerUtil.info("agencyVo error" + agencyList );
+                return agencyVoList;
 
+            }
+        } catch (Exception e) {
+            LoggerUtil.error("[productList error:]" + agencyVoList);
         }
+
 
         return agencyVoList;
     }
