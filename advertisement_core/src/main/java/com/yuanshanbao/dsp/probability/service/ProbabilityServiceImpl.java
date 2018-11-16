@@ -595,8 +595,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			}
 		}
 
+		Channel channel = ConfigManager.getChannel(channelKey);
 		List<Probability> availableList = new ArrayList<Probability>();
 		for (Probability probability : channelList) {
+			// 验证时间
 			Plan plan = ConfigManager.getPlanById(probability.getPlanId());
 			if (plan.getStartTime() != null) {
 				if (plan.getStartTime().after(new Date())) {
@@ -621,7 +623,19 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			if (!plan.getStatus().equals(PlanStatus.ONLINE)) {
 				continue;
 			}
-			// 验证金额是否已经达到上限
+			// 验证出价是否低于成本价
+			if (channel.getUnitPrice() != null) {
+				if (plan.getBestBid().compareTo(channel.getUnitPrice()) < 0) {
+					continue;
+				}
+			}
+			// 验证订单金额
+			Double orderConsumed = getDoubleCount(RedisConstant.getOrderBalanceCountKey(plan.getOrderId()));
+			Double orderAmount = getDoubleCount(RedisConstant.getOrderInitCountKey(plan.getOrderId()));
+			if (BigDecimal.valueOf(orderConsumed).compareTo(BigDecimal.valueOf(orderAmount)) > 0) {
+				continue;
+			}
+			// 验证计划金额
 			Double consumed = getDoubleCount(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()));
 			Double dayConsumed = getDoubleCount(RedisConstant.getPlanDayBalanceCountKey(null, plan.getPlanId()));
 			if (BigDecimal.valueOf(consumed).compareTo(plan.getSpend()) < 0) {
@@ -689,6 +703,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		String[] planIdAndUrl = planIdAndUrlValue.split(":");
 		String planId = planIdAndUrl[0];
 		String probabilityId = AESUtils.decrypt(PLAN_ENCRYPT_KEY, key);
+		if (!ValidateUtil.isNumber(planId) || !ValidateUtil.isNumber(planId)) {
+			throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+		}
 		Plan plan = ConfigManager.getPlanById(Long.valueOf(planId));
 		if (isClick) {
 			redisService.incr(RedisConstant.getPlanClickCountPVKey(null, planId, channel));
@@ -706,10 +723,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	private void increConsume(String planId, String probabilityId, String channel) {
 		try {
 			Map<Long, BigDecimal> proCostMap = DspConstantsManager.getBidByChannel(channel);
+			// 在各个媒体消耗金额
 			redisService.increByDouble(RedisConstant.getProbabilityBalanceCountKey(null, Long.valueOf(probabilityId)),
 					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
-			redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(Long.valueOf(planId)),
-					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
+			// 计算增量
 			redisService.incr(RedisConstant.getPlanChargeTypeCountKey(planId));
 		} catch (Exception e) {
 			LoggerUtil.error("increConsume", e);

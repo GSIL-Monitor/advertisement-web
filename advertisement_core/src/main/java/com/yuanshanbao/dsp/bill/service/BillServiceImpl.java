@@ -149,9 +149,9 @@ public class BillServiceImpl implements BillService {
 	}
 
 	@Override
-	// 按计划扣费
 	@Transactional
 	public void paymentForPlan(Plan plan) {
+		// 按计划扣费
 		Probability params = new Probability();
 		params.setPlanId(plan.getPlanId());
 		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
@@ -164,6 +164,7 @@ public class BillServiceImpl implements BillService {
 			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
 					probability.getProbabilityId()));
 			double difference = nowCount - lastCount;
+			// 防止扣费错误的情况
 			checkBillAndCount(plan, probability, lastCount);
 			if (difference > 0) {
 				createBill(plan, probability, nowCount, lastCount, BillType.DEDUCTION);
@@ -282,6 +283,7 @@ public class BillServiceImpl implements BillService {
 		bill.setPlanId(probability.getPlanId());
 		bill.setAdvertiserId(plan.getAdvertiserId());
 		bill.setOrderId(plan.getOrderId());
+		bill.setProbabilityId(probability.getProbabilityId());
 		bill.setAmount(BigDecimal.valueOf(nowCount - lastCount).setScale(3, RoundingMode.FLOOR));
 		bill.setDate(DateUtils.format(new Date()));
 		bill.setChannel(probability.getChannel());

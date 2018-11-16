@@ -145,7 +145,7 @@ public class AdminOrderController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/update.do")
-	public Object update(Order order, String prizeDesc, HttpServletRequest request, HttpServletResponse response) {
+	public Object update(Order order, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {

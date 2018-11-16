@@ -18,8 +18,11 @@ public class AppAddTest {
 	public static final String ADD_SHOW_URL = "http://dev.t.huhad.com/dsp/ad/show.html";
 
 	public static void main(String[] args) {
+		String a = "av:ac";
+		String[] c = a.split(":");
+		System.err.println(c.length);
 		for (int i = 0; i < 1; i++) {
-			appadd();
+			// appadd();
 		}
 	}
 

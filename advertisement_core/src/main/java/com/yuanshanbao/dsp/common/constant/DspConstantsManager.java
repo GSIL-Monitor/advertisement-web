@@ -18,6 +18,7 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.probability.model.Probability;
+import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -59,7 +60,7 @@ public class DspConstantsManager {
 			Map<Long, BigDecimal> probabilityBidMap = new HashMap<Long, BigDecimal>();
 			Probability proParams = new Probability();
 			proParams.setChannel(channel.getKey());
-			proParams.setStatus(CommonStatus.ONLINE);
+			proParams.setStatus(ProbabilityStatus.ONLINE);
 			List<Probability> proList = probabilityService.selectProbabilitys(proParams, new PageBounds());
 			if (proList == null || proList.size() == 0) {
 				continue;

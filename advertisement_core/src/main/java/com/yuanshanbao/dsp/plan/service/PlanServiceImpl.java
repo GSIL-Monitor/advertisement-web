@@ -196,7 +196,12 @@ public class PlanServiceImpl implements PlanService {
 				billService.createBill(plan, probability, nowCount, lastCount, BillType.DEDUCTION);
 				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
 						String.valueOf(nowCount));
+				// 该计划当日消耗金额，用于日限额限制
 				redisService.increByDouble(RedisConstant.getPlanDayBalanceCountKey(null, plan.getPlanId()), difference);
+				// 计划总金额消耗
+				redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()), difference);
+				// 订单总金额消耗
+				redisService.increByDouble(RedisConstant.getOrderBalanceCountKey(plan.getOrderId()), difference);
 			}
 		}
 		calculateIncrement(plan.getPlanId());
@@ -212,12 +217,12 @@ public class PlanServiceImpl implements PlanService {
 			Integer totalCount = getClickOrShowCount(RedisConstant.getPlanChargeTypeCountKey(planId + ""));
 			Integer lastCount = getClickOrShowCount(RedisConstant.getPlanLastChargeTypeCountKey(planId + ""));
 			Integer difference = totalCount - lastCount;
+			String scale = IniBean.getIniValue("increment_scale");
+			difference = (int) (difference * Double.valueOf(scale));
 			if (difference == 0) {
 				return;
 			}
 			// 比例
-			String scale = IniBean.getIniValue("increment_scale");
-			difference = (int) (difference * Double.valueOf(scale));
 			Probability param = new Probability();
 			param.setPlanId(planId);
 			param.setStatus(ProbabilityStatus.ONLINE);

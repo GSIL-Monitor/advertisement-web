@@ -82,7 +82,7 @@
 										</tr>
 										<tr>
 											<td colspan="4" style="text-align:center">
-												<input type="submit" name="" value="提交" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();"></td>
+												<input type="submit" name="" value="提交" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult(true);"></td>
 										</tr>
 									</tbody>
 								</table>

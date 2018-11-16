@@ -65,7 +65,7 @@ function addSelectRights() {
 	        }
         }
 	})
-	sendAjax('${rc.contextPath}/admin/plan/addMaterial.do?planId=${planId}&material=' + rightIds);
+	sendAjax('${rc.contextPath}/admin/plan/addMaterial.do?planId=${planId}&material=' + rightIds,null,true);
 }
 
 function deleteSelectRights() {
@@ -80,7 +80,15 @@ function deleteSelectRights() {
 	        }
 		}
 	})
-	sendAjax('${rc.contextPath}/admin/plan/deleteMaterial.do?planId=${planId}&material=' + rightIds);
+	sendAjax('${rc.contextPath}/admin/plan/deleteMaterial.do?planId=${planId}&material=' + rightIds,null,true);
+}
+function reload(){
+		var noSelectUrl="${rc.contextPath}/admin/plan/queryMaterial.do?planId=${planId}&isSelect=false";
+		var hasSelectUrl="${rc.contextPath}/admin/plan/queryMaterial.do?planId=${planId}&isSelect=true";
+		unselectTable.ajax.url(noSelectUrl);
+		selectTable.ajax.url(hasSelectUrl);
+		unselectTable.ajax.reload();
+		selectTable.ajax.reload();
 }
 </script>
 <div id="content">

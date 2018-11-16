@@ -45,8 +45,10 @@ public class RedirectJumper extends BaseController {
 		if (plan != null) {
 			addPlanClickCount(request, values[0], channel);
 			modelMap.put("url", plan.getLink());
-			if (StringUtils.isEmpty(values[1])) {
-				modelMap.put("incrUrl", values[1]);
+			if (values.length == 2) {
+				if (StringUtils.isEmpty(values[1])) {
+					modelMap.put("incrUrl", values[1]);
+				}
 			}
 		}
 		return getFtlPath(request, "/activity/common/jump");
