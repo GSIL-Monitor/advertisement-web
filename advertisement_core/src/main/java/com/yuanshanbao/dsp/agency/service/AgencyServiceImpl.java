@@ -106,14 +106,20 @@ public class AgencyServiceImpl implements AgencyService {
         if (agencyList.size() != 0){
             for (Agency agen : agencyList) {
                     User agencyUser =  userService.selectUserById(agen.getUserId());
-                    AgencyVo agencyVo = new AgencyVo();
+                User inviteUser = userService.selectUserById(agen.getInviteUserId());
+
+                AgencyVo agencyVo = new AgencyVo();
                     agencyVo.setUserId(agen.getUserId());
                     agencyVo.setInviteTime(agen.getInviteTimeValue());
                     agencyVo.setAgencyName(agencyUser.getNickName());
                     agencyVo.setUserLevel(agencyUser.getLevelValue());
-                    agencyVo.setInviteUserLevel(userService.selectUserById(agen.getInviteUserId()).getLevelValue());
+                    if (inviteUser != null) {
+                        agencyVo.setInviteUserLevel(inviteUser.getLevelValue());
+                    }else {
+                        agencyVo.setInviteUserLevel(UserLevel.NULL_DESCRIPTION);
+                    }
                     agencyVoList.add(agencyVo);
-                    LoggerUtil.info("agencyVo success" +agencyVoList);
+                    LoggerUtil.info("agencyVo success" +agen.getUserId());
             }
         }else {
             LoggerUtil.info("agencyVo error" + agencyList );
