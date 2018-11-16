@@ -1,6 +1,5 @@
 package com.yuanshanbao.dsp.weixin.service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -360,52 +359,52 @@ public class WeixinServiceImpl implements WeixinService {
 	public byte[] dealQRCode(String key, String scene, String page) {
 
 		ApiConfig apiConfig = apiConfigMap.get(key);
-		/* String accessToken = apiConfig.getAccessToken();
-		String accessToken = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
-		if (accessToken == null) {
-			String newAssessToken = getAssessToken();
-			byte[] newResult = getQrCode(scene, page, newAssessToken);
-			return newResult;
-		}*/
-        byte[] result = getQrCode(scene, page, getAccessToken());
-        if (result == null) {
-            for (int i = 0; i < 10; i++) {
-                byte[] qrCode = getQrCode(scene, page, getAccessToken());
-                if (qrCode != null) {
-                    return qrCode;
-                }
-            }
-        } else {
-            return result;
-        }
-        return null;
-    }
+		/*
+		 * String accessToken = apiConfig.getAccessToken(); String accessToken =
+		 * redisCacheService.get(RedisConstant.ACCESS_TOKEN); if (accessToken ==
+		 * null) { String newAssessToken = getAssessToken(); byte[] newResult =
+		 * getQrCode(scene, page, newAssessToken); return newResult; }
+		 */
+		byte[] result = getQrCode(scene, page, getAccessToken());
+		if (result == null) {
+			redisCacheService.del(RedisConstant.ACCESS_TOKEN);
+			for (int i = 0; i < 3; i++) {
+				byte[] qrCode = getQrCode(scene, page, getAccessToken());
+				if (qrCode != null) {
+					return qrCode;
+				}
+			}
+		} else {
+			return result;
+		}
+		return null;
+	}
 
 	@Override
 	public String getAccessToken() {
-        String resultAssessToken = null;
-        try {
-            String access = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
-            if (!StringUtil.isEmpty(access)) {
-                return access;
-            } else {
-                resultAssessToken = HttpsUtil.doGet(getAccessTokenUrl, "grant_type=client_credential&appid="
-                        + getAppId(CONFIG_WZXCX) + "&secret=" + getAppSecret(CONFIG_WZXCX), "UTF-8", 30000, 30000);
-                if (!StringUtil.isEmpty(resultAssessToken)) {
-                    Map<String, Object> resultMap = JsonUtil.jsonToMap(resultAssessToken);
-                    String accessToken = (String) resultMap.get("access_token");
-                    redisCacheService.set(RedisConstant.ACCESS_TOKEN, 60 * 60 + 60 * 30, accessToken);
-                    LoggerUtil.info("update accessToken" + accessToken);
-                    return accessToken;
-                }else {
-                    return null;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+		String resultAssessToken = null;
+		try {
+			String access = redisCacheService.get(RedisConstant.ACCESS_TOKEN);
+			if (!StringUtil.isEmpty(access)) {
+				return access;
+			} else {
+				resultAssessToken = HttpsUtil.doGet(getAccessTokenUrl, "grant_type=client_credential&appid="
+						+ getAppId(CONFIG_WZXCX) + "&secret=" + getAppSecret(CONFIG_WZXCX), "UTF-8", 30000, 30000);
+				if (!StringUtil.isEmpty(resultAssessToken)) {
+					Map<String, Object> resultMap = JsonUtil.jsonToMap(resultAssessToken);
+					String accessToken = (String) resultMap.get("access_token");
+					redisCacheService.set(RedisConstant.ACCESS_TOKEN, 60 * 60 + 60 * 30, accessToken);
+					LoggerUtil.info("update accessToken" + accessToken);
+					return accessToken;
+				} else {
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	private byte[] getQrCode(String scene, String page, String accessToken) {
 		try {
@@ -415,7 +414,7 @@ public class WeixinServiceImpl implements WeixinService {
 			param.put("page", page);
 			byte[] byteArr = HttpUtil.sendPostRequestForBytes(url, param.toString(), "UTF-8");
 			if (byteArr.length < 1024) {
-                String errorLog = new String(byteArr, "UTF-8");
+				String errorLog = new String(byteArr, "UTF-8");
 				LoggerUtil.info("getQrCode error info=" + errorLog);
 				return null;
 			}
