@@ -151,6 +151,7 @@ public class AdminOrderController extends PaginationController {
 		try {
 			validateParameters(order);
 			orderService.updateOrder(order);
+			redisService.set(RedisConstant.getOrderInitCountKey(order.getOrderId()), order.getAmount().toString());
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
