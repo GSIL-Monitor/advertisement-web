@@ -29,7 +29,7 @@ public interface UserDao {
 	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId, Integer level);
 
 
-	public int changeMobile(User user);
+	public int updateUserMobile(User user);
 
 
 }

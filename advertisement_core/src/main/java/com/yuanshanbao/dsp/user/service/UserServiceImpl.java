@@ -436,7 +436,7 @@ public class UserServiceImpl implements UserService {
 
 		int result = -1;
 
-		result = userDao.changeMobile(user);
+		result = userDao.updateUserMobile(user);
 
 		if (result < 0) {
 			LoggerUtil.info("updateUserMobile：error"  + result);
@@ -444,14 +444,14 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-
+	@Transactional
 	@Override
 	public Boolean changeMobile(User tokenUser, User user,String mobile) {
 		if (tokenUser != null && !user.getUserId().equals(tokenUser.getUserId())) {
+			user.setMobile(null);
+			userDao.updateUserMobile(user);
 			tokenUser.setMobile(mobile);
 			userDao.updateUser(tokenUser);
-			user.setMobile(null);
-			userDao.changeMobile(user);
 			return true;
 		}else {
 			return false;
