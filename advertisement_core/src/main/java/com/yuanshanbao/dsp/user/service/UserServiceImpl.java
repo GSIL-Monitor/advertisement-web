@@ -424,23 +424,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int getUserLevleIsManagerOrMajordomo(Long inviteUserId ,Integer level) {
-	    if (StringUtils.isBlank(String.valueOf(inviteUserId))){
+	    if (inviteUserId == null){
 	        throw new BusinessException(ComRetCode.WRONG_PARAMETER);
         }
         return userDao.getUserLevleIsManagerOrMajordomo(inviteUserId , level);
     }
 
 	@Override
-	public void updateUserByMobile(User user) {
+	public void updateUserMobile(User user) {
 		clearUserCache(user.getUserId());
 
 		int result = -1;
 
-		result = userDao.updateUserBymobile(user);
+		result = userDao.updateUserMobile(user);
 
 		if (result < 0) {
 			LoggerUtil.info("updateUserMobile：error"  + result);
 			throw new BusinessException(ComRetCode.FAIL);
+		}
+	}
+
+	@Override
+	public void channelMobile(User tokenUser, User user,String mobile) {
+		if (tokenUser != null && !user.getUserId().equals(tokenUser.getUserId())) {
+			tokenUser.setMobile(mobile);
+			user = tokenUser;
+			userDao.updateUser(tokenUser);
+			user.setMobile(null);
+			userDao.updateUserMobile(user);
 		}
 	}
 

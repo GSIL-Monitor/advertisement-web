@@ -165,44 +165,8 @@
 
 	<update id="updateUserMobile" parameterType="User">
 		update tb_user_info
-		<set>
-			<trim suffixOverrides=",">
-				<if test="userId != null">
-					user_id=#{userId},
-				</if>
-				<if test="weixinId != null">
-					weixin_id=#{weixinId},
-				</if>
-				<if test="mobile == null">
-					mobile=#{mobile},
-				</if>
-				<if test="password != null">
-					password=#{password},
-				</if>
-				<if test="name != null">
-					name=#{name},
-				</if>
-				<if test="nickName != null">
-					nick_name=#{nickName},
-				</if>
-				<if test="avatar != null">
-					avatar=#{avatar},
-				</if>
-				<if test="inviteType != null">
-					invite_type=#{inviteType},
-				</if>
-				<if test="registerFrom != null">
-					register_from=#{registerFrom},
-				</if>
-				<if test="status != null">
-					status=#{status},
-				</if>
-				update_time=sysdate(),
-			</trim>
-		</set>
-		<where>
-			user_id=#{userId}
-		</where>
+		set mobile = #{mobile}
+		where user_id = #{userId}
 	</update>
 
 	<delete id="deleteUser" parameterType="long">

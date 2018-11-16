@@ -165,6 +165,7 @@ public class UserController extends BaseController {
     public Map<String, Object> smsLogin(HttpServletRequest request, HttpServletResponse response, String appId,
                                         String params, String token) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
+
         try {
             Map<String, String> parameterMap = appService.decryptParameters(appId, params);
             String mobile = parameterMap.get("mobile");
@@ -182,10 +183,7 @@ public class UserController extends BaseController {
                     if (user.getStatus() != null && user.getStatus() == UserStatus.LOCK) {
                         throw new BusinessException(ComRetCode.USER_LOCKED);
                     }
-                    if (StringUtils.isNotBlank(user.getMobile())){
-                        user.setMobile(null);
-                        userService.updateUserByMobile(user);
-                    }
+                    userService.channelMobile(tokenUser,user,mobile);
                 } else if (tokenUser != null) {
                     tokenUser.setMobile(mobile);
                     user = tokenUser;

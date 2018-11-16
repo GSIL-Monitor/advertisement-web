@@ -67,6 +67,8 @@ public interface UserService {
 	 */
 	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId,Integer level);
 
-	void updateUserByMobile(User user);
+	void updateUserMobile(User user);
+
+	void channelMobile(User tokenUser, User user,String mobile);
 
 }

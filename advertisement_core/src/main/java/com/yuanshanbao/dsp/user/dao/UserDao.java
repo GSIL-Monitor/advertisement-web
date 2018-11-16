@@ -29,5 +29,7 @@ public interface UserDao {
 	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId, Integer level);
 
 
-	public int updateUserBymobile(User user);
+	public int updateUserMobile(User user);
+
+
 }
