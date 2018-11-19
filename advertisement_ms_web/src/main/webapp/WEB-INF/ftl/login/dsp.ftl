@@ -38,7 +38,7 @@
 <div class="container-fluid" style="height: 100%;">
     <div class="row" style="height: 100%;">
         <div class="col-xs-12 title-box">
-            <div class="container">
+            <div class="container" style="width: 980px;">
                 <div class="row">
                     <div class="col-xs-offset-1 col-xs-10 title-container">
                         <div class="row">
