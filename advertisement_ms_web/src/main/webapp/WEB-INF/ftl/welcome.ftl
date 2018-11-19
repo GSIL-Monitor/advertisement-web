@@ -71,12 +71,12 @@ $(document).ready(function(){
                     </div>
                     <div class="widget-content nopadding">
                         <ul class="widget-lists clearfix">
-                            <li>余额：<p>${balance}</p></li>
-                            <li>今日消耗：<p>${today}</p></li>
-                            <li>昨日消耗：<p>${yesterday}</p></li>
-                            <li>7日消耗：<p>${seven}</p></li>
-                            <li>当月消耗：<p>${month}</p></li>
-                            <li>最近30天消耗：<p>${thirtyDay}</p></li>
+                            <li>余额：<p><span style="color: #ff784f;">${balance}</span></p></li>
+                            <li>今日消耗：<p><span style="color: #ff784f;">${today}</span></p></li>
+                            <li>昨日消耗：<p><span style="color: #ff784f;">${yesterday}</span></p></li>
+                            <li>7日消耗：<p><span style="color: #ff784f;">${seven}</span></p></li>
+                            <li>当月消耗：<p><span style="color: #ff784f;">${month}</span></p></li>
+                            <li>最近30天消耗：<p><span style="color: #ff784f;">${thirtyDay}</span></p></li>
                         </ul>
                     </div>
                 </div>
@@ -99,7 +99,7 @@ $(document).ready(function(){
         <div class="row-fluid">
             <div class="widget-box">
                 <div class="widget-title">
-                    <div class="widget-subtitle">数据统计 <span>数据统计包含代理商旗下所有广告计划</span></div>
+                    <div class="widget-subtitle">数据统计 <span style="font-size: 14px;">数据统计包含代理商旗下所有广告计划</span></div>
                     <div class="filter-box">
 						<div class="btn-group">
 	            			<div class="filter-component">

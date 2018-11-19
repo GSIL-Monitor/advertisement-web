@@ -3,40 +3,41 @@
 <@htmlHead title="${functionTitle}列表"/>
 <@sideBar />
 <script>
-	
+	var channelkey = "${channel}";
+	if(channelkey == ""){
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?planId=${planId}";
+	}else{
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?planId=${planId}&channel=${channel}";
+	}
 	$(document).ready(function(){
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?orderId=${orderId}";
 		dataTableConfig.columns = [{
-			    	"data": "planId"
+			    	"data": "probabilityId"
 			    },{
-			    	"data": "order.name"
+			    	"data": "plan.advertiser.companyName"
 			    },{
-			    	"data": "name"
+			    	"data": "plan.order.name"
 			    },{
-			    	"data": "advertiser.companyName"
+			    	"data": "plan.name"
+			    },{
+			    	"data": "channel"
 			    },{
 			    	"data": "createTimeContent"
 				},{
-			    	"data": "statusValue"
-		        },{
-			    	"data": "spend"
-		        },{
-			    	"data": "${functionId}",
-			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/${functionName}/allocatePlanWindow.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">设置媒体</a></div>';
-			       }
-		        },{
-			    	"data": "${functionId}",
-			        "render": function ( data, type, full, meta ) {
-			            return '<div class="list-btn"><a href="${rc.contextPath}/admin/probability/list.do?${functionId}='+data+'"  class="btn btn-green" target="_blank">已设置列表</a></div>';
-			       }
-		        }];
+			    	"data": null,
+		        	"render": function ( data, type, full, meta ) {
+			        	if(data.status ==1){
+			            	return "<a href='javascript:;'  target='_blank'>已审核</a>";
+			        	}else if(data.status ==3){
+			        		return "<a href='javascript:;'  target='_blank'>未审核</a>";
+			        	}
+			        }
+				}];
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);
 		
 		$('#queryButton').on('click', function(){
 			var params = "";
-			if (isNotEmpty($('#name').val())) {
-				params += "name=" + encodeURI(encodeURI($('#name').val())) + "&";
+			if (isNotEmpty($('#channel').val())) {
+				params += "channel=" + encodeURI(encodeURI($('#channel').val())) + "&";
 			}
 			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?" + params;
 			dataTable.ajax.url(newUrl);
@@ -59,14 +60,15 @@
           	<div class="widget-title"></span>
             	<h5>${functionTitle}列表</h5>
             	<div class="filter-box">
-					<div class="btn-group">
+					<!-- <div class="btn-group">
             			<div class="filter-component">
-							<h6>计划名称：</h6>
-							<input type="text" name="name" id="name" placeholder="请输入计划名称" />
+							<h6>渠道key：</h6>
+							<input type="text" name="channel" id="channel" placeholder="请输入渠道key" />
 						</div>	  
 					</div>
 					<div class="btn btn-green" id="queryButton">确定</div>
 					<div class="btn btn-white" id="queryReset">重置</div>
+					  -->
 				</div>
           	</div>
 			<div class="widget-content nopadding">
@@ -74,14 +76,12 @@
 					<thead>
 						<tr>
 							<th>ID</th>
+							<th>广告主</th>
 							<th>订单名称</th>
 							<th>计划名称</th>
-							<th>广告主</th>
+							<th>投放渠道</th>
 							<th>创建时间</th>
-							<th>投放状态</th>
-							<th>预算</th>
-							<th>投放</th>
-							<th>已设置列表</th>
+							<th>状态</th>
 						</tr>
 					</thead>
 					<tbody>

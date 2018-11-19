@@ -27,7 +27,7 @@ import com.yuanshanbao.paginator.domain.PageList;
 @Controller
 @RequestMapping("/admin/probability")
 public class AdminProbabilityController extends PaginationController {
-	private static final String PAGE_LIST = "advertisement/plan/listPlan";
+	private static final String PAGE_LIST = "advertisement/probability/listProbability";
 
 	private static final String PAGE_INSERT = "advertisement/plan/insertPlan";
 
@@ -85,5 +85,22 @@ public class AdminProbabilityController extends PaginationController {
 			LoggerUtil.error("plan update function - upload image error", e2);
 		}
 		return result;
+	}
+
+	@RequestMapping("/list.do")
+	public String list(String range, Long planId, String channel, HttpServletRequest request,
+			HttpServletResponse response) {
+		request.setAttribute("planId", planId);
+		request.setAttribute("channel", channel);
+		return PAGE_LIST;
+	}
+
+	@ResponseBody
+	@RequestMapping("/query.do")
+	public Object query(String range, HttpServletRequest request, HttpServletResponse response, Probability probability) {
+		probability.setProjectId(getProjectId(request));
+		Object object = probabilityService.selectProbabilitys(probability, getPageBounds(range, request));
+		PageList pageList = (PageList) object;
+		return setPageInfo(request, response, pageList);
 	}
 }

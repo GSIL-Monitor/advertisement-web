@@ -335,7 +335,7 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 			MediaInformation instance) {
 		boolean strategyPass = false;
 		if (StringUtils.isEmpty(instance.getIp())) {
-			return strategyPass;
+			return true;
 		}
 		if (list != null && list.size() > 0) {
 			String regionValue = list.get(0).getValue();

@@ -497,11 +497,14 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		if (bidMap == null) {
 			return resultList;
 		}
-		Long probabilityId = dealWithCTRAndBid(bidMap);
+		Long probabilityId = dealWithCTRAndBid(bidMap, probabilityMap);
 		if (probabilityId == null) {
 			return resultList;
 		}
 		Probability probability = probabilityMap.get(probabilityId);
+		if (probability == null) {
+			return resultList;
+		}
 		resultList = getContent(probability, channelObject);
 		return resultList;
 	}
@@ -665,7 +668,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		return 0;
 	}
 
-	private Long dealWithCTRAndBid(Map<Long, BigDecimal> bidMap) {
+	private Long dealWithCTRAndBid(Map<Long, BigDecimal> bidMap, Map<Long, Probability> probabilityMap) {
 		Long resultProbabilityId = null;
 		try {
 			Double score = new Double(0);
@@ -673,6 +676,9 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			for (Long probabilityId : bidMap.keySet()) {
 				String ctrValue = redisService.get(RedisConstant.getProbabilityChannelCTRKey(probabilityId));
 				if (ctrValue == null || !ValidateUtil.isDouble(ctrValue)) {
+					if (!probabilityMap.containsKey(probabilityId)) {
+						continue;
+					}
 					return probabilityId;
 				} else {
 					Double ctr = Double.valueOf(ctrValue);

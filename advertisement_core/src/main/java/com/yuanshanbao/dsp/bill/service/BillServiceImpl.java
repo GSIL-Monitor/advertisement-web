@@ -374,13 +374,18 @@ public class BillServiceImpl implements BillService {
 	public void recharge(Bill bill) {
 		bill.setType(BillType.RECHARGE);
 		bill.setStatus(CommonStatus.ONLINE);
+		bill.setDate(DateUtils.format(new Date()));
 		insertBill(bill);
-		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("advertiserId", bill.getAdvertiserId());
-		parameters.put("amount", bill.getAmount());
-		int result = advertiserDao.lockBalance(parameters);
-		if (result < 0) {
-			throw new BusinessException(ComRetCode.FAIL);
+		Advertiser advertiser = advertiserService.selectAdvertiserForUpdate(bill.getAdvertiserId());
+		if (advertiser != null) {
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("advertiserId", bill.getAdvertiserId());
+			parameters.put("amount", bill.getAmount());
+			int result = advertiserDao.lockBalance(parameters);
+			if (result < 0) {
+				throw new BusinessException(ComRetCode.FAIL);
+			}
+			LoggerUtil.info("充值成功={}", JacksonUtil.obj2json(bill));
 		}
 	}
 
@@ -527,6 +532,8 @@ public class BillServiceImpl implements BillService {
 	public Map<String, BigDecimal> selectAdvertiserConsume(Long advertiserId, HttpServletRequest request) {
 		Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 		Bill param = new Bill();
+		param.setType(BillType.DEDUCTION);
+		param.setAdvertiserId(advertiserId);
 		param.setQueryEndTime(DateUtils.format(new Date()));
 		// 当日消耗
 		param.setQueryStartTime(DateUtils.format(new Date()));
