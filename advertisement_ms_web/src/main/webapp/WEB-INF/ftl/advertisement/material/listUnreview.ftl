@@ -70,8 +70,8 @@
             	<div class="filter-box">
 					<div class="btn-group">
             			<div class="filter-component">
-							<h6>计划名称：</h6>
-							<input type="text" name="title" id="title" placeholder="请输入创意名称" />
+							<h6>素材名称：</h6>
+							<input type="text" name="title" id="title" placeholder="请输入素材名称" />
 						</div>	  
 					</div>
 					<div class="btn btn-green" id="queryButton">确定</div>
