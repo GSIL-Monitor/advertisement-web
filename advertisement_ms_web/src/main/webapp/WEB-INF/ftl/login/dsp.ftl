@@ -4,6 +4,11 @@
     <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
     <@cssFile file=["../js/plugins/bootstrap/css/bootstrap.min.css", "../js/plugins/WOW/css/libs/animate.css"] />
     <@jsFile file=["plugins/jquery.min.js","plugins/bootstrap/js/bootstrap.min.js", "plugins/WOW/dist/wow.js"] />
+    <style>
+        .loginbox {
+            right: 300px;
+        }
+    </style>
 </@htmlHead>
 
 <nav class="navbar navbar-fixed-top" style="background:transparent;">
@@ -33,19 +38,22 @@
 <div class="container-fluid" style="height: 100%;">
     <div class="row" style="height: 100%;">
         <div class="col-xs-12 title-box">
-            <div class="row">
-                <div class="col-xs-offset-2 col-xs-10 title-container">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="title wow slideInRight" data-wow-duration="2s">大数据驱动的AI投放平台</div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-offset-1 col-xs-10 title-container">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="title wow slideInRight" data-wow-duration="2s">大数据驱动的AI投放平台</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="subtitle wow slideInLeft" data-wow-duration="2s">高效实现您的营销目标</div>   
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="subtitle wow slideInLeft" data-wow-duration="2s">高效实现您的营销目标</div>   
+                            </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>

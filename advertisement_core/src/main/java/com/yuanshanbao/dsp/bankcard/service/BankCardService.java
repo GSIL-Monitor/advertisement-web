@@ -15,7 +15,7 @@ public interface BankCardService {
 
 	public List<BankCard> selectUserApplys(BankCard bankCard, PageBounds pageBounds);
 
-	public void insertBankCard(BankCard bankCard);
+	public int insertBankCard(BankCard bankCard);
 
 	public void getApplyBankCardInfo(User user, Long productId, String userName, String mobile);
 }

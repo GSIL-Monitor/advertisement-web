@@ -1,10 +1,8 @@
 package com.yuanshanbao.dsp.agency.dao;
 
-import com.alibaba.fastjson.support.odps.udf.CodecCheck;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.base.dao.BaseDaoImpl;
-import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import org.springframework.stereotype.Repository;
 
@@ -79,4 +77,11 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
     public int selectAgencyByInviteIdCount(Long inviteUserId) {
         return getSqlSession().selectOne("agency.selectAgencyByInviteIdCount",inviteUserId);
     }
+
+    @Override
+    public int updateBankTime(Agency agency) {
+        agency.setUpdateTime(DateUtils.getCurrentTime());
+        return getSqlSession().update("agency.updateBankTime",agency);
+    }
+
 }

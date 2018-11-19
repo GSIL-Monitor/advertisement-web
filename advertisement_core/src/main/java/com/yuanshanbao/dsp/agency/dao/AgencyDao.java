@@ -1,7 +1,6 @@
 package com.yuanshanbao.dsp.agency.dao;
 
 import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 import java.math.BigDecimal;
@@ -29,9 +28,13 @@ public interface AgencyDao {
 
 
 
-    List<Agency> selectAgencysByInviteUserIds(List<Long> inviteUserIds);
+    public List<Agency> selectAgencysByInviteUserIds(List<Long> inviteUserIds);
 
-    BigDecimal getSumBrokerage(List<Long> inviteUserIds);
+    public BigDecimal getSumBrokerage(List<Long> inviteUserIds);
 
-    int selectAgencyByInviteIdCount(Long inviteUserId);
+    public int selectAgencyByInviteIdCount(Long inviteUserId);
+
+    public int updateBankTime(Agency agency);
+
+
 }

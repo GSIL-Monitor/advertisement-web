@@ -1,5 +1,8 @@
 package com.yuanshanbao.dsp.user.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,7 @@ import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.product.dao.ProductDao;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -393,44 +397,41 @@ public class UserServiceImpl implements UserService {
 		insertOrUpdateBaseInfo(baseInfo);
 	}
 
-	@Override
-	public void getLevelDetails(Long userId) {
+    @Override
+    public void getLevelDetails(Long userId) {
         User user = new User();
-        if (StringUtils.isNotBlank(String.valueOf(userId))){
+        if (userId != null){
             user.setUserId(userId);
             user.setLevel(UserLevel.MANAGER);
             userDao.updateUser(user);
-        }else {
-            user.setUserId(userId);
-            user.setLevel(UserLevel.NULL);
-            userDao.updateUser(user);
         }
-        // 直推卡10人数/推卡人等级为经理的5人数
+        // 直推卡10人数/推卡人等级为经理的10人数
         Agency agency = new Agency();
         agency.setInviteUserId(userId);
         int countAgency  = agencyService.selectAgencyByInviteId(userId);
-        int managerCount = userDao.getUserLevleIsManagerOrMajordomo(userId,UserLevel.MANAGER);
-        int majordomoCount = userDao.getUserLevleIsManagerOrMajordomo(userId,UserLevel.MAJORDOMO);
-        if (countAgency >= 10 || managerCount >= 10) {
+        int majordomoCouont = userDao.getUserLevelMajordomo(userId);
+        int userCount = userDao.queryUserLevelCount(userId,UserLevel.MANAGER,UserLevel.MAJORDOMO,UserLevel.BAILLIFF);
+        if (countAgency >= 10 || majordomoCouont >= 10) {
             user.setUserId(userId);
             user.setLevel(UserLevel.MAJORDOMO);
             userDao.updateUser(user);
-        }else if (countAgency >=50 || majordomoCount >= 10){
+        }else if (countAgency >=50 || userCount >=50 ){
             user.setUserId(userId);
             user.setLevel(UserLevel.BAILLIFF);
             userDao.updateUser(user);
         }
-	}
-
-    @Override
-    public int getUserLevleIsManagerOrMajordomo(Long inviteUserId ,Integer level) {
-	    if (inviteUserId == null){
-	        throw new BusinessException(ComRetCode.WRONG_PARAMETER);
-        }
-        return userDao.getUserLevleIsManagerOrMajordomo(inviteUserId , level);
     }
 
-	@Override
+    @Override
+    public int queryUserLevelCount(Long inviteUserId,Integer levelManager,Integer levelMajoromdo,Integer bailliff) {
+        if (inviteUserId == null){
+            throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+        }
+        return userDao.queryUserLevelCount(inviteUserId ,levelManager,levelMajoromdo,bailliff);
+    }
+
+
+    @Override
 	public void updateUserMobile(User user) {
 		clearUserCache(user.getUserId());
 
@@ -458,6 +459,18 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
+
+
+
+    @Override
+    public int getUserLevelMajordomo(Long userId) {
+        int result = -1;
+	    userDao.getUserLevelMajordomo(userId);
+        if (result < 0) {
+            throw new BusinessException(ComRetCode.FAIL);
+        }
+        return result;
+    }
 
 
 }

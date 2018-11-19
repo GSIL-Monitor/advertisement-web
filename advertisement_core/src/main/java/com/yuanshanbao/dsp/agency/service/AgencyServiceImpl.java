@@ -3,22 +3,19 @@ package com.yuanshanbao.dsp.agency.service;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
-import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -64,6 +61,16 @@ public class AgencyServiceImpl implements AgencyService {
         }
         return agencyDao.updateAgency(agency);
 
+    }
+
+    @Override
+    public int updateBankTime(Agency agency) {
+        int result = -1;
+        result = agencyDao.updateBankTime(agency);
+        if (result < 0) {
+            throw new BusinessException(ComRetCode.FAIL);
+        }
+        return result;
     }
 
     @Override
@@ -135,6 +142,33 @@ public class AgencyServiceImpl implements AgencyService {
 
         return agencyVoList;
     }
+
+    @Override
+    public List<AgencyVo> getAgencyListVo(List<Agency> twoAgencyList, User user) {
+
+        List<AgencyVo> agencyVoList = new ArrayList<>();
+        for (Agency agen : twoAgencyList) {
+            AgencyVo agencyVo = new AgencyVo();
+            agencyVo.setName(agen.getName());
+            agencyVo.setProductName(agen.getProductName());
+            agencyVo.setUpdateTime(agen.getUpdateTimeValue());
+            agencyVo.setStatus(agen.getStatusValue());
+
+            if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER) {
+                agencyVo.setBrokerage((agen.getBrokerage().multiply(BigDecimal.valueOf(0.1))).setScale(2, RoundingMode.HALF_UP));
+            } else if (user.getLevel() != null && user.getLevel() == UserLevel.MAJORDOMO) {
+                agencyVo.setBrokerage((agen.getBrokerage().multiply(BigDecimal.valueOf(0.15))).setScale(2, RoundingMode.HALF_UP));
+            } else if (user.getLevel() != null && user.getLevel() == UserLevel.BAILLIFF) {
+                agencyVo.setBrokerage((agen.getBrokerage().multiply(BigDecimal.valueOf(0.2))).setScale(2, RoundingMode.HALF_UP));
+            } else {
+                agencyVo.setBrokerage((agen.getBrokerage().multiply(BigDecimal.valueOf(0.1))).setScale(2, RoundingMode.HALF_UP));
+            }
+            agencyVoList.add(agencyVo);
+        }
+        return agencyVoList;
+    }
+
+
 
     @Override
     public BigDecimal getBrokerages(Agency agency, PageBounds pageBounds) {

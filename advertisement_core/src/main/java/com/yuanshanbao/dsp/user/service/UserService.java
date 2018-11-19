@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.user.model.BaseInfo;
 import com.yuanshanbao.dsp.user.model.CropImage;
 import com.yuanshanbao.dsp.user.model.LoginToken;
@@ -61,14 +63,17 @@ public interface UserService {
     public void getLevelDetails(Long userId);
 
 	/**
-	 * 查询用户等级为经理的人个数
+	 * 查询用户等级人个数
 	 * @param inviteUserId
 	 * @return
 	 */
-	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId,Integer level);
+	public int queryUserLevelCount(Long inviteUserId,Integer levelManager,Integer levelMajoromdo,Integer bailliff);
 
-	void updateUserMobile(User user);
+	public void updateUserMobile(User user);
 
-	Boolean changeMobile(User tokenUser, User user,String mobile);
+	public Boolean changeMobile(User tokenUser, User user,String mobile);
 
+
+
+    public int getUserLevelMajordomo(Long userId);
 }

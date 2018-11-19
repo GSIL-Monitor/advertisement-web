@@ -3,19 +3,13 @@ package com.yuanshanbao.dsp.controller.agency;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.user.model.User;
-import com.yuanshanbao.dsp.user.model.UserLevel;
-import com.yuanshanbao.dsp.user.service.TokenService;
-import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,10 +29,7 @@ public class AgencyController extends BaseController {
 
     @Autowired
     private AgencyService agencyService;
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private UserService userService;
+
 
     @RequestMapping("/list")
     @ResponseBody
@@ -68,7 +59,6 @@ public class AgencyController extends BaseController {
         try {
             User user = getLoginUser(token);
             agency.setInviteUserId(user.getUserId());
-
             List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
             for (Iterator iterator = oneAgencyList.iterator(); iterator.hasNext(); ) {
                 Agency agen = (Agency) iterator.next();
@@ -81,6 +71,7 @@ public class AgencyController extends BaseController {
             for (Agency agen : oneAgencyList) {
                 agency.setInviteUserId(agen.getUserId());
                 twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
+
             }
             for (Iterator iterator = twoAgencyList.iterator(); iterator.hasNext(); ) {
                 Agency twoAgen = (Agency) iterator.next();
@@ -88,8 +79,9 @@ public class AgencyController extends BaseController {
                     iterator.remove();
                 }
             }
+            List<AgencyVo> agencyListVo = agencyService.getAgencyListVo(twoAgencyList,user);
             resultMap.put("oneAgencyList", oneAgencyList);
-            resultMap.put("twoAgencyList", twoAgencyList);
+            resultMap.put("twoAgencyList", agencyListVo);
             resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
