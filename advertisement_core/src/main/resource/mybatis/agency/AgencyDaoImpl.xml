@@ -108,6 +108,15 @@
 		</where>
 	</update>
 
+	<update id="updateBankTime" parameterType="Agency">
+		update tb_agency
+		set update_time=sysdate()
+		where user_id =#{userId} and product_id = #{productId}
+	</update>
+
+
+
+
 	<!-- 查询sql -->
 	<select id="selectAgencys" parameterType="Agency" resultMap="agencyMap">
 		select

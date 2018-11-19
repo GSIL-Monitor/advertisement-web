@@ -396,26 +396,21 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void getLevelDetails(Long userId) {
         User user = new User();
-        if (StringUtils.isNotBlank(String.valueOf(userId))){
-            user.setUserId(userId);
-            user.setLevel(UserLevel.MANAGER);
-            userDao.updateUser(user);
-        }else {
-            user.setUserId(userId);
-            user.setLevel(UserLevel.NULL);
-            userDao.updateUser(user);
-        }
+        if (userId != null){
+			user.setUserId(userId);
+			user.setLevel(UserLevel.MANAGER);
+			userDao.updateUser(user);
+		}
         // 直推卡10人数/推卡人等级为经理的5人数
         Agency agency = new Agency();
         agency.setInviteUserId(userId);
         int countAgency  = agencyService.selectAgencyByInviteId(userId);
-        int managerCount = userDao.getUserLevleIsManagerOrMajordomo(userId,UserLevel.MANAGER);
-        int majordomoCount = userDao.getUserLevleIsManagerOrMajordomo(userId,UserLevel.MAJORDOMO);
-        if (countAgency >= 10 || managerCount >= 10) {
+        int userCount = userDao.queryUserLevelCount(userId,UserLevel.MANAGER,UserLevel.MAJORDOMO,UserLevel.BAILLIFF);
+        if (countAgency >= 10 || userCount >= 10) {
             user.setUserId(userId);
             user.setLevel(UserLevel.MAJORDOMO);
             userDao.updateUser(user);
-        }else if (countAgency >=50 || majordomoCount >= 10){
+        }else if (countAgency >=50 || userCount >=50 ){
             user.setUserId(userId);
             user.setLevel(UserLevel.BAILLIFF);
             userDao.updateUser(user);
@@ -423,11 +418,11 @@ public class UserServiceImpl implements UserService {
 	}
 
     @Override
-    public int getUserLevleIsManagerOrMajordomo(Long inviteUserId ,Integer level) {
+    public int queryUserLevelCount(Long inviteUserId,Integer levelManager,Integer levelMajoromdo,Integer bailliff) {
 	    if (inviteUserId == null){
 	        throw new BusinessException(ComRetCode.WRONG_PARAMETER);
         }
-        return userDao.getUserLevleIsManagerOrMajordomo(inviteUserId , level);
+        return userDao.queryUserLevelCount(inviteUserId ,levelManager,levelMajoromdo,bailliff);
     }
 
 	@Override

@@ -3,18 +3,14 @@ package com.yuanshanbao.dsp.agency.service;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
-import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +60,16 @@ public class AgencyServiceImpl implements AgencyService {
         }
         return agencyDao.updateAgency(agency);
 
+    }
+
+    @Override
+    public int updateBankTime(Agency agency) {
+        int result = -1;
+        result = agencyDao.updateBankTime(agency);
+        if (result < 0) {
+            throw new BusinessException(ComRetCode.FAIL);
+        }
+        return result;
     }
 
     @Override

@@ -26,7 +26,7 @@ public interface UserDao {
 
 	public LoginToken getLoginToken(LoginToken loginToken);
 
-	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId, Integer level);
+	public int queryUserLevelCount(Long inviteUserId,Integer levelManager,Integer levelMajoromdo,Integer bailliff);
 
 
 	public int updateUserMobile(User user);

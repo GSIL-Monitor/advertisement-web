@@ -79,4 +79,10 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
     public int selectAgencyByInviteIdCount(Long inviteUserId) {
         return getSqlSession().selectOne("agency.selectAgencyByInviteIdCount",inviteUserId);
     }
+
+    @Override
+    public int updateBankTime(Agency agency) {
+        agency.setUpdateTime(DateUtils.getCurrentTime());
+        return getSqlSession().update("agency.updateBankTime",agency);
+    }
 }

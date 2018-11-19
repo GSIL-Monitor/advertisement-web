@@ -61,13 +61,13 @@ public interface UserService {
     public void getLevelDetails(Long userId);
 
 	/**
-	 * 查询用户等级为经理的人个数
+	 * 查询用户等级人个数
 	 * @param inviteUserId
 	 * @return
 	 */
-	public int getUserLevleIsManagerOrMajordomo(Long inviteUserId,Integer level);
+	public int queryUserLevelCount(Long inviteUserId,Integer levelManager,Integer levelMajoromdo,Integer bailliff);
 
-	void updateUserMobile(User user);
+	public void updateUserMobile(User user);
 
 	Boolean changeMobile(User tokenUser, User user,String mobile);
 

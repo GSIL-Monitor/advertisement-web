@@ -29,9 +29,11 @@ public interface AgencyDao {
 
 
 
-    List<Agency> selectAgencysByInviteUserIds(List<Long> inviteUserIds);
+    public List<Agency> selectAgencysByInviteUserIds(List<Long> inviteUserIds);
 
-    BigDecimal getSumBrokerage(List<Long> inviteUserIds);
+    public BigDecimal getSumBrokerage(List<Long> inviteUserIds);
 
-    int selectAgencyByInviteIdCount(Long inviteUserId);
+    public int selectAgencyByInviteIdCount(Long inviteUserId);
+
+    public int updateBankTime(Agency agency);
 }

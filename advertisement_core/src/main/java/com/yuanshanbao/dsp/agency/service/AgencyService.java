@@ -22,6 +22,9 @@ public interface AgencyService {
 
     public int updateAgency(Agency agency);
 
+
+    public int updateBankTime(Agency agency);
+
     public List<Agency> selectAgencys(List<Long> IdList);
 
 
