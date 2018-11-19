@@ -1,5 +1,6 @@
 package com.yuanshanbao.ms.controller.advertisement;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,8 @@ import com.yuanshanbao.dsp.advertisement.model.AdvertiserStatus;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.bill.model.Bill;
+import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
@@ -56,6 +59,9 @@ public class AdminAdvertiserController extends PaginationController {
 	@Autowired
 	private GroupService groupService;
 
+	@Autowired
+	private BillService billService;
+
 	@RequestMapping("/list.do")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
 		return PAGE_LIST;
@@ -69,6 +75,7 @@ public class AdminAdvertiserController extends PaginationController {
 		if (user != null) {
 			advertiser.setAdvertiserId(user.getAdvertiserId());
 		}
+		advertiser.setProjectId(getProjectId(request));
 		Object object = advertiserService.selectAdvertiser(advertiser, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
@@ -94,8 +101,10 @@ public class AdminAdvertiserController extends PaginationController {
 			Md5PasswordEncoder encoder = new Md5PasswordEncoder();
 			advertiser.setBindUserName(user.getUsername());
 			advertiser.setProjectId(getProjectId(request));
+			advertiser.setBalance(new BigDecimal(0));
 			user.setPassword(encoder.encodePassword(user.getPassword(), null));
 			user.setProjectId(getProjectId(request));
+			user.setPwd_keep_time(1000);
 			if (userService.isUserExits(user.getUsername())) {
 				result.put(RET_CODE_PARAM, RET_INTERROR);
 				result.put(ComRetCode.RET_DESC, "该用户已经存在，请重新输入用户名！");
@@ -103,7 +112,7 @@ public class AdminAdvertiserController extends PaginationController {
 			}
 			userService.insertUser(user);
 			advertiserService.insertAdvertiser(advertiser);
-			groupService.insertUserGroups(user.getUsername(), new String[] { "002", "002003" });
+			groupService.insertUserGroups(user.getUsername(), new String[] { "002", "002007" });
 			AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -196,14 +205,44 @@ public class AdminAdvertiserController extends PaginationController {
 	}
 
 	@ResponseBody
-	@RequestMapping("/test.do")
-	public Object test(Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping("/recharge.do")
+	public Object recharge(Bill bill, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		advertiser.setAdvertiserId(Long.valueOf(36));
-		advertiser.setAddress("1123");
-		advertiserService.updateAdvertiser(advertiser);
-		System.err.println(123123123);
-		InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		try {
+			User user = getCurrentUser();
+			if (user == null) {
+				throw new Exception();
+			}
+			if (bill.getAdvertiserId() == null || bill.getAmount() == null) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			billService.recharge(bill);
+			LoggerUtil.info("recharge success operator=" + user.getUsername());
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.FAIL);
+			LoggerUtil.error("recharge", e2);
+		}
 		return result;
+	}
+
+	@RequestMapping("dsp/list.do")
+	public String dspList(HttpServletRequest request, HttpServletResponse response) {
+		return PAGE_LIST;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@ResponseBody
+	@RequestMapping("dsp/query.do")
+	public Object dspQuery(String range, Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
+		Advertiser user = getBindAdvertiserByUser();
+		if (user != null) {
+			advertiser.setAdvertiserId(user.getAdvertiserId());
+		}
+		Object object = advertiserService.selectAdvertiser(advertiser, getPageBounds(range, request));
+		PageList pageList = (PageList) object;
+		return setPageInfo(request, response, pageList);
 	}
 }

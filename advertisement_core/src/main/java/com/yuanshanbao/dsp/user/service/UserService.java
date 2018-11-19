@@ -73,7 +73,7 @@ public interface UserService {
 
 	public Boolean changeMobile(User tokenUser, User user,String mobile);
 
-    public List<AgencyVo> getAgencyListVo(List<Agency> twoAgencyList,User user);
+
 
     public int getUserLevelMajordomo(Long userId);
 }

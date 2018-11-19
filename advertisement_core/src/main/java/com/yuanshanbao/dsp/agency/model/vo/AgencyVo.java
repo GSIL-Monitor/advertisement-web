@@ -40,9 +40,12 @@ public class AgencyVo {
         this.createTime = createTime;
     }
 
-    public String getUpdateTime() {
+    public String getUpdateTimeValue() {
         return updateTime;
     }
+
+    public String getUpdateTime(){ return updateTime;}
+
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
@@ -112,7 +115,14 @@ public class AgencyVo {
         this.brokerage = brokerage;
     }
 
-    public String getStatus() {
+    public String getBrokerageValue() {
+        return String.valueOf(brokerage);
+    }
+
+    public String getStatus(){
+        return status;
+    }
+    public String getStatusValue() {
         return status;
     }
 

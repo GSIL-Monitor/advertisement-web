@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -139,6 +140,31 @@ public class AgencyServiceImpl implements AgencyService {
         }
 
 
+        return agencyVoList;
+    }
+
+    @Override
+    public List<AgencyVo> getAgencyListVo(List<Agency> twoAgencyList, User user) {
+
+        List<AgencyVo> agencyVoList = new ArrayList<>();
+        for (Agency agen : twoAgencyList) {
+            AgencyVo agencyVo = new AgencyVo();
+            agencyVo.setName(agen.getName());
+            agencyVo.setProductName(agen.getProductName());
+            agencyVo.setUpdateTime(agen.getUpdateTimeValue());
+            agencyVo.setStatus(agen.getStatusValue());
+
+            if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER) {
+                agencyVo.setBrokerage((agen.getBrokerage().multiply(BigDecimal.valueOf(0.1))).setScale(2, RoundingMode.HALF_UP));
+            } else if (user.getLevel() != null && user.getLevel() == UserLevel.MAJORDOMO) {
+                agencyVo.setBrokerage((agen.getBrokerage().multiply(BigDecimal.valueOf(0.15))).setScale(2, RoundingMode.HALF_UP));
+            } else if (user.getLevel() != null && user.getLevel() == UserLevel.BAILLIFF) {
+                agencyVo.setBrokerage((agen.getBrokerage().multiply(BigDecimal.valueOf(0.2))).setScale(2, RoundingMode.HALF_UP));
+            } else {
+                agencyVo.setBrokerage((agen.getBrokerage().multiply(BigDecimal.valueOf(0.1))).setScale(2, RoundingMode.HALF_UP));
+            }
+            agencyVoList.add(agencyVo);
+        }
         return agencyVoList;
     }
 

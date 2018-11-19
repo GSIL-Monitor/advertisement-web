@@ -61,4 +61,6 @@ public interface AgencyService {
      */
     List<AgencyVo> getAgencyInfos(User user, Agency agency, PageBounds pageBounds);
 
+    public List<AgencyVo> getAgencyListVo(List<Agency> twoAgencyList,User user);
+
 }

@@ -27,6 +27,7 @@
 <#macro headerPart>
 	<div id="header">
 		<input type="hidden" id="absolutePathPrefix" value="${rc.contextPath}">
+		<!-- 
 		<div id="danmakuArea" class="danmaku-area">
 			<em class="danmaku-icon"></em>
 			<div class="danmaku-list" id="danmakuListContainer">
@@ -34,6 +35,7 @@
 				</ul>
 			</div>
 		</div>
+		-->
 	  	<div id="user-nav" class="navbar navbar-inverse">
 			<ul class="nav">
 				<li  class="dropdown" id="profile-messages" >

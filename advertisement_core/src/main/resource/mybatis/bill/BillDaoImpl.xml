@@ -105,6 +105,9 @@
 		tb_bills
 		<where>
 			<trim suffixOverrides="and">
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
+				</if>
 				<if test="type != null">
 					type = #{type} and
 				</if>

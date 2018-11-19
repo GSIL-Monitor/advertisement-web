@@ -9,9 +9,6 @@ import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.user.model.User;
-import com.yuanshanbao.dsp.user.model.UserLevel;
-import com.yuanshanbao.dsp.user.service.TokenService;
-import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -82,7 +79,7 @@ public class AgencyController extends BaseController {
                     iterator.remove();
                 }
             }
-            List<AgencyVo> agencyListVo = userService.getAgencyListVo(twoAgencyList,user);
+            List<AgencyVo> agencyListVo = agencyService.getAgencyListVo(twoAgencyList,user);
             resultMap.put("oneAgencyList", oneAgencyList);
             resultMap.put("twoAgencyList", agencyListVo);
             resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
