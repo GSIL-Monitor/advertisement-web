@@ -18,7 +18,7 @@ public class AgencyVo {
     private Long productId;
     private String productName;
     private BigDecimal brokerage;
-    private Integer status;  //0:待审核 1:审核通过 2:审核未通过
+    private String status;  //0:待审核 1:审核通过 2:审核未通过
     private String userLevel;
     private String inviteUserLevel;
     private String inviteTime;
@@ -112,11 +112,11 @@ public class AgencyVo {
         this.brokerage = brokerage;
     }
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

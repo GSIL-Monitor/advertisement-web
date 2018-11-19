@@ -142,6 +142,8 @@ public class AgencyServiceImpl implements AgencyService {
         return agencyVoList;
     }
 
+
+
     @Override
     public BigDecimal getBrokerages(Agency agency, PageBounds pageBounds) {
         return getSumBrokerage(agency,pageBounds);

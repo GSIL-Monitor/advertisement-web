@@ -22,7 +22,7 @@
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 
 	</resultMap>
-	
+
 	<resultMap id="loginTokenMap" type="LoginToken">
 		<result property="appId" column="app_id" jdbcType="VARCHAR" />
 		<result property="token" column="token" jdbcType="VARCHAR" />
@@ -104,7 +104,7 @@
 		#{avatar}, #{inviteType},#{registerFrom}, #{status}, #{level},
 		sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
-			keyProperty="userId">
+				   keyProperty="userId">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>
@@ -182,7 +182,7 @@
 		values
 		(#{appId}, #{token}, #{userId}, #{loginTime}, #{loginIp})
 	</insert>
-	
+
 	<select id="selectLoginToken" parameterType="LoginToken" resultMap="loginTokenMap">
 		select
 		* from
@@ -205,6 +205,12 @@
 		</where>
 
 
+	</select>
+	<select id="selectUserLevelManagerCount" parameterType="java.lang.Long" resultType="java.lang.Integer">
+	  select
+	  count(user_id)
+	  from tb_user_info
+	  where invite_user_id =#{inviteUserId}
 	</select>
 
 

@@ -1,5 +1,7 @@
 package com.yuanshanbao.dsp.user.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.product.dao.ProductDao;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -393,20 +396,21 @@ public class UserServiceImpl implements UserService {
 		insertOrUpdateBaseInfo(baseInfo);
 	}
 
-	@Override
-	public void getLevelDetails(Long userId) {
+    @Override
+    public void getLevelDetails(Long userId) {
         User user = new User();
         if (userId != null){
-			user.setUserId(userId);
-			user.setLevel(UserLevel.MANAGER);
-			userDao.updateUser(user);
-		}
-        // 直推卡10人数/推卡人等级为经理的5人数
+            user.setUserId(userId);
+            user.setLevel(UserLevel.MANAGER);
+            userDao.updateUser(user);
+        }
+        // 直推卡10人数/推卡人等级为经理的10人数
         Agency agency = new Agency();
         agency.setInviteUserId(userId);
         int countAgency  = agencyService.selectAgencyByInviteId(userId);
+        int majordomoCouont = userDao.getUserLevelMajordomo(userId);
         int userCount = userDao.queryUserLevelCount(userId,UserLevel.MANAGER,UserLevel.MAJORDOMO,UserLevel.BAILLIFF);
-        if (countAgency >= 10 || userCount >= 10) {
+        if (countAgency >= 10 || majordomoCouont >= 10) {
             user.setUserId(userId);
             user.setLevel(UserLevel.MAJORDOMO);
             userDao.updateUser(user);
@@ -415,17 +419,18 @@ public class UserServiceImpl implements UserService {
             user.setLevel(UserLevel.BAILLIFF);
             userDao.updateUser(user);
         }
-	}
+    }
 
     @Override
     public int queryUserLevelCount(Long inviteUserId,Integer levelManager,Integer levelMajoromdo,Integer bailliff) {
-	    if (inviteUserId == null){
-	        throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+        if (inviteUserId == null){
+            throw new BusinessException(ComRetCode.WRONG_PARAMETER);
         }
         return userDao.queryUserLevelCount(inviteUserId ,levelManager,levelMajoromdo,bailliff);
     }
 
-	@Override
+
+    @Override
 	public void updateUserMobile(User user) {
 		clearUserCache(user.getUserId());
 
@@ -453,6 +458,37 @@ public class UserServiceImpl implements UserService {
 		}
 
 	}
+
+    @Override
+    public List<AgencyVo> getAgencyListVo(List<Agency> twoAgencyList ,User user) {
+	    List<AgencyVo> agencyVoList = new ArrayList<>();
+        for (Agency agen: twoAgencyList){
+            AgencyVo agencyVo = new AgencyVo();
+            agencyVo.setAgencyName(agen.getAgencyName());
+            agencyVo.setProductName(agen.getProductName());
+            agencyVo.setUpdateTime(agen.getUpdateTimeValue());
+            agencyVo.setStatus(agen.getStatusValue());
+            if (user.getLevel() == UserLevel.MANAGER){
+                agencyVo.setBrokerage(agen.getBrokerage().multiply(BigDecimal.valueOf(0.1)));
+            }else if (user.getLevel() == UserLevel.MAJORDOMO){
+                agencyVo.setBrokerage(agen.getBrokerage().multiply(BigDecimal.valueOf(0.15)));
+            }else if (user.getLevel() == UserLevel.BAILLIFF){
+                agencyVo.setBrokerage(agen.getBrokerage().multiply(BigDecimal.valueOf(0.2)));
+            }
+            agencyVoList.add(agencyVo);
+        }
+        return agencyVoList;
+    }
+
+    @Override
+    public int getUserLevelMajordomo(Long userId) {
+        int result = -1;
+	    userDao.getUserLevelMajordomo(userId);
+        if (result < 0) {
+            throw new BusinessException(ComRetCode.FAIL);
+        }
+        return result;
+    }
 
 
 }

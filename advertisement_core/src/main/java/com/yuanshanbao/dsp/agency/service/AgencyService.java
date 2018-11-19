@@ -60,4 +60,5 @@ public interface AgencyService {
      * @return
      */
     List<AgencyVo> getAgencyInfos(User user, Agency agency, PageBounds pageBounds);
+
 }

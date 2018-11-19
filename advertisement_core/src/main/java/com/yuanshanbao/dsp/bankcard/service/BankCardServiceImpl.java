@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.dsp.user.model.UserLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,14 +51,16 @@ public class BankCardServiceImpl implements BankCardService {
     }
 
     @Override
-    public void insertBankCard(BankCard bankCard) {
+    public int insertBankCard(BankCard bankCard) {
         int result = -1;
         result = bankCardDao.insertBankCard(bankCard);
         if (result < 0) {
             throw new BusinessException(ComRetCode.FAIL);
         } else {
             LoggerUtil.info("insertBankCard : number:" + result);
+            return result;
         }
+
     }
 
     @Override
@@ -81,13 +84,21 @@ public class BankCardServiceImpl implements BankCardService {
             agency.setProductName(product.getName());
             agency.setProductId(productId);
             agency.setName(userName);
-            agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
+            if (user.getLevel() == UserLevel.MANAGER){
+                agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
+            }else if (user.getLevel() == UserLevel.MAJORDOMO){
+                agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.9)));
+            }else if (user.getLevel() == UserLevel.BAILLIFF){
+                agency.setBrokerage(product.getBrokerage());
+            }else if (user.getLevel() == null){
+                agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
+            }
             agencyService.insertAgency(agency);
         } else {
             Agency updateAgency = new Agency();
             updateAgency.setUserId(agencyList.get(0).getUserId());
             updateAgency.setProductId(agencyList.get(0).getProductId());
-            agencyService.updateBankTime(updateAgency);
+            agencyService.updateAgency(updateAgency);
         }
 
     }

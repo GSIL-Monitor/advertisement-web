@@ -9,6 +9,7 @@ import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -73,6 +74,7 @@ public class AgencyController extends BaseController {
             for (Agency agen : oneAgencyList) {
                 agency.setInviteUserId(agen.getUserId());
                 twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
+
             }
             for (Iterator iterator = twoAgencyList.iterator(); iterator.hasNext(); ) {
                 Agency twoAgen = (Agency) iterator.next();
@@ -80,8 +82,9 @@ public class AgencyController extends BaseController {
                     iterator.remove();
                 }
             }
+            List<AgencyVo> agencyListVo = userService.getAgencyListVo(twoAgencyList,user);
             resultMap.put("oneAgencyList", oneAgencyList);
-            resultMap.put("twoAgencyList", twoAgencyList);
+            resultMap.put("twoAgencyList", agencyListVo);
             resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
         } catch (BusinessException e) {
             InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

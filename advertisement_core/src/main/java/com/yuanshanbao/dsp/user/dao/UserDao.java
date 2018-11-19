@@ -32,4 +32,5 @@ public interface UserDao {
 	public int updateUserMobile(User user);
 
 
+    public int getUserLevelMajordomo(Long userId);
 }

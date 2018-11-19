@@ -1,7 +1,6 @@
 package com.yuanshanbao.dsp.agency.dao;
 
 import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 import java.math.BigDecimal;
@@ -36,4 +35,6 @@ public interface AgencyDao {
     public int selectAgencyByInviteIdCount(Long inviteUserId);
 
     public int updateBankTime(Agency agency);
+
+
 }
