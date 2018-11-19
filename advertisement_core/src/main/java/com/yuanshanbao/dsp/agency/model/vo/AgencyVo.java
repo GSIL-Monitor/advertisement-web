@@ -112,6 +112,10 @@ public class AgencyVo {
         this.brokerage = brokerage;
     }
 
+    public String getBrokerageValue() {
+        return String.valueOf(brokerage);
+    }
+
     public String getStatus() {
         return status;
     }

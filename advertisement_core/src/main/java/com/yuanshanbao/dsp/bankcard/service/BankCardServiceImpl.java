@@ -84,13 +84,13 @@ public class BankCardServiceImpl implements BankCardService {
             agency.setProductName(product.getName());
             agency.setProductId(productId);
             agency.setName(userName);
-            if (user.getLevel() == UserLevel.MANAGER){
+            if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER){
                 agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
-            }else if (user.getLevel() == UserLevel.MAJORDOMO){
+            }else if (user.getLevel() != null && user.getLevel() == UserLevel.MAJORDOMO){
                 agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.9)));
-            }else if (user.getLevel() == UserLevel.BAILLIFF){
+            }else if (user.getLevel() != null && user.getLevel() == UserLevel.BAILLIFF){
                 agency.setBrokerage(product.getBrokerage());
-            }else if (user.getLevel() == null){
+            }else{
                 agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
             }
             agencyService.insertAgency(agency);

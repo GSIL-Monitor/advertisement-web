@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.user.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -459,26 +460,7 @@ public class UserServiceImpl implements UserService {
 
 	}
 
-    @Override
-    public List<AgencyVo> getAgencyListVo(List<Agency> twoAgencyList ,User user) {
-	    List<AgencyVo> agencyVoList = new ArrayList<>();
-        for (Agency agen: twoAgencyList){
-            AgencyVo agencyVo = new AgencyVo();
-            agencyVo.setAgencyName(agen.getAgencyName());
-            agencyVo.setProductName(agen.getProductName());
-            agencyVo.setUpdateTime(agen.getUpdateTimeValue());
-            agencyVo.setStatus(agen.getStatusValue());
-            if (user.getLevel() == UserLevel.MANAGER){
-                agencyVo.setBrokerage(agen.getBrokerage().multiply(BigDecimal.valueOf(0.1)));
-            }else if (user.getLevel() == UserLevel.MAJORDOMO){
-                agencyVo.setBrokerage(agen.getBrokerage().multiply(BigDecimal.valueOf(0.15)));
-            }else if (user.getLevel() == UserLevel.BAILLIFF){
-                agencyVo.setBrokerage(agen.getBrokerage().multiply(BigDecimal.valueOf(0.2)));
-            }
-            agencyVoList.add(agencyVo);
-        }
-        return agencyVoList;
-    }
+
 
     @Override
     public int getUserLevelMajordomo(Long userId) {
