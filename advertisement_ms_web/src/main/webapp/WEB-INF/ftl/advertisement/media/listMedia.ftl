@@ -6,15 +6,15 @@
 	$(document).ready(function(){
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do?activitId=${activityId}";
 		dataTableConfig.columns = [{
+      		"data": "channelId"
+	    },{
 			"data": "name"
 		}, {
 			"data": "key"
 		}, {
-			"data": "typeContent"
-		}, {
 			"data": "createTimeContent"
 		}, {
-			"data": "statusContent"
+			"data": "statusValue"
 		}, {
 			"data": "${functionId}",
 			"render": function ( data, type, full, meta ) {
@@ -69,9 +69,9 @@
 					<table class="table table-bordered data-table" id="dataTable">
 						<thead>
 							<tr>
+								<th>媒体ID</th>
 								<th>媒体名称</th>
 								<th>媒体key</th>
-								<th>媒体类型</th>
 								<th>创建时间</th>
 								<th>状态</th>
 								<th>操作</th>
