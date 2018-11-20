@@ -171,13 +171,13 @@ public class AgencyServiceImpl implements AgencyService {
 
 
     @Override
-    public BigDecimal getBrokerages(Agency agency, PageBounds pageBounds) {
-        return getSumBrokerage(agency,pageBounds);
+    public BigDecimal getBrokerages(Agency agency,User user,PageBounds pageBounds) {
+        return getSumBrokerage(agency,pageBounds,user);
     }
 
 
 
-    public BigDecimal getSumBrokerage(Agency agency, PageBounds pageBounds) {
+    public BigDecimal getSumBrokerage(Agency agency, PageBounds pageBounds,User user) {
         List<Agency> oneAgencyList = agencyDao.selectAgencys(agency, pageBounds);
 
         List<Long> oneInviteUserIds = new ArrayList<>();
@@ -201,16 +201,15 @@ public class AgencyServiceImpl implements AgencyService {
             }
             agency.setInviteUserId(agen.getUserId());
             twoAgencyList = agencyDao.selectAgencys(agency, new PageBounds());
-            for (Agency agencyIds : twoAgencyList) {
-                twoInviteUserIds.add(Long.valueOf(agencyIds.getUserId()));
-            }
+        }
+        for (Agency agencyIds : twoAgencyList) {
+            twoInviteUserIds.add(Long.valueOf(agencyIds.getUserId()));
         }
         if (twoInviteUserIds.size() != 0){
             twoAgencyBrokerage = agencyDao.getSumBrokerage(twoInviteUserIds);
             if (twoAgencyBrokerage == null) {
                 twoAgencyBrokerage = BigDecimal.ZERO;
             }
-            User user = userService.selectUserById(agency.getUserId());
             if (user!= null &&  user.getLevel() == UserLevel.MANAGER){
                 brokerage = twoAgencyBrokerage.multiply(BigDecimal.valueOf(0.1));
             }else if (user != null && user.getLevel() == UserLevel.MAJORDOMO){

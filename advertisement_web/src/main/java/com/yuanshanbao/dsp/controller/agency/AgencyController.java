@@ -67,7 +67,7 @@ public class AgencyController extends BaseController {
                 }
             }
             // 总佣金
-            BigDecimal brokerages = agencyService.getBrokerages(agency, pageBounds);
+            BigDecimal brokerages = agencyService.getBrokerages(agency,user, pageBounds);
             for (Agency agen : oneAgencyList) {
                 agency.setInviteUserId(agen.getUserId());
                 twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());

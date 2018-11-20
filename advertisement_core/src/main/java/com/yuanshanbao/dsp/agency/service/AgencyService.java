@@ -38,7 +38,7 @@ public interface AgencyService {
      * @param
      * @return
      */
-    public BigDecimal getBrokerages(Agency agency, PageBounds pageBounds);
+    public BigDecimal getBrokerages(Agency agency,User user, PageBounds pageBounds);
 
     /**
      *获得直推办卡成功人数

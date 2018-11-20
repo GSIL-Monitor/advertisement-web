@@ -22,8 +22,8 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
     }
 
     @Override
-    public Agency selectAgency(String userId) {
-        return getSqlSession().selectOne("agency.selectAgencyById", userId);
+    public List<Agency>  selectAgency(Long userId) {
+        return getSqlSession().selectList("agency.selectAgencyById", userId);
     }
 
     @Override

@@ -285,17 +285,6 @@ public class AccountController extends BaseController {
 			String userIp = RequestUtil.getRemoteAddr(request);
 			Map<String, Object> map = paymentInterfaceService.verifyIdentity(String.valueOf(loginToken.getUserId()),
 					loginToken.getMobile(), name, identityCard, userIp);
-            Agency agencyParams = new Agency();
-            agencyParams.setUserId(loginToken.getUserId());
-            List<Agency> agency = agencyService.selectAgencys(agencyParams,new PageBounds());
-            for (Agency agen: agency){
-                if (agen.getStatus() == null && agen.getProductId() == null){
-                    Agency updateAgency = new Agency();
-                    updateAgency.setUserId(agen.getUserId());
-                    updateAgency.setAgencyName(name);
-                    agencyService.updateAgency(updateAgency);
-                }
-            }
 			resultMap.putAll(map);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

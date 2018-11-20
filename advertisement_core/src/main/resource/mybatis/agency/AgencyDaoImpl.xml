@@ -5,6 +5,7 @@
 <mapper namespace="agency">
 
 	<resultMap id="agencyMap" type="Agency">
+		<result property="id" column="id" jdbcType="NUMERIC" />
 		<result property="userId" column="user_id" jdbcType="NUMERIC" />
 		<result property="agencyName" column="agency_name" jdbcType="VARCHAR" />
 		<result property="inviteUserId" column="invite_user_id" jdbcType="NUMERIC" />
@@ -60,7 +61,7 @@
 
 	</select>
 
-	<select id="selectAgencyById"  resultMap="agencyMap">
+	<select id="selectAgencyById" parameterType="java.lang.Long" resultMap="agencyMap">
 		select
 		* from
 		tb_agency
@@ -104,14 +105,14 @@
 			</trim>
 		</set>
 		<where>
-			user_id=#{userId}
+			id=#{id}
 		</where>
 	</update>
 
 	<update id="updateBankTime" parameterType="Agency">
 		update tb_agency
 		set update_time=sysdate()
-		where user_id =#{userId} and product_id = #{productId}
+		where id = #{id} and user_id =#{userId} and product_id = #{productId}
 	</update>
 
 
@@ -172,9 +173,9 @@
 
 	<insert id="insertAgency" parameterType="Agency">
 		insert into
-		tb_agency(user_id,invite_user_id,name,mobile,agency_name,brokerage,product_id,product_name,status,invite_time,create_time,update_time)
+		tb_agency(id,user_id,invite_user_id,name,mobile,agency_name,brokerage,product_id,product_name,status,invite_time,create_time,update_time)
 		values
-		(#{userId}, #{inviteUserId}, #{name},#{mobile}, #{agencyName},#{brokerage},#{productId},#{productName},
+		(#{id},#{userId}, #{inviteUserId}, #{name},#{mobile}, #{agencyName},#{brokerage},#{productId},#{productName},
 		#{status},sysdate(), sysdate(),sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 				   keyProperty="userId">

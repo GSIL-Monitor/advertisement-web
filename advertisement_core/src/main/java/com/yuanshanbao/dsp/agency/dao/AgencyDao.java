@@ -12,7 +12,7 @@ import java.util.List;
 public interface AgencyDao {
     public List<Agency> selectAgencys(Agency agency, PageBounds pageBounds);
 
-    Agency selectAgency(String  userId);
+    public List<Agency>  selectAgency(Long  userId);
 
     public int insertAgency(Agency agency);
 
