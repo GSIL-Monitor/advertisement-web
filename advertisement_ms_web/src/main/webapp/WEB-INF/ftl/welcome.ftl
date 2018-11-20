@@ -71,12 +71,12 @@ $(document).ready(function(){
                     </div>
                     <div class="widget-content nopadding">
                         <ul class="widget-lists clearfix">
-                            <li>余额：<p><span style="color: #ff784f;">${balance}</span></p></li>
-                            <li>今日消耗：<p><span style="color: #ff784f;">${today}</span></p></li>
-                            <li>昨日消耗：<p><span style="color: #ff784f;">${yesterday}</span></p></li>
-                            <li>7日消耗：<p><span style="color: #ff784f;">${seven}</span></p></li>
-                            <li>当月消耗：<p><span style="color: #ff784f;">${month}</span></p></li>
-                            <li>最近30天消耗：<p><span style="color: #ff784f;">${thirtyDay}</span></p></li>
+                            <li>余额：<br><br><p><span style="color: #ff784f;">${balance}</span></p></li>
+                            <li>今日消耗：<br><br><p><span style="color: #ff784f;">${today}</span></p></li>
+                            <li>昨日消耗：<br><br><p><span style="color: #ff784f;">${yesterday}</span></p></li>
+                            <li>7日消耗：<br><br><p><span style="color: #ff784f;">${seven}</span></p></li>
+                            <li>当月消耗：<br><br><p><span style="color: #ff784f;">${month}</span></p></li>
+                            <li>最近30天消耗：<br><br><p><span style="color: #ff784f;">${thirtyDay}</span></p></li>
                         </ul>
                     </div>
                 </div>

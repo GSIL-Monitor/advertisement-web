@@ -11,7 +11,7 @@
     </style>
 </@htmlHead>
 
-<nav class="navbar navbar-fixed-top" style="background:transparent;">
+<#-- <nav class="navbar navbar-fixed-top" style="background:transparent;">
   <div class="container navbar-top">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -26,12 +26,17 @@
     </div>
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav navbar-right my-list"><#-- 
-        <li><a href="#home" class="text-center">首页</a></li>
-        <li><a href="#service" class="text-center">数据与服务</a></li>
-        <li><a href="#about" class="text-center">关于我们</a></li>
-        <li><a href="#contact" class="text-center">联系我们</a></li> -->
+      <ul class="nav navbar-nav navbar-right my-list">
       </ul>
+    </div>
+  </div>
+</nav> -->
+<nav class="navbar navbar-fixed-top">
+  <div class="container" style="padding: 0 0.3rem;">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <img class="logo" style="margin: -.15rem 0 0;" src="${cdnUrl}/img/login/bainian/logo@2x.png" alt="">
+      </a>
     </div>
   </div>
 </nav>
