@@ -14,7 +14,7 @@ import java.util.Map;
 public interface AgencyService {
     public List<Agency> selectAgencys(Agency agency,PageBounds pageBounds);
 
-    public Agency selectAgency(String userId);
+    public List<Agency>  selectAgency(Long userId);
 
     public int insertAgency(Agency agency);
 

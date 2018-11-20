@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.controller.user;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -322,10 +323,6 @@ public class UserController extends BaseController {
             loginToken.setRegister(register);
             setSession(request, loginToken.getToken(), user);
             resultMap.put("loginToken", loginToken);
-            Agency agency = new Agency();
-            agency.setUserId(user.getUserId());
-            agency.setAgencyName(user.getNickName());
-            agencyService.updateAgency(agency);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
             return resultMap;
         } catch (BusinessException e) {
@@ -356,17 +353,13 @@ public class UserController extends BaseController {
             userService.updateUserBaseInfoIfNotExists(user, name, avatar, gender);
             User updateUser = new User();
             updateUser.setUserId(user.getUserId());
-            updateUser.setNickName(name);
+            if (!StringUtil.isEmpty(name) && !("undefined".equals(name))){
+                updateUser.setNickName(name);
+            }else {
+                updateUser.setNickName("");
+            }
             updateUser.setAvatar(avatar);
             userService.updateUser(updateUser);
-            Agency agency = new Agency();
-            if (!StringUtil.isEmpty(name) && !("undefined".equals(name))){
-                agency.setAgencyName(name);
-            }else {
-                agency.setAgencyName("");
-            }
-            agency.setUserId(user.getUserId());
-            agencyService.updateAgency(agency);
             request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, user);
             InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
             return resultMap;

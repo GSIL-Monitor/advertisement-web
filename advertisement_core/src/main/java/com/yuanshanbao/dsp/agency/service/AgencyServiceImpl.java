@@ -36,7 +36,7 @@ public class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
-    public Agency selectAgency(String userId) {
+    public List<Agency>  selectAgency(Long userId) {
         if (userId == null) {
             throw new BusinessException(ComRetCode.FAIL);
         }
@@ -184,6 +184,7 @@ public class AgencyServiceImpl implements AgencyService {
         List<Long> twoInviteUserIds = new ArrayList<>();
         BigDecimal oneAgencyBrokerage = BigDecimal.valueOf(0);
         BigDecimal twoAgencyBrokerage = BigDecimal.valueOf(0);
+        BigDecimal brokerage = BigDecimal.valueOf(0);
         for (Agency agencyIds : oneAgencyList) {
             if (oneAgencyList.size() == 0){
                 break;
@@ -206,17 +207,31 @@ public class AgencyServiceImpl implements AgencyService {
         }
         if (twoInviteUserIds.size() != 0){
             twoAgencyBrokerage = agencyDao.getSumBrokerage(twoInviteUserIds);
-            if (twoAgencyBrokerage == null){
-                twoAgencyBrokerage = BigDecimal.valueOf(0);
+            if (twoAgencyBrokerage == null) {
+                twoAgencyBrokerage = BigDecimal.ZERO;
+            }
+            User user = userService.selectUserById(agency.getUserId());
+            if (user!= null &&  user.getLevel() == UserLevel.MANAGER){
+                brokerage = twoAgencyBrokerage.multiply(BigDecimal.valueOf(0.1));
+            }else if (user != null && user.getLevel() == UserLevel.MAJORDOMO){
+                 brokerage = twoAgencyBrokerage.multiply(BigDecimal.valueOf(0.15));
+            }else if (user != null && user.getLevel() == UserLevel.BAILLIFF){
+                 brokerage = twoAgencyBrokerage.multiply(BigDecimal.valueOf(0.2));
+            }else {
+                 brokerage = twoAgencyBrokerage.multiply(BigDecimal.valueOf(0.1));
+            }
+
+            if (brokerage == null){
+                brokerage = BigDecimal.valueOf(0);
             }
         }
         if (oneAgencyBrokerage == null) {
         	oneAgencyBrokerage = BigDecimal.ZERO;
         }
-        if (twoAgencyBrokerage == null) {
-        	twoAgencyBrokerage = BigDecimal.ZERO;
+        if (brokerage == null) {
+            brokerage = BigDecimal.ZERO;
         }
-        BigDecimal sumAgencyBrokerage = oneAgencyBrokerage.add(twoAgencyBrokerage);
+        BigDecimal sumAgencyBrokerage = oneAgencyBrokerage.add(brokerage);
         return sumAgencyBrokerage;
     }
 

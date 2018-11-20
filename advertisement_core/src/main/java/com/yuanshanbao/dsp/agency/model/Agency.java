@@ -13,6 +13,7 @@ import java.sql.Timestamp;
  */
 public class Agency implements Serializable  {
     private static final long serialVersionUID = 4165445835251317169L;
+    private Long id;
     private Long inviteUserId;
     private Long userId;
     private String agencyName;
@@ -26,12 +27,23 @@ public class Agency implements Serializable  {
     private Timestamp createTime;
     private Timestamp updateTime;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public BigDecimal getBrokerage() {
         return brokerage;
     }
 
     public String getMobile() {
         return mobile;
+    }
+    public String getHideMobile(){
+        return mobile.replaceAll("(\\d{3})\\d{4}(\\d{4})","$1****$2");
     }
 
     public void setMobile(String mobile) {

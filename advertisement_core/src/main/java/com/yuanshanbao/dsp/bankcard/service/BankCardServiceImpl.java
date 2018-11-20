@@ -66,6 +66,7 @@ public class BankCardServiceImpl implements BankCardService {
     @Override
     public void getApplyBankCardInfo(User user, Long productId, String userName, String mobile) {
         Product product = productDao.selectPrdouctById(productId);
+
         Agency param = new Agency();
         param.setProductId(productId);
         param.setUserId(user.getUserId());
@@ -96,6 +97,7 @@ public class BankCardServiceImpl implements BankCardService {
             agencyService.insertAgency(agency);
         } else {
             Agency updateAgency = new Agency();
+            updateAgency.setId(agencyList.get(0).getId());
             updateAgency.setUserId(agencyList.get(0).getUserId());
             updateAgency.setProductId(agencyList.get(0).getProductId());
             agencyService.updateAgency(updateAgency);
