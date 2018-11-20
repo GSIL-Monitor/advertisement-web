@@ -12,7 +12,7 @@ public interface IpLocationService {
 	public List<IpLocation> selectIpLocations(IpLocation ipLocation, PageBounds pageBounds);
 
 	public IpLocation selectIpLocation(Long ipLocationId);
-	
+
 	public IpLocation selectIpLocation(String key);
 
 	public void insertIpLocation(IpLocation ipLocation);
@@ -27,4 +27,5 @@ public interface IpLocationService {
 
 	public Location queryIpLocation(String ip);
 
+	public String queryIsp(String ipAddress);
 }

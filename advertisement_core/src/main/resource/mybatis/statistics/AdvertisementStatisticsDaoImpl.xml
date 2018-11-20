@@ -41,6 +41,9 @@
 				<if test="projectId != null">
 					project_id=#{projectId} and
 				</if>
+				<if test="advertiserId != null">
+					advertiser_id=#{advertiserId} and
+				</if>
 				<if test="advertisementId != null">
 					advertisement_id = #{advertisementId} and
 				</if>
@@ -228,5 +231,39 @@
 		where
 		advertisement_statistics_id=#{advertisementStatisticsId}
 	</delete>
+
+	<select id="selectStatisticsByAdvertiser" parameterType="AdvertisementStatistics"
+		resultMap="advertisementStatisticsMap">
+		select
+			date,
+			SUM(show_count) AS showCount,
+			SUM(click_count) AS clickCount
+		from
+		tb_advertisement_statistics
+		<where>
+			<trim suffixOverrides="and">
+				<if test="advertiserId != null">
+					advertiser_id = #{advertiserId} and
+				</if>
+				<if test="type != null">
+					type = #{type} and
+				</if>
+				<if test="date != null">
+					date = #{date} and
+				</if>
+				<if test="channel != null">
+					channel = #{channel} and
+				</if>
+				<if test="queryStartTime != null">
+					 date &gt;= #{queryStartTime} and
+				</if>
+				<if test="queryEndTime != null">
+					 date &lt;= #{queryEndTime} and
+				</if>
+			</trim>
+			and status != -1
+		</where>
+		GROUP BY date order by date desc
+	</select>
 
 </mapper>

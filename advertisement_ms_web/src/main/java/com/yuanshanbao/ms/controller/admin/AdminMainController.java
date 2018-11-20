@@ -40,6 +40,7 @@ import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.project.service.ProjectService;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
+import com.yuanshanbao.dsp.statistics.model.AdvertisementStatisticsType;
 import com.yuanshanbao.dsp.statistics.service.AdvertisementStatisticsService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.model.admin.Menu;
@@ -134,13 +135,13 @@ public class AdminMainController extends PaginationController {
 	@RequestMapping("/query.do")
 	public Object query(AdvertisementStatistics statistics, HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> modelMap = new HashMap<String, Object>();
+		Advertiser currentAdvertiser = getBindAdvertiserByUser();
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
-		// List<AdvertisementStatistics> list =
-		// advertisementStatisticsService.selectAdvertisementStatistics(statistics,
-		// new PageBounds());
-		// resultList =
-		// advertisementStatisticsService.combineAdvertiserAndPosition(list);
-		// resultList = this.countTotal(resultList);
+		if (currentAdvertiser != null) {
+			statistics.setType(AdvertisementStatisticsType.PV_DATA);
+			statistics.setAdvertiserId(currentAdvertiser.getAdvertiserId());
+			resultList = advertisementStatisticsService.selectAdvertiserStatistic(statistics);
+		}
 		modelMap.put("data", resultList);
 		modelMap.put("draw", request.getParameter("draw"));
 		modelMap.put("recordsTotal", 1000);

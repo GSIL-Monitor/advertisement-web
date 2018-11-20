@@ -251,4 +251,24 @@ public class IpLocationServiceImpl implements IpLocationService {
 		return JacksonUtil.json2map(EntityUtils.toString(response.getEntity()));
 	}
 
+	@Override
+	public String queryIsp(String ipAddress) {
+		String isp = null;
+		isp = queryYiYuanInterfaceForIsp(ipAddress);
+		return isp;
+	}
+
+	private String queryYiYuanInterfaceForIsp(String ipAddress) {
+		try {
+			Map<String, Object> resultMap = doGetIpInterface(ipAddress, "YIYUAN");
+			Object obj = resultMap.get("showapi_res_body");
+			if (obj instanceof Map) {
+				String isp = (String) ((Map) obj).get("isp");
+				return isp;
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("[queryYiYuanISPError]", e);
+		}
+		return null;
+	}
 }

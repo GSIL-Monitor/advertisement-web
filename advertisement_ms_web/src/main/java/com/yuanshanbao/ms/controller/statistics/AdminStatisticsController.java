@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,6 +29,7 @@ import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
+import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -35,6 +37,7 @@ import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.position.service.PositionService;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.dsp.project.model.Project;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.Statistics;
 import com.yuanshanbao.dsp.statistics.model.StatisticsStatus;
@@ -970,9 +973,14 @@ public class AdminStatisticsController extends PaginationController {
 	}
 
 	@ResponseBody
-	@RequestMapping("/planStatistics")
-	public Object planStatistics(Integer diffDay, String fromDay) {
+	@RequestMapping("/{projectKey}/planStatistics")
+	public Object planStatistics(Integer diffDay, String fromDay, @PathVariable("projectKey") String projectKey) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Project project = ConstantsManager.getProjectByKey(projectKey);
+		if (project == null) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+			return resultMap;
+		}
 		if (diffDay == null) {
 			diffDay = 1;
 		}
@@ -981,7 +989,7 @@ public class AdminStatisticsController extends PaginationController {
 			diffDay = DateUtils.getDiffDays(from, new Date());
 		}
 		for (int i = 1; i <= diffDay; i++) {
-			advertisementStatisticsService.runAndInsertPlanStatistics(i);
+			advertisementStatisticsService.runAndInsertPlanStatistics(i, project.getProjectId());
 		}
 		InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		return resultMap;

@@ -30,17 +30,25 @@ public class AdvertisementStatisticsDaoImpl extends BaseDaoImpl implements Adver
 	@Override
 	public List<AdvertisementStatistics> selectAdvertisementStatistics(AdvertisementStatistics advertisementStatistics,
 			PageBounds pageBounds) {
-		return getSqlSession().selectList("advertisementStatistics.selectAdvertisementStatistics", advertisementStatistics, pageBounds);
+		return getSqlSession().selectList("advertisementStatistics.selectAdvertisementStatistics",
+				advertisementStatistics, pageBounds);
 	}
 
 	@Override
 	public List<AdvertisementStatistics> selectAdvertisementStatisticsByAdvertisementIds(Map<String, Object> map) {
-		return getSqlSession().selectList("advertisementStatistics.selectAdvertisementStatisticsByAdvertisementIds", map);
+		return getSqlSession().selectList("advertisementStatistics.selectAdvertisementStatisticsByAdvertisementIds",
+				map);
 	}
-	
+
 	@Override
 	public List<AdvertisementStatistics> selectAdvertisementStatisticsByChannels(Map<String, Object> map) {
 		return getSqlSession().selectList("advertisementStatistics.selectAdvertisementStatisticsByChannels", map);
+	}
+
+	@Override
+	public List<AdvertisementStatistics> selectAdvertiserStatistic(AdvertisementStatistics advertisementStatistics) {
+		return getSqlSession().selectList("advertisementStatistics.selectStatisticsByAdvertiser",
+				advertisementStatistics);
 	}
 
 }

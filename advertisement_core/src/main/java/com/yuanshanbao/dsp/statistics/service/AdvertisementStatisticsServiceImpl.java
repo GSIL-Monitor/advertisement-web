@@ -889,11 +889,12 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	}
 
 	@Override
-	public void runAndInsertPlanStatistics(int diffDay) {
+	public void runAndInsertPlanStatistics(int diffDay, Long projectId) {
 		String date = DateUtils.format(DateUtils.addDays(new Date(), -diffDay));
-		List<AdvertisementStatistics> list = intervalPlanStatistics(diffDay, false, null);
+		List<AdvertisementStatistics> list = intervalPlanStatistics(diffDay, false, null, projectId);
 		for (AdvertisementStatistics advertisementStatistics : list) {
 			advertisementStatistics.setStatus(CommonStatus.ONLINE);
+			advertisementStatistics.setProjectId(projectId);
 			AdvertisementStatistics param = new AdvertisementStatistics();
 			param.setPlanId(advertisementStatistics.getPlanId());
 			param.setChannel(advertisementStatistics.getChannel());
@@ -913,35 +914,38 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		}
 	}
 
-	private List<AdvertisementStatistics> intervalPlanStatistics(int dateDiff, boolean fromDB, Integer dataType) {
+	private List<AdvertisementStatistics> intervalPlanStatistics(int dateDiff, boolean fromDB, Integer dataType,
+			Long projectId) {
 		String date = DateUtils.format(DateUtils.addDays(new Date(), -dateDiff));
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		Probability param = new Probability();
+		param.setProjectId(projectId);
 		param.setStatus(ProbabilityStatus.ONLINE);
-		param.setProjectId(Long.valueOf(2));
 		List<Probability> list = probabilityService.selectProbabilitys(param, new PageBounds());
-		Set<String> channelAndIdList = redisCacheService.smembers(RedisConstant.getAdvertisementChannelAndIdKey(date));
 		for (Probability probability : list) {
-			dataPlanTypeFunction(dataType, date, probability.getChannel(), resultList, probability.getPlanId());
+			dataPlanTypeFunction(dataType, date, probability.getChannel(), resultList, probability.getPlanId(),
+					probability.getAdvertiserId());
 		}
 		return resultList;
 	}
 
 	private void dataPlanTypeFunction(Integer dataType, String date, String channel,
-			List<AdvertisementStatistics> resultList, Long planId) {
+			List<AdvertisementStatistics> resultList, Long planId, Long advertiserId) {
 		if (dataType == null) {
-			setPlanPv(date, channel, resultList, planId);
-			setPlanUv(date, channel, resultList, planId);
+			setPlanPv(date, channel, resultList, planId, advertiserId);
+			setPlanUv(date, channel, resultList, planId, advertiserId);
 		} else if (dataType.equals(AdvertisementStatisticsType.PV_DATA)) {
-			setPlanPv(date, channel, resultList, planId);
+			setPlanPv(date, channel, resultList, planId, advertiserId);
 		} else if (dataType.equals(AdvertisementStatisticsType.UV_DATA)) {
-			setPlanUv(date, channel, resultList, planId);
+			setPlanUv(date, channel, resultList, planId, advertiserId);
 		}
 	}
 
-	private void setPlanPv(String date, String channel, List<AdvertisementStatistics> resultList, Long planId) {
+	private void setPlanPv(String date, String channel, List<AdvertisementStatistics> resultList, Long planId,
+			Long advertiserId) {
 		AdvertisementStatistics adStatistics = new AdvertisementStatistics();
 		adStatistics.setPlanId(planId);
+		adStatistics.setAdvertiserId(advertiserId);
 		adStatistics.setChannel(channel);
 		adStatistics.setDate(date);
 		adStatistics.setType(AdvertisementStatisticsType.PV_DATA);
@@ -967,9 +971,11 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		return getCount(key);
 	}
 
-	private void setPlanUv(String date, String channel, List<AdvertisementStatistics> resultList, Long planId) {
+	private void setPlanUv(String date, String channel, List<AdvertisementStatistics> resultList, Long planId,
+			Long advertiserId) {
 		AdvertisementStatistics adStatistics = new AdvertisementStatistics();
 		adStatistics.setChannel(channel);
+		adStatistics.setAdvertiserId(advertiserId);
 		adStatistics.setPlanId(planId);
 		adStatistics.setDate(date);
 		adStatistics.setType(AdvertisementStatisticsType.UV_DATA);
@@ -1070,9 +1076,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		result.setPlanId(planId);
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		if (pv != null && pv) {
-			dataPlanTypeFunction(AdvertisementStatisticsType.PV_DATA, date, channel, resultList, planId);
+			dataPlanTypeFunction(AdvertisementStatisticsType.PV_DATA, date, channel, resultList, planId, null);
 		} else {
-			dataPlanTypeFunction(AdvertisementStatisticsType.UV_DATA, date, channel, resultList, planId);
+			dataPlanTypeFunction(AdvertisementStatisticsType.UV_DATA, date, channel, resultList, planId, null);
 		}
 		for (AdvertisementStatistics adStatistics : resultList) {
 			if (adStatistics.getPlanId().equals(planId)) {
@@ -1176,9 +1182,9 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 		result.setChannel(channelKey);
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		if (pv != null && pv) {
-			dataPlanTypeFunction(AdvertisementStatisticsType.PV_DATA, date, channelKey, resultList, planId);
+			dataPlanTypeFunction(AdvertisementStatisticsType.PV_DATA, date, channelKey, resultList, planId, null);
 		} else {
-			dataPlanTypeFunction(AdvertisementStatisticsType.UV_DATA, date, channelKey, resultList, planId);
+			dataPlanTypeFunction(AdvertisementStatisticsType.UV_DATA, date, channelKey, resultList, planId, null);
 		}
 		for (AdvertisementStatistics adStatistics : resultList) {
 			if (adStatistics.getChannel() != null && adStatistics.getChannel() != ""
@@ -1192,5 +1198,10 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public List<AdvertisementStatistics> selectAdvertiserStatistic(AdvertisementStatistics advertisementStatistics) {
+		return advertisementStatisticsDao.selectAdvertiserStatistic(advertisementStatistics);
 	}
 }

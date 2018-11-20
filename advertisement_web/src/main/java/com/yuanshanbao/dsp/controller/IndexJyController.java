@@ -21,6 +21,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
+import com.yuanshanbao.dsp.advertisement.model.click.AdvertisementCountInfo;
 import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementDetails;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
@@ -33,6 +34,7 @@ import com.yuanshanbao.dsp.project.model.Project;
 @Controller
 public class IndexJyController {
 
+	private final static String EMPTYINFO = "emptyInfo";
 	@Autowired
 	private ProbabilityService probabilityService;
 
@@ -50,13 +52,18 @@ public class IndexJyController {
 					List<AdvertisementDetails> seatBid = probabilityService.pickProbabilityByPlan(request,
 							project.getProjectId(), channelObject, mediaInformation);
 					resultMap.put("seatBid", seatBid);
+					if (seatBid.size() == 0) {
+						throw new Exception(EMPTYINFO);
+					}
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
-			LoggerUtil.error("[advertisement dsp]: ", e);
+			if (!EMPTYINFO.equals(e.getMessage())) {
+				LoggerUtil.error("[advertisement jy]: ", e);
+			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;
@@ -71,10 +78,7 @@ public class IndexJyController {
 			String channel = (String) body.get("channel");
 			String pId = (String) body.get("pId");
 			String key = (String) body.get("key");
-			if (StringUtils.isEmpty(channel)) {
-				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
-			}
-			if (StringUtils.isEmpty(pId)) {
+			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			Project project = ConstantsManager.getProjectByKey("jy");
@@ -88,7 +92,7 @@ public class IndexJyController {
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
-			LoggerUtil.error("[adClick index]: ", e);
+			LoggerUtil.error("[ad/show jy]: ", e);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 
@@ -104,10 +108,7 @@ public class IndexJyController {
 			String channel = (String) body.get("channel");
 			String pId = (String) body.get("pId");
 			String key = (String) body.get("key");
-			if (StringUtils.isEmpty(channel)) {
-				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
-			}
-			if (StringUtils.isEmpty(pId)) {
+			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			Project project = ConstantsManager.getProjectByKey("jy");
@@ -121,7 +122,68 @@ public class IndexJyController {
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
-			LoggerUtil.error("[adClick dsp]: ", e);
+			LoggerUtil.error("[ad/Click jy]: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+		}
+
+		return resultMap;
+	}
+
+	// -----------------------------------get
+	// 广告曝光
+	@RequestMapping("/show")
+	@ResponseBody
+	public Object show(HttpServletRequest request, HttpServletResponse response, AdvertisementCountInfo info) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			String channel = info.getChannel();
+			String pId = info.getPid();
+			String key = info.getKey();
+			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Project project = ConstantsManager.getProjectByKey("jy");
+			if (project != null) {
+				Channel channelObject = ConfigManager.getChannel(info.getChannel());
+				if (channelObject != null) {
+					probabilityService.recordPlanCount(info.getPid(), info.getKey(), info.getChannel(), false);
+				}
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			LoggerUtil.error("[adShow jy]: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+		}
+
+		return resultMap;
+	}
+
+	// 广告点击
+	@RequestMapping("/click")
+	@ResponseBody
+	public Object click(HttpServletRequest request, HttpServletResponse response, AdvertisementCountInfo info) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			String channel = info.getChannel();
+			String pId = info.getPid();
+			String key = info.getKey();
+			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
+				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+			}
+			Project project = ConstantsManager.getProjectByKey("jy");
+			if (project != null) {
+				Channel channelObject = ConfigManager.getChannel(info.getChannel());
+				if (channelObject != null) {
+					probabilityService.recordPlanCount(info.getPid(), info.getKey(), info.getChannel(), true);
+				}
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			LoggerUtil.error("[adClick jy]: ", e);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 

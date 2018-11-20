@@ -8,13 +8,14 @@
 	$(document).ready(function(){
 		dataTableConfig.iDisplayLength = 1000;
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryAdvertiserDspStatistic.do?isPv=true";
-		dataTableConfig.columns = [
-			{
+		dataTableConfig.columns = [{
 		    	"data": null,
 		    	 "render": function ( data, type, full, meta ) {
 		            return '【'+data.plan.planId+'】'+ data.plan.name;
 		        }
 	      	}, {
+		    	"data": "date"
+		    },{
 		    	"data": "total"
 		    }, {
 		    	"data": "clickCount"
@@ -95,6 +96,7 @@
 							<thead>
 								<tr>
 									<td>计划名称</td>
+									<td>日期</td>
 									<td>总数</td>
 									<td>点击量</td>
 									<td>曝光量</td>

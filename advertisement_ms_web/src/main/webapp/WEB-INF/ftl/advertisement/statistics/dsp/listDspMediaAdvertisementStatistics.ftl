@@ -38,7 +38,7 @@
 			if (isNotEmpty($('#name').val())) {
 				params += "companyName=" +encodeURI(encodeURI($('#name').val())) + "&";
 			}
-			var newUrl="${rc.contextPath}/admin/${functionName}/queryMediaAdvertisements.do?" + params;
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryMediaDspStatistic.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});

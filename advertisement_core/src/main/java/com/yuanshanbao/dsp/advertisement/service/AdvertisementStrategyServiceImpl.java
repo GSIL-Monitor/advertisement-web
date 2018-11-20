@@ -299,12 +299,16 @@ public class AdvertisementStrategyServiceImpl implements AdvertisementStrategySe
 	private boolean checkCarrier(HttpServletRequest request, List<AdvertisementStrategy> list,
 			MediaInformation mediaInformation) {
 		boolean strategyPass = true;
-		if (StringUtils.isEmpty(mediaInformation.getCarrier())) {
+		if (StringUtils.isEmpty(mediaInformation.getIp())) {
 			return strategyPass;
 		}
 		if (list != null && list.size() > 0) {
+			String isp = ipLocationService.queryIsp(mediaInformation.getIp());
+			if (isp == null) {
+				return strategyPass;
+			}
 			for (AdvertisementStrategy advertisementStrategy : list) {
-				if (mediaInformation.getCarrier().equals(advertisementStrategy.getValue())) {
+				if (advertisementStrategy.getValue().contains(isp)) {
 					return strategyPass;
 				}
 			}

@@ -14,10 +14,13 @@ public interface AdvertisementStatisticsDao {
 
 	public int deleteAdvertisementStatistics(AdvertisementStatistics advertisementStatistics);
 
-	public List<AdvertisementStatistics> selectAdvertisementStatistics(AdvertisementStatistics advertisementStatistics, PageBounds pageBounds);
-	
+	public List<AdvertisementStatistics> selectAdvertisementStatistics(AdvertisementStatistics advertisementStatistics,
+			PageBounds pageBounds);
+
 	public List<AdvertisementStatistics> selectAdvertisementStatisticsByAdvertisementIds(Map<String, Object> map);
 
 	public List<AdvertisementStatistics> selectAdvertisementStatisticsByChannels(Map<String, Object> map);
-	
+
+	public List<AdvertisementStatistics> selectAdvertiserStatistic(AdvertisementStatistics advertisementStatistics);
+
 }
