@@ -1,12 +1,17 @@
 <#include "../common/core.ftl" />
 <@htmlHead title="后台管理系统">
-    <@cssFile file=["login/bainian-login.css"] />
+    <#-- <@cssFile file=["login/bainian-login.css"] /> -->
     <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="${cdnUrl}/css/login/bainian-login.css">
     <@cssFile file=["../js/plugins/bootstrap/css/bootstrap.min.css", "../js/plugins/WOW/css/libs/animate.css"] />
     <@jsFile file=["plugins/jquery.min.js","plugins/bootstrap/js/bootstrap.min.js", "plugins/WOW/dist/wow.js"] />
     <style>
         .loginbox {
-            right: 300px;
+            right: 400px;
+            top: 200px;
+        }
+        .title-container {
+            padding: 300px 0 0 0;
         }
     </style>
 </@htmlHead>
@@ -34,8 +39,9 @@
 <nav class="navbar navbar-fixed-top">
   <div class="container" style="padding: 0 0.3rem;">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">
-        <img class="logo" style="margin: -.15rem 0 0;" src="${cdnUrl}/img/login/bainian/logo@2x.png" alt="">
+      <a class="navbar-brand" href="#" style="padding: 5px;">
+        <img class="logo" style="width: 40px;margin: 0;height: auto;display: inline-block;vertical-align: middle;" src="${cdnUrl}/img/login/bainian/myzt-logo@2x.png" alt="">
+        <img class="logo" style="width: 1rem;margin: 0;height: auto;display: inline-block;vertical-align: middle;" src="${cdnUrl}/img/login/bainian/myzt-title@2x.png" alt="">
       </a>
     </div>
   </div>
@@ -45,7 +51,7 @@
         <div class="col-xs-12 title-box">
             <div class="container" style="width: 980px;">
                 <div class="row">
-                    <div class="col-xs-offset-1 col-xs-10 title-container">
+                    <div class="col-xs-12 title-container">
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="title wow slideInRight" data-wow-duration="2s">大数据驱动的AI投放平台</div>
@@ -56,6 +62,9 @@
                                 <div class="subtitle wow slideInLeft" data-wow-duration="2s">高效实现您的营销目标</div>   
                             </div>
                         </div>
+                    </div>
+                    <div class="">
+                        
                     </div>
                 </div>
                 
