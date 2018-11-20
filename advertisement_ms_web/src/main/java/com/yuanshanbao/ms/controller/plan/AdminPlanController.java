@@ -188,6 +188,7 @@ public class AdminPlanController extends PaginationController {
 				plan.setStatus(PlanStatus.UNREVIEWED);
 			}
 			planService.updatePlan(plan);
+			AdminServerController.refreshOnline();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
@@ -356,6 +357,7 @@ public class AdminPlanController extends PaginationController {
 			}
 			plan.setStatus(PlanStatus.UNREVIEWED);
 			planService.updatePlan(plan);
+			AdminServerController.refreshOnline();
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -396,6 +398,7 @@ public class AdminPlanController extends PaginationController {
 			plan.setMaterial(resultMaterial.toString());
 			plan.setStatus(PlanStatus.UNREVIEWED);
 			planService.updatePlan(plan);
+			AdminServerController.refreshOnline();
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -415,7 +418,7 @@ public class AdminPlanController extends PaginationController {
 			}
 			plan.setStatus(PlanStatus.OFFLINE);
 			planService.updatePlan(plan);
-			AdminServerController.refreshConfirm();
+			AdminServerController.refreshOnline();
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -435,7 +438,7 @@ public class AdminPlanController extends PaginationController {
 			}
 			plan.setStatus(PlanStatus.ONLINE);
 			planService.updatePlan(plan);
-			AdminServerController.refreshConfirm();
+			AdminServerController.refreshOnline();
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.HttpUtil;
+import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.thread.ThreadPool;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.core.IniBean;
@@ -55,10 +57,19 @@ public class AdminServerController extends PaginationController {
 	}
 
 	@ResponseBody
-	@RequestMapping("/refreshDsp.do")
+	@RequestMapping("/refreshDspConfirm.do")
 	public Object refreshDsp(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
 		refreshDsp("server_ips_confirm");
+		InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping("/refreshDsp.do")
+	public Object refreshDspOnline(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Map<String, String> result = new HashMap<String, String>();
+		refreshDsp("server_ips_online");
 		InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		return result;
 	}
@@ -90,4 +101,23 @@ public class AdminServerController extends PaginationController {
 	public static void refreshConfirm() throws Exception {
 		refresh("server_ips_confirm");
 	}
+
+	public static void refreshOnline() throws Exception {
+		try {
+			ThreadPool.getInstance().exec(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						refresh("server_ips_online");
+					} catch (Exception e) {
+						LoggerUtil.error("[refreshOnline]", e);
+					}
+				}
+			});
+
+		} catch (Exception e) {
+			LoggerUtil.error("[refreshOnline]", e);
+		}
+	}
+
 }

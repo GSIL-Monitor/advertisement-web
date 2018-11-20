@@ -24,6 +24,7 @@ import com.yuanshanbao.dsp.config.service.ConfigService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.ms.controller.base.PaginationController;
+import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -71,6 +72,7 @@ public class AdminMediaController extends PaginationController {
 		try {
 			channel.setProjectId(getProjectId(request));
 			channelService.insertChannel(channel);
+			AdminServerController.refreshOnline();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
@@ -104,6 +106,7 @@ public class AdminMediaController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			channelService.updateChannel(channel);
+			AdminServerController.refreshOnline();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

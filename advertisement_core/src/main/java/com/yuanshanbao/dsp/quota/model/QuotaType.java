@@ -27,7 +27,7 @@ public class QuotaType {
 	public static void initCodeDescriptionMap() {
 		codeDescriptionMap.put(CPC, CPC_DESCRIPTION);
 		codeDescriptionMap.put(CPM, CPM_DESCRIPTION);
-		codeDescriptionMap.put(CPT, CPT_DESCRIPTION);
+		// codeDescriptionMap.put(CPT, CPT_DESCRIPTION);
 	}
 
 	public static void initCodeCountFactoryMap() {
