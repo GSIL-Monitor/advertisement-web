@@ -1,10 +1,13 @@
 package com.yuanshanbao.dsp.bankcard.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.user.model.UserLevel;
+import com.yuanshanbao.paginator.domain.PageList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +69,6 @@ public class BankCardServiceImpl implements BankCardService {
     @Override
     public void getApplyBankCardInfo(User user, Long productId, String userName, String mobile) {
         Product product = productDao.selectPrdouctById(productId);
-
         Agency param = new Agency();
         param.setProductId(productId);
         param.setUserId(user.getUserId());
@@ -85,11 +87,11 @@ public class BankCardServiceImpl implements BankCardService {
             agency.setProductName(product.getName());
             agency.setProductId(productId);
             agency.setName(userName);
-            if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER){
+            if (inviteUser != null && inviteUser.getLevel() == UserLevel.MANAGER){
                 agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
-            }else if (user.getLevel() != null && user.getLevel() == UserLevel.MAJORDOMO){
+            }else if (inviteUser != null && inviteUser.getLevel() == UserLevel.MAJORDOMO){
                 agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.9)));
-            }else if (user.getLevel() != null && user.getLevel() == UserLevel.BAILLIFF){
+            }else if (inviteUser != null && inviteUser.getLevel() == UserLevel.BAILLIFF){
                 agency.setBrokerage(product.getBrokerage());
             }else{
                 agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
@@ -103,5 +105,26 @@ public class BankCardServiceImpl implements BankCardService {
             agencyService.updateAgency(updateAgency);
         }
 
+    }
+
+    @Override
+    public List<AgencyVo> getAgencyInfo(List<Agency> agencyList, PageList<BankCard> pageList) {
+        List<AgencyVo> oneAgencyVoList = new ArrayList<>();
+        for (Agency agen: agencyList){
+            for (BankCard page : pageList){
+                AgencyVo agencyVo = new AgencyVo();
+                if (agen.getHideMobile().equals(page.getMobile())  && agen.getName().equals(page.getName()) && agen.getProductName().equals(page.getBankName())){
+                    Long inviteUserId = agen.getInviteUserId();
+                    if (inviteUserId != null){
+                        agencyVo.setBrokerage(agen.getBrokerage());
+                        agencyVo.setName(agen.getName());
+                        agencyVo.setProductName(agen.getProductName());
+                        agencyVo.setMobile(agen.getMobile());
+                        oneAgencyVoList.add(agencyVo);
+                    }
+                }
+            }
+        }
+        return  oneAgencyVoList;
     }
 }
