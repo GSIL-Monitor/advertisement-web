@@ -160,6 +160,7 @@
 		order by invite_time desc
 	</select>
 
+
 	<select id="selectAgencysByInviteUserId" parameterType="java.lang.Long" resultType="java.lang.Integer">
 		select count(user_id)
 		from tb_agency

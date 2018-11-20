@@ -84,4 +84,6 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
         return getSqlSession().update("agency.updateBankTime",agency);
     }
 
+
+
 }
