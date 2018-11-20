@@ -415,7 +415,7 @@ public class UserServiceImpl implements UserService {
             user.setUserId(userId);
             user.setLevel(UserLevel.MAJORDOMO);
             userDao.updateUser(user);
-        }else if (countAgency >=50 || userCount >=50 ){
+        }else if (countAgency >=50 || userCount >=10 ){
             user.setUserId(userId);
             user.setLevel(UserLevel.BAILLIFF);
             userDao.updateUser(user);

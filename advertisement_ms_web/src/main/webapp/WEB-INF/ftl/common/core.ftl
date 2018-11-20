@@ -63,8 +63,9 @@
 </#macro>
 <#macro sideBar >
 <div id="sidebar">
-	<div class="role-box">
-		<div class="company">${user.companyName}</div>
+	<div class="role-box" style="display:flex;justify-content: center;align-items: center;">
+		<#-- <div class="company">${user.companyName}</div> -->
+		<img style="display: block;width: 1.32rem;" src="${cdnUrl}/img/sidebar/myzt-logo@2x.png" alt="">
 	</div>
   	<ul>
 	    <li><a href="${rc.contextPath}/admin/main.do"><i class="icon icon-list-alt"></i> <span>首页</span><em></em></a></li>

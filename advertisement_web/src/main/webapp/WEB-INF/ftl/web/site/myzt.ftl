@@ -12,6 +12,17 @@
 		margin: 0.2rem auto;
 		line-height: .4rem;
 	}
+	.title-box .title{
+		font-size:0.7rem;
+		color:rgba(255,255,255,1);
+		line-height:1rem;
+	}
+	.title-box .subtitle {
+		font-size:0.4rem;
+		color:rgba(255,255,255,1);
+		line-height:0.5rem;
+		font-weight: 300;
+	}
 </style>
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container navbar-top">
@@ -23,8 +34,14 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand brand" href="#">
-		<img class="logo" style="width: 0.35rem;height: 0.52rem;display: inline-block;vertical-align: bottom;" src="${cdnUrl}/img/web/site/myzt/myzt-logo@2x.png" alt="">
-		<span style="color: #FFA200;font-size: 0.3rem;vertical-align: super;">${company!""}</span>
+		<img class="logo" style="width: 0.4rem;margin: 0.05rem 0;height: 0.4rem;display: inline-block;vertical-align: unset;" src="${cdnUrl}/img/web/site/myzt/myzt-logo@2x.png" alt="">
+		<#if company?? && company == '蚂蚁智投'>
+		<img class="logo" style="width: 1rem;margin: 0.05rem 0;height: 0.4rem;display: inline-block;vertical-align: unset;" src="${cdnUrl}/img/web/site/myzt/myzt-title@2x.png" alt="">
+		<#-- <span style="color: #108EE9;font-size: 0.3rem;vertical-align: super;">${company!""}</span> -->
+
+		<#else>
+		<img class="logo" style="width: 1rem;margin: 0.05rem 0;height: 0.4rem;display: inline-block;vertical-align: unset;" src="${cdnUrl}/img/web/site/myzt/ktkj-title@2x.png" alt="">
+		</#if>
       </a>
     </div>
 

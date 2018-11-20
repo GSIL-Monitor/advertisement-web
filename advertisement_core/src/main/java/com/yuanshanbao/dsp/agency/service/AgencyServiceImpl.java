@@ -120,23 +120,23 @@ public class AgencyServiceImpl implements AgencyService {
                     AgencyVo agencyVo = new AgencyVo();
                     agencyVo.setUserId(agen.getUserId());
                     agencyVo.setInviteTime(agen.getInviteTimeValue());
-                    agencyVo.setAgencyName(agencyUser.getNickName());
-                    agencyVo.setUserLevel(agencyUser.getLevelValue());
+                    if (agencyUser != null){
+                        agencyVo.setAgencyName(agencyUser.getNickName());
+                        agencyVo.setUserLevel(agencyUser.getLevelValue());
+                    }
                     if (inviteUser != null) {
                         agencyVo.setInviteUserLevel(inviteUser.getLevelValue());
                     }else {
-                        agencyVo.setInviteUserLevel(UserLevel.NULL_DESCRIPTION);
+                        agencyVo.setInviteUserLevel(UserLevel.MANAGER_DESCRIPTION);
                     }
                     agencyVoList.add(agencyVo);
-                    LoggerUtil.info("agencyVo success" +agen.getUserId());
                 }
             }else {
-                LoggerUtil.info("agencyVo error" + agencyList );
                 return agencyVoList;
 
             }
         } catch (Exception e) {
-            LoggerUtil.error("[productList error:]" + agencyVoList);
+            LoggerUtil.error("[getAgencyInfos error:] " , e);
         }
 
 
@@ -149,7 +149,7 @@ public class AgencyServiceImpl implements AgencyService {
         List<AgencyVo> agencyVoList = new ArrayList<>();
         for (Agency agen : twoAgencyList) {
             AgencyVo agencyVo = new AgencyVo();
-            agencyVo.setName(agen.getName());
+            agencyVo.setName(user.getNickName());
             agencyVo.setProductName(agen.getProductName());
             agencyVo.setUpdateTime(agen.getUpdateTimeValue());
             agencyVo.setStatus(agen.getStatusValue());
@@ -167,8 +167,6 @@ public class AgencyServiceImpl implements AgencyService {
         }
         return agencyVoList;
     }
-
-
 
     @Override
     public BigDecimal getBrokerages(Agency agency,User user,PageBounds pageBounds) {
