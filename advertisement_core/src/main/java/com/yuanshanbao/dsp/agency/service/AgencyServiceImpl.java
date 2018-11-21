@@ -148,8 +148,11 @@ public class AgencyServiceImpl implements AgencyService {
 
         List<AgencyVo> agencyVoList = new ArrayList<>();
         for (Agency agen : twoAgencyList) {
+            User inivteUser = userService.selectUserById(agen.getInviteUserId());
             AgencyVo agencyVo = new AgencyVo();
-            agencyVo.setName(user.getNickName());
+            if (inivteUser != null){
+                agencyVo.setName(inivteUser.getNickName());
+            }
             agencyVo.setProductName(agen.getProductName());
             agencyVo.setUpdateTime(agen.getUpdateTimeValue());
             agencyVo.setStatus(agen.getStatusValue());
