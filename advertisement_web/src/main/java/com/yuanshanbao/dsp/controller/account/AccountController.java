@@ -107,8 +107,6 @@ public class AccountController extends BaseController {
 			Agency agency  = new Agency();
 			agency.setInviteUserId(user.getUserId());
 			BigDecimal brokerages = agencyService.getBrokerages(agency,user, new PageBounds());
-            String userIp = JSPHelper.getRemoteAddr(request);
-			paymentInterfaceService.charge(String.valueOf(user.getUserId()),String.valueOf(brokerages),"",userIp);
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
 			resultMap.put("levelStatus",user.getLevelValue());
