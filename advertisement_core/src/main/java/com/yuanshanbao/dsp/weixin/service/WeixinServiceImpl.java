@@ -50,7 +50,7 @@ public class WeixinServiceImpl implements WeixinService {
 	private String appSercet = PropertyUtil.getProperty("weixin.appsecret");
 	public final static String getAccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
 
-	private static String ALARM_SERVER_TEMPLATE = "vSccvYL8jkRmCslTxSxNMtBreeu7nOxqWCOD9YgllKQ";
+	private static String ALARM_SERVER_TEMPLATE = "DycgCxDn0XmH1FPbNHpkrL4yq3bn37-bJ-FEdhGrzc4";
 
 	private static String ALARM_FEEDBACK_TEMPLATE = "K98kza5DWrxljSxSPoRtqXrI3yniDAG9PHRDfvJdSck";
 
