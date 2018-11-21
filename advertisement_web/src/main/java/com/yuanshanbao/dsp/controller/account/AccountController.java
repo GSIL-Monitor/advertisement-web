@@ -2,11 +2,7 @@ package com.yuanshanbao.dsp.controller.account;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.DataFormat;
-import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.common.util.RequestUtil;
-import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.common.util.VerifyIdcard;
+import com.yuanshanbao.common.util.*;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
@@ -87,7 +83,7 @@ public class AccountController extends BaseController {
 
 	@RequestMapping("/balance")
 	@ResponseBody
-	public Object getBalance(String token) {
+	public Object getBalance(String token,HttpServletRequest request) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = getLoginUser(token);
@@ -108,9 +104,13 @@ public class AccountController extends BaseController {
 			}
 			//更新用户等级
 			userService.getLevelDetails(user.getUserId());
+			Agency agency  = new Agency();
+			agency.setInviteUserId(user.getUserId());
+			BigDecimal brokerages = agencyService.getBrokerages(agency,user, new PageBounds());
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
 			resultMap.put("levelStatus",user.getLevelValue());
+			resultMap.put("brokerageAmount",brokerages);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
