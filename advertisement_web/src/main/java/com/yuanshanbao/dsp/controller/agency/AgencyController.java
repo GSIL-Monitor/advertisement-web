@@ -73,6 +73,7 @@ public class AgencyController extends BaseController {
                 twoAgencyList = agencyService.selectAgencys(agency, new PageBounds());
 
             }
+
             for (Iterator iterator = twoAgencyList.iterator(); iterator.hasNext(); ) {
                 Agency twoAgen = (Agency) iterator.next();
                 if (twoAgen.getBrokerage() == null) {
