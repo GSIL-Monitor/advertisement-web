@@ -58,6 +58,8 @@ public class RedisConstant {
 	public static final String PLAN_CLICK_COUNT_UV = "plan_click_count_uv" + COMMON_REDIS_PREFIX;
 	public static final String PLAN_CLICK_LOCAL_COUNT_UV = "plan_click_local_count_uv" + COMMON_REDIS_PREFIX;
 	public static final String PLAN_CLICK_LOCAL_COUNT_PV = "plan_click_local_count_pv" + COMMON_REDIS_PREFIX;
+	public static final String PLAN_SHOW_LOCAL_COUNT_UV = "plan_show_local_count_uv" + COMMON_REDIS_PREFIX;
+	public static final String PLAN_SHOW_LOCAL_COUNT_PV = "plan_show_local_count_pv" + COMMON_REDIS_PREFIX;
 
 	private static final String PRODUCT_APPLY_COUNT = "product_apply_count" + COMMON_REDIS_PREFIX;
 
@@ -286,6 +288,20 @@ public class RedisConstant {
 			date = DateUtils.format(new Date());
 		}
 		return getCachePrefix(PLAN_CLICK_LOCAL_COUNT_UV, date + "_" + planId + "_" + channel);
+	}
+
+	public static String getPlanShowLocalCountPVKey(String date, String planId, String channel) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(PLAN_SHOW_LOCAL_COUNT_PV, date + "_" + planId + "_" + channel);
+	}
+
+	public static String getPlanShowLocalCountUVKey(String date, String planId, String channel) {
+		if (StringUtils.isBlank(date)) {
+			date = DateUtils.format(new Date());
+		}
+		return getCachePrefix(PLAN_SHOW_LOCAL_COUNT_UV, date + "_" + planId + "_" + channel);
 	}
 
 	// 渠道下广告

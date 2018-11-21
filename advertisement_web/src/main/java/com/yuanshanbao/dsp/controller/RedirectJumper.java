@@ -47,7 +47,7 @@ public class RedirectJumper extends BaseController {
 			modelMap.put("url", plan.getLink());
 			if (values.length == 2) {
 				if (StringUtils.isEmpty(values[1])) {
-					modelMap.put("incrUrl", values[1]);
+					modelMap.put("baseUrl", values[1]);
 				}
 			}
 		}

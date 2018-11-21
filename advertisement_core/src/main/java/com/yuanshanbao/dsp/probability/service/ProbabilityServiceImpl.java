@@ -494,7 +494,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			return resultList;
 		}
 		Map<Long, BigDecimal> bidMap = DspConstantsManager.getBidByChannel(channelObject.getKey());
-		if (bidMap == null) {
+		if (bidMap == null || bidMap.size() == 0) {
 			return resultList;
 		}
 		Long probabilityId = dealWithCTRAndBid(bidMap, probabilityMap);
@@ -506,7 +506,16 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			return resultList;
 		}
 		resultList = getContent(probability, channelObject);
+		// 本地记录曝光
+		if (resultList.size() > 0) {
+			recordPlanLocalCount(probability);
+		}
 		return resultList;
+	}
+
+	private void recordPlanLocalCount(Probability probability) {
+		redisCacheService.incr(RedisConstant.getPlanShowLocalCountPVKey(null, probability.getPlanId().toString(),
+				probability.getChannel()));
 	}
 
 	private List<AdvertisementDetails> getContent(Probability probability, Channel channelObject) {
@@ -676,6 +685,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			for (Long probabilityId : bidMap.keySet()) {
 				String ctrValue = redisService.get(RedisConstant.getProbabilityChannelCTRKey(probabilityId));
 				if (ctrValue == null || !ValidateUtil.isDouble(ctrValue)) {
+					// 若ctr为空且符合展示条件直接展示
 					if (!probabilityMap.containsKey(probabilityId)) {
 						continue;
 					}
@@ -690,6 +700,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 				return null;
 			}
 
+			// 找出score最高的广告
 			Double tempScore = new Double(0);
 			for (Map.Entry<Long, Double> entry : scoreMap.entrySet()) {
 				if (entry.getValue() > tempScore) {

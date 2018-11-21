@@ -150,6 +150,11 @@ public class PlanServiceImpl implements PlanService {
 
 	@Override
 	public void calculateCTR(List<Probability> list) {
+		String protectCountValue = IniBean.getIniValue("plan_protect_count");
+		Integer protectCount = 100;
+		if (protectCountValue != null && ValidateUtil.isNumber(protectCountValue)) {
+			protectCount = Integer.valueOf(protectCountValue);
+		}
 		Double ctr = new Double(0);
 		Integer clickCount = 0;
 		Integer showCount = 0;
@@ -158,7 +163,7 @@ public class PlanServiceImpl implements PlanService {
 					probability.getProbabilityId()));
 			showCount = getClickOrShowCount(RedisConstant.getProbabilityShowCountKey(null,
 					probability.getProbabilityId()));
-			if (showCount > 100) {
+			if (showCount > protectCount) {
 				ctr = (double) (clickCount / showCount);
 				redisService.set(RedisConstant.getProbabilityChannelCTRKey(probability.getProbabilityId()),
 						String.valueOf(ctr));
