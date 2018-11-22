@@ -294,6 +294,7 @@ public class BillServiceImpl implements BillService {
 		bill.setType(type);
 		bill.setStatus(CommonStatus.ONLINE);
 		insertBill(bill);
+		LoggerUtil.info("createBill success={}", JacksonUtil.obj2json(bill));
 		Advertiser advertiser = advertiserService.selectAdvertiserForUpdate(plan.getAdvertiserId());
 		if (advertiser != null) {
 			Map<String, Object> parameters = new HashMap<String, Object>();
@@ -303,7 +304,7 @@ public class BillServiceImpl implements BillService {
 			if (result < 0) {
 				throw new BusinessException(ComRetCode.FAIL);
 			}
-			LoggerUtil.info("扣费成功={}", JacksonUtil.obj2json(bill));
+			LoggerUtil.info("cutPayment success={}  amount={}", JacksonUtil.obj2json(advertiser), bill.getAmount());
 		}
 	}
 

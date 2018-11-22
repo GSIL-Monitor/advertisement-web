@@ -78,7 +78,7 @@ public class AdminServerController extends PaginationController {
 
 	private void createBill() {
 		try {
-			HttpUtil.sendGetRequest(CommonConstant.advertisement_HOST + "/bill/creatPlanBill.html");
+			HttpUtil.sendGetRequest(CommonConstant.advertisement_HOST + "/bill/creatPlanBill.do");
 		} catch (Exception e) {
 			LoggerUtil.error("createBill error", e);
 		}
