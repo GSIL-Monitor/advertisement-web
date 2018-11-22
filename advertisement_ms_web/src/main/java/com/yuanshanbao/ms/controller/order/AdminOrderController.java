@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -108,7 +109,7 @@ public class AdminOrderController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(HttpServletRequest request, HttpServletResponse response, Order order) {
+	public Object insert(HttpServletRequest request, HttpServletResponse response, Order order, BindingResult br) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			validateParameters(order);
@@ -145,7 +146,7 @@ public class AdminOrderController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/update.do")
-	public Object update(Order order, HttpServletRequest request, HttpServletResponse response) {
+	public Object update(Order order, HttpServletRequest request, HttpServletResponse response, BindingResult br) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {

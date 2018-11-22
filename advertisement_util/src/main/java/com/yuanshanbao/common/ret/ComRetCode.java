@@ -304,6 +304,22 @@ public class ComRetCode {
 	public static final int TOKEN_LOSE_EFFICACY = 812;
 	public static final String TOKEN_LOSE_EFFICACY_DESC = "token已失效";
 
+	/* 813请填写出价 */
+	public static final int NO_BEST_BID = 813;
+	public static final String NO_BEST_BID_DESC = "请填写出价";
+
+	/* 814请填写名称 */
+	public static final int NO_PLANORORDER_NAME = 814;
+	public static final String NO_PLANORORDER_NAME_DESC = "请填写名称";
+
+	/* 815请填写金额 */
+	public static final int NO_AMOUNT = 815;
+	public static final String NO_AMOUNT_DESC = "请填写金额";
+
+	/* 816请填写链接 */
+	public static final int NO_LINK = 816;
+	public static final String NO_LINK_DESC = "请填写链接";
+
 	public static Map<Integer, String> retCodeMap = new LinkedHashMap<Integer, String>();
 
 	static {

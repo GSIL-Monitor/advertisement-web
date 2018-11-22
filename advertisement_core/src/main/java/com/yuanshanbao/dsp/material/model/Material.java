@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.material.model;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.validator.constraints.NotBlank;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 
 public class Material {
@@ -11,6 +12,7 @@ public class Material {
 	private Long advertiserId;
 	private Long advertisementId;
 	private Long probabilityId;
+	@NotBlank(messageCode = 814)
 	private String name;
 	private String title;
 	private String description;
