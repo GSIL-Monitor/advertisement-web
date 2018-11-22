@@ -201,7 +201,7 @@ public class AgencyServiceImpl implements AgencyService {
                 break;
             }
             agency.setInviteUserId(agen.getUserId());
-            twoAgencyList = agencyDao.selectAgencys(agency, new PageBounds());
+            twoAgencyList.addAll(agencyDao.selectAgencys(agency, new PageBounds()));
         }
         for (Agency agencyIds : twoAgencyList) {
             twoInviteUserIds.add(Long.valueOf(agencyIds.getUserId()));

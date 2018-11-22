@@ -87,6 +87,9 @@ public class BankCardServiceImpl implements BankCardService {
             agency.setProductName(product.getName());
             agency.setProductId(productId);
             agency.setName(userName);
+            if (inviteUser.getLevel() == null) {
+            	inviteUser.setLevel(UserLevel.MANAGER);
+            }
             if (inviteUser != null && inviteUser.getLevel() == UserLevel.MANAGER){
                 agency.setBrokerage(product.getBrokerage().multiply(BigDecimal.valueOf(0.85)));
             }else if (inviteUser != null && inviteUser.getLevel() == UserLevel.MAJORDOMO){
