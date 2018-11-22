@@ -635,6 +635,13 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			if (!plan.getStatus().equals(PlanStatus.ONLINE)) {
 				continue;
 			}
+			// 验证广告主余额
+			Advertiser advertiser = probability.getAdvertiser();
+			if (advertiser != null) {
+				if (advertiser.getBalance() != null && advertiser.getBalance().compareTo(new BigDecimal(0)) < 0) {
+					continue;
+				}
+			}
 			// 验证出价是否低于成本价
 			if (channel.getUnitPrice() != null) {
 				if (plan.getBestBid().compareTo(channel.getUnitPrice()) < 0) {
