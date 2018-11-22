@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.core.filter;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -91,6 +92,16 @@ public class DebugFilter implements Filter {
 			sb.append("&");
 		}
 		sb.deleteCharAt(sb.length() - 1);
+		try {
+			BufferedReader bufferedReader = request.getReader();
+			String line = null;
+			while ((line = bufferedReader.readLine()) != null) {
+				sb.append(line);
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
 		sb.append(", ");
 		String referer = request.getHeader("Referer");
 		String userAgent = request.getHeader("User-Agent");
