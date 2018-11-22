@@ -4,15 +4,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.validator.constraints.NotBlank;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 
 public class Order {
 	private Long orderId;
 	private Long projectId;
 	private Long advertiserId;
+	@NotBlank(messageCode = 814)
 	private String name;
 	private Integer type;
 	private Integer status;
+	@NotBlank(messageCode = 815)
 	private BigDecimal amount;
 	private Timestamp createTime;
 	private Timestamp updateTime;

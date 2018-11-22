@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -139,7 +140,8 @@ public class AdminPlanController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(HttpServletRequest request, HttpServletResponse response, Plan plan, String orderId) {
+	public Object insert(HttpServletRequest request, HttpServletResponse response, Plan plan, String orderId,
+			BindingResult br) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			validateParameters(plan);
@@ -156,6 +158,7 @@ public class AdminPlanController extends PaginationController {
 			LoggerUtil.error("advertisement insert function - upload image error", e2);
 		}
 		return result;
+
 	}
 
 	@RequestMapping("/updateWindow.do")
@@ -178,7 +181,7 @@ public class AdminPlanController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/update.do")
-	public Object update(HttpServletRequest request, HttpServletResponse response, Plan plan) {
+	public Object update(HttpServletRequest request, HttpServletResponse response, Plan plan, BindingResult br) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			if (plan.getPlanId() == null) {

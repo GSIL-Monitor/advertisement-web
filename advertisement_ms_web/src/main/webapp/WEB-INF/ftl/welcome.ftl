@@ -71,7 +71,7 @@ $(document).ready(function(){
                     </div>
                     <div class="widget-content nopadding">
                         <ul class="widget-lists clearfix">
-                            <li>余额：<br><br><p><span style="color: #ff784f;">${balance}</span></p></li>
+                            <li>余额(元)：<br><br><p><span style="color: #ff784f;">${balance}</span></p></li>
                             <li>今日消耗：<br><br><p><span style="color: #ff784f;">${today}</span></p></li>
                             <li>昨日消耗：<br><br><p><span style="color: #ff784f;">${yesterday}</span></p></li>
                             <li>7日消耗：<br><br><p><span style="color: #ff784f;">${seven}</span></p></li>

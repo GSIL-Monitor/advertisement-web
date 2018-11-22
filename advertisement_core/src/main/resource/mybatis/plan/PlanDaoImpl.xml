@@ -103,6 +103,9 @@
 				<if test="name != null">
 					name=#{name},
 				</if>
+				<if test="link != null">
+					link=#{link},
+				</if>
 				<if test="bestBid != null">
 					best_bid=#{bestBid},
 				</if>

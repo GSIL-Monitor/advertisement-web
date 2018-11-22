@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.validator.constraints.NotBlank;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
@@ -15,13 +16,17 @@ public class Plan {
 	private Long projectId;
 	private Long orderId;
 	private Long advertiserId;
+	@NotBlank(messageCode = 815)
 	private BigDecimal spend;
 	private BigDecimal dayLimit;
 	private String consumed;
+	@NotBlank(messageCode = 814)
 	private String name;
+	@NotBlank(messageCode = 816)
 	private String link;
 	private String material;
 	private Integer chargeType;
+	@NotBlank(messageCode = 813)
 	private BigDecimal bestBid;
 	private String allowChannelCategory;
 	private String forbidChannelCategory;
