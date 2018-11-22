@@ -1,8 +1,27 @@
 package com.yuanshanbao.dsp.controller.account;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.*;
+import com.yuanshanbao.common.util.DataFormat;
+import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.RequestUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.common.util.VerifyIdcard;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
@@ -17,28 +36,12 @@ import com.yuanshanbao.dsp.redpacket.model.RedPacketVo;
 import com.yuanshanbao.dsp.redpacket.service.RedPacketService;
 import com.yuanshanbao.dsp.sms.service.VerifyCodeService;
 import com.yuanshanbao.dsp.user.model.User;
-import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.dsp.withdrawdeposit.model.WithdrawDeposit;
 import com.yuanshanbao.dsp.withdrawdeposit.service.WithdrawDepositService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/i/account")
@@ -80,14 +83,13 @@ public class AccountController extends BaseController {
 	@Autowired
 	private AgencyService agencyService;
 
-
 	@RequestMapping("/balance")
 	@ResponseBody
-	public Object getBalance(String token,HttpServletRequest request) {
+	public Object getBalance(String token, HttpServletRequest request) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = getLoginUser(token);
-			if (user == null){
+			if (user == null) {
 				throw new BusinessException(ComRetCode.TOKEN_LOSE_EFFICACY);
 			}
 			resultMap.putAll(paymentInterfaceService.queryBalance(String.valueOf(user.getUserId())));
@@ -102,15 +104,15 @@ public class AccountController extends BaseController {
 			if (brokerageAmount == null) {
 				brokerageAmount = BigDecimal.ZERO;
 			}
-			//更新用户等级
+			// 更新用户等级
 			userService.getLevelDetails(user.getUserId());
-			Agency agency  = new Agency();
+			Agency agency = new Agency();
 			agency.setInviteUserId(user.getUserId());
-			BigDecimal brokerages = agencyService.getBrokerages(agency,user, new PageBounds());
+			BigDecimal brokerages = agencyService.getBrokerages(agency, user, new PageBounds());
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
-			resultMap.put("levelStatus",user.getLevelValue());
-			resultMap.put("brokerageAmount",brokerages);
+			resultMap.put("levelStatus", user.getLevel());
+			resultMap.put("brokerageAmount", brokerages);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
