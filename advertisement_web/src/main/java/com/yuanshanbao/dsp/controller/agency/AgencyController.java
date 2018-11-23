@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -73,10 +75,15 @@ public class AgencyController extends BaseController {
 			}
 			// 总佣金
 			BigDecimal brokerages = agencyService.getBrokerages(agency, user, pageBounds);
+			Set<Long> userIds = new HashSet<Long>();
 			for (Agency agen : oneAgencyList) {
-				agency.setInviteUserId(agen.getUserId());
+				userIds.add(agen.getUserId());
+			}
+			for (Long userId : userIds) {
+				agency.setInviteUserId(userId);
 				twoAgencyList.addAll(agencyService.selectAgencys(agency, new PageBounds()));
 			}
+
 			for (Iterator<Agency> iterator = twoAgencyList.iterator(); iterator.hasNext();) {
 				Agency twoAgen = (Agency) iterator.next();
 				if (twoAgen.getBrokerage() == null) {
@@ -84,6 +91,7 @@ public class AgencyController extends BaseController {
 				}
 			}
 			List<AgencyVo> agencyListVo = agencyService.getAgencyListVo(twoAgencyList, user);
+
 			resultMap.put("oneAgencyList", oneAgencyList);
 			resultMap.put("twoAgencyList", agencyListVo);
 			resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
@@ -94,6 +102,16 @@ public class AgencyController extends BaseController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;
+	}
+
+	public static List removeDuplicate(List list) {
+		List listTemp = new ArrayList();
+		for (int i = 0; i < list.size(); i++) {
+			if (!listTemp.contains(list.get(i))) {
+				listTemp.add(list.get(i));
+			}
+		}
+		return listTemp;
 	}
 
 }
