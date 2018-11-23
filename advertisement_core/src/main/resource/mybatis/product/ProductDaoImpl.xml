@@ -121,7 +121,7 @@
 			</trim>
 
 		</where>
-		order by product_id asc
+		order by brokerage DESC
 	</select>
 
 	<select id="selectProductByProductId" resultType="Product">
