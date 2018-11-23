@@ -77,7 +77,7 @@ public class AdminProbabilityController extends PaginationController {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			probabilityService.updateProbability(probability);
-			AdminServerController.refreshConfirm();
+			AdminServerController.refreshOnline();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
