@@ -121,6 +121,7 @@
 			</trim>
 
 		</where>
+		
 		order by brokerage DESC
 	</select>
 
