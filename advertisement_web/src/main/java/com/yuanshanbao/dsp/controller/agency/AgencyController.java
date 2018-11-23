@@ -65,8 +65,13 @@ public class AgencyController extends BaseController {
 		List<Agency> twoAgencyList = new ArrayList<>();
 		try {
 			User user = getLoginUser(token);
+			Set<Long> userIds = new HashSet<Long>();
+
 			agency.setInviteUserId(user.getUserId());
 			List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
+			for (Agency agen : oneAgencyList) {
+				userIds.add(agen.getUserId());
+			}
 			for (Iterator<Agency> iterator = oneAgencyList.iterator(); iterator.hasNext();) {
 				Agency agen = (Agency) iterator.next();
 				if (agen.getBrokerage() == null) {
@@ -75,10 +80,6 @@ public class AgencyController extends BaseController {
 			}
 			// 总佣金
 			BigDecimal brokerages = agencyService.getBrokerages(agency, user, pageBounds);
-			Set<Long> userIds = new HashSet<Long>();
-			for (Agency agen : oneAgencyList) {
-				userIds.add(agen.getUserId());
-			}
 			for (Long userId : userIds) {
 				agency.setInviteUserId(userId);
 				twoAgencyList.addAll(agencyService.selectAgencys(agency, new PageBounds()));
@@ -102,16 +103,6 @@ public class AgencyController extends BaseController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;
-	}
-
-	public static List removeDuplicate(List list) {
-		List listTemp = new ArrayList();
-		for (int i = 0; i < list.size(); i++) {
-			if (!listTemp.contains(list.get(i))) {
-				listTemp.add(list.get(i));
-			}
-		}
-		return listTemp;
 	}
 
 }
