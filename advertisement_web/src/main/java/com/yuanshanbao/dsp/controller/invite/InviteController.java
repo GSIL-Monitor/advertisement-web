@@ -52,9 +52,9 @@ public class InviteController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = getLoginUser(token);
-            if (user == null){
-                throw new BusinessException(ComRetCode.NOT_LOGIN);
-            }
+			if (user == null) {
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
+			}
 			String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
 			if (StringUtils.isEmpty(code)) {
 				byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, String.valueOf(user.getUserId()),
@@ -121,10 +121,10 @@ public class InviteController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User user = tokenService.verifyLoginToken(token);
-			if (user == null){
-			    throw new BusinessException(ComRetCode.NOT_LOGIN);
-            }
-			String code = redisCacheService.get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() +productId);
+			if (user == null) {
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
+			}
+			String code = redisCacheService.get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() + productId);
 			if (StringUtils.isEmpty(code)) {
 				byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId + "," + user.getUserId(),
 						DETAILURL);
@@ -138,6 +138,7 @@ public class InviteController extends BaseController {
 			} else {
 				resultMap.put("QRcode", code);
 			}
+			resultMap.put("user", user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
