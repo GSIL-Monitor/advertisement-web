@@ -50,6 +50,10 @@ public class AdminAdvertiserController extends PaginationController {
 
 	private static final String PAGE_LIST_VIEW = "advertisement/advertiser/listAdvertisementOfAdvertiser";
 
+	private static final String PAGE_RECHARGE_WINDOW = "advertisement/advertiser/dsp/rechargeAdvertiser";
+
+	private static final String PAGE_DSP_ADVERTISER_LIST = "advertisement/advertiser/dsp/listDspAdvertiser";
+
 	@Autowired
 	private AdvertiserService advertiserService;
 
@@ -204,6 +208,13 @@ public class AdminAdvertiserController extends PaginationController {
 		return setPageInfo(request, response, pageList);
 	}
 
+	@RequestMapping("dsp/rechargeWindow.do")
+	public String rechargeWindow(HttpServletRequest request, Long advertiserId, HttpServletResponse response) {
+		Advertiser advertiser = advertiserService.selectAdvertiser(advertiserId);
+		request.setAttribute("advertiser", advertiser);
+		return PAGE_RECHARGE_WINDOW;
+	}
+
 	@ResponseBody
 	@RequestMapping("/recharge.do")
 	public Object recharge(Bill bill, HttpServletRequest request, HttpServletResponse response) {
@@ -230,17 +241,15 @@ public class AdminAdvertiserController extends PaginationController {
 
 	@RequestMapping("dsp/list.do")
 	public String dspList(HttpServletRequest request, HttpServletResponse response) {
-		return PAGE_LIST;
+		return PAGE_DSP_ADVERTISER_LIST;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping("dsp/query.do")
-	public Object dspQuery(String range, Advertiser advertiser, HttpServletRequest request, HttpServletResponse response) {
-		Advertiser user = getBindAdvertiserByUser();
-		if (user != null) {
-			advertiser.setAdvertiserId(user.getAdvertiserId());
-		}
+	public Object dspQuery(String range, HttpServletRequest request, HttpServletResponse response) {
+		Advertiser advertiser = new Advertiser();
+		advertiser.setProjectId(getProjectId(request));
 		Object object = advertiserService.selectAdvertiser(advertiser, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);

@@ -35,9 +35,6 @@
 				<if test="projectId != null">
 					project_id = #{projectId} and
 				</if>
-				<if test="projectId != null">
-					project_id = #{projectId} and
-				</if>
 				<if test="name != null">
 					name like CONCAT(CONCAT('%', #{name}),'%') and
 				</if>
@@ -77,11 +74,11 @@
 	<insert id="insertAdvertiser" parameterType="Advertiser">
 		insert into
 		tb_advertiser(project_id,name,company_name, phone,wechat,address,
-		 description, bind_username, business_number,business_picture,status, create_time, update_time)
+		 description, bind_username, business_number,business_picture,balance,status, create_time, update_time)
 		values
 		(#{projectId},#{name}, #{companyName}, #{phone},#{wechat},
 		#{address},#{description},#{bindUserName}, #{businessNumber},
-		#{businessPicture},#{status}, sysdate(), sysdate())
+		#{businessPicture},#{balance},#{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertiserId">
 			SELECT LAST_INSERT_ID()

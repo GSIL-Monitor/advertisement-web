@@ -5,11 +5,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.sf.json.JSONObject;
+
+import com.yuanshanbao.dsp.bill.model.Bill;
 
 public class AppAddTest {
 	public static final String ADD_URL = "http://dev.t.huhad.com/dsp/content.html";
@@ -18,7 +21,16 @@ public class AppAddTest {
 	public static final String ADD_SHOW_URL = "http://dev.t.huhad.com/dsp/ad/show.html";
 
 	public static void main(String[] args) {
+		Bill bill = new Bill();
+		double dd = Double.parseDouble("1.2");
+		bill.setAmount(BigDecimal.valueOf(dd));
+		System.err.println(bill.getAmount());
 		String a = "av:ac";
+		BigDecimal ac = new BigDecimal(1.2);
+		BigDecimal acc = new BigDecimal(1.200);
+		System.err.println(BigDecimal.valueOf(dd));
+		System.err.println(new BigDecimal(1.2));
+		System.err.println(bill.getAmount().compareTo(BigDecimal.valueOf(dd)));
 		String[] c = a.split(":");
 		System.err.println(c.length);
 		for (int i = 0; i < 1; i++) {
