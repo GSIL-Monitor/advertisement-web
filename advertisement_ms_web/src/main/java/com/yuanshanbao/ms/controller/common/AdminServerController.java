@@ -14,6 +14,7 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.HttpUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.thread.ThreadPool;
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.core.IniBean;
@@ -70,8 +71,17 @@ public class AdminServerController extends PaginationController {
 	public Object refreshDspOnline(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String, String> result = new HashMap<String, String>();
 		refreshDsp("server_ips_online");
+		createBill();
 		InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		return result;
+	}
+
+	private void createBill() {
+		try {
+			HttpUtil.sendGetRequest(CommonConstant.advertisement_HOST + "/bill/creatPlanBill.do");
+		} catch (Exception e) {
+			LoggerUtil.error("createBill error", e);
+		}
 	}
 
 	public static void refreshDsp(String key) throws Exception {
@@ -81,7 +91,11 @@ public class AdminServerController extends PaginationController {
 			if (!ip.contains(":")) {
 				ip = ip + ":8080";
 			}
-			HttpUtil.sendGetRequest("http://" + ip + "/internal/server/refreshDspConstants.html");
+			try {
+				HttpUtil.sendGetRequest("http://" + ip + "/internal/server/refreshDspConstants.html");
+			} catch (Exception e) {
+				LoggerUtil.error("refreshDspConstants error", e);
+			}
 		}
 		DspConstantsManager.refresh();
 	}
