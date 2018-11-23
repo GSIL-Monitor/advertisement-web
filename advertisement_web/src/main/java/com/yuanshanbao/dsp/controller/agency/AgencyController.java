@@ -76,9 +76,7 @@ public class AgencyController extends BaseController {
 			for (Agency agen : oneAgencyList) {
 				agency.setInviteUserId(agen.getUserId());
 				twoAgencyList.addAll(agencyService.selectAgencys(agency, new PageBounds()));
-
 			}
-
 			for (Iterator<Agency> iterator = twoAgencyList.iterator(); iterator.hasNext();) {
 				Agency twoAgen = (Agency) iterator.next();
 				if (twoAgen.getBrokerage() == null) {
