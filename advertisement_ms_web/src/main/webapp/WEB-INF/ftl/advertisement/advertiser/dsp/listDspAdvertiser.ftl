@@ -47,6 +47,7 @@
 	<div class="container-fluid">
 		<hr>
 			<div class="row-fluid">
+			<span style="float:right;margin:3px 8px 10px 0"><a href="${rc.contextPath}/admin/${functionName}/insertWindow.do" target="_blank"><button class="btn btn-yellow">添加${functionTitle}</button></a></span>
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
 						<h5>数据表格</h5>

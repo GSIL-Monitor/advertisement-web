@@ -210,7 +210,9 @@ public class AdminPlanController extends PaginationController {
 		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
 		try {
 			planService.calculateCTR(list);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (Exception e2) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 			LoggerUtil.error("calculateCTR  function -  error", e2);
 		}
 		return resultMap;
