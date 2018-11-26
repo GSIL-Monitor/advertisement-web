@@ -623,14 +623,14 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 				}
 			}
 			if (plan.getDayStartTime() != null) {
-				if (plan.getDayStartTime().after(new Date())) {
-					continue;
-				}
+				// if (plan.getDayStartTime().after(new Date())) {
+				// continue;
+				// }
 			}
 			if (plan.getDayEndTime() != null) {
-				if (plan.getDayEndTime().before(new Date())) {
-					continue;
-				}
+				// if (plan.getDayEndTime().before(new Date())) {
+				// continue;
+				// }
 			}
 			if (!plan.getStatus().equals(PlanStatus.ONLINE)) {
 				continue;

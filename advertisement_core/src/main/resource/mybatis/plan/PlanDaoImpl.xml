@@ -21,8 +21,8 @@
 		<result property="remark" column="remark" jdbcType="VARCHAR" />
 		<result property="startTime" column="start_time" jdbcType="TIMESTAMP" />
 		<result property="endTime" column="end_time" jdbcType="TIMESTAMP" />
-		<result property="dayStartTime" column="day_start_time" jdbcType="TIMESTAMP" />
-		<result property="dayEndTime" column="day_end_time" jdbcType="TIMESTAMP" />
+		<result property="dayStartTime" column="day_start_time" jdbcType="VARCHAR" />
+		<result property="dayEndTime" column="day_end_time" jdbcType="VARCHAR" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
