@@ -50,12 +50,66 @@
 									<tr>
 										<td>每日开启时间：</td>
 										<td>
-											<input type="text" name="dayStartTimeValue" id="dayStartTimeValue" style="width:60%;"></td>
+											<select multiple data-live-search="true" class="selectpicker form-control" id="">
+												<option value="${type.value}">00:00</option>
+												<option value="${type.value}">01:00</option>
+												<option value="${type.value}">02:00</option>
+												<option value="${type.value}">03:00</option>
+												<option value="${type.value}">04:00</option>
+												<option value="${type.value}">05:00</option>
+												<option value="${type.value}">06:00</option>
+												<option value="${type.value}">07:00</option>
+												<option value="${type.value}">08:00</option>
+												<option value="${type.value}">09:00</option>
+												<option value="${type.value}">10:00</option>
+												<option value="${type.value}">11:00</option>
+												<option value="${type.value}">12:00</option>
+												<option value="${type.value}">13:00</option>
+												<option value="${type.value}">14:00</option>
+												<option value="${type.value}">15:00</option>
+												<option value="${type.value}">16:00</option>
+												<option value="${type.value}">17:00</option>
+												<option value="${type.value}">18:00</option>
+												<option value="${type.value}">19:00</option>
+												<option value="${type.value}">20:00</option>
+												<option value="${type.value}">21:00</option>
+												<option value="${type.value}">22:00</option>
+												<option value="${type.value}">23:00</option>
+												<option value="${type.value}">24:00</option>
+											</select>
+										</td>
 									</tr>
 									<tr>
 										<td>每日结束时间：</td>
 										<td>
-											<input type="text" name="dayEndTimeValue" id="dayEndTimeValue" style="width:60%;"></td>
+											<select multiple data-live-search="true" class="selectpicker form-control" id="">
+												<option value="${type.value}">00:00</option>
+												<option value="${type.value}">01:00</option>
+												<option value="${type.value}">02:00</option>
+												<option value="${type.value}">03:00</option>
+												<option value="${type.value}">04:00</option>
+												<option value="${type.value}">05:00</option>
+												<option value="${type.value}">06:00</option>
+												<option value="${type.value}">07:00</option>
+												<option value="${type.value}">08:00</option>
+												<option value="${type.value}">09:00</option>
+												<option value="${type.value}">10:00</option>
+												<option value="${type.value}">11:00</option>
+												<option value="${type.value}">12:00</option>
+												<option value="${type.value}">13:00</option>
+												<option value="${type.value}">14:00</option>
+												<option value="${type.value}">15:00</option>
+												<option value="${type.value}">16:00</option>
+												<option value="${type.value}">17:00</option>
+												<option value="${type.value}">18:00</option>
+												<option value="${type.value}">19:00</option>
+												<option value="${type.value}">20:00</option>
+												<option value="${type.value}">21:00</option>
+												<option value="${type.value}">22:00</option>
+												<option value="${type.value}">23:00</option>
+												<option value="${type.value}">24:00</option>
+											</select>
+										</td>
 									</tr>
 									<tr>
 										<td>该计划预算金额（元）：</td>
