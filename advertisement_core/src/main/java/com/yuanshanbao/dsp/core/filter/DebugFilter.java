@@ -117,16 +117,6 @@ public class DebugFilter implements Filter {
 		}
 		sb.append("referer=").append(referer.replaceAll("\r|\n| ", "")).append(", userAgent=").append(userAgent)
 				.append(", xff=").append(xff);
-		// 获取请求的json
-		String header = request.getHeader("Content-Type");
-		if (header != null && header.contains("json")) {
-			try {
-				sb.append(", json=");
-				// sb.append(getRequestJsonString(request));
-			} catch (Exception e) {
-				LoggerUtil.error("access json error", e);
-			}
-		}
 		LoggerUtil.access(sb.toString());
 	}
 
@@ -136,42 +126,6 @@ public class DebugFilter implements Filter {
 
 	public void destroy() {
 
-	}
-
-	public static String getRequestJsonString(HttpServletRequest request) throws IOException {
-		String submitMehtod = request.getMethod();
-		// GET
-		if (submitMehtod.equals("GET")) {
-			return new String(request.getQueryString().getBytes("iso-8859-1"), "utf-8").replaceAll("%22", "\"");
-			// POST
-		} else {
-			return getRequestPostStr(request);
-		}
-	}
-
-	public static String getRequestPostStr(HttpServletRequest request) throws IOException {
-		byte buffer[] = getRequestPostBytes(request);
-		String charEncoding = request.getCharacterEncoding();
-		if (charEncoding == null) {
-			charEncoding = "UTF-8";
-		}
-		return new String(buffer, charEncoding);
-	}
-
-	public static byte[] getRequestPostBytes(HttpServletRequest request) throws IOException {
-		int contentLength = request.getContentLength();
-		if (contentLength < 0) {
-			return null;
-		}
-		byte buffer[] = new byte[contentLength];
-		for (int i = 0; i < contentLength;) {
-			int readlen = request.getInputStream().read(buffer, i, contentLength - i);
-			if (readlen == -1) {
-				break;
-			}
-			i += readlen;
-		}
-		return buffer;
 	}
 
 }

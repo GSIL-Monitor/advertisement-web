@@ -1029,4 +1029,24 @@ public class DateUtils {
 		}
 	}
 
+	public static Long getCurrentTimes() throws ParseException {
+		String formatStr = "HH:mm";
+		SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
+		return sdf.parse(sdf.format(new Date())).getTime();
+	}
+
+	public static boolean isInZone(String startTime, String endTime) {
+		String formatStr = "HH:mm";
+		SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
+		try {
+			long current = getCurrentTimes();
+			long start = sdf.parse(startTime).getTime();
+			long end = sdf.parse(endTime).getTime();
+			return start <= current && current <= end;
+		} catch (Exception e) {
+			LoggerUtil.error("isInZone error", e);
+		}
+		return false;
+	}
+
 }

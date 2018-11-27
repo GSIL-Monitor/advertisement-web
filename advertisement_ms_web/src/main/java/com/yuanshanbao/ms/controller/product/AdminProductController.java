@@ -150,8 +150,8 @@ public class AdminProductController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/update.do")
-	public Object update(Product product, MultipartFile image, MultipartFile bigImage, MultipartFile detailImage,
-			HttpServletRequest request, HttpServletResponse response) {
+	public Object update(Product product, MultipartFile image, MultipartFile bigImage, HttpServletRequest request,
+			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			if (image != null && !image.isEmpty()) {
@@ -160,16 +160,13 @@ public class AdminProductController extends PaginationController {
 			if (bigImage != null && !bigImage.isEmpty()) {
 				product.setBigImageUrl(UploadUtils.uploadFile(bigImage, "test/img"));
 			}
-			if (detailImage != null && !detailImage.isEmpty()) {
-				product.setDetailImageUrl(UploadUtils.uploadFile(detailImage, "test/img"));
-			}
 			validateParameters(product);
 			productService.updateProduct(product);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
-			LoggerUtil.error("advertisement update function - upload image error", e2);
+			LoggerUtil.error("product update function - upload image error", e2);
 		}
 		return result;
 	}

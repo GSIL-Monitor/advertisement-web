@@ -21,6 +21,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.AESUtils;
 import com.yuanshanbao.common.util.CommonUtil;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
@@ -622,16 +623,12 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 					continue;
 				}
 			}
-			if (plan.getDayStartTime() != null) {
-				// if (plan.getDayStartTime().after(new Date())) {
-				// continue;
-				// }
+			if (StringUtils.isNotEmpty(plan.getDayStartTime()) && StringUtils.isNotEmpty(plan.getDayEndTime())) {
+				if (!DateUtils.isInZone(plan.getDayStartTime(), plan.getDayEndTime())) {
+					continue;
+				}
 			}
-			if (plan.getDayEndTime() != null) {
-				// if (plan.getDayEndTime().before(new Date())) {
-				// continue;
-				// }
-			}
+
 			if (!plan.getStatus().equals(PlanStatus.ONLINE)) {
 				continue;
 			}
@@ -656,14 +653,15 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			}
 			// 验证计划金额
 			Double consumed = getDoubleCount(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()));
-			Double dayConsumed = getDoubleCount(RedisConstant.getPlanDayBalanceCountKey(null, plan.getPlanId()));
-			if (BigDecimal.valueOf(consumed).compareTo(plan.getSpend()) < 0) {
-				if (plan.getDayLimit() != null && BigDecimal.valueOf(dayConsumed).compareTo(plan.getDayLimit()) < 0) {
-					availableList.add(probability);
-				} else {
-					availableList.add(probability);
-				}
+			if (BigDecimal.valueOf(consumed).compareTo(plan.getSpend()) > 0) {
+				continue;
 			}
+			// 验证日限额
+			Double dayConsumed = getDoubleCount(RedisConstant.getPlanDayBalanceCountKey(null, plan.getPlanId()));
+			if (plan.getDayLimit() != null && BigDecimal.valueOf(dayConsumed).compareTo(plan.getDayLimit()) > 0) {
+				continue;
+			}
+			availableList.add(probability);
 		}
 
 		List<Probability> result = advertisementStrategyService.getAvailableProbabilityList(request, availableList,

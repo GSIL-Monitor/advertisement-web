@@ -69,7 +69,7 @@
 									</tr>
 									<tr>
 										<td colspan="4" style="text-align:center">
-											<input type="submit" name="" value="提交" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();">
+											<input type="submit" name="" value="确认" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();">
 										</td>
 									</tr>
 								</tbody>

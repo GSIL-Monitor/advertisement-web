@@ -191,7 +191,7 @@
 			$('input[name="dayEndTime"]').val($('#dayEndTime').selectpicker('val'));
 		})
 		$('#dayStartTime').on('change.bs.select', function() {
-			$('input[name="dayEndTime"]').val($('#dayStartTime').selectpicker('val'));
+			$('input[name="dayStartTime"]').val($('#dayStartTime').selectpicker('val'));
 		})
 		initForm();
 		timer('#startTimeValue');

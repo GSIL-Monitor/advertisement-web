@@ -32,26 +32,55 @@
                     <td width="80%">
                       <input type="text" name="name" style="width:60%;" <#if itemEdit.name??>value="${itemEdit.name}"</#if>></td>
                   </tr>
-              
                   <tr>
-                    <td>公司网址：</td>
-                    <td>
-                      <input type="text" name="companyUrl" style="width:60%;" <#if itemEdit.companyUrl??>value="${itemEdit.companyUrl}"</#if>></td>
+                    <td width="20%">标题：</td>
+                    <td width="80%">
+                      <input type="text" name="title" style="width:60%;" <#if itemEdit.title??>value="${itemEdit.title}"</#if>></td>
                   </tr>
-                  
                   <tr>
-                    <td>描述（选填）：</td>
-                    <td>
+                    <td width="20%">描述：</td>
+                    <td width="80%">
                       <input type="text" name="description" style="width:60%;" <#if itemEdit.description??>value="${itemEdit.description}"</#if>></td>
                   </tr>
-                  
                   <tr>
-                    <td>公司logo：</td>
-                    <td>
-                      <input type="file" name="image" style="width:90%;">
-                    </td>
+					<td>logo：</td>
+					<td>
+						<input type="file" name="image" style="width:60%;">
+					</td>
+				  </tr>
+                  <tr>
+					<td>详情：</td>
+					<td>
+						<input type="file" name="bigImage" style="width:60%;">
+					</td>
+				  </tr>
+                  <tr>
+					<td width="20%">办卡链接：</td>
+					<td width="80%">
+						<input type="text" name="detailImage" style="width:60%;">
+					</td>
+				  </tr>
+                  <tr>
+                    <td width="20%">查询链接：</td>
+                    <td width="80%">
+                      <input type="text" name="queryUrl" style="width:60%;" <#if itemEdit.queryUrl??>value="${itemEdit.queryUrl}"</#if>></td>
                   </tr>
-             
+                  <tr>
+                    <td width="20%">基本权益</td>
+                    <td width="80%">
+                      <input type="text" name="schoolTime" style="width:60%;" <#if itemEdit.schoolTime??>value="${itemEdit.schoolTime}"</#if>></td>
+                  </tr>
+                  <tr>
+                    <td width="20%">优惠活动</td>
+                    <td width="80%">
+                      <input type="text" name="brandFeature" style="width:60%;" <#if itemEdit.brandFeature??>value="${itemEdit.brandFeature}"</#if>></td>
+                  </tr>
+                  <tr>
+                    <td width="20%">佣金</td>
+                    <td width="80%">
+                      <input type="text" name="brokerage" style="width:60%;" <#if itemEdit.brokerage??>value="${itemEdit.brokerage}"</#if>></td>
+                  </tr>
+              
                   <tr>
                     <td>状态：</td>
                     <td>
