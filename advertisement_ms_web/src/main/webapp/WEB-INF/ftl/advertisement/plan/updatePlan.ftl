@@ -73,7 +73,8 @@
 										<td>每日开启时间：</td>
 										<td>
 											<div style="width:60%;">
-												<select data-live-search="true" value = "${itemEdit.dayStartTime}" name="dayStartTime" class="selectpicker form-control" id="">
+												<input type="hidden" id="dayStartTimeInput" name="dayStartTime" value="${itemEdit.dayStartTime}">
+												<select data-live-search="true" class="selectpicker form-control" id="dayStartTime">
 													<option value="">请选择</option>
 													<option value="00:00">00:00</option>
 													<option value="01:00">01:00</option>
@@ -108,7 +109,8 @@
 										<td>每日结束时间：</td>
 										<td>
 											<div style="width:60%;">
-												<select data-live-search="true" name="dayEndTime" value="${itemEdit.dayEndTime}" class="selectpicker form-control" id="">
+												<input type="hidden" id="dayEndTimeInput" name="dayEndTime" value="${itemEdit.dayEndTime}">
+												<select data-live-search="true" class="selectpicker form-control" id="dayEndTime">
 													<option value="">请选择</option>
 													<option value="00:00">00:00</option>
 													<option value="01:00">01:00</option>
@@ -181,6 +183,17 @@
 </div>
 <script>
 	$(function() {
+		function initForm() {
+			$('#dayStartTime').selectpicker('val', $('#dayStartTimeInput').val());
+			$('#dayEndTime').selectpicker('val', $('#dayEndTimeInput').val());
+		}
+		$('#dayEndTime').on('change.bs.select', function() {
+			$('input[name="dayEndTime"]').val($('#dayEndTime').selectpicker('val'));
+		})
+		$('#dayStartTime').on('change.bs.select', function() {
+			$('input[name="dayEndTime"]').val($('#dayStartTime').selectpicker('val'));
+		})
+		initForm();
 		timer('#startTimeValue');
 		$('#startTimeValue').datetimepicker({
 			maxDate:0,
