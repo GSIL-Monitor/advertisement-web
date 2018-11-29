@@ -14,6 +14,8 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.advertiser.model.Advertiser;
+import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.plan.model.Plan;
@@ -29,6 +31,9 @@ public class BillController {
 
 	@Autowired
 	private PlanService planService;
+
+	@Autowired
+	private AdvertiserService advertiserService;
 
 	@ResponseBody
 	@RequestMapping("/creatPlanBill")
@@ -65,6 +70,27 @@ public class BillController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (Exception e2) {
 			LoggerUtil.error("calculateByPlan  function -  error", e2);
+		}
+		return resultMap;
+	}
+
+	@ResponseBody
+	@RequestMapping("/combineAdvertiserBill.do")
+	public Object combineAdvertiserBill(Integer diffDay) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Advertiser params = new Advertiser();
+		params.setStatus(PlanStatus.ONLINE);
+		List<Advertiser> list = advertiserService.selectAdvertiser(params, new PageBounds());
+		try {
+			if (diffDay == null) {
+				diffDay = 0;
+			}
+			String date = DateUtils.format(DateUtils.addDays(new Date(), -diffDay));
+			for (Advertiser advertiser : list) {
+				// billService.combineAdvertiserBill(advertiser, date);
+			}
+		} catch (Exception e2) {
+			LoggerUtil.error("combineUserBill  function -  error", e2);
 		}
 		return resultMap;
 	}

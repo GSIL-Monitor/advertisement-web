@@ -42,4 +42,6 @@ public interface BillService {
 
 	public void checkBillAndCount(Plan plan, Probability probability, double lastCount);
 
+	public void combineAdvertiserBill(Advertiser advertiser, String date);
+
 }

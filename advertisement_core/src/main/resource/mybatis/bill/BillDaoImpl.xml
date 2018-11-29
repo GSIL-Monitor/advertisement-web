@@ -81,6 +81,9 @@
 		update tb_bills
 		<set>
 			<trim suffixOverrides=",">
+				<if test="status != null">
+					status=#{status},
+				</if>
 				update_time=sysdate(),
 			</trim>
 		</set>

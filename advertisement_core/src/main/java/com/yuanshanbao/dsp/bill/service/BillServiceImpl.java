@@ -28,6 +28,7 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.bill.dao.BillDao;
 import com.yuanshanbao.dsp.bill.model.Bill;
+import com.yuanshanbao.dsp.bill.model.BillStatus;
 import com.yuanshanbao.dsp.bill.model.BillType;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
@@ -102,7 +103,13 @@ public class BillServiceImpl implements BillService {
 
 	@Override
 	public void updateBill(Bill bill) {
-		// TODO Auto-generated method stub
+		int result = -1;
+
+		result = billDao.updateBill(bill);
+
+		if (result < 0) {
+			throw new BusinessException(ComRetCode.FAIL);
+		}
 
 	}
 
@@ -559,5 +566,28 @@ public class BillServiceImpl implements BillService {
 		Bill monthBill = billDao.selectAdvertiserConsume(param);
 		request.setAttribute("month", monthBill != null ? monthBill.getAmount() : 0);
 		return map;
+	}
+
+	@Override
+	public void combineAdvertiserBill(Advertiser advertiser, String date) {
+		Bill param = new Bill();
+		param.setAdvertiserId(advertiser.getAdvertiserId());
+		param.setStatus(BillStatus.ORIGINAL_BILL);
+		param.setType(BillType.DEDUCTION);
+		param.setDate(date);
+		Bill mergeBill = billDao.selectAdvertiserConsume(param);
+		if (mergeBill != null && mergeBill.getAmount().compareTo(new BigDecimal(0)) > 0) {
+			mergeBill.setStatus(BillStatus.MERGE_BILL);
+			mergeBill.setType(BillType.DEDUCTION);
+			mergeBill.setDate(date);
+			insertBill(mergeBill);
+		}
+		List<Bill> list = selectBill(param, new PageBounds());
+		if (list != null && list.size() > 0) {
+			for (Bill bill : list) {
+				bill.setStatus(CommonStatus.OFFLINE);
+				updateBill(bill);
+			}
+		}
 	}
 }

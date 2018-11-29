@@ -21,7 +21,10 @@ import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.bill.model.Bill;
+import com.yuanshanbao.dsp.bill.model.BillStatus;
 import com.yuanshanbao.dsp.bill.service.BillService;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.order.model.Order;
@@ -29,6 +32,7 @@ import com.yuanshanbao.dsp.order.service.OrderService;
 import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.plan.service.PlanService;
+import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -38,11 +42,15 @@ import com.yuanshanbao.paginator.domain.PageList;
 @RequestMapping("/admin/bill")
 public class AdminBillController extends PaginationController {
 
+	private static final String VIRTUAL_CHANNEL = "yuanshan_channel";
+
 	private static final String PAGE_LIST = "advertisement/bill/listBill";
 
 	private static final String PAGE_BALANCE_LIST = "advertisement/bill/listBalance";
 
 	private static final String PAGE_INSERT_RECHARGE = "advertisement/bill/insertRecharge";
+
+	private static final String PAGE_ADMIN_DEDUCTION = "advertisement/bill/adminDeduction";
 
 	@Autowired
 	private BillService billService;
@@ -58,6 +66,9 @@ public class AdminBillController extends PaginationController {
 
 	@Autowired
 	private PlanService planService;
+
+	@Autowired
+	private RedisService redisService;
 
 	@RequestMapping("/banlanceList.do")
 	public String banlanceList() {
@@ -89,6 +100,7 @@ public class AdminBillController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Bill bill, HttpServletRequest request, HttpServletResponse response) {
+		bill.setStatus(BillStatus.MERGE_BILL);
 		Object object = billService.selectBill(bill, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
@@ -215,21 +227,33 @@ public class AdminBillController extends PaginationController {
 		return resultMap;
 	}
 
+	@RequestMapping("/deductionWindow.do")
+	public String deductionWindow(HttpServletRequest request, HttpServletResponse response) {
+		return PAGE_ADMIN_DEDUCTION;
+	}
+
+	@RequestMapping("/deductionByAdmin.do")
 	@ResponseBody
-	@RequestMapping("/combineProbabilityBill")
-	public Object combineProbabilityBill() {
+	public Object deductionByAdmin(HttpServletRequest request, HttpServletResponse response, Long planId,
+			Double increCount) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		Plan params = new Plan();
-		params.setStatus(PlanStatus.ONLINE);
-		List<Plan> list = planService.selectPlan(params, new PageBounds());
 		try {
-			for (Plan plan : list) {
-				billService.combineProbabilityBill(plan);
+			Probability params = new Probability();
+			params.setPlanId(planId);
+			params.setChannel(VIRTUAL_CHANNEL);
+			List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
+			if (list != null && list.size() > 0) {
+				Probability probability = list.get(0);
+				redisService.increByDouble(
+						RedisConstant.getProbabilityBalanceCountKey(null, probability.getProbabilityId()), increCount);
+				LoggerUtil.info("deductionByAdmin  planId=" + planId + " amount=" + increCount + " operator="
+						+ getCurrentUser().getUsername());
 			}
-		} catch (Exception e2) {
-			LoggerUtil.error("combineProbabilityBill  function -  error", e2);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (Exception e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			LoggerUtil.error("deductionByAdmin error", e);
 		}
 		return resultMap;
 	}
-
 }

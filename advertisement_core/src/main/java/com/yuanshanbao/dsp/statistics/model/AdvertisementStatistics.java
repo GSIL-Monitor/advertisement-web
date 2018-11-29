@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.statistics.model;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.yuanshanbao.common.util.NumberUtil;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.plan.model.Plan;
 
@@ -195,6 +196,10 @@ public class AdvertisementStatistics {
 
 	public void setClickRate(String clickRate) {
 		this.clickRate = clickRate;
+	}
+
+	public String getCtr() {
+		return NumberUtil.getPercent(clickCount, showCount);
 	}
 
 	public BigDecimal getAvgPrice() {
