@@ -70,6 +70,7 @@ public class AdminProductController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Product product, HttpServletRequest request, HttpServletResponse response) {
+		product.setStatus(CommonStatus.ONLINE);
 		Object object = productService.selectProducts(product, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);

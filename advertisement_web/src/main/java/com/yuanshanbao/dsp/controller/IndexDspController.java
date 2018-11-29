@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -65,6 +67,41 @@ public class IndexDspController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NO_ADVERTISEMENT);
 		}
 		return resultMap;
+	}
+
+	@RequestMapping(value = "/j/content", produces = "text/json;charset=UTF-8")
+	@ResponseBody
+	public String getJContent(HttpServletRequest request, HttpServletResponse response, String callback,
+			MediaInformation mediaInformation) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			Project project = ConstantsManager.getProjectByKey("dsp");
+			if (project != null) {
+				Channel channelObject = ConfigManager.getChannel(mediaInformation.getChannel());
+				if (channelObject != null) {
+					List<AdvertisementDetails> seatBid = probabilityService.pickProbabilityByPlan(request,
+							project.getProjectId(), channelObject, mediaInformation);
+					resultMap.put("seatBid", seatBid);
+					if (seatBid.size() == 0) {
+						throw new Exception(EMPTYINFO);
+					}
+				}
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			if (!EMPTYINFO.equals(e.getMessage())) {
+				LoggerUtil.error("[advertisement dsp]: ", e);
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NO_ADVERTISEMENT);
+		}
+		JSONObject jsonObject = JSONObject.fromObject(resultMap);
+		if (StringUtils.isNotBlank(callback)) {
+			return callback + "(" + jsonObject.toString() + ")";
+		} else {
+			return jsonObject.toString();
+		}
 	}
 
 	// 广告曝光

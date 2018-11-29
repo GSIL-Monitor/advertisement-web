@@ -27,6 +27,7 @@ import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -69,6 +70,8 @@ public class AdminPlanController extends PaginationController {
 
 	private static final String PAGE_SELECT_MATERIAL = "advertisement/plan/selectMaterial";
 
+	private static final String PAGE_REDIS_WINDOW = "advertisement/plan/redis";
+
 	@Autowired
 	private OrderService orderService;
 
@@ -89,6 +92,9 @@ public class AdminPlanController extends PaginationController {
 
 	@Autowired
 	private ChannelService channelService;
+
+	@Autowired
+	private RedisService redisService;
 
 	@RequestMapping("/list.do")
 	public String list(Long advertiserId, HttpServletRequest request, HttpServletResponse response, Long orderId) {
@@ -451,6 +457,13 @@ public class AdminPlanController extends PaginationController {
 			LoggerUtil.error("plan pause", e2);
 		}
 		return resultMap;
+	}
+
+	@RequestMapping("/redisWindow.do")
+	public String redisWindow(HttpServletRequest request, HttpServletResponse response, String key) {
+		String value = redisService.get(key);
+		request.setAttribute("value", value);
+		return PAGE_REDIS_WINDOW;
 	}
 
 }

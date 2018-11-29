@@ -37,27 +37,9 @@
       		"data": "${functionId}"
     	}, {
 	    	"data": "name"
-	    }, {
-	    	"data": "merchant.name"
-	    }, {
-	    	"data": "${functionId}",
-	        "render": function ( data, type, full, meta ) {
-	            return '<a href="${rc.contextPath}/admin/${functionName}/view.do?${functionId}='+data+'"  class="btn btn-cyan" target="_blank">查看详情</a>';
-	        }
-	    }, {
+	    },{
 		    	"data": "statusValue"
 		}, {
-		    	"data": null,
-		        "render": function ( data, type, full, meta ) {
-		        	if(data.status ==1){
-		            	return "<a href='javascript:;' onclick=\"change('"+data.productId+"','"+data.status+"')\" class='btn btn-red' target='_blank'>下线</a>";
-		        	}else if(data.status ==2){
-		        		return "<a href='javascript:;' onclick=\"change('"+data.productId+"','"+data.status+"')\" class='btn btn-cyan' target='_blank'>投放</a>";
-		        	}else if(data.status ==0){
-		        		return "<a href='javascript:;'  class='btn btn-cyan' target='_blank'>投放</a>";
-		        	}
-		        }
-	    }, {
 	    	"data": "${functionId}",
 	        "render": function ( data, type, full, meta ) {
 	            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue" target="_blank">修改</a>';
@@ -99,9 +81,6 @@
                 <tr>
                   <th>产品ID</th>
                   <th>产品名称</th>
-                  <th>所属机构</th>
-                  <th>产品详情</th>
-                  <th>状态</th>
 				  <th>操作</th>
                   <th>修改</th>
                   <th>删除</th>
