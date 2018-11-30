@@ -23,6 +23,7 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.dsp.weixin.service.WeixinService;
@@ -36,6 +37,7 @@ public class InviteController extends BaseController {
 
 	private static final String URL = "pages/invitecard/invitecard";
 	private static final String H5URL = "https://wz.huhad.com/w/applicants.html";
+	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/applicants.html";
 	private static final String DETAILURL = "pages/index/detail/detail";
 	@Autowired
 	private UserService userService;
@@ -55,24 +57,41 @@ public class InviteController extends BaseController {
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
-			String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
-			if (StringUtils.isEmpty(code)) {
-				byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, String.valueOf(user.getUserId()),
-						URL);
-				if (bytes != null) {
-					InputStream input = new ByteArrayInputStream(bytes);
-					String qrCode = UploadUtils.uploadBytes(input, input.available(),
-							"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
-					redisCacheService.set(RedisConstant.WX_XCX_CODE + user.getUserId(), qrCode);
-					resultMap.put("QRcode", qrCode);
+			if (user.getLevel() == UserLevel.VIP_AGENT) {
+				String applayCardCode = null;
+				String H5Url = H5URL + "?userId=" + user.getUserId();
+				// 插入logo
+				if (user.getAvatar() == null && "undefined".equals(user.getAvatar())) {
+					applayCardCode = ZXingCode.getLogoQRCode(H5Url,
+							"https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
+					resultMap.put("QRcode", applayCardCode);
+				} else {
+					applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
+					resultMap.put("QRcode", applayCardCode);
 				}
-			} else {
-				resultMap.put("QRcode", code);
-			}
-			String url = URL + "?userId=" + user.getUserId();
+				resultMap.put("url", H5Url);
 
-			resultMap.put("user", user);
-			resultMap.put("url", url);
+			} else {
+
+				String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
+				if (StringUtils.isEmpty(code)) {
+					byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX,
+							String.valueOf(user.getUserId()), URL);
+					if (bytes != null) {
+						InputStream input = new ByteArrayInputStream(bytes);
+						String qrCode = UploadUtils.uploadBytes(input, input.available(),
+								"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+						redisCacheService.set(RedisConstant.WX_XCX_CODE + user.getUserId(), qrCode);
+						resultMap.put("QRcode", qrCode);
+					}
+				} else {
+					resultMap.put("QRcode", code);
+				}
+				String url = URL + "?userId=" + user.getUserId();
+
+				resultMap.put("user", user);
+				resultMap.put("url", url);
+			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -94,16 +113,18 @@ public class InviteController extends BaseController {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 
 			}
+			String applayCardCode = null;
 			// H5二维码
 			String H5Url = H5URL + "?userId=" + user.getUserId() + "&productId=" + productId;
 			// 插入logo
-			if ("".equals(avatarUrl) && avatarUrl == null) {
-				String applayCardCode = ZXingCode.getLogoQRCode(H5Url,
+			if (avatarUrl == null) {
+				applayCardCode = ZXingCode.getLogoQRCode(H5Url,
 						"https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
 				resultMap.put("CardCode", applayCardCode);
+			} else {
+				applayCardCode = ZXingCode.getLogoQRCode(H5Url, avatarUrl);
+				resultMap.put("applayCardCode", applayCardCode);
 			}
-			String applayCardCode = ZXingCode.getLogoQRCode(H5Url, avatarUrl);
-			resultMap.put("applayCardCode", applayCardCode);
 			resultMap.put("H5Url", H5Url);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -124,21 +145,38 @@ public class InviteController extends BaseController {
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
-			String code = redisCacheService.get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() + productId);
-			if (StringUtils.isEmpty(code)) {
-				byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX, productId + "," + user.getUserId(),
-						DETAILURL);
-				if (bytes != null) {
-					InputStream input = new ByteArrayInputStream(bytes);
-					String qrCode = UploadUtils.uploadBytes(input, input.available(),
-							"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
-					redisCacheService.set(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() + productId, qrCode);
-					resultMap.put("QRcode", qrCode);
+			if (user.getLevel() == UserLevel.VIP_AGENT) {
+				String applayCardCode = null;
+				String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId;
+				// 插入logo
+				if (user.getAvatar() == null && "undefined".equals(user.getAvatar())) {
+					applayCardCode = ZXingCode.getLogoQRCode(H5Url,
+							"https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
+					resultMap.put("QRcode", applayCardCode);
+				} else {
+					applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
+					resultMap.put("QRcode", applayCardCode);
 				}
+				resultMap.put("url", H5Url);
+
 			} else {
-				resultMap.put("QRcode", code);
+
+				String code = redisCacheService.get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() + productId);
+				if (StringUtils.isEmpty(code)) {
+					byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX,
+							productId + "," + user.getUserId(), DETAILURL);
+					if (bytes != null) {
+						InputStream input = new ByteArrayInputStream(bytes);
+						String qrCode = UploadUtils.uploadBytes(input, input.available(),
+								"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+						redisCacheService.set(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() + productId, qrCode);
+						resultMap.put("QRcode", qrCode);
+					}
+				} else {
+					resultMap.put("QRcode", code);
+				}
+				resultMap.put("user", user);
 			}
-			resultMap.put("user", user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

@@ -15,6 +15,7 @@
 		<result property="productName" column="product_name" jdbcType="NUMERIC" />
 		<result property="brokerage" column="brokerage" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
+		<result property="type" column="type" jdbcType="NUMERIC" />
 		<result property="inviteTime" column="invite_time" jdbcType="TIMESTAMP" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -58,7 +59,13 @@
 			</foreach>
 			and status = 1
 		</where>
-
+	</select>
+	
+	<select id="getVIPAgenctSumBrokerage" parameterType="java.lang.Long" resultType="java.math.BigDecimal" >
+		select sum(brokerage)
+		from tb_agency
+		where
+		invite_user_id=#{inviteUserId} and status = 1
 	</select>
 
 	<select id="selectAgencyById" parameterType="java.lang.Long" resultMap="agencyMap">
@@ -101,6 +108,9 @@
 				<if test="status != null">
 					status=#{status},
 				</if>
+				<if test="type != null">
+					type=#{type},
+				</if>
 				update_time=sysdate(),
 			</trim>
 		</set>
@@ -112,7 +122,7 @@
 	<update id="updateBankTime" parameterType="Agency">
 		update tb_agency
 		set update_time=sysdate()
-		where id = #{id} and user_id =#{userId} and product_id = #{productId}
+		where id=#{id} and user_id =#{userId} and product_id = #{productId}
 	</update>
 
 
@@ -125,6 +135,9 @@
 		tb_agency
 		<where>
 			<trim suffixOverrides="and">
+				<if test="id != null">
+					id=#{id} and
+				</if>
 				<if test="inviteUserId != null">
 					invite_user_id= #{inviteUserId} and
 				</if>
@@ -135,10 +148,10 @@
 					agency_name= #{agencyName} and
 				</if>
 				<if test="name != null">
-					name= #{name} and
+					name like CONCAT(CONCAT('%', #{name}),'%') and
 				</if>
 				<if test="mobile != null">
-					mobile= #{mobile} and
+					mobile like CONCAT(CONCAT('%', #{mobile}),'%') and
 				</if>
 				<if test="inviteTime != null">
 					invite_time= #{inviteTime} and
@@ -153,7 +166,10 @@
 					product_name= #{productName} and
 				</if>
 				<if test="status != null">
-					status= #{status}
+					status= #{status} and
+				</if>
+				<if test="type != null">
+					type= #{type}
 				</if>
 			</trim>
 		</where>
@@ -174,10 +190,10 @@
 
 	<insert id="insertAgency" parameterType="Agency">
 		insert into
-		tb_agency(id,user_id,invite_user_id,name,mobile,agency_name,brokerage,product_id,product_name,status,invite_time,create_time,update_time)
+		tb_agency(id,user_id,invite_user_id,name,mobile,agency_name,brokerage,product_id,product_name,status,type,invite_time,create_time,update_time)
 		values
 		(#{id},#{userId}, #{inviteUserId}, #{name},#{mobile}, #{agencyName},#{brokerage},#{productId},#{productName},
-		#{status},sysdate(), sysdate(),sysdate())
+		#{status},#{type},sysdate(), sysdate(),sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 				   keyProperty="userId">
 			SELECT LAST_INSERT_ID()

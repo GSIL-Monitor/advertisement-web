@@ -95,7 +95,7 @@
 			</trim>
 			and status != -1
 		</where>
-		order by create_time desc
+		order by b desc
 	</select>
 
 	<select id="selectProductByIds" parameterType="List" resultMap="productMap">
