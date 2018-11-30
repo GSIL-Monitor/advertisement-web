@@ -127,6 +127,9 @@ public class AccountController extends BaseController {
 			} else {
 				userService.updateLevelDetails(user.getUserId());
 				brokerages = agencyService.getBrokerages(agency, user, new PageBounds());
+				if (brokerages == null) {
+					brokerages = BigDecimal.ZERO;
+				}
 			}
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));

@@ -26,6 +26,10 @@ public class RedisConstant {
 	public final static String PREFIX_LOG_HITS = "advertisement_log:hits:";
 	public final static String WX_XCX_CODE = "wz_code";
 	public final static String WX_XCX_DETAIL_CODE = "wz_detail_code";
+
+	public final static String WX_XCX_H5_CODE = "wz_h5_code";
+	public final static String WX_XCX_H5_DETAIL_CODE = "wz_h5_detail_code";
+
 	public final static String ACCESS_TOKEN = "access_token"; // assess_token 缓存
 
 	public static final String ADVERTISEMENT_CLICK_PV_COUNT = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
