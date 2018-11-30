@@ -55,6 +55,7 @@ public class AgencyController extends BaseController {
 				List<AgencyVo> agencyInfos = agencyService.getAgencyInfos(user, agency, pageBounds);
 				resultMap.put("agencyList", agencyInfos);
 			}
+			resultMap.put("user", user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -116,6 +117,7 @@ public class AgencyController extends BaseController {
 				resultMap.put("twoAgencyList", agencyListVo);
 				resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
 			}
+			resultMap.put("user", user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
 		} catch (BusinessException e) {

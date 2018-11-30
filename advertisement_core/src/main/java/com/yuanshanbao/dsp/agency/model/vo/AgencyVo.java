@@ -1,148 +1,152 @@
 package com.yuanshanbao.dsp.agency.model.vo;
 
-
 import java.math.BigDecimal;
-
 
 /**
  * Created by Administrator on 2018/11/15.
  */
 public class AgencyVo {
-    private Long inviteUserId;
-    private Long userId;
-    private String agencyName;
-    private String name;
-    private String mobile;
-    private Long productId;
-    private String productName;
-    private BigDecimal brokerage;
-    private String status;  //0:待审核 1:审核通过 2:审核未通过
-    private String userLevel;
-    private String inviteUserLevel;
-    private String inviteTime;
-    private String createTime;
-    private String updateTime;
+	private Long inviteUserId;
+	private Long userId;
+	private String agencyName;
+	private String name;
+	private String mobile;
+	private Long productId;
+	private String productName;
+	private BigDecimal brokerage;
+	private String status; // 0:待审核 1:审核通过 2:审核未通过
+	private String userLevel;
+	private String inviteUserLevel;
+	private String inviteTime;
+	private String createTime;
+	private String updateTime;
 
-    public String getInviteTimeValue() {
-        return inviteTime;
-    }
+	public Long getUserId() {
+		return userId;
+	}
 
-    public void setInviteTime(String inviteTime) {
-        this.inviteTime = inviteTime;
-    }
-    public String getCreateTime() {
-        return createTime;
-    }
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
 
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
+	public String getInviteTimeValue() {
+		return inviteTime;
+	}
 
-    public String getUpdateTimeValue() {
-        return updateTime;
-    }
+	public void setInviteTime(String inviteTime) {
+		this.inviteTime = inviteTime;
+	}
 
-    public String getUpdateTime(){ return updateTime;}
+	public String getCreateTime() {
+		return createTime;
+	}
 
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
 
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
+	public String getUpdateTimeValue() {
+		return updateTime;
+	}
 
-    public Long getInviteUserId() {
-        return inviteUserId;
-    }
+	public String getUpdateTime() {
+		return updateTime;
+	}
 
-    public void setInviteUserId(Long inviteUserId) {
-        this.inviteUserId = inviteUserId;
-    }
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
 
-    public Long getUserId() {
-        return userId;
-    }
+	public Long getInviteUserId() {
+		return inviteUserId;
+	}
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+	public void setInviteUserId(Long inviteUserId) {
+		this.inviteUserId = inviteUserId;
+	}
 
-    public String getAgencyName() {
-        return agencyName;
-    }
+	public String getInviteTime() {
+		return inviteTime;
+	}
 
-    public void setAgencyName(String agencyName) {
-        this.agencyName = agencyName;
-    }
+	public String getAgencyName() {
+		return agencyName;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setAgencyName(String agencyName) {
+		this.agencyName = agencyName;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getMobile() {
-        return mobile;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
+	public String getMobile() {
+		return mobile;
+	}
 
-    public Long getProductId() {
-        return productId;
-    }
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+	public Long getProductId() {
+		return productId;
+	}
 
-    public String getProductName() {
-        return productName;
-    }
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
+	public String getProductName() {
+		return productName;
+	}
 
-    public BigDecimal getBrokerage() {
-        return brokerage;
-    }
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
 
-    public void setBrokerage(BigDecimal brokerage) {
-        this.brokerage = brokerage;
-    }
+	public BigDecimal getBrokerage() {
+		return brokerage;
+	}
 
-    public String getBrokerageValue() {
-        return String.valueOf(brokerage);
-    }
+	public void setBrokerage(BigDecimal brokerage) {
+		this.brokerage = brokerage;
+	}
 
-    public String getStatus(){
-        return status;
-    }
-    public String getStatusValue() {
-        return status;
-    }
+	public String getBrokerageValue() {
+		return String.valueOf(brokerage);
+	}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+	public String getStatus() {
+		return status;
+	}
 
+	public String getStatusValue() {
+		return status;
+	}
 
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-    public String getUserLevel() {
-        return userLevel;
-    }
+	public String getUserLevel() {
+		return userLevel;
+	}
 
-    public void setUserLevel(String userLevel) {
-        this.userLevel = userLevel;
-    }
+	public void setUserLevel(String userLevel) {
+		this.userLevel = userLevel;
+	}
 
-    public String getInviteUserLevel() {
-        return inviteUserLevel;
-    }
+	public String getInviteUserLevel() {
+		return inviteUserLevel;
+	}
 
-    public void setInviteUserLevel(String inviteUserLevel) {
-        this.inviteUserLevel = inviteUserLevel;
-    }
+	public void setInviteUserLevel(String inviteUserLevel) {
+		this.inviteUserLevel = inviteUserLevel;
+	}
+
 }

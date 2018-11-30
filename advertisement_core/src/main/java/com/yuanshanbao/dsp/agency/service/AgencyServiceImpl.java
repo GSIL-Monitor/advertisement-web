@@ -276,9 +276,9 @@ public class AgencyServiceImpl implements AgencyService {
 		if (agents.size() != 0) {
 			for (Agency agent : agents) {
 				AgencyVo agencyVo = new AgencyVo();
-				agencyVo.setName(agent.getName());
+				agencyVo.setAgencyName(agent.getName());
 				agencyVo.setMobile(agent.getMobile());
-				agencyVo.setUpdateTime(agent.getUpdateTimeValue());
+				agencyVo.setInviteTime(agent.getUpdateTimeValue());
 				agencyVos.add(agencyVo);
 			}
 		}
