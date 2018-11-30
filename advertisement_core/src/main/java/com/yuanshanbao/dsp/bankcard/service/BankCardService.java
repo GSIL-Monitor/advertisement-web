@@ -2,12 +2,9 @@ package com.yuanshanbao.dsp.bankcard.service;
 
 import java.util.List;
 
-import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.bankcard.model.BankCard;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.paginator.domain.PageList;
 
 /**
  * Created by Administrator on 2018/10/23.
@@ -22,5 +19,8 @@ public interface BankCardService {
 
 	public void getApplyBankCardInfo(User user, Long productId, String userName, String mobile);
 
-    List<AgencyVo> getAgencyInfo(List<Agency> agencyList, PageList<BankCard> pageList);
+	public void transferUserAccount(List<BankCard> bankCardList, String productId);
+
+	public void addVIPAgentOrBankCardInfo(Long inviteUserId, Long prodcutId, String userName, String mobile);
+
 }

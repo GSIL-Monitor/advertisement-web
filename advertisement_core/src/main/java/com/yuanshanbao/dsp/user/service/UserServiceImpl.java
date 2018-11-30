@@ -1,25 +1,11 @@
 package com.yuanshanbao.dsp.user.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.yuanshanbao.common.util.StringUtil;
-import com.yuanshanbao.dsp.agency.dao.AgencyDao;
-import com.yuanshanbao.dsp.agency.model.Agency;
-import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
-import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
-import com.yuanshanbao.dsp.agency.service.AgencyService;
-import com.yuanshanbao.dsp.product.dao.ProductDao;
-import com.yuanshanbao.dsp.product.model.Product;
-import com.yuanshanbao.dsp.product.model.ProductStatus;
-import com.yuanshanbao.dsp.product.service.ProductService;
-import com.yuanshanbao.dsp.user.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,12 +18,21 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.MD5Util;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.user.dao.IndexUserDao;
 import com.yuanshanbao.dsp.user.dao.UserBaseInfoDao;
 import com.yuanshanbao.dsp.user.dao.UserDao;
+import com.yuanshanbao.dsp.user.model.BaseInfo;
+import com.yuanshanbao.dsp.user.model.CropImage;
+import com.yuanshanbao.dsp.user.model.IndexUser;
+import com.yuanshanbao.dsp.user.model.LoginToken;
+import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
+import com.yuanshanbao.dsp.user.model.UserStatus;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Service
@@ -398,7 +393,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void getLevelDetails(Long userId) {
+	public void updateLevelDetails(Long userId) {
 		User user = new User();
 		if (userId != null) {
 			user.setUserId(userId);

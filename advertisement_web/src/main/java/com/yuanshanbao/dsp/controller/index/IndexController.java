@@ -32,6 +32,8 @@ import com.yuanshanbao.dsp.product.model.ProductCategory;
 import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.tags.model.Tags;
+import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -40,6 +42,8 @@ import com.yuanshanbao.paginator.domain.PageList;
 public class IndexController extends BaseController {
 
 	private static final String WANGZHUAN = "wangzhuan";
+	private static final String WANGZHUANAGENT = "wangzhuanagent";
+
 	private static final String MYZT = "蚂蚁智投";
 	private static final String TJKT = "坤涛科技";
 
@@ -59,47 +63,15 @@ public class IndexController extends BaseController {
 			PageBounds pageBounds, String token, Integer client) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
-			if (activity == null) {
-				throw new BusinessException();
+			User loginUser = getLoginUser(token);
+			Activity activity = null;
+			if (loginUser.getLevel() == UserLevel.VIP_AGENT) {
+				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+			} else {
+				activity = ConfigManager.getActivityByKey(WANGZHUAN);
+				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 			}
-			// 产品列表
-			product.setActivityId(activity.getActivityId());
-			product.setStatus(ProductStatus.ONLINE);
-
-			PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
-					formatPageBounds(pageBounds));
-			List<Tags> tagsList = new ArrayList<>();
-			for (Product prod : productList) {
-				Tags tags = new Tags();
-				if (prod.getAdvantage() != null) {
-					tags.setImage(prod.getAdvantage());
-
-					tagsList.add(tags);
-				}
-			}
-			// 滚动消息列表
-			Message message = new Message();
-			message.setProductId(activity.getActivityId());
-			List<Message> messageList = messageService.selectMessages(message, new PageBounds());
-			String channel = appService.getAppChannel(request.getParameter("appId"));
-			String appKey = getAppKey(request);
-			Long activityId = null;
-			if (activity != null) {
-				activityId = activity.getActivityId();
-			}
-			List<ProductCategory> productCategorys = new ArrayList<ProductCategory>();
-			String ids = ConfigManager.getConfigValue(activityId, channel, appKey,
-					ConfigConstants.PRODUCT_CATEGORY_INDEX_CONFIG);
-			productCategorys = ConfigManager.getProductCategoryList(ids);
-			resultMap.put("productCategorys", productCategorys);
-			resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
-			setAdvertisement(client, resultMap, channel, appKey, activityId, AdvertisementPosition.ADVERTISEMENT_INDEX);
-			resultMap.put("messageList", messageList);
-			resultMap.put("productList", productList);
-			resultMap.put("tagsList", tagsList);
-			resultMap.put("messageList", messageList);
-			resultMap.put("productList", productList);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -138,6 +110,45 @@ public class IndexController extends BaseController {
 			LoggerUtil.error("[Result: error]", e);
 		}
 		return getFtlPath(request, "/common/error");
+	}
+
+	private void getHomeInfos(Map<String, Object> resultMap, Activity activity, Product product, PageBounds pageBounds,
+			HttpServletRequest request, Integer client) {
+		// 产品列表
+		product.setActivityId(activity.getActivityId());
+		product.setStatus(ProductStatus.ONLINE);
+		PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
+				formatPageBounds(pageBounds));
+
+		List<Tags> tagsList = new ArrayList<>();
+		for (Product prod : productList) {
+			Tags tags = new Tags();
+			if (prod.getAdvantage() != null) {
+				tags.setImage(prod.getAdvantage());
+				tagsList.add(tags);
+			}
+		}
+		// 滚动消息列表
+		Message message = new Message();
+		message.setProductId(activity.getActivityId());
+		List<Message> messageList = messageService.selectMessages(message, new PageBounds());
+		String channel = appService.getAppChannel(request.getParameter("appId"));
+		String appKey = getAppKey(request);
+		Long activityId = null;
+		if (activity != null) {
+			activityId = activity.getActivityId();
+		}
+		List<ProductCategory> productCategorys = new ArrayList<ProductCategory>();
+		String ids = ConfigManager.getConfigValue(activityId, channel, appKey,
+				ConfigConstants.PRODUCT_CATEGORY_INDEX_CONFIG);
+		productCategorys = ConfigManager.getProductCategoryList(ids);
+		resultMap.put("productCategorys", productCategorys);
+		resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
+		setAdvertisement(client, resultMap, channel, appKey, activityId, AdvertisementPosition.ADVERTISEMENT_INDEX);
+		resultMap.put("messageList", messageList);
+		resultMap.put("productList", productList);
+		resultMap.put("messageList", messageList);
+		resultMap.put("tagsList", tagsList);
 	}
 
 }

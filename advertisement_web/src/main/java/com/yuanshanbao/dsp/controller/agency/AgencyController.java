@@ -21,11 +21,13 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyType;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 /**
@@ -46,8 +48,13 @@ public class AgencyController extends BaseController {
 		try {
 			// 获取当前用户信息
 			User user = getLoginUser(token);
-			List<AgencyVo> agencyInfos = agencyService.getAgencyInfos(user, agency, pageBounds);
-			resultMap.put("agencyList", agencyInfos);
+			if (user.getLevel() == UserLevel.VIP_AGENT) {
+				List<AgencyVo> agents = agencyService.getVIPAgentInfos(user, agency, pageBounds);
+				resultMap.put("agencyList", agents);
+			} else {
+				List<AgencyVo> agencyInfos = agencyService.getAgencyInfos(user, agency, pageBounds);
+				resultMap.put("agencyList", agencyInfos);
+			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -65,37 +72,49 @@ public class AgencyController extends BaseController {
 		List<Agency> twoAgencyList = new ArrayList<>();
 		try {
 			User user = getLoginUser(token);
-			Set<Long> userIds = new HashSet<Long>();
+			if (user.getLevel() == UserLevel.VIP_AGENT) {
+				agency.setInviteUserId(user.getUserId());
+				agency.setType(AgencyType.AGENT_CREDIT_CARD);
+				List<Agency> agentList = agencyService.selectAgencys(agency, pageBounds);
+				BigDecimal sumBrokerage = agencyService.queryVIPAgenctSumBrokerage(user.getUserId());
+				resultMap.put("oneAgencyList", agentList);
+				resultMap.put("brokerage", sumBrokerage.setScale(2, RoundingMode.HALF_UP));
 
-			agency.setInviteUserId(user.getUserId());
-			List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
-			for (Agency agen : oneAgencyList) {
-				userIds.add(agen.getUserId());
-			}
-			for (Iterator<Agency> iterator = oneAgencyList.iterator(); iterator.hasNext();) {
-				Agency agen = (Agency) iterator.next();
-				if (agen.getBrokerage() == null) {
-					iterator.remove();
+			} else {
+
+				Set<Long> userIds = new HashSet<Long>();
+				agency.setInviteUserId(user.getUserId());
+				List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
+				for (Agency agen : oneAgencyList) {
+					userIds.add(agen.getUserId());
 				}
-			}
-			// 总佣金
-			BigDecimal brokerages = agencyService.getBrokerages(agency, user, pageBounds);
-			for (Long userId : userIds) {
-				agency.setInviteUserId(userId);
-				twoAgencyList.addAll(agencyService.selectAgencys(agency, new PageBounds()));
-			}
-
-			for (Iterator<Agency> iterator = twoAgencyList.iterator(); iterator.hasNext();) {
-				Agency twoAgen = (Agency) iterator.next();
-				if (twoAgen.getBrokerage() == null) {
-					iterator.remove();
+				for (Iterator<Agency> iterator = oneAgencyList.iterator(); iterator.hasNext();) {
+					Agency agen = (Agency) iterator.next();
+					if (agen.getBrokerage() == null) {
+						iterator.remove();
+					}
 				}
-			}
-			List<AgencyVo> agencyListVo = agencyService.getAgencyListVo(twoAgencyList, user);
+				// 总佣金
+				BigDecimal brokerages = agencyService.getBrokerages(agency, user, pageBounds);
+				for (Long userId : userIds) {
+					agency.setInviteUserId(userId);
+					twoAgencyList.addAll(agencyService.selectAgencys(agency, new PageBounds()));
+				}
 
-			resultMap.put("oneAgencyList", oneAgencyList);
-			resultMap.put("twoAgencyList", agencyListVo);
-			resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
+				for (Iterator<Agency> iterator = twoAgencyList.iterator(); iterator.hasNext();) {
+					Agency twoAgen = (Agency) iterator.next();
+					if (twoAgen.getBrokerage() == null) {
+						iterator.remove();
+					}
+				}
+				List<AgencyVo> agencyListVo = agencyService.getAgencyListVo(twoAgencyList, user);
+
+				resultMap.put("oneAgencyList", oneAgencyList);
+				resultMap.put("twoAgencyList", agencyListVo);
+				resultMap.put("brokerage", brokerages.setScale(2, RoundingMode.HALF_UP));
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {

@@ -33,4 +33,5 @@ public interface ProductService {
 	public String getApplyInterface(Product product, User user, HttpServletRequest request);
 
 	public List<Tags> getBrandFeatureMap(String brandFeature);
+
 }

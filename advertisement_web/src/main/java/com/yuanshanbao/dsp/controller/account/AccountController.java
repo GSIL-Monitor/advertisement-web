@@ -1,6 +1,7 @@
 package com.yuanshanbao.dsp.controller.account;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ import com.yuanshanbao.dsp.redpacket.model.RedPacketVo;
 import com.yuanshanbao.dsp.redpacket.service.RedPacketService;
 import com.yuanshanbao.dsp.sms.service.VerifyCodeService;
 import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.dsp.withdrawdeposit.model.WithdrawDeposit;
@@ -55,16 +57,22 @@ public class AccountController extends BaseController {
 
 	private static final String TYPE_CONTENT_CONSUME = "消费";
 
+	public final static BigDecimal MANAGER_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.1);
+	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
+	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.2);
+
 	@Autowired
 	private AppService appService;
 
 	@Autowired
 	private RedPacketService redPacketService;
+
 	@Autowired
 	private PaymentInterfaceService paymentInterfaceService;
 
 	@Autowired
 	private VerifyCodeService verifyCodeService;
+
 	@Autowired
 	private TokenService tokenService;
 
@@ -92,7 +100,9 @@ public class AccountController extends BaseController {
 			if (user == null) {
 				throw new BusinessException(ComRetCode.TOKEN_LOSE_EFFICACY);
 			}
+
 			resultMap.putAll(paymentInterfaceService.queryBalance(String.valueOf(user.getUserId())));
+
 			Object withdrawAmount = paymentInterfaceService.queryBillAmount(String.valueOf(user.getUserId()),
 					PaymentInterfaceService.WITHDRAW).get("amount");
 			if (withdrawAmount == null) {
@@ -105,14 +115,21 @@ public class AccountController extends BaseController {
 				brokerageAmount = BigDecimal.ZERO;
 			}
 			// 更新用户等级
-			userService.getLevelDetails(user.getUserId());
+			BigDecimal brokerages = BigDecimal.valueOf(0);
 			Agency agency = new Agency();
 			agency.setInviteUserId(user.getUserId());
-			BigDecimal brokerages = agencyService.getBrokerages(agency, user, new PageBounds());
+			if (!(user.getLevel() == UserLevel.VIP_AGENT)) {
+				userService.updateLevelDetails(user.getUserId());
+				brokerages = agencyService.getBrokerages(agency, user, new PageBounds());
+
+			} else {
+				brokerages = agencyService.queryVIPAgenctSumBrokerage(user.getUserId());
+			}
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
-			resultMap.put("levelStatus", user.getLevel());
-			resultMap.put("brokerageAmount", brokerages);
+			Integer level = user.getLevel();
+			resultMap.put("levelStatus", level);
+			resultMap.put("brokerageAmount", brokerages.setScale(2, RoundingMode.HALF_UP));
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
@@ -402,6 +419,64 @@ public class AccountController extends BaseController {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
 			LoggerUtil.error("[orderDetail]: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+		}
+		return resultMap;
+	}
+
+	@RequestMapping("/pay/distribute/check")
+	@ResponseBody
+	public Object checkDistribute(@RequestParam String platformId, @RequestParam String accountId,
+			@RequestParam String orderId, @RequestParam String handleId) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			Agency agency = new Agency();
+			BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
+			String inviteUserId = accountId.substring(2, accountId.length());
+			User user = userService.selectUserById(Long.valueOf(orderId));
+			agency.setId(Long.valueOf(handleId.substring(17, handleId.length())));
+			List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
+			if (!orderId.equals(String.valueOf(agencyList.get(0).getUserId()))) {
+				if (user != null) {
+					// 间接上级
+					if (user.getInviteUserId() != null && inviteUserId.equals(String.valueOf(user.getInviteUserId()))) {
+
+						if (user.getLevel() == null) {
+							user.setLevel(UserLevel.MANAGER);
+						}
+						if (user.getLevel() == UserLevel.MANAGER) {
+							indiretBrokerage = agencyList.get(0).getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE);
+						} else if (user.getLevel() == UserLevel.MAJORDOMO) {
+							indiretBrokerage = agencyList.get(0).getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE);
+						} else if (user.getLevel() == UserLevel.BAILLIFF) {
+							indiretBrokerage = agencyList.get(0).getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
+						}
+						resultMap.put("distributeAmount", indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
+					} else {
+						resultMap.put("distributeAmount", indiretBrokerage);
+						logger.info("checkDistribute inDirectUserBrokerage error:" + inviteUserId + "不等于"
+								+ user.getInviteUserId());
+					}
+				} else {
+					resultMap.put("distributeAmount", indiretBrokerage);
+					logger.info("checkDistribute user error :" + user);
+
+				}
+			} else {
+				// 是直接上级
+				User inviteUser = userService.selectUserById(inviteUserId);
+				if (inviteUser != null) {
+					resultMap.put("distributeAmount", agencyList.get(0).getBrokerage()
+							.setScale(2, RoundingMode.HALF_UP));
+				} else {
+					resultMap.put("distributeAmount", BigDecimal.valueOf(0));
+				}
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			LoggerUtil.error("[checkDistribute]: ", e);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;

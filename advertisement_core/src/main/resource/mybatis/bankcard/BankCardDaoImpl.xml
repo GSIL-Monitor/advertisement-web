@@ -5,52 +5,58 @@
 <mapper namespace="bankCard">
 
 	<resultMap id="bankCardMap" type="BankCard">
-		<id property="userId" column="user_id" jdbcType="NUMERIC" />
-		<result property="type" column="type" jdbcType="VARCHAR" />
-		<result property="cardName" column="card_name" jdbcType="VARCHAR" />
-		<result property="userName" column="userName" jdbcType="VARCHAR" />
+		<result property="bankId" column="bank_id" jdbcType="NUMERIC" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="bankName" column="bank_name" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
-		<result property="cardNumber" column="card_number" jdbcType="VARCHAR" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
 	</resultMap>
-
 
 	<!-- 查询sql -->
 	<select id="selectBankCards" parameterType="BankCard" resultMap="bankCardMap">
 		select
 		* from
-		tb_user_bank_card
+		tb_bank_order
 		<where>
 			<trim suffixOverrides="and">
-				<if test="userId != null">
-					users_id= #{userId} and
+				<if test="bankId != null">
+					bank_id= #{bankId} and
 				</if>
-				<if test="cardName != null">
-					card_name= #{cardName} and
+				<if test="productId != null">
+					productId= #{product_id} and
 				</if>
-				<if test="type != null">
-					type= #{type} and
+				<if test="name != null">
+					name= #{name} and
 				</if>
-				<if test="userName != null">
-					user_name= #{userName} and
+				<if test="mobile != null">
+					mobile= #{mobile} and
+				</if>
+				<if test="bankName != null">
+					bank_name like CONCAT(CONCAT('%', #{bankName},'%')) and
+				</if>
+				<if test="status != null">
+					status= #{status} and
 				</if>
 				<if test="createTime != null">
 					create_time= #{createTime} and
 				</if>
-				<if test="cardNumber != null">
-					card_number= #{cardNumber} and
+				<if test="updateTime != null">
+					update_time= #{updateTime} and
 				</if>
 			</trim>
 		</where>
-		order by create_time desc
+		order by bank_id desc
 	</select>
 
-	<insert id="insertBankCard" parameterType="Product">
+	<insert id="insertBankCard" parameterType="BankCard">
 		insert into
-		tb_product(user_id,user_name,card_name,card_number,type,create_time)
+		tb_bank_order(bank_id,name,mobile,bank_name,status,create_time,update_time)
 		values
-		( #{userId}, #{userName},#{cardName},#{cardNumber}, #{type},sysdate() )
+		( #{bankId},#{name},#{mobile}, #{bankName},#{status},sysdate(),sysdate() )
 		<selectKey resultType="java.lang.Long" order="AFTER"
-				   keyProperty="userId">
+				   keyProperty="bankId">
 			SELECT LAST_INSERT_ID()
 		</selectKey>
 	</insert>

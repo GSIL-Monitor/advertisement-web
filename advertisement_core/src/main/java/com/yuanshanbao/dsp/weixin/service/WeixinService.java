@@ -12,6 +12,7 @@ public interface WeixinService {
 	public static final String CONFIG_SERVICE = "service";
 	public static final String CONFIG_APP = "app";
 	public static final String CONFIG_WZXCX = "wzxcx";
+	public static final String CONFIG_WZXCX_AGENT = "wzagent";
 
 	public abstract boolean hasSubscribe(User user);
 
@@ -42,7 +43,7 @@ public interface WeixinService {
 	public GetUserInfoResponse getUserInfo(String weixinType, String token, String openId);
 
 	public String getAppId(String key);
-	
+
 	public String getAppSecret(String key);
 
 	public byte[] dealQRCode(String key, String scene, String page);
