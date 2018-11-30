@@ -124,6 +124,9 @@ public class AccountController extends BaseController {
 
 			} else {
 				brokerages = agencyService.queryVIPAgenctSumBrokerage(user.getUserId());
+				if (brokerages == null) {
+					brokerages = BigDecimal.ZERO;
+				}
 			}
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
