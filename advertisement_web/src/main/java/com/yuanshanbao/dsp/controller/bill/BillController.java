@@ -89,8 +89,10 @@ public class BillController {
 			for (Advertiser advertiser : list) {
 				// billService.combineAdvertiserBill(advertiser, date);
 			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (Exception e2) {
 			LoggerUtil.error("combineUserBill  function -  error", e2);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;
 	}

@@ -1,5 +1,6 @@
 package com.yuanshanbao.ms.controller.bill;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.plan.service.PlanService;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.dsp.quota.model.QuotaType;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
@@ -235,24 +237,43 @@ public class AdminBillController extends PaginationController {
 	@RequestMapping("/deductionByAdmin.do")
 	@ResponseBody
 	public Object deductionByAdmin(HttpServletRequest request, HttpServletResponse response, Long planId,
-			Double increCount) {
+			Integer clickCount, Integer showCount) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			Plan plan = planService.selectPlan(planId);
+			if (plan == null) {
+				return resultMap;
+			}
 			Probability params = new Probability();
 			params.setPlanId(planId);
 			params.setChannel(VIRTUAL_CHANNEL);
 			List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
 			if (list != null && list.size() > 0) {
 				Probability probability = list.get(0);
+				redisService.increBy(RedisConstant.getPlanClickCountPVKey(null, planId + "", VIRTUAL_CHANNEL),
+						clickCount);
+				redisService
+						.increBy(RedisConstant.getPlanShowCountPVKey(null, planId + "", VIRTUAL_CHANNEL), showCount);
+				BigDecimal unitPrice = new BigDecimal(0);
+				double increAmount = 0;
+				if (QuotaType.CPM.equals(plan.getChargeType())) {
+					unitPrice = plan.getBestBid().divide(new BigDecimal(1000));
+					increAmount = (new BigDecimal(showCount).multiply(unitPrice)).doubleValue();
+				} else if (QuotaType.CPC.equals(plan.getChargeType())) {
+					unitPrice = plan.getBestBid();
+					increAmount = (new BigDecimal(clickCount).multiply(unitPrice)).doubleValue();
+				}
 				redisService.increByDouble(
-						RedisConstant.getProbabilityBalanceCountKey(null, probability.getProbabilityId()), increCount);
-				LoggerUtil.info("deductionByAdmin  planId=" + planId + " amount=" + increCount + " operator="
+						RedisConstant.getProbabilityBalanceCountKey(null, probability.getProbabilityId()), increAmount);
+				LoggerUtil.info("deductionByAdmin  planId=" + planId + " amount=" + increAmount + " operator="
 						+ getCurrentUser().getUsername());
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
-		} catch (Exception e) {
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e2) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-			LoggerUtil.error("deductionByAdmin error", e);
+			LoggerUtil.error("deductionByAdmin error", e2);
 		}
 		return resultMap;
 	}

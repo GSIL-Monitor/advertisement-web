@@ -30,9 +30,15 @@
 										</td>
 									</tr>
 									<tr>
-										<td>金额：</td>
+										<td>点击量：</td>
 										<td>
-											<input type="text" name="increCount" style="width:60%;"></td>
+											<input type="text" name="clickCount" style="width:60%;"></td>
+										</td>
+									</tr>
+									<tr>
+										<td>曝光量：</td>
+										<td>
+											<input type="text" name="showCount" style="width:60%;"></td>
 										</td>
 									</tr>
 									<tr>

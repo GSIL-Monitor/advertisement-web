@@ -88,7 +88,7 @@
 			</trim>
 		</set>
 		<where>
-			advertiser_id=#{advertiserId}
+			bill_id=#{billId}
 		</where>
 	</update>
 
@@ -113,6 +113,9 @@
 				</if>
 				<if test="type != null">
 					type = #{type} and
+				</if>
+				<if test="status != null">
+					status = #{status} and
 				</if>
 				<if test="date != null">
 					date = #{date} and
