@@ -36,8 +36,8 @@ import com.yuanshanbao.dsp.weixin.service.WeixinService;
 public class InviteController extends BaseController {
 
 	private static final String URL = "pages/invitecard/invitecard";
-	private static final String H5URL = "https://wz.huhad.com/w/applicants.html";
-	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/applicants.html";
+	private static final String H5URL = "https://wz.huhad.com/w/products";
+	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/detail";
 	private static final String DETAILURL = "pages/index/detail/detail";
 	@Autowired
 	private UserService userService;
@@ -57,6 +57,9 @@ public class InviteController extends BaseController {
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
+			if (user.getLevel() == null) {
+				user.setLevel(UserLevel.MANAGER);
+			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String H5Url = H5URL + "?userId=" + user.getUserId();
 				String h5Code = redisCacheService.get(RedisConstant.WX_XCX_H5_CODE + user.getUserId());
@@ -69,7 +72,7 @@ public class InviteController extends BaseController {
 						resultMap.put("QRcode", applayCardCode);
 					} else {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
-						redisCacheService.set(RedisConstant.WX_XCX_H5_CODE, applayCardCode);
+						redisCacheService.set(RedisConstant.WX_XCX_H5_CODE + user.getUserId(), applayCardCode);
 						resultMap.put("QRcode", applayCardCode);
 					}
 				} else {
@@ -152,10 +155,15 @@ public class InviteController extends BaseController {
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
+
+			if (user.getLevel() == null) {
+				user.setLevel(UserLevel.MANAGER);
+			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String h5DetailCode = redisCacheService.get(RedisConstant.WX_XCX_H5_DETAIL_CODE + user.getUserId()
 						+ productId);
-				String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId;
+				String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId
+						+ "&fromPage=products";
 
 				if (h5DetailCode == null) {
 					String applayCardCode = null;
@@ -166,6 +174,8 @@ public class InviteController extends BaseController {
 						resultMap.put("QRcode", applayCardCode);
 					} else {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
+						redisCacheService.set(RedisConstant.WX_XCX_H5_DETAIL_CODE + user.getUserId() + productId,
+								applayCardCode);
 						resultMap.put("QRcode", applayCardCode);
 					}
 				} else {
