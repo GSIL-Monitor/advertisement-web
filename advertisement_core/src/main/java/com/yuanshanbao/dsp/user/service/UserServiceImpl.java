@@ -395,11 +395,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateLevelDetails(Long userId) {
 		User user = new User();
-		if (userId != null) {
-			user.setUserId(userId);
-			user.setLevel(UserLevel.MANAGER);
-			updateUser(user);
-		}
 		// 直推卡10人数/推卡人等级为经理的10人数
 		Agency agency = new Agency();
 		agency.setInviteUserId(userId);

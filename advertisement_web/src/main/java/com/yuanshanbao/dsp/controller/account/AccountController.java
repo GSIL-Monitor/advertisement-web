@@ -118,12 +118,18 @@ public class AccountController extends BaseController {
 			BigDecimal brokerages = BigDecimal.valueOf(0);
 			Agency agency = new Agency();
 			agency.setInviteUserId(user.getUserId());
-			if (!(user.getLevel() == UserLevel.VIP_AGENT)) {
-				userService.updateLevelDetails(user.getUserId());
-				brokerages = agencyService.getBrokerages(agency, user, new PageBounds());
+			if (user.getLevel() == UserLevel.VIP_AGENT) {
+				brokerages = agencyService.queryVIPAgenctSumBrokerage(user.getUserId());
+				if (brokerages == null) {
+					brokerages = BigDecimal.ZERO;
+				}
 
 			} else {
-				brokerages = agencyService.queryVIPAgenctSumBrokerage(user.getUserId());
+				userService.updateLevelDetails(user.getUserId());
+				brokerages = agencyService.getBrokerages(agency, user, new PageBounds());
+				if (brokerages == null) {
+					brokerages = BigDecimal.ZERO;
+				}
 			}
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
