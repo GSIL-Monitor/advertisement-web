@@ -234,6 +234,13 @@ public class AgencyServiceImpl implements AgencyService {
 			agency.setInviteUserId(agen.getUserId());
 			twoAgencyList.addAll(selectAgencys(agency, new PageBounds()));
 		}
+
+		for (Iterator<Agency> iterator = twoAgencyList.iterator(); iterator.hasNext();) {
+			Agency agen = (Agency) iterator.next();
+			if (agen.getUserId() == null) {
+				iterator.remove();
+			}
+		}
 		for (Agency agencyIds : twoAgencyList) {
 			twoInviteUserIds.add(Long.valueOf(agencyIds.getUserId()));
 		}
@@ -250,10 +257,6 @@ public class AgencyServiceImpl implements AgencyService {
 				brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
 			} else {
 				brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
-			}
-
-			if (brokerage == null) {
-				brokerage = BigDecimal.valueOf(0);
 			}
 		}
 		if (oneAgencyBrokerage == null) {
