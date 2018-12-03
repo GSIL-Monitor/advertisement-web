@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.controller.user.card;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,18 +33,26 @@ public class UserBankCardController extends BaseController {
 	@RequestMapping("/applyCard")
 	@ResponseBody
 	public Object applyCard(String token, @RequestParam("productId") String productId,
-			@RequestParam("userName") String userName, @RequestParam("mobile") String mobile) {
+			@RequestParam("userName") String userName, @RequestParam("mobile") String mobile,
+			@RequestParam("userId") String userId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User loginUser = getLoginUser(token);
 			if (!ValidateUtil.isPhoneNo(mobile)) {
 				throw new BusinessException(ComRetCode.WRONG_MOBILE);
 			}
-			if (loginUser.getLevel() == UserLevel.VIP_AGENT) {
-				bankCardService.addVIPAgentOrBankCardInfo(loginUser.getUserId(), Long.valueOf(productId), userName,
-						mobile);
-			} else {
+			if (StringUtils.isBlank(userId)) {
+				User loginUser = getLoginUser(token);
 				bankCardService.getApplyBankCardInfo(loginUser, Long.valueOf(productId), userName, mobile);
+			} else {
+				User user = userService.selectUserById(userId);
+				if (user != null && user.getLevel() == UserLevel.VIP_AGENT) {
+					bankCardService.addVIPAgentOrBankCardInfo(user.getUserId(), Long.valueOf(productId), userName,
+							mobile);
+				} else {
+					User loginUser = getLoginUser(token);
+					bankCardService.getApplyBankCardInfo(loginUser, Long.valueOf(productId), userName, mobile);
+				}
+
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 
