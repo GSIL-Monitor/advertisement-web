@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
@@ -25,6 +26,7 @@ import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -67,10 +69,11 @@ public class IndexController extends BaseController {
 			PageBounds pageBounds, String token, Integer client) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User loginToken = tokenService.verifyLoginToken(token);
-
+			// User loginToken = tokenService.verifyLoginToken(token);
+			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
+			User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 			Activity activity = null;
-			if (loginToken.getLevel() == UserLevel.VIP_AGENT) {
+			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
 				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 			} else {
