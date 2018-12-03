@@ -11,7 +11,7 @@ import com.yuanshanbao.common.util.DateUtils;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 4165445835251317169L;
-	private static final String NUMBER = "99";
+	private static final String NUMBER = "106";
 
 	private Long userId;
 	private String mobile;
@@ -180,7 +180,7 @@ public class User implements Serializable {
 	}
 
 	public String getUserIdValue() {
-		return NUMBER + String.format("%06d", userId);
+		return NUMBER + String.format("%05d", userId);
 	}
 
 	public void setUserId(Long userId) {
