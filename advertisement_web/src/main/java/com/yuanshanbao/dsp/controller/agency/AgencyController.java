@@ -90,7 +90,10 @@ public class AgencyController extends BaseController {
 				agency.setInviteUserId(user.getUserId());
 				List<Agency> oneAgencyList = agencyService.selectAgencys(agency, pageBounds);
 				for (Agency agen : oneAgencyList) {
-					userIds.add(agen.getUserId());
+					if (agen.getUserId() != null) {
+						userIds.add(agen.getUserId());
+					}
+
 				}
 				for (Iterator<Agency> iterator = oneAgencyList.iterator(); iterator.hasNext();) {
 					Agency agen = (Agency) iterator.next();
