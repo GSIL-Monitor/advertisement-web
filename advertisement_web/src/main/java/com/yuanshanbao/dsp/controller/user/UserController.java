@@ -802,4 +802,31 @@ public class UserController extends BaseController {
 		result.append("&smsCode=" + smsCodeAes);
 		return result.toString();
 	}
+
+	@ResponseBody
+	@RequestMapping("/weixinServiceLogin")
+	public Map<String, Object> weixinServiceLogin(HttpServletRequest request, HttpServletResponse response,
+			String appId, String code, String params) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			if (StringUtils.isEmpty(code)) {
+				return resultMap;
+			}
+			OauthGetTokenResponse tokenResponse = weixinService.getTokenResponse(null, code);
+			if (tokenResponse == null) {
+				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
+			}
+			String unionId = tokenResponse.getUnionid();
+			resultMap.put("openId", unionId);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+			return resultMap;
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
+			return resultMap;
+		} catch (Exception e) {
+			LoggerUtil.error("[weixinLogin] exception: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			return resultMap;
+		}
+	}
 }
