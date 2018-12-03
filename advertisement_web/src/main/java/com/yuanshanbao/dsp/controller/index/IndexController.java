@@ -34,6 +34,7 @@ import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserLevel;
+import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
 
@@ -56,6 +57,9 @@ public class IndexController extends BaseController {
 	@Autowired
 	private AppService appService;
 
+	@Autowired
+	private TokenService tokenService;
+
 	// 客户端首页
 	@RequestMapping("/home")
 	@ResponseBody
@@ -63,9 +67,10 @@ public class IndexController extends BaseController {
 			PageBounds pageBounds, String token, Integer client) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User loginUser = getLoginUser(token);
+			User loginToken = tokenService.verifyLoginToken(token);
+
 			Activity activity = null;
-			if (loginUser.getLevel() == UserLevel.VIP_AGENT) {
+			if (loginToken.getLevel() == UserLevel.VIP_AGENT) {
 				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
 				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 			} else {
