@@ -26,7 +26,6 @@ import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -70,8 +69,10 @@ public class IndexController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			// User loginToken = tokenService.verifyLoginToken(token);
-			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
-			User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+			User user = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+			if (user.getLevel() == null) {
+				user.setLevel(UserLevel.MANAGER);
+			}
 			Activity activity = null;
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
