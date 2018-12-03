@@ -70,16 +70,21 @@ public class IndexController extends BaseController {
 		try {
 			// User loginToken = tokenService.verifyLoginToken(token);
 			User user = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
-			if (user.getLevel() == null) {
-				user.setLevel(UserLevel.MANAGER);
-			}
 			Activity activity = null;
-			if (user.getLevel() == UserLevel.VIP_AGENT) {
-				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
-				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
-			} else {
+			if (user == null) {
 				activity = ConfigManager.getActivityByKey(WANGZHUAN);
 				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+			} else {
+				if (user.getLevel() == null) {
+					user.setLevel(UserLevel.MANAGER);
+				}
+				if (user.getLevel() == UserLevel.VIP_AGENT) {
+					activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+				} else {
+					activity = ConfigManager.getActivityByKey(WANGZHUAN);
+					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+				}
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
