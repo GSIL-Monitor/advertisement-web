@@ -26,6 +26,7 @@ import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -69,23 +70,31 @@ public class IndexController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			// User loginToken = tokenService.verifyLoginToken(token);
-			User user = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
+			User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 			Activity activity = null;
-			if (user == null) {
-				activity = ConfigManager.getActivityByKey(WANGZHUAN);
-				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
-			} else {
-				if (user.getLevel() == null) {
-					user.setLevel(UserLevel.MANAGER);
-				}
-				if (user.getLevel() == UserLevel.VIP_AGENT) {
-					activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
-					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
-				} else {
+			if (user != null) {
+				User param = userService.selectUserById(user.getUserId());
+				if (param == null) {
 					activity = ConfigManager.getActivityByKey(WANGZHUAN);
 					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+				} else {
+					if (param.getLevel() == null) {
+						param.setLevel(UserLevel.MANAGER);
+					}
+					if (param.getLevel() == UserLevel.VIP_AGENT) {
+						activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+					} else {
+						activity = ConfigManager.getActivityByKey(WANGZHUAN);
+						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+					}
 				}
+			} else {
+				activity = ConfigManager.getActivityByKey(WANGZHUAN);
+				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 			}
+
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
