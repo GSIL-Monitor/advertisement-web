@@ -1,6 +1,7 @@
 <#include "common/core.ftl" />
 <@htmlHead title="首页"/>
-<@cssFile file=["page/welcome.css"] />
+<#-- <@cssFile file=["page/welcome.css"] /> -->
+<link rel="stylesheet" href="${cdnUrl}/css/page/welcome.css">
 <style>
     .widget-lists li {
         float: left;
@@ -66,18 +67,72 @@ $(document).ready(function(){
         <div class="row-fluid">
             <div class="span12">
                 <div class="widget-box">
-                    <div class="widget-title">
-                        <h5 class="curr">广告主</h5>
+                    <div class="top-title">
+                        <h4 class="curr">广告主</h4>
                     </div>
-                    <div class="widget-content nopadding">
-                        <ul class="widget-lists clearfix">
+                    <div class="widget-content item-content">
+                        <div class="item-box orange-box">
+                            <div class="item-icon orange-icon">
+                                <img src="${cdnUrl}/img/page/welcome/balance@2x.png" alt="">     
+                            </div>
+                            <div class="item-text">
+                                <span>余额(元)：</span>
+                                <p>${balance}</p>
+                            </div>
+                        </div>
+                        <div class="item-box blue-box">
+                            <div class="item-icon blue-icon">
+                                <img src="${cdnUrl}/img/page/welcome/consume@2x.png" alt="">
+                            </div>
+                            <div class="item-text">
+                                <span>今日消耗：</span>
+                                <p>${today}</p>
+                            </div>
+                        </div>
+                        <div class="item-box green-box">
+                            <div class="item-icon green-icon">
+                                <img src="${cdnUrl}/img/page/welcome/consume@2x.png" alt="">
+                            </div>
+                            <div class="item-text">
+                                <span>昨日消耗：</span>
+                                <p>${yesterday}</p>
+                            </div>
+                        </div>
+                        <div class="item-box blue-box">
+                            <div class="item-icon blue-icon">
+                                <img src="${cdnUrl}/img/page/welcome/consume@2x.png" alt="">
+                            </div>
+                            <div class="item-text">
+                                <span>7日消耗：</span>
+                                <p>${seven}</p>
+                            </div>
+                        </div>
+                        <div class="item-box green-box">
+                            <div class="item-icon green-icon">
+                                <img src="${cdnUrl}/img/page/welcome/consume@2x.png" alt="">
+                            </div>
+                            <div class="item-text">
+                                <span>当月消耗：</span>
+                                <p>${month}</p>
+                            </div>
+                        </div>
+                        <div class="item-box blue-box">
+                            <div class="item-icon blue-icon">
+                                <img src="${cdnUrl}/img/page/welcome/consume@2x.png" alt="">
+                            </div>
+                            <div class="item-text">
+                                <span>最近30天消耗：</span>
+                                <p>${thirtyDay}</p>
+                            </div>
+                        </div>
+                       <#--  <ul class="widget-lists clearfix">
                             <li>余额(元)：<br><br><p><span style="color: #ff784f;">${balance}</span></p></li>
                             <li>今日消耗：<br><br><p><span style="color: #ff784f;">${today}</span></p></li>
                             <li>昨日消耗：<br><br><p><span style="color: #ff784f;">${yesterday}</span></p></li>
                             <li>7日消耗：<br><br><p><span style="color: #ff784f;">${seven}</span></p></li>
                             <li>当月消耗：<br><br><p><span style="color: #ff784f;">${month}</span></p></li>
                             <li>最近30天消耗：<br><br><p><span style="color: #ff784f;">${thirtyDay}</span></p></li>
-                        </ul>
+                        </ul> -->
                     </div>
                 </div>
             </div>
