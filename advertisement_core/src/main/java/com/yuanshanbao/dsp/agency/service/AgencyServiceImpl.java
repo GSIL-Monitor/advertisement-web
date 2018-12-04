@@ -29,7 +29,7 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 public class AgencyServiceImpl implements AgencyService {
 	public final static BigDecimal MANAGER_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.1);
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
-	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.2);
+	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.25);
 
 	@Autowired
 	private AgencyDao agencyDao;

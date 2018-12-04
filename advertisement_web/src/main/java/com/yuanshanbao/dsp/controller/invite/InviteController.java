@@ -39,6 +39,9 @@ public class InviteController extends BaseController {
 	private static final String H5URL = "https://wz.huhad.com/w/products";
 	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/detail";
 	private static final String DETAILURL = "pages/index/detail/detail";
+
+	private static final String xcxInviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541159952231_7337.png";
+	private static final String h5InviteImageUrl = "http://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/h5inviteimage20181130.png";
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -78,7 +81,8 @@ public class InviteController extends BaseController {
 				} else {
 					resultMap.put("QRcode", h5Code);
 				}
-
+				resultMap.put("inviteImageUrl", h5InviteImageUrl);
+				resultMap.put("user", user);
 				resultMap.put("url", H5Url);
 
 			} else {
@@ -98,7 +102,7 @@ public class InviteController extends BaseController {
 					resultMap.put("QRcode", code);
 				}
 				String url = URL + "?userId=" + user.getUserId();
-
+				resultMap.put("inviteImageUrl", xcxInviteImageUrl);
 				resultMap.put("user", user);
 				resultMap.put("url", url);
 			}

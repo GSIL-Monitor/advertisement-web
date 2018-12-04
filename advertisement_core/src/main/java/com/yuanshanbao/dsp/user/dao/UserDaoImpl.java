@@ -59,12 +59,12 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
 	}
 
 	@Override
-	public int queryUserLevelCount(Long inviteUserId,Integer levelManager,Integer levelMajoromdo,Integer bailliff) {
-        Map<String ,Object> map = new HashMap<>();
-        map.put("inviteUserId",inviteUserId);
-        Integer [] levels = {levelMajoromdo,bailliff};
-        map.put("levels",levels);
-		return getSqlSession().selectOne("User.selectUserCount",map);
+	public int queryUserLevelCount(Long inviteUserId, Integer levelManager, Integer levelMajoromdo, Integer bailliff) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("inviteUserId", inviteUserId);
+		Integer[] levels = { levelManager, levelMajoromdo, bailliff };
+		map.put("levels", levels);
+		return getSqlSession().selectOne("User.selectUserCount", map);
 	}
 
 	@Override
@@ -77,6 +77,5 @@ public class UserDaoImpl extends BaseDaoImpl implements UserDao {
 	public int getUserLevelMajordomo(Long userId) {
 		return getSqlSession().selectOne("User.selectUserLevelManagerCount", userId);
 	}
-
 
 }
