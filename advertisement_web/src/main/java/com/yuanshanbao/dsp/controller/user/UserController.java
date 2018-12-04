@@ -816,8 +816,8 @@ public class UserController extends BaseController {
 			if (tokenResponse == null) {
 				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
 			}
-			String unionId = tokenResponse.getUnionid();
-			resultMap.put("openId", unionId);
+			String openId = tokenResponse.getOpenid();
+			resultMap.put("openId", openId);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 			return resultMap;
 		} catch (BusinessException e) {
