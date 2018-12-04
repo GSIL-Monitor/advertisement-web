@@ -46,6 +46,7 @@ import com.yuanshanbao.paginator.domain.PageList;
 public class IndexController extends BaseController {
 
 	private static final String WANGZHUAN = "wangzhuan";
+
 	private static final String WANGZHUANAGENT = "wangzhuanagent";
 
 	private static final String WZXCX_PRODUCT_CHANNEL = "wzxcxProductChannel";

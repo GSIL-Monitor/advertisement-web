@@ -58,6 +58,7 @@ import com.yuanshanbao.paginator.domain.Paginator;
 @RequestMapping({ "/product", "/i/product" })
 public class ProductController extends BaseController {
 	private static final String WANGZHUAN = "wangzhuan";
+
 	private static final String WZXCX_PRODUCT_CHANNEL = "wzxcxProductChannel";
 
 	@Autowired
