@@ -322,10 +322,6 @@ public class UserController extends BaseController {
 					agencyService.insertAgency(agency);
 				}
 			}
-			// 判断用户身份/1：散户 2：代理商
-			if (user.getLevel() == UserLevel.VIP_AGENT) {
-
-			}
 			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "",
 					JSPHelper.getRemoteAddr(request));
 			loginToken.setRegister(register);
