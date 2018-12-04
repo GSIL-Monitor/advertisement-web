@@ -33,8 +33,7 @@ public class UserBankCardController extends BaseController {
 	@RequestMapping("/applyCard")
 	@ResponseBody
 	public Object applyCard(String token, @RequestParam("productId") String productId,
-			@RequestParam("userName") String userName, @RequestParam("mobile") String mobile,
-			@RequestParam("userId") String userId) {
+			@RequestParam("userName") String userName, @RequestParam("mobile") String mobile, String userId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			if (!ValidateUtil.isPhoneNo(mobile)) {
