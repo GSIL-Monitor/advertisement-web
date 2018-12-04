@@ -66,12 +66,12 @@
                       <input type="text" name="queryUrl" style="width:60%;" <#if itemEdit.queryUrl??>value="${itemEdit.queryUrl}"</#if>></td>
                   </tr>
                   <tr>
-                    <td width="20%">基本权益</td>
+                    <td width="20%">优惠活动</td>
                     <td width="80%">
-                      <input type="text" name="schoolTime" style="width:60%;" <#if itemEdit.schoolTime??>value="${itemEdit.schoolTime}"</#if>></td>
+                      <input type="text" name="schoolTime" style="width:60%;" <#if itemEdit.schoolTime??>value="${itemEdit.schoolTime}"</#if>></td> 
                   </tr>
                   <tr>
-                    <td width="20%">优惠活动</td>
+                    <td width="20%">基本权益</td>
                     <td width="80%">
                       <input type="text" name="brandFeature" style="width:60%;" <#if itemEdit.brandFeature??>value="${itemEdit.brandFeature}"</#if>></td>
                   </tr>

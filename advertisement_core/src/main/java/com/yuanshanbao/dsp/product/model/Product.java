@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
@@ -114,7 +115,6 @@ public class Product {
 
 	// ~ Get and Set Methods
 	// =================================================================================
-
 
 	public String getQueryUrl() {
 		return queryUrl;
@@ -455,15 +455,13 @@ public class Product {
 		this.detailImageTags = detailImageTags;
 	}
 
-
-	public String [] getSchoolTimeValue(){
-		if (schoolTime != null){
-			String [] getValue= schoolTime.split(",");
+	public String[] getSchoolTimeValue() {
+		if (schoolTime != null) {
+			String[] getValue = schoolTime.split(",");
 			return getValue;
 		}
-		return  null;
+		return null;
 	}
-
 
 	public void setSchoolTime(String schoolTime) {
 		this.schoolTime = schoolTime;
@@ -502,7 +500,7 @@ public class Product {
 	}
 
 	public String getStatusValue() {
-		return ProductStatus.getDescription(status);
+		return CommonStatus.getDescription(status);
 	}
 
 	public String getDeliverOrderUrl() {
@@ -513,7 +511,7 @@ public class Product {
 		this.deliverOrderUrl = deliverOrderUrl;
 	}
 
-    public String getSchoolTime() {
-	    return  schoolTime;
-    }
+	public String getSchoolTime() {
+		return schoolTime;
+	}
 }

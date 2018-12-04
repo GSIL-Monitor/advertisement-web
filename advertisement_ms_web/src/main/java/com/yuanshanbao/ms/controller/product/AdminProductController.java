@@ -20,6 +20,7 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
@@ -28,7 +29,6 @@ import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.model.ProductType;
 import com.yuanshanbao.dsp.product.service.ProductService;
-import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
@@ -37,6 +37,8 @@ import com.yuanshanbao.paginator.domain.PageList;
 @Controller
 @RequestMapping("/admin/product")
 public class AdminProductController extends PaginationController {
+
+	private static final String WANGZHUAN = "wangzhuan";
 
 	private static final String PAGE_LIST = "advertisement/product/listProduct";
 
@@ -62,7 +64,8 @@ public class AdminProductController extends PaginationController {
 	public String list(Long merchantId, HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("merchantId", merchantId);
 		request.setAttribute("merchant", merchantService.selectMerchant(merchantId));
-		request.setAttribute("statusList", ProductStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+
 		return PAGE_LIST;
 	}
 
@@ -70,7 +73,8 @@ public class AdminProductController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Product product, HttpServletRequest request, HttpServletResponse response) {
-		product.setStatus(CommonStatus.ONLINE);
+		Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
+		product.setActivityId(activity.getActivityId());
 		Object object = productService.selectProducts(product, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
@@ -87,8 +91,8 @@ public class AdminProductController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(Product product, Quota quota, MultipartFile image, MultipartFile bigImage,
-			MultipartFile detailImage, HttpServletRequest request, HttpServletResponse response) {
+	public Object insert(Product product, MultipartFile image, MultipartFile bigImage, HttpServletRequest request,
+			HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
@@ -98,14 +102,14 @@ public class AdminProductController extends PaginationController {
 			if (bigImage != null && !bigImage.isEmpty()) {
 				product.setBigImageUrl(UploadUtils.uploadFile(bigImage, "test/img"));
 			}
-			if (detailImage != null && !detailImage.isEmpty()) {
-				product.setDetailImageUrl(UploadUtils.uploadFile(detailImage, "test/img"));
-			}
+
 			validateParameters(product);
 			productService.insertProduct(product);
-			quota.setMerchantId(product.getMerchantId());
-			quota.setProductId(product.getProductId());
-			quotaService.insertQuota(quota);
+			/*
+			 * quota.setMerchantId(product.getMerchantId());
+			 * quota.setProductId(product.getProductId());
+			 * quotaService.insertQuota(quota);
+			 */
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

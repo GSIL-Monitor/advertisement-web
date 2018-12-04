@@ -27,16 +27,9 @@
               <table class="table table-bordered table-striped" id="">
                 <tbody>
                   <tr>
-                    <td>商家名称：</td>
-                    <td>
-                      <div style="width:60%;">
-                      <select name="merchantId" class="selectpicker form-control">
-                        <#list merchantList as merchant>
-                        	<option value="${merchant.merchantId}">${merchant.name}</option>
-                        </#list>
-                      </select>
-                      </div>
-                    </td>
+                    <td width="20%">产品名称：</td>
+                    <td width="80%">
+                      <input type="text" name="name" style="width:60%;"></td>
                   </tr>
                   <tr>
                     <td>所属活动：</td>
@@ -51,20 +44,16 @@
                     </td>
                   </tr>
                   <tr>
-                    <td width="20%">商品名称：</td>
+                    <td width="20%">标题：</td>
                     <td width="80%">
-                      <input type="text" name="name" style="width:60%;"></td>
+                      <input type="text" name="title" style="width:60%;"></td>
                   </tr>           
                   <tr>
-                    <td>公司网址：</td>
-                    <td>
-                      <input type="text" name="companyUrl" style="width:60%;"></td>
-                  </tr>
-                   <tr>
-                    <td>描述（选填）：</td>
+                    <td>描述文案：</td>
                     <td>
                       <input type="text" name="description" style="width:60%;"></td>
                   </tr>
+           
                   <tr>
                     <td>logo：</td>
                     <td>
@@ -72,21 +61,39 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>推荐页logo：</td>
+                    <td>详情页logo：</td>
                     <td>
                       <input type="file" name="bigImage" style="width:90%;">
                     </td>
                   </tr>
                   <tr>
-                    <td>详情页banner：</td>
+                    <td>办卡链接：</td>
                     <td>
-                      <input type="file" name="detailImage" style="width:90%;">
+                      <input type="text" name="detailImageUrl" style="width:90%;">
                     </td>
                   </tr>
           		  <tr>
-                    <td>库存：</td>
+                    <td>查询链接：</td>
                     <td>
                       <input type="text" name="stock" style="width:90%;">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>优惠活动：</td>
+                    <td>
+                      <input type="text" name="brandFeature" style="width:90%;">
+                    </td>
+                  </tr>
+                   <tr>
+                    <td>基本权益：</td>
+                    <td>
+                      <input type="text" name="schoolTime" style="width:90%;">
+                    </td>
+                  </tr>
+                    <tr>
+                    <td>佣金：</td>
+                    <td>
+                      <input type="text" name="brokerage" style="width:90%;">
                     </td>
                   </tr>
                   <tr>

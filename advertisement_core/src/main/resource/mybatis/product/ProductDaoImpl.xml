@@ -44,9 +44,7 @@
 		select
 		* from
 		tb_product
-
 		<where>
-			status != -1 and
 			<trim suffixOverrides="and">
 				<if test="productId != null">
 
@@ -121,7 +119,6 @@
 			</trim>
 
 		</where>
-		
 		order by brokerage DESC
 	</select>
 
@@ -148,13 +145,13 @@
 		insert into
 		tb_product( name, title,activity_id,merchant_id, description, image_url,big_image_url,detail_image_url,query_url, feature_tags,
 		 recommend_tags, authorize_tags,school_time,brand_feature,total_amount,discount_amount,min_age,max_age, requirements, apply_flow, advantage,
-		  guide, type, sort, positive_rate, status, create_time, update_time )
+		  guide, type, sort, positive_rate, brokerage,status, create_time, update_time )
 		values
 		( #{name}, #{title},#{activityId},#{merchantId}, #{description}, #{imageUrl},#{queryUrl},#{bigImageUrl},#{detailImageUrl},
 		  #{featureTags}, #{recommendTags}, #{authorizeTags},#{schoolTime},#{brandFeature},
 		  #{totalAmount},#{discountAmount},#{minAge},#{maxAge}, #{requirements},
 		  #{applyFlow}, #{advantage}, #{guide}, #{type}, 
-		  #{sort}, #{positiveRate}, #{status}, sysdate(), sysdate() )
+		  #{sort}, #{positiveRate},#{brokerage}, #{status}, sysdate(), sysdate() )
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="productId">
 			SELECT LAST_INSERT_ID()
@@ -230,6 +227,9 @@
 				</if>
 				<if test="positiveRate != null">
 					positive_rate= #{positiveRate},
+				</if>
+				<if test="brokerage != null">
+					brokerage= #{brokerage},
 				</if>
 				<if test="status != null">
 					status= #{status},
