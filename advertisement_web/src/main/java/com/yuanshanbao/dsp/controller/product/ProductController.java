@@ -33,12 +33,12 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.MD5Util;
 import com.yuanshanbao.dsp.activity.model.Activity;
-import com.yuanshanbao.dsp.cache.IniCache;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.BaseRedis;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
@@ -212,7 +212,7 @@ public class ProductController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
 		try {
-			String versionKey = IniCache.getIniValue(WZXCX_PRODUCT_CHANNEL);
+			String versionKey = IniBean.getIniValue(WZXCX_PRODUCT_CHANNEL);
 			if (productId == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}

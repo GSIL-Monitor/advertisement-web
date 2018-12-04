@@ -22,10 +22,10 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementPosition;
 import com.yuanshanbao.dsp.app.service.AppService;
-import com.yuanshanbao.dsp.cache.IniCache;
 import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.message.model.Message;
@@ -74,7 +74,7 @@ public class IndexController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			// User loginToken = tokenService.verifyLoginToken(token);
-			String versionKey = IniCache.getIniValue(WZXCX_PRODUCT_CHANNEL);
+			String versionKey = IniBean.getIniValue(WZXCX_PRODUCT_CHANNEL);
 			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
 			User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 			Activity activity = null;
