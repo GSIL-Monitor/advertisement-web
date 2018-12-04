@@ -22,6 +22,7 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementPosition;
 import com.yuanshanbao.dsp.app.service.AppService;
+import com.yuanshanbao.dsp.cache.IniCache;
 import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
@@ -47,6 +48,8 @@ public class IndexController extends BaseController {
 	private static final String WANGZHUAN = "wangzhuan";
 	private static final String WANGZHUANAGENT = "wangzhuanagent";
 
+	private static final String WZXCX_PRODUCT_CHANNEL = "wzxcxProductChannel";
+
 	private static final String MYZT = "蚂蚁智投";
 	private static final String TJKT = "坤涛科技";
 
@@ -70,6 +73,7 @@ public class IndexController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			// User loginToken = tokenService.verifyLoginToken(token);
+			String versionKey = IniCache.getIniValue(WZXCX_PRODUCT_CHANNEL);
 			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
 			User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 			Activity activity = null;
@@ -95,6 +99,7 @@ public class IndexController extends BaseController {
 				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 			}
 
+			resultMap.put("version", versionKey);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
