@@ -62,6 +62,7 @@ public class InviteController extends BaseController {
 			}
 			if (user.getLevel() == null) {
 				user.setLevel(UserLevel.MANAGER);
+				userService.updateUser(user);
 			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String H5Url = H5URL + "?userId=" + user.getUserId();
@@ -162,6 +163,7 @@ public class InviteController extends BaseController {
 
 			if (user.getLevel() == null) {
 				user.setLevel(UserLevel.MANAGER);
+				userService.updateUser(user);
 			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String h5DetailCode = redisCacheService.get(RedisConstant.WX_XCX_H5_DETAIL_CODE + user.getUserId()

@@ -48,6 +48,10 @@ public class AgencyController extends BaseController {
 		try {
 			// 获取当前用户信息
 			User user = getLoginUser(token);
+			if (user.getLevel() == null) {
+				user.setLevel(UserLevel.MANAGER);
+				userService.updateUser(user);
+			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				List<AgencyVo> agents = agencyService.getVIPAgentInfos(user, agency, pageBounds);
 				resultMap.put("agencyList", agents);
@@ -73,6 +77,10 @@ public class AgencyController extends BaseController {
 		List<Agency> twoAgencyList = new ArrayList<>();
 		try {
 			User user = getLoginUser(token);
+			if (user.getLevel() == null) {
+				user.setLevel(UserLevel.MANAGER);
+				userService.updateUser(user);
+			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				agency.setInviteUserId(user.getUserId());
 				agency.setType(AgencyType.AGENT_CREDIT_CARD);

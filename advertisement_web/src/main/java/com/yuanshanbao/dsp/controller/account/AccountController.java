@@ -118,6 +118,10 @@ public class AccountController extends BaseController {
 			BigDecimal brokerages = BigDecimal.valueOf(0);
 			Agency agency = new Agency();
 			agency.setInviteUserId(user.getUserId());
+			if (user.getLevel() == null) {
+				user.setLevel(UserLevel.MANAGER);
+				userService.updateUser(user);
+			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				brokerages = agencyService.queryVIPAgenctSumBrokerage(user.getUserId());
 				if (brokerages == null) {
