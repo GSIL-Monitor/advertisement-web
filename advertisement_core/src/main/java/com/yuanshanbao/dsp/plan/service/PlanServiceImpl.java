@@ -111,6 +111,7 @@ public class PlanServiceImpl implements PlanService {
 			plan.setAdvertiser(map.get(plan.getAdvertiserId()));
 			plan.setOrder(orderMap.get(plan.getOrderId()));
 			plan.setConsumed(redisService.get(RedisConstant.getPlanBalanceCountKey(plan.getPlanId())));
+			plan.setDayConsumed(redisService.get(RedisConstant.getPlanDayBalanceCountKey(null, plan.getPlanId())));
 		}
 		return list;
 	}

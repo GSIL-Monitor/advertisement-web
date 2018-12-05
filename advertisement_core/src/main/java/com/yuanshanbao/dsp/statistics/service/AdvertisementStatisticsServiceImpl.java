@@ -1017,7 +1017,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			if (planId != null) {
 				for (Probability pro : probabilityList) {
 					if (planId.equals(pro.getPlanId())) {
-						AdvertisementStatistics statistic = createChannelAdvertisementStatistic(diffDate, pv,
+						AdvertisementStatistics statistic = createMediaAdvertisementStatistic(diffDate, pv,
 								pro.getChannel(), planId);
 						result.add(statistic);
 					}

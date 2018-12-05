@@ -21,6 +21,8 @@
 			    },{
 			    	"data": "createTimeContent"
 				},{
+			    	"data": "dayConsumed"
+				},{
 			    	"data": null,
 		        	"render": function ( data, type, full, meta ) {
 			        	if(data.status ==1){
@@ -89,6 +91,7 @@
 							<th>计划名称</th>
 							<th>广告主</th>
 							<th>创建时间</th>
+							<th>当日消耗</th>
 							<th>状态</th>
 							<th>审核</th>
 						</tr>

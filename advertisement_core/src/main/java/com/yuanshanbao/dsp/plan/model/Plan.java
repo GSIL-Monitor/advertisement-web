@@ -20,6 +20,7 @@ public class Plan {
 	private BigDecimal spend;
 	private BigDecimal dayLimit;
 	private String consumed;
+	private String dayConsumed;
 	@NotBlank(messageCode = 814)
 	private String name;
 	@NotBlank(messageCode = 816)
@@ -266,6 +267,14 @@ public class Plan {
 
 	public void setDayEndTime(String dayEndTime) {
 		this.dayEndTime = dayEndTime;
+	}
+
+	public String getDayConsumed() {
+		return dayConsumed;
+	}
+
+	public void setDayConsumed(String dayConsumed) {
+		this.dayConsumed = dayConsumed;
 	}
 
 }
