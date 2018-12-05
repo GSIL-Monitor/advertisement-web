@@ -83,11 +83,7 @@ public class IndexController extends BaseController {
 				if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
 					resultMap.put("version", true);
 				} else {
-					if ("0.3.7".equals(version)) {
-						resultMap.put("version", false);
-					} else {
-						resultMap.put("version", true);
-					}
+					resultMap.put("version", false);
 				}
 				HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
 				User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);

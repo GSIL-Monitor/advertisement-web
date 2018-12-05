@@ -214,12 +214,7 @@ public class ProductController extends BaseController {
 		if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
 			resultMap.put("version", true);
 		} else {
-			if ("0.3.7".equals(version)) {
-				resultMap.put("version", false);
-			} else {
-				resultMap.put("version", true);
-			}
-
+			resultMap.put("version", false);
 		}
 		// isApprovalEdition(request, null);
 		try {
