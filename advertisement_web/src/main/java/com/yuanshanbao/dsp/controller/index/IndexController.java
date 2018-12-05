@@ -74,7 +74,7 @@ public class IndexController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Activity activity = null;
-			if (token == null) {
+			if (token == null || token == "") {
 				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
 				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 			} else {
