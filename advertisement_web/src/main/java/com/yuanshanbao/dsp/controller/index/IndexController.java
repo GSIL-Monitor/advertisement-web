@@ -70,7 +70,7 @@ public class IndexController extends BaseController {
 	@RequestMapping("/home")
 	@ResponseBody
 	public Object index(HttpServletRequest request, HttpServletResponse response, String activityKey, Product product,
-			PageBounds pageBounds, String token, Integer client) {
+			PageBounds pageBounds, String token, Integer client, String version) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Activity activity = null;
@@ -79,7 +79,11 @@ public class IndexController extends BaseController {
 				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 			} else {
 				// User loginToken = tokenService.verifyLoginToken(token);
-				String versionKey = IniBean.getIniValue(WZXCX_PRODUCT_CHANNEL);
+				if (version != null && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
+					resultMap.put("version", true);
+				} else {
+					resultMap.put("version", false);
+				}
 				HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
 				User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 
@@ -104,7 +108,7 @@ public class IndexController extends BaseController {
 					activity = ConfigManager.getActivityByKey(WANGZHUAN);
 					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 				}
-				resultMap.put("version", versionKey);
+
 			}
 
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

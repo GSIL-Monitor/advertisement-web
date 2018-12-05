@@ -208,11 +208,16 @@ public class ProductController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/detail")
 	public Object detail(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
-			@RequestParam("productId") Long productId, String token) {
+			@RequestParam("productId") Long productId, String token, String version) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
+		if (version != null && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
+			resultMap.put("version", true);
+		} else {
+			resultMap.put("version", false);
+		}
+		// isApprovalEdition(request, null);
 		try {
-			String versionKey = IniBean.getIniValue(WZXCX_PRODUCT_CHANNEL);
 			if (productId == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
@@ -234,7 +239,7 @@ public class ProductController extends BaseController {
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
 			// }
-			resultMap.put("version", versionKey);
+
 			resultMap.put("product", vo);
 			resultMap.put("activity", schoolTime);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
