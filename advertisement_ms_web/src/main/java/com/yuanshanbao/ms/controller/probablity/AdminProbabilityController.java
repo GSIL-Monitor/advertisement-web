@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -78,6 +79,8 @@ public class AdminProbabilityController extends PaginationController {
 			}
 			probabilityService.updateProbability(probability);
 			AdminServerController.refreshOnline();
+			LoggerUtil.info("reviewProbability, 投放详情信息={},操作人员={}", JacksonUtil.obj2json(probability), getCurrentUser()
+					.getUsername());
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

@@ -92,10 +92,16 @@ public class AdminStatisticsController extends PaginationController {
 
 	private static final String PAGE_ADVERTISER_STATISTIC_LIST = "advertisement/statistics/listAdvertiserStatistics";
 
-	private static final String PAGE_PLAN_STATISTICS_LIST = "advertisement/statistics/listPlanStatistics";
+	// dsp后台
+	private static final String PAGE_PLAN_STATISTICS_LIST = "advertisement/statistics/dsp/listPlanStatistics";
 
-	private static final String PAGE_MEDIA_ADVERTISEMENT_LIST = "advertisement/statistics/listMediaAdvertisementStatistics";
+	private static final String PAGE_PLAN_MEDIA_STATISTICS_LIST = "advertisement/statistics/dsp/listPlanMediaStatistics";
 
+	private static final String PAGE_MEDIA_STATISTICS_LIST = "advertisement/statistics/dsp/listMediaStatistics";
+
+	private static final String PAGE_MEDIA_PLAN_STATISTICS_LIST = "advertisement/statistics/dsp/listMediaPlanStatistics";
+
+	// 广告主 媒体
 	private static final String PAGE_DSP_ADVERTISER_STATISTICS_LIST = "advertisement/statistics/dsp/listDspAdvertiserStatistics";
 
 	private static final String PAGE_DSP_MEDIA_STATISTICS_LIST = "advertisement/statistics/dsp/listDspMediaAdvertisementStatistics";
@@ -1012,41 +1018,43 @@ public class AdminStatisticsController extends PaginationController {
 		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(list, new Paginator()));
 	}
 
-	@RequestMapping("/planChannel.do")
-	public String planChannel(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
-			Long advertisementId) {
-		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
-		modelMap.put("advertisement", ConfigManager.getAdvertisement(advertisementId + ""));
-		modelMap.put("advertisementId", advertisementId);
+	@RequestMapping("/planMediaStatistic.do")
+	public String planMediaStatistic(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
+			Long planId) {
+		// modelMap.put("positionList",
+		// positionService.selectPositionByProjectId(getProjectId(request)));
+		// modelMap.put("advertisement",
+		// ConfigManager.getAdvertisement(advertisementId + ""));
+		modelMap.put("planId", planId);
 		addDateList(modelMap, 0);
-		return PAGE_ADVERTISEMENT_CHANNEL_LIST;
+		return PAGE_PLAN_MEDIA_STATISTICS_LIST;
 	}
 
 	// 按照媒体查询广告
-	@RequestMapping("/mediaAdvertisement.do")
-	public String mediaAdvertisement(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
+	@RequestMapping("/mediaStatistics.do")
+	public String mediaStatistics(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
 		addDateList(modelMap, 0);
-		return PAGE_MEDIA_ADVERTISEMENT_LIST;
+		return PAGE_MEDIA_STATISTICS_LIST;
 	}
 
 	@ResponseBody
-	@RequestMapping("/queryMediaAdvertisements.do")
-	public Object queryMediaAdvertisements(AdvertisementStatistics advertisementStatistics, HttpServletRequest request,
+	@RequestMapping("/queryMediaStatistics.do")
+	public Object queryMediaStatistics(AdvertisementStatistics advertisementStatistics, HttpServletRequest request,
 			HttpServletResponse response, String statisticsDate, Boolean isPv, String channel) {
 		List<AdvertisementStatistics> result = advertisementStatisticsService.selectMediaAdvertisementStatistic(
 				advertisementStatistics, isPv, channel, getProjectId(request));
 		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(result, new Paginator()));
 	}
 
-	@RequestMapping("/mediaAdvertisements.do")
+	@RequestMapping("/mediaPlanStatistics.do")
 	public String mediaAdvertisements(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
 			String channelkey) {
 		modelMap.put("positionList", positionService.selectPositionByProjectId(getProjectId(request)));
 		modelMap.put("channel", ConfigManager.getChannel(channelkey));
 		modelMap.put("channelkey", channelkey);
 		addDateList(modelMap, 0);
-		return PAGE_CHANNEL_ADVERTISEMENTS_LIST;
+		return PAGE_MEDIA_PLAN_STATISTICS_LIST;
 	}
 
 	// -------------------------dsp广告主数据----------------------------

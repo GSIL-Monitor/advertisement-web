@@ -24,7 +24,7 @@
 		    	"data": "advertisement",
 		        "render": function ( data, type, full, meta ) {
 		            return '<a href="${rc.contextPath}/admin/${functionName}/advertisementChannel.do?"  class="btn btn-info" target="_blank">查看渠道统计</a>';
-		        }
+		        
 		    }];
 		
 		var dataTable = $('#dataTable').DataTable(dataTableConfig);

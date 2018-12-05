@@ -743,9 +743,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	}
 
 	public static void main(String[] args) {
-		String planKey = AESUtils.encrypt(PLAN_ENCRYPT_KEY, "1");
-		String proKey = AESUtils.encrypt(PLAN_ENCRYPT_KEY, "111");
-		System.err.println(planKey + "   " + proKey);
+		String planKey = AESUtils.encrypt(PLAN_ENCRYPT_KEY, "122");
+		System.err.println(planKey);
+		String proKey = AESUtils.decrypt(PLAN_ENCRYPT_KEY, "A0A073978877F37D77191942D6968FCB");
+		System.err.println(proKey);
 	}
 
 	private void increConsume(String planId, String probabilityId, String channel) {
