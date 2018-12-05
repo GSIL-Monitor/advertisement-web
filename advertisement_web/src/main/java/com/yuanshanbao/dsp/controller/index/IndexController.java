@@ -81,7 +81,7 @@ public class IndexController extends BaseController {
 				// User loginToken = tokenService.verifyLoginToken(token);
 
 				if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
-					resultMap.put("version", false);
+					resultMap.put("version", true);
 				} else {
 					if ("0.3.7".equals(version)) {
 						resultMap.put("version", false);

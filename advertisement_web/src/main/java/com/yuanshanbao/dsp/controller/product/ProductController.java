@@ -212,7 +212,6 @@ public class ProductController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
 		if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
-
 			resultMap.put("version", true);
 		} else {
 			if ("0.3.7".equals(version)) {
