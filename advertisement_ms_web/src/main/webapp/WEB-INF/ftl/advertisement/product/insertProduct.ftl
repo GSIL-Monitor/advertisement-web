@@ -32,6 +32,7 @@
                       <input type="text" name="name" style="width:60%;"></td>
                   </tr>
                   <tr>
+                  
                     <td>所属活动：</td>
                     <td>
                       <div style="width:60%;">

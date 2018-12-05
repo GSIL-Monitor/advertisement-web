@@ -78,6 +78,7 @@
           <div class="widget-content nopadding">
             <table class="table table-bordered data-table" id="dataTable">
               <thead>
+              
                 <tr>
                   <th>产品ID</th>
                   <th>产品名称</th>

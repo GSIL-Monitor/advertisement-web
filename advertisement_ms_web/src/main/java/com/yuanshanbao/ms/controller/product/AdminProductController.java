@@ -65,7 +65,6 @@ public class AdminProductController extends PaginationController {
 		request.setAttribute("merchantId", merchantId);
 		request.setAttribute("merchant", merchantService.selectMerchant(merchantId));
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
-
 		return PAGE_LIST;
 	}
 

@@ -42,6 +42,7 @@
                     <td width="80%">
                       <input type="text" name="description" style="width:60%;" <#if itemEdit.description??>value="${itemEdit.description}"</#if>></td>
                   </tr>
+                  
                   <tr>
 					<td>logo：</td>
 					<td>
