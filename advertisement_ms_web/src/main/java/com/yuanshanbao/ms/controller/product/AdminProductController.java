@@ -40,7 +40,11 @@ public class AdminProductController extends PaginationController {
 
 	private static final String WANGZHUAN = "wangzhuan";
 
+	private static final String WANGZHUANAGENT = "wangzhuanagent";
+
 	private static final String PAGE_LIST = "advertisement/product/listProduct";
+
+	private static final String PAGE_AGENT_LIST = "advertisement/product/agentListProduct";
 
 	private static final String PAGE_INSERT = "advertisement/product/insertProduct";
 
@@ -65,6 +69,8 @@ public class AdminProductController extends PaginationController {
 		request.setAttribute("merchantId", merchantId);
 		request.setAttribute("merchant", merchantService.selectMerchant(merchantId));
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
+		request.setAttribute("activity", activity);
 		return PAGE_LIST;
 	}
 
@@ -72,9 +78,9 @@ public class AdminProductController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Product product, HttpServletRequest request, HttpServletResponse response) {
-		Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
-		product.setActivityId(activity.getActivityId());
+
 		Object object = productService.selectProducts(product, getPageBounds(range, request));
+
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);
 	}

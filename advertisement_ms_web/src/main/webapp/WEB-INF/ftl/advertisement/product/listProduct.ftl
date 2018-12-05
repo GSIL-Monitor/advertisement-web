@@ -36,6 +36,8 @@
 		dataTableConfig.columns = [{
       		"data": "${functionId}"
     	}, {
+	    	"data": "activity.name"
+	    }, {
 	    	"data": "name"
 	    },{
 		    	"data": "statusValue"
@@ -81,8 +83,10 @@
               
                 <tr>
                   <th>产品ID</th>
+                   <th>活动ID</th>
                   <th>产品名称</th>
 				  <th>操作</th>
+				  <th>切换</th>
                   <th>修改</th>
                   <th>删除</th>
               </thead>

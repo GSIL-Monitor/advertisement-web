@@ -76,7 +76,9 @@ public class InviteController extends BaseController {
 						resultMap.put("QRcode", applayCardCode);
 					} else {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
-						redisCacheService.set(RedisConstant.WX_XCX_H5_CODE + user.getUserId(), applayCardCode);
+						if (applayCardCode != null) {
+							redisCacheService.set(RedisConstant.WX_XCX_H5_CODE + user.getUserId(), applayCardCode);
+						}
 						resultMap.put("QRcode", applayCardCode);
 					}
 				} else {
@@ -180,8 +182,10 @@ public class InviteController extends BaseController {
 						resultMap.put("QRcode", applayCardCode);
 					} else {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
-						redisCacheService.set(RedisConstant.WX_XCX_H5_DETAIL_CODE + user.getUserId() + productId,
-								applayCardCode);
+						if (applayCardCode != null) {
+							redisCacheService.set(RedisConstant.WX_XCX_H5_DETAIL_CODE + user.getUserId() + productId,
+									applayCardCode);
+						}
 						resultMap.put("QRcode", applayCardCode);
 					}
 				} else {
