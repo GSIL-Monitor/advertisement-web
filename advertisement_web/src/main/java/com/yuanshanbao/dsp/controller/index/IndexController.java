@@ -25,6 +25,7 @@ import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.message.model.Message;
@@ -78,15 +79,16 @@ public class IndexController extends BaseController {
 				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 			} else {
 				// User loginToken = tokenService.verifyLoginToken(token);
-				if (StringUtils.isNotBlank(version) && "0.3.7".equals(version)) {
+
+				if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
 					resultMap.put("version", false);
+				} else {
+					if ("0.3.7".equals(version)) {
+						resultMap.put("version", false);
+					} else {
+						resultMap.put("version", true);
+					}
 				}
-				/*
-				 * if (version != null &&
-				 * version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
-				 * resultMap.put("version", true); } else {
-				 * resultMap.put("version", false); }
-				 */
 				HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
 				User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 

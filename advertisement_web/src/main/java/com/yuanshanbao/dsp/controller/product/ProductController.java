@@ -38,6 +38,7 @@ import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.BaseRedis;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
+import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
@@ -209,15 +210,18 @@ public class ProductController extends BaseController {
 	public Object detail(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap,
 			@RequestParam("productId") Long productId, String token, String version) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		if (StringUtils.isNotBlank(version) && "0.3.7".equals(version)) {
-			resultMap.put("version", false);
+
+		if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
+
+			resultMap.put("version", true);
+		} else {
+			if ("0.3.7".equals(version)) {
+				resultMap.put("version", false);
+			} else {
+				resultMap.put("version", true);
+			}
+
 		}
-		/*
-		 * if (version != null &&
-		 * version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
-		 * resultMap.put("version", true); } else { resultMap.put("version",
-		 * false); }
-		 */
 		// isApprovalEdition(request, null);
 		try {
 			if (productId == null) {
