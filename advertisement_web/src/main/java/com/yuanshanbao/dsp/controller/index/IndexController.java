@@ -73,34 +73,40 @@ public class IndexController extends BaseController {
 			PageBounds pageBounds, String token, Integer client) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			// User loginToken = tokenService.verifyLoginToken(token);
-			String versionKey = IniBean.getIniValue(WZXCX_PRODUCT_CHANNEL);
-			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
-			User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 			Activity activity = null;
-			if (user != null) {
-				User param = userService.selectUserById(user.getUserId());
-				if (param == null) {
-					activity = ConfigManager.getActivityByKey(WANGZHUAN);
-					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
-				} else {
-					if (param.getLevel() == null) {
-						param.setLevel(UserLevel.MANAGER);
-					}
-					if (param.getLevel() == UserLevel.VIP_AGENT) {
-						activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
-						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
-					} else {
+			if (token == null) {
+				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+			} else {
+				// User loginToken = tokenService.verifyLoginToken(token);
+				String versionKey = IniBean.getIniValue(WZXCX_PRODUCT_CHANNEL);
+				HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
+				User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+
+				if (user != null) {
+					User param = userService.selectUserById(user.getUserId());
+					if (param == null) {
 						activity = ConfigManager.getActivityByKey(WANGZHUAN);
 						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+					} else {
+						if (param.getLevel() == null) {
+							param.setLevel(UserLevel.MANAGER);
+						}
+						if (param.getLevel() == UserLevel.VIP_AGENT) {
+							activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+						} else {
+							activity = ConfigManager.getActivityByKey(WANGZHUAN);
+							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+						}
 					}
+				} else {
+					activity = ConfigManager.getActivityByKey(WANGZHUAN);
+					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 				}
-			} else {
-				activity = ConfigManager.getActivityByKey(WANGZHUAN);
-				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+				resultMap.put("version", versionKey);
 			}
 
-			resultMap.put("version", versionKey);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
