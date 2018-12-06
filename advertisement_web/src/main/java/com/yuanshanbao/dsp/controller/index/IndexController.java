@@ -15,7 +15,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
@@ -27,7 +26,6 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -85,9 +83,11 @@ public class IndexController extends BaseController {
 				} else {
 					resultMap.put("version", false);
 				}
-				HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
-				User user = (User) requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
-
+				// HttpServletRequestWrapper requestWrapper = new
+				// HttpServletRequestWrapper(token, request);
+				// User user = (User)
+				// requestWrapper.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+				User user = userService.selectUserByToken(token);
 				if (user != null) {
 					User param = userService.selectUserById(user.getUserId());
 					if (param == null) {
