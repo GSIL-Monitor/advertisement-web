@@ -64,35 +64,28 @@ public class InviteController extends BaseController {
 				user.setLevel(UserLevel.MANAGER);
 				userService.updateUser(user);
 			}
-			if (user.getLevel() == UserLevel.VIP_AGENT) {
 
+			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String H5Url = H5URL + "?userId=" + user.getUserId();
-				String h5Code = redisCacheService.get(RedisConstant.WX_XCX_H5_CODE + user.getUserId());
-				if (h5Code == null) {
-					String applayCardCode = null;
-					// 插入logo
-					if (user.getAvatar() == null || "undefined".equals(user.getAvatar())) {
+				String applayCardCode = null;
+				// 插入logo
+				User userAvatar = userService.selectUserById(user.getUserId());
+				if (userAvatar != null) {
+					if (userAvatar.getAvatar() == null || "undefined".equals(userAvatar.getAvatar())) {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url,
 								"https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
 						resultMap.put("QRcode", applayCardCode);
 					} else {
-						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
-						if (applayCardCode != null) {
-
-							redisCacheService.set(RedisConstant.WX_XCX_H5_CODE + user.getUserId(), 1 * 60,
-									applayCardCode);
-						}
+						applayCardCode = ZXingCode.getLogoQRCode(H5Url, userAvatar.getAvatar());
 						resultMap.put("QRcode", applayCardCode);
 					}
-				} else {
-					resultMap.put("QRcode", h5Code);
 				}
+
 				resultMap.put("inviteImageUrl", h5InviteImageUrl);
 				resultMap.put("user", user);
 				resultMap.put("url", H5Url);
 
 			} else {
-
 				String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
 				if (StringUtils.isEmpty(code)) {
 					byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX,
@@ -171,29 +164,22 @@ public class InviteController extends BaseController {
 				userService.updateUser(user);
 			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
-				String h5DetailCode = redisCacheService.get(RedisConstant.WX_XCX_H5_DETAIL_CODE + user.getUserId()
-						+ productId);
 				String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId
 						+ "&fromPage=products";
-
-				if (h5DetailCode == null) {
-					String applayCardCode = null;
-					// 插入logo
-					if (user.getAvatar() == null && "undefined".equals(user.getAvatar())) {
+				String applayCardCode = null;
+				// 插入logo
+				User userAvatar = userService.selectUserById(user.getUserId());
+				if (userAvatar != null) {
+					if (userAvatar.getAvatar() == null || "undefined".equals(userAvatar.getAvatar())) {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url,
 								"https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
 						resultMap.put("QRcode", applayCardCode);
 					} else {
-						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
-						if (applayCardCode != null) {
-							redisCacheService.set(RedisConstant.WX_XCX_H5_DETAIL_CODE + user.getUserId() + productId,
-									60 * 60, applayCardCode);
-						}
+						applayCardCode = ZXingCode.getLogoQRCode(H5Url, userAvatar.getAvatar());
 						resultMap.put("QRcode", applayCardCode);
 					}
-				} else {
-					resultMap.put("QRcode", h5DetailCode);
 				}
+
 				resultMap.put("user", user);
 				resultMap.put("url", H5Url);
 
