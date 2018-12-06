@@ -197,8 +197,7 @@ public class PlanServiceImpl implements PlanService {
 			// 上次操作扣费时消耗的金额
 			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
 					probability.getProbabilityId()));
-			double difference = BigDecimal.valueOf(nowCount).subtract(BigDecimal.valueOf(lastCount)).setScale(5)
-					.doubleValue();
+			double difference = BigDecimal.valueOf(nowCount).subtract(BigDecimal.valueOf(lastCount)).doubleValue();
 			if (difference > 0) {
 				billService.checkBillAndCount(plan, probability, lastCount);
 				billService.createBill(plan, probability, nowCount, lastCount, BillType.DEDUCTION);
