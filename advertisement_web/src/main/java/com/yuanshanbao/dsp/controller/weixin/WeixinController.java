@@ -42,7 +42,7 @@ public class WeixinController extends BaseController {
 			String host = request.getHeader("Host");
 			String redirectUrl = "http://" + host + "/weixin/oauth/login.html?returnUrl="
 					+ URLEncoder.encode(returnUrl, "utf-8");
-			return "redirect:" + weixinService.getRedirectUrl(redirectUrl);
+			return "redirect:" + weixinService.getUserInfoRedirectUrl(redirectUrl);
 		} catch (Exception e) {
 			logger.error("[Weixin auth error]", e);
 		}

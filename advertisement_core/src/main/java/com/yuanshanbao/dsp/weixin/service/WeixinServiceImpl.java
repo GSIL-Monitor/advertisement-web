@@ -314,7 +314,7 @@ public class WeixinServiceImpl implements WeixinService {
 
 	private OauthAPI getOAuthApi(String key) {
 		if (StringUtils.isBlank(key)) {
-			return oauthApiMap.get(CONFIG_SERVICE);
+			return oauthApiMap.get(CONFIG_WZXCX);
 		}
 		return oauthApiMap.get(key);
 	}
