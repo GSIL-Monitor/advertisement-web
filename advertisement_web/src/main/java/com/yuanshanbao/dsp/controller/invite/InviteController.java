@@ -65,19 +65,22 @@ public class InviteController extends BaseController {
 				userService.updateUser(user);
 			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
+
 				String H5Url = H5URL + "?userId=" + user.getUserId();
 				String h5Code = redisCacheService.get(RedisConstant.WX_XCX_H5_CODE + user.getUserId());
 				if (h5Code == null) {
 					String applayCardCode = null;
 					// 插入logo
-					if (user.getAvatar() == null && "undefined".equals(user.getAvatar())) {
+					if (user.getAvatar() == null || "undefined".equals(user.getAvatar())) {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url,
 								"https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
 						resultMap.put("QRcode", applayCardCode);
 					} else {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
 						if (applayCardCode != null) {
-							redisCacheService.set(RedisConstant.WX_XCX_H5_CODE + user.getUserId(), applayCardCode);
+
+							redisCacheService.set(RedisConstant.WX_XCX_H5_CODE + user.getUserId(), 1 * 60,
+									applayCardCode);
 						}
 						resultMap.put("QRcode", applayCardCode);
 					}
@@ -176,7 +179,7 @@ public class InviteController extends BaseController {
 				if (h5DetailCode == null) {
 					String applayCardCode = null;
 					// 插入logo
-					if (user.getAvatar() == null && "undefined".equals(user.getAvatar())) {
+					if (user.getAvatar() == null || "undefined".equals(user.getAvatar())) {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url,
 								"https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
 						resultMap.put("QRcode", applayCardCode);
@@ -184,7 +187,7 @@ public class InviteController extends BaseController {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
 						if (applayCardCode != null) {
 							redisCacheService.set(RedisConstant.WX_XCX_H5_DETAIL_CODE + user.getUserId() + productId,
-									applayCardCode);
+									5 * 60, applayCardCode);
 						}
 						resultMap.put("QRcode", applayCardCode);
 					}
