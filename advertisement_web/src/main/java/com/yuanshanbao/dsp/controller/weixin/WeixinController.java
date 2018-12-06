@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
 import com.github.sd4324530.fastweixin.api.response.OauthGetTokenResponse;
 import com.yuanshanbao.common.constant.SessionConstants;
-import com.yuanshanbao.common.exception.BusinessException;
-import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
@@ -113,7 +111,7 @@ public class WeixinController extends BaseController {
 	public Object verifyLogin(HttpServletRequest request) {
 		User user = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 		if (user == null) {
-			throw new BusinessException(ComRetCode.TOKEN_INVALID);
+			return null;
 		}
 		return user;
 	}
