@@ -38,9 +38,9 @@ public class WeixinController extends BaseController {
 	public String auth(HttpServletRequest request, String returnUrl) throws UnsupportedEncodingException {
 		try {
 			String host = request.getHeader("Host");
-			String redirectUrl = "http://" + host + "/weixin/oauth/login.html?returnUrl="
+			String redirectUrl = "http://" + host + "/i/weixin/oauth/login?returnUrl="
 					+ URLEncoder.encode(returnUrl, "utf-8");
-			return "redirect:" + weixinService.getUserInfoRedirectUrl(redirectUrl);
+			return "redirect:" + weixinService.getRedirectUrl(redirectUrl);
 		} catch (Exception e) {
 			logger.error("[Weixin auth error]", e);
 		}
