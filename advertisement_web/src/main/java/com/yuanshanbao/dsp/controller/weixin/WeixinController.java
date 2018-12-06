@@ -24,7 +24,7 @@ import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.dsp.weixin.service.WeixinService;
 
 @Controller
-@RequestMapping("/weixin/oauth")
+@RequestMapping("/i/weixin/oauth")
 public class WeixinController extends BaseController {
 
 	@Autowired
