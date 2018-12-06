@@ -1,7 +1,6 @@
 package com.yuanshanbao.dsp.bill.service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -201,14 +200,8 @@ public class BillServiceImpl implements BillService {
 			if (bill.getNowCount().compareTo(BigDecimal.valueOf(lastCount)) == 0) {
 				return;
 			} else {
-				deleteBill(bill.getBillId());
-				Advertiser advertiser = advertiserService.selectAdvertiserForUpdate(plan.getAdvertiserId());
-				if (advertiser != null) {
-					Map<String, Object> parameters = new HashMap<String, Object>();
-					parameters.put("advertiserId", advertiser.getAdvertiserId());
-					parameters.put("amount", bill.getAmount());
-					advertiserDao.lockBalance(parameters);
-				}
+				LoggerUtil.error("checkBill error,bill={},last={}", JacksonUtil.obj2json(bill),
+						String.valueOf(lastCount));
 			}
 		}
 	}
@@ -294,7 +287,9 @@ public class BillServiceImpl implements BillService {
 		bill.setAdvertiserId(plan.getAdvertiserId());
 		bill.setOrderId(plan.getOrderId());
 		bill.setProbabilityId(probability.getProbabilityId());
-		bill.setAmount(BigDecimal.valueOf(nowCount - lastCount).setScale(3, RoundingMode.FLOOR));
+		// bill.setAmount(BigDecimal.valueOf(nowCount - lastCount).setScale(3,
+		// RoundingMode.FLOOR));
+		bill.setAmount(BigDecimal.valueOf(nowCount).subtract(BigDecimal.valueOf(lastCount)));
 		bill.setDate(DateUtils.format(new Date()));
 		bill.setChannel(probability.getChannel());
 		bill.setNowCount(BigDecimal.valueOf(nowCount));

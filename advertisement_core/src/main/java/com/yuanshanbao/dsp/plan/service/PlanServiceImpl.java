@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.plan.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,9 +197,10 @@ public class PlanServiceImpl implements PlanService {
 			// 上次操作扣费时消耗的金额
 			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
 					probability.getProbabilityId()));
-			double difference = nowCount - lastCount;
-			billService.checkBillAndCount(plan, probability, lastCount);
+			double difference = BigDecimal.valueOf(nowCount).subtract(BigDecimal.valueOf(lastCount)).setScale(5)
+					.doubleValue();
 			if (difference > 0) {
+				billService.checkBillAndCount(plan, probability, lastCount);
 				billService.createBill(plan, probability, nowCount, lastCount, BillType.DEDUCTION);
 				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
 						String.valueOf(nowCount));
