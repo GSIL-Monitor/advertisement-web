@@ -96,6 +96,7 @@ public class WeixinServiceImpl implements WeixinService {
 
 	@Override
 	public String getRedirectUrl(String returnUrl) {
+
 		return getOAuthApi(null).getOauthPageUrl(returnUrl, OauthScope.SNSAPI_BASE, null);
 	}
 
@@ -314,7 +315,7 @@ public class WeixinServiceImpl implements WeixinService {
 
 	private OauthAPI getOAuthApi(String key) {
 		if (StringUtils.isBlank(key)) {
-			return oauthApiMap.get(CONFIG_WZXCX);
+			return oauthApiMap.get(CONFIG_SERVICE);
 		}
 		return oauthApiMap.get(key);
 	}
