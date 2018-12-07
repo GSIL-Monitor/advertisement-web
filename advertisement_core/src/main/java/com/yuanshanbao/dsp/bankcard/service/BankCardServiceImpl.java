@@ -39,7 +39,7 @@ public class BankCardServiceImpl implements BankCardService {
 
 	public final static BigDecimal MANAGER_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.1);
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
-	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.2);
+	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.25);
 
 	@Autowired
 	private BankCardDao bankCardDao;
@@ -105,15 +105,21 @@ public class BankCardServiceImpl implements BankCardService {
 				if (inviteUser.getLevel() == null) {
 					inviteUser.setLevel(UserLevel.MANAGER);
 				}
-				if (inviteUser != null && inviteUser.getLevel() == UserLevel.MANAGER) {
-					agency.setBrokerage(product.getBrokerage().multiply(MANAGER_PERCENTAGE));
-				} else if (inviteUser != null && inviteUser.getLevel() == UserLevel.MAJORDOMO) {
-					agency.setBrokerage(product.getBrokerage().multiply(DIRECTOR_PERCENTAGE));
-				} else if (inviteUser != null && inviteUser.getLevel() == UserLevel.BAILLIFF) {
-					agency.setBrokerage(product.getBrokerage());
-				} else {
-					agency.setBrokerage(product.getBrokerage().multiply(MANAGER_PERCENTAGE));
-				}
+				agency.setBrokerage(product.getBrokerage());
+				/*
+				 * if (inviteUser != null && inviteUser.getLevel() ==
+				 * UserLevel.MANAGER) {
+				 * agency.setBrokerage(product.getBrokerage(
+				 * ).multiply(MANAGER_PERCENTAGE)); } else if (inviteUser !=
+				 * null && inviteUser.getLevel() == UserLevel.MAJORDOMO) {
+				 * agency
+				 * .setBrokerage(product.getBrokerage().multiply(DIRECTOR_PERCENTAGE
+				 * )); } else if (inviteUser != null && inviteUser.getLevel() ==
+				 * UserLevel.BAILLIFF) {
+				 * agency.setBrokerage(product.getBrokerage()); } else {
+				 * agency.setBrokerage
+				 * (product.getBrokerage().multiply(MANAGER_PERCENTAGE)); }
+				 */
 			}
 			agencyService.insertAgency(agency);
 		} else {
