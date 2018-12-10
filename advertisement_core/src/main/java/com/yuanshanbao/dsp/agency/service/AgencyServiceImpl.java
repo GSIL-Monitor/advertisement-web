@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.agency.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
@@ -256,19 +258,20 @@ public class AgencyServiceImpl implements AgencyService {
 			if (twoAgencyBrokerage == null) {
 				twoAgencyBrokerage = BigDecimal.ZERO;
 			}
-			/*
-			 * if (user != null && user.getLevel() == UserLevel.MANAGER) {
-			 * brokerage =
-			 * twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE); } else
-			 * if (user != null && user.getLevel() == UserLevel.MAJORDOMO) {
-			 * brokerage =
-			 * twoAgencyBrokerage.multiply(DIRECTOR_INDIRET_PERCENTAGE); } else
-			 * if (user != null && user.getLevel() == UserLevel.BAILLIFF) {
-			 * brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
-			 * } else { brokerage =
-			 * twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE); }
-			 */
-			brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
+			if (DateUtils.compareTwoDates(DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDD), "20181210")) {
+				brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
+			} else {
+				if (user != null && user.getLevel() == UserLevel.MANAGER) {
+					brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
+				} else if (user != null && user.getLevel() == UserLevel.MAJORDOMO) {
+					brokerage = twoAgencyBrokerage.multiply(DIRECTOR_INDIRET_PERCENTAGE);
+				} else if (user != null && user.getLevel() == UserLevel.BAILLIFF) {
+					brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
+				} else {
+					brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
+				}
+			}
+
 		}
 		if (oneAgencyBrokerage == null) {
 			oneAgencyBrokerage = BigDecimal.ZERO;
