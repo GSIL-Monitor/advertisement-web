@@ -213,7 +213,7 @@ public class WeixinServiceImpl implements WeixinService {
 					+ serverLog.getTitle());
 			TemplateMsg templateMsg = new TemplateMsg();
 			templateMsg.setTemplateId(ALARM_SERVER_TEMPLATE);
-			templateMsg.setUrl(PropertyUtil.getProperty("host.web.open") + "/admin/serverLog.html?logId="
+			templateMsg.setUrl(PropertyUtil.getProperty("host.web.open") + "/i/admin/serverLog.html?logId="
 					+ serverLog.getLogId());
 			templateMsg.putData("first", "服务器报警" + serverLog.getCount() + "次", "#F67072");
 			templateMsg.putData("keyword1", serverLog.getTypeValue() + "");
