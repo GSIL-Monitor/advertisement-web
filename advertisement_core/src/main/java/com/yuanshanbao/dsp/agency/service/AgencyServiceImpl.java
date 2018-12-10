@@ -180,27 +180,25 @@ public class AgencyServiceImpl implements AgencyService {
 			agencyVo.setProductName(agen.getProductName());
 			agencyVo.setUpdateTime(agen.getUpdateTimeValue());
 			agencyVo.setStatus(agen.getStatusValue());
+			if (DateUtils.compareTwoDates(DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDD), "20181210")) {
+				agencyVo.setBrokerage((agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
+						RoundingMode.HALF_UP));
+			} else {
+				if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER) {
+					agencyVo.setBrokerage((agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE)).setScale(2,
+							RoundingMode.HALF_UP));
+				} else if (user.getLevel() != null && user.getLevel() == UserLevel.MAJORDOMO) {
+					agencyVo.setBrokerage((agen.getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE)).setScale(2,
+							RoundingMode.HALF_UP));
+				} else if (user.getLevel() != null && user.getLevel() == UserLevel.BAILLIFF) {
+					agencyVo.setBrokerage((agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
+							RoundingMode.HALF_UP));
+				} else {
+					agencyVo.setBrokerage((agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE)).setScale(2,
+							RoundingMode.HALF_UP));
+				}
+			}
 
-			/*
-			 * if (user.getLevel() != null && user.getLevel() ==
-			 * UserLevel.MANAGER) {
-			 * agencyVo.setBrokerage((agen.getBrokerage().multiply
-			 * (MANAGER_INDIRET_PERCENTAGE)).setScale(2, RoundingMode.HALF_UP));
-			 * } else if (user.getLevel() != null && user.getLevel() ==
-			 * UserLevel.MAJORDOMO) {
-			 * agencyVo.setBrokerage((agen.getBrokerage().
-			 * multiply(DIRECTOR_INDIRET_PERCENTAGE)).setScale(2,
-			 * RoundingMode.HALF_UP)); } else if (user.getLevel() != null &&
-			 * user.getLevel() == UserLevel.BAILLIFF) {
-			 * agencyVo.setBrokerage((agen
-			 * .getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
-			 * RoundingMode.HALF_UP)); } else {
-			 * agencyVo.setBrokerage((agen.getBrokerage
-			 * ().multiply(MANAGER_INDIRET_PERCENTAGE)).setScale(2,
-			 * RoundingMode.HALF_UP)); }
-			 */
-			agencyVo.setBrokerage((agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
-					RoundingMode.HALF_UP));
 			agencyVoList.add(agencyVo);
 		}
 		return agencyVoList;
