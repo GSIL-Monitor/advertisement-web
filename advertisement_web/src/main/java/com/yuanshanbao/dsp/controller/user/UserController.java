@@ -294,10 +294,6 @@ public class UserController extends BaseController {
 			}
 			String unionId = tokenResponse.getUnionid();
 			String openId = tokenResponse.getOpenid();
-			/*
-			 * if (StringUtils.isBlank(unionId)) { unionId =
-			 * tokenResponse.getOpenid(); }
-			 */
 			boolean register = false;
 
 			if (StringUtils.isNotBlank(openId)) {
