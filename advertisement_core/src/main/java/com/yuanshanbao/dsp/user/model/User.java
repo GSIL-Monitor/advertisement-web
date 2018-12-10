@@ -104,6 +104,7 @@ public class User implements Serializable {
 	}
 
 	public String getStatusValue() {
+
 		return UserStatus.getDescription(status);
 	}
 
