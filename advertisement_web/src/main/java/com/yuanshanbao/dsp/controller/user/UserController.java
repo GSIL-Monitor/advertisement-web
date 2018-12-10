@@ -293,14 +293,30 @@ public class UserController extends BaseController {
 				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
 			}
 			String unionId = tokenResponse.getUnionid();
-			if (StringUtils.isBlank(unionId)) {
-				unionId = tokenResponse.getOpenid();
-			}
+			String openId = tokenResponse.getOpenid();
 			boolean register = false;
-			User user = userService.selectUserByWeixinId(unionId);
+
+			if (StringUtils.isNotBlank(openId)) {
+				User opeenIdUser = userService.selectUserByWeixinId(openId);
+				if (opeenIdUser != null) {
+					if (StringUtils.isNotBlank(unionId)) {
+						User updateUser = new User();
+						updateUser.setUserId(opeenIdUser.getUserId());
+						updateUser.setWeixinId(unionId);
+						userService.updateUser(updateUser);
+					}
+				}
+			}
+			User user = null;
+			if (StringUtils.isNotBlank(unionId)) {
+				user = userService.selectUserByWeixinId(unionId);
+			}
+
 			if (user == null) {
 				user = new User();
-				user.setWeixinId(unionId);
+				if (StringUtils.isNotBlank(unionId)) {
+					user.setWeixinId(unionId);
+				}
 				user.setRegisterFrom(from);
 				user.setStatus(UserStatus.NORMAL);
 				user.setLevel(UserLevel.MANAGER);
@@ -322,6 +338,7 @@ public class UserController extends BaseController {
 					agencyService.insertAgency(agency);
 				}
 			}
+
 			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "",
 					JSPHelper.getRemoteAddr(request));
 			loginToken.setRegister(register);
@@ -357,12 +374,20 @@ public class UserController extends BaseController {
 			userService.updateUserBaseInfoIfNotExists(user, name, avatar, gender);
 			User updateUser = new User();
 			updateUser.setUserId(user.getUserId());
-			if (!StringUtil.isEmpty(name) && !("undefined".equals(name))) {
+			if (StringUtils.isNotBlank(name) && !("undefined".equals(name))) {
 				updateUser.setNickName(name);
 			} else {
-				updateUser.setNickName("");
+				if (StringUtils.isNotBlank(user.getNickName()) && !("undefined".equals(user.getNickName()))) {
+					updateUser.setNickName(user.getNickName());
+				}
 			}
-			updateUser.setAvatar(avatar);
+			if (StringUtils.isNotBlank(avatar) && !("undefined".equals(avatar))) {
+				updateUser.setAvatar(avatar);
+			} else {
+				if (StringUtils.isNotBlank(user.getAvatar()) && !("undefined".equals(user.getAvatar()))) {
+					updateUser.setAvatar(user.getAvatar());
+				}
+			}
 			userService.updateUser(updateUser);
 			request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, user);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

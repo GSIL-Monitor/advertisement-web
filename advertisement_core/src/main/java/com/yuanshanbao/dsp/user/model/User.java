@@ -36,7 +36,7 @@ public class User implements Serializable {
 	}
 
 	public String getLevelValue() {
-		return UserLevel.getDescription(level);
+		return UserLevel.getDescription(2);
 	}
 
 	public void setLevel(Integer level) {
@@ -104,6 +104,7 @@ public class User implements Serializable {
 	}
 
 	public String getStatusValue() {
+
 		return UserStatus.getDescription(status);
 	}
 

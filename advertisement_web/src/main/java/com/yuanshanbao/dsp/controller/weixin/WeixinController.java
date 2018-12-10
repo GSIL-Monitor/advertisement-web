@@ -40,6 +40,9 @@ public class WeixinController extends BaseController {
 			String host = request.getHeader("Host");
 			String redirectUrl = "https://" + host + "/i/weixin/oauth/login?returnUrl="
 					+ URLEncoder.encode(returnUrl, "utf-8");
+			String aString = weixinService.getUserInfoRedirectUrl(redirectUrl);
+			LoggerUtil.info("[Weixin auth redirectUrl=]" + redirectUrl);
+			LoggerUtil.info("[Weixin auth url=]" + aString);
 			return "redirect:" + weixinService.getRedirectUrl(redirectUrl);
 		} catch (Exception e) {
 			logger.error("[Weixin auth error]", e);
@@ -51,13 +54,21 @@ public class WeixinController extends BaseController {
 	public String login(HttpServletRequest request, String returnUrl, String code, String domainToken) {
 		try {
 			User sessionUser = getSessionUser(request);
+
+			LoggerUtil.info("[Weixin login sessionUser=]" + sessionUser);
+			LoggerUtil.info("[Weixin login code=]" + code);
+			LoggerUtil.info("[Weixin login returnUrl=]" + returnUrl);
 			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
+			LoggerUtil.info("[Weixin login token=]" + token);
 			if (StringUtils.isNotBlank(code) && token != null) {
 				String openId = token.getOpenid();
+				LoggerUtil.info("[Weixin login token=]" + token);
+				LoggerUtil.info("[Weixin login openId=]" + openId);
 				if (sessionUser != null && StringUtils.isNotBlank(openId)) {
 					sessionUser.setWeixinId(openId);
 					userService.updateUser(sessionUser);
 					request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, sessionUser);
+					LoggerUtil.info("[Weixin code=]" + code + "[Weixin token=]" + token);
 				} else if (StringUtils.isNotBlank(openId)) {
 					User account = userService.selectUserByWeixinId(openId);
 					if (account != null) {
@@ -74,14 +85,17 @@ public class WeixinController extends BaseController {
 				request.getSession().setAttribute("token", token);
 			} else {
 				Object weixinTry = request.getSession().getAttribute(SessionConstants.SESSION_WEIXIN_TRY);
+				LoggerUtil.info("[Weixin login weixinTry=]" + weixinTry);
+
 				if (weixinTry != null && weixinTry.equals("true")) {
 					request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_CHECK, "true");
 				}
+				LoggerUtil.info("[Weixin login code=]" + code + "token" + token);
 				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_TRY, "true");
 			}
 			return "redirect:" + returnUrl;
 		} catch (Exception e) {
-			logger.error("[Weixin login error]", e);
+			LoggerUtil.error("[Weixin login error]", e);
 		}
 		return "";
 	}

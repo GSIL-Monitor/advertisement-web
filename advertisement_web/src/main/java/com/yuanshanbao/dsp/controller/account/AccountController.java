@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DataFormat;
@@ -96,6 +97,8 @@ public class AccountController extends BaseController {
 	public Object getBalance(String token, HttpServletRequest request) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+			LoggerUtil.info("[balance sessionUser=]" + sessionUser);
 			User user = getLoginUser(token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.TOKEN_LOSE_EFFICACY);
@@ -129,12 +132,13 @@ public class AccountController extends BaseController {
 				}
 
 			} else {
-				userService.updateLevelDetails(user.getUserId());
+				// userService.updateLevelDetails(user.getUserId());
 				brokerages = agencyService.getBrokerages(agency, user, new PageBounds());
 				if (brokerages == null) {
 					brokerages = BigDecimal.ZERO;
 				}
 			}
+
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
 			Integer level = user.getLevel();

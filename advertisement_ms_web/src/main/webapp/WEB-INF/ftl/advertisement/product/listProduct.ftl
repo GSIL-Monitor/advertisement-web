@@ -36,7 +36,7 @@
 		dataTableConfig.columns = [{
       		"data": "${functionId}"
     	}, {
-	    	"data": "activityName"
+	    	"data": "activityId"
 	    }, {
 	    	"data": "name"
 	    },{

@@ -29,7 +29,7 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 public class AgencyServiceImpl implements AgencyService {
 	public final static BigDecimal MANAGER_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.1);
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
-	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.25);
+	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.05);
 
 	@Autowired
 	private AgencyDao agencyDao;
@@ -179,19 +179,26 @@ public class AgencyServiceImpl implements AgencyService {
 			agencyVo.setUpdateTime(agen.getUpdateTimeValue());
 			agencyVo.setStatus(agen.getStatusValue());
 
-			if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER) {
-				agencyVo.setBrokerage((agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE)).setScale(2,
-						RoundingMode.HALF_UP));
-			} else if (user.getLevel() != null && user.getLevel() == UserLevel.MAJORDOMO) {
-				agencyVo.setBrokerage((agen.getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE)).setScale(2,
-						RoundingMode.HALF_UP));
-			} else if (user.getLevel() != null && user.getLevel() == UserLevel.BAILLIFF) {
-				agencyVo.setBrokerage((agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
-						RoundingMode.HALF_UP));
-			} else {
-				agencyVo.setBrokerage((agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE)).setScale(2,
-						RoundingMode.HALF_UP));
-			}
+			/*
+			 * if (user.getLevel() != null && user.getLevel() ==
+			 * UserLevel.MANAGER) {
+			 * agencyVo.setBrokerage((agen.getBrokerage().multiply
+			 * (MANAGER_INDIRET_PERCENTAGE)).setScale(2, RoundingMode.HALF_UP));
+			 * } else if (user.getLevel() != null && user.getLevel() ==
+			 * UserLevel.MAJORDOMO) {
+			 * agencyVo.setBrokerage((agen.getBrokerage().
+			 * multiply(DIRECTOR_INDIRET_PERCENTAGE)).setScale(2,
+			 * RoundingMode.HALF_UP)); } else if (user.getLevel() != null &&
+			 * user.getLevel() == UserLevel.BAILLIFF) {
+			 * agencyVo.setBrokerage((agen
+			 * .getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
+			 * RoundingMode.HALF_UP)); } else {
+			 * agencyVo.setBrokerage((agen.getBrokerage
+			 * ().multiply(MANAGER_INDIRET_PERCENTAGE)).setScale(2,
+			 * RoundingMode.HALF_UP)); }
+			 */
+			agencyVo.setBrokerage((agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
+					RoundingMode.HALF_UP));
 			agencyVoList.add(agencyVo);
 		}
 		return agencyVoList;
@@ -249,15 +256,19 @@ public class AgencyServiceImpl implements AgencyService {
 			if (twoAgencyBrokerage == null) {
 				twoAgencyBrokerage = BigDecimal.ZERO;
 			}
-			if (user != null && user.getLevel() == UserLevel.MANAGER) {
-				brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
-			} else if (user != null && user.getLevel() == UserLevel.MAJORDOMO) {
-				brokerage = twoAgencyBrokerage.multiply(DIRECTOR_INDIRET_PERCENTAGE);
-			} else if (user != null && user.getLevel() == UserLevel.BAILLIFF) {
-				brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
-			} else {
-				brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
-			}
+			/*
+			 * if (user != null && user.getLevel() == UserLevel.MANAGER) {
+			 * brokerage =
+			 * twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE); } else
+			 * if (user != null && user.getLevel() == UserLevel.MAJORDOMO) {
+			 * brokerage =
+			 * twoAgencyBrokerage.multiply(DIRECTOR_INDIRET_PERCENTAGE); } else
+			 * if (user != null && user.getLevel() == UserLevel.BAILLIFF) {
+			 * brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
+			 * } else { brokerage =
+			 * twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE); }
+			 */
+			brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
 		}
 		if (oneAgencyBrokerage == null) {
 			oneAgencyBrokerage = BigDecimal.ZERO;

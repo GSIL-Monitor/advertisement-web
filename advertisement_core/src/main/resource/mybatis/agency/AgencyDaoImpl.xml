@@ -134,6 +134,7 @@
 		* from
 		tb_agency
 		<where>
+		
 			<trim suffixOverrides="and">
 				<if test="id != null">
 					id=#{id} and
