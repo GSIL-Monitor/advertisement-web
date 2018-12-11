@@ -197,7 +197,7 @@ public class BillServiceImpl implements BillService {
 		List<Bill> list = selectBill(param, new PageBounds());
 		if (list != null && list.size() > 0) {
 			Bill bill = list.get(0);
-			if (bill.getNowCount().compareTo(BigDecimal.valueOf(lastCount)) == 0) {
+			if (bill.getNowCount().compareTo(BigDecimal.valueOf(lastCount).setScale(5, BigDecimal.ROUND_HALF_DOWN)) == 0) {
 				return;
 			} else {
 				LoggerUtil.error("checkBill error,bill={},last={}", JacksonUtil.obj2json(bill),
