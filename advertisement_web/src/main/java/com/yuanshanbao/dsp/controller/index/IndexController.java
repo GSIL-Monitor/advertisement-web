@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
@@ -33,6 +34,7 @@ import com.yuanshanbao.dsp.product.model.ProductCategory;
 import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.tags.model.Tags;
+import com.yuanshanbao.dsp.user.model.LoginToken;
 import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.TokenService;
@@ -72,6 +74,11 @@ public class IndexController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Activity activity = null;
+			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+			LoginToken loginToken = (LoginToken) request.getSession().getAttribute("loginToken");
+			LoggerUtil.info("[home sessionUser--]: " + sessionUser);
+			LoggerUtil.info("[home loginToken--]: " + loginToken);
+
 			if (token == null || token == "") {
 				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
 				getHomeInfos(resultMap, activity, product, pageBounds, request, client);

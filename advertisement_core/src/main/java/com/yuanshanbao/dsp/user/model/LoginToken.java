@@ -1,8 +1,11 @@
 package com.yuanshanbao.dsp.user.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class LoginToken {
+public class LoginToken implements Serializable {
+
+	private static final long serialVersionUID = 4365613174336464468L;
 
 	private String userId;
 	private String appId;

@@ -91,4 +91,20 @@ public class AgencyDaoImpl extends BaseDaoImpl implements AgencyDao {
 		return getSqlSession().selectOne("agency.getVIPAgenctSumBrokerage", inviteUserId);
 	}
 
+	@Override
+	public BigDecimal settledTwoAgencyBrokerages(List<Long> twoInviteUserIds) {
+		if (twoInviteUserIds.size() == 0) {
+			return null;
+		}
+		return getSqlSession().selectOne("agency.settledTwoAgencyBrokerages", twoInviteUserIds);
+	}
+
+	@Override
+	public BigDecimal settledBrokerageAndTimeCompare(List<Long> twoInviteUserIds) {
+		if (twoInviteUserIds.size() == 0) {
+			return null;
+		}
+		return getSqlSession().selectOne("agency.settledBrokerageAndTimeCompare", twoInviteUserIds);
+	}
+
 }
