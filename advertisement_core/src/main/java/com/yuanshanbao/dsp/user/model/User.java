@@ -36,7 +36,8 @@ public class User implements Serializable {
 	}
 
 	public String getLevelValue() {
-		if (level == UserLevel.VIP_AGENT) {
+
+		if (level != null && level == UserLevel.VIP_AGENT) {
 			return UserLevel.getDescription(level);
 		}
 		return UserLevel.getDescription(2);
