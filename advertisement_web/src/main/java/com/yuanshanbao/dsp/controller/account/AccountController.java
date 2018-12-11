@@ -29,6 +29,7 @@ import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.earnings.model.Earnings;
 import com.yuanshanbao.dsp.earnings.service.EarningsService;
 import com.yuanshanbao.dsp.payment.PaymentInterfaceService;
@@ -98,7 +99,10 @@ public class AccountController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
+			User wrapperUser = (User) requestWrapper.getAttribute(SessionConstants.SESSION_ACCOUNT);
 			LoggerUtil.info("[balance sessionUser=]" + sessionUser);
+			LoggerUtil.info("[balance wrapper=]" + wrapperUser);
 			User user = getLoginUser(token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.TOKEN_LOSE_EFFICACY);

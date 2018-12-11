@@ -19,6 +19,7 @@ import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
+import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.user.model.BaseInfo;
 import com.yuanshanbao.dsp.user.model.LoginToken;
 import com.yuanshanbao.dsp.user.model.User;
@@ -70,11 +71,12 @@ public class WeixinController extends BaseController {
 			LoggerUtil.info("[Weixin login token=]" + token);
 			if (StringUtils.isNotBlank(code) && token != null) {
 				String unionId = token.getUnionid();
+				LoggerUtil.info("[Weixin login unionId=]" + unionId);
 				if (sessionUser != null && StringUtils.isNotBlank(unionId)) {
 					sessionUser.setWeixinId(unionId);
 					userService.updateUser(sessionUser);
 					request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, sessionUser);
-					LoggerUtil.info("[Weixin code=]" + code + "[Weixin token=]" + token);
+					LoggerUtil.info("[Weixin code=]" + code + "[Weixin token=]" + token.toJsonString());
 				} else if (StringUtils.isNotBlank(unionId)) {
 					User account = userService.selectUserByWeixinId(unionId);
 					if (account != null) {
@@ -83,7 +85,10 @@ public class WeixinController extends BaseController {
 						loginToken.setUser(account);
 						request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
 						request.getSession().setAttribute("loginToken", loginToken);
-						LoggerUtil.info("[Weixin loginToken=]" + loginToken);
+						HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(loginToken.getToken(),
+								request);
+						requestWrapper.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
+						LoggerUtil.info("[Weixin loginToken=]" + loginToken.toString());
 						CookieUtils.setSessionCookieValue(response, String.valueOf(account.getUserId()),
 								loginToken.getToken());
 						LoggerUtil.loginInfo("type=weixinLogin, userId=" + String.valueOf(account.getUserId())
