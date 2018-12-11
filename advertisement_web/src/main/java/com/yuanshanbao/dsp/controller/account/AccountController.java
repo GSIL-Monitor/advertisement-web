@@ -98,11 +98,13 @@ public class AccountController extends BaseController {
 	public Object getBalance(String token, HttpServletRequest request) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+
 			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
 			User wrapperUser = (User) requestWrapper.getAttribute(SessionConstants.SESSION_ACCOUNT);
 			LoggerUtil.info("[balance sessionUser=]" + sessionUser);
 			LoggerUtil.info("[balance wrapper=]" + wrapperUser);
+			LoggerUtil.info("[balance sessionId = =]" + request.getSession().getId());
 			User user = getLoginUser(token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.TOKEN_LOSE_EFFICACY);

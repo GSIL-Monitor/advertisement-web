@@ -79,16 +79,20 @@ public class WeixinController extends BaseController {
 					LoggerUtil.info("[Weixin code=]" + code + "[Weixin token=]" + token.toJsonString());
 				} else if (StringUtils.isNotBlank(unionId)) {
 					User account = userService.selectUserByWeixinId(unionId);
+					LoggerUtil.loginInfo("type=weixinLogin, userId=" + String.valueOf(account.getUserId())
+							+ ", mobile=" + String.valueOf(account.getMobile()) + ",weiXinId=" + account.getWeixinId());
 					if (account != null) {
 						LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
 								String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
 						loginToken.setUser(account);
 						request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
 						request.getSession().setAttribute("loginToken", loginToken);
+
 						HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(loginToken.getToken(),
 								request);
 						requestWrapper.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
 						LoggerUtil.info("[Weixin loginToken=]" + loginToken.toString());
+
 						CookieUtils.setSessionCookieValue(response, String.valueOf(account.getUserId()),
 								loginToken.getToken());
 						LoggerUtil.loginInfo("type=weixinLogin, userId=" + String.valueOf(account.getUserId())
