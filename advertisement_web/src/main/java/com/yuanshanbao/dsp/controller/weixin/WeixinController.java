@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
 import com.github.sd4324530.fastweixin.api.response.OauthGetTokenResponse;
 import com.yuanshanbao.common.constant.SessionConstants;
+import com.yuanshanbao.common.util.CookieUtils;
+import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.user.model.BaseInfo;
+import com.yuanshanbao.dsp.user.model.LoginToken;
 import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.model.UserLevel;
+import com.yuanshanbao.dsp.user.model.UserStatus;
+import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.dsp.weixin.service.WeixinService;
 
@@ -34,6 +41,9 @@ public class WeixinController extends BaseController {
 	@Autowired
 	protected RedisService redisCacheService;
 
+	@Autowired
+	private TokenService tokenService;
+
 	@RequestMapping("/auth")
 	public String auth(HttpServletRequest request, String returnUrl) throws UnsupportedEncodingException {
 		try {
@@ -43,7 +53,7 @@ public class WeixinController extends BaseController {
 			String aString = weixinService.getUserInfoRedirectUrl(redirectUrl);
 			LoggerUtil.info("[Weixin auth redirectUrl=]" + redirectUrl);
 			LoggerUtil.info("[Weixin auth url=]" + aString);
-			return "redirect:" + weixinService.getRedirectUrl(redirectUrl);
+			return "redirect:" + weixinService.getUserInfoRedirectUrl(redirectUrl);
 		} catch (Exception e) {
 			logger.error("[Weixin auth error]", e);
 		}
@@ -51,36 +61,51 @@ public class WeixinController extends BaseController {
 	}
 
 	@RequestMapping("/login")
-	public String login(HttpServletRequest request, String returnUrl, String code, String domainToken) {
+	public String login(HttpServletRequest request, String returnUrl, String code, String domainToken,
+			HttpServletResponse response) {
 		try {
 			User sessionUser = getSessionUser(request);
 
-			LoggerUtil.info("[Weixin login sessionUser=]" + sessionUser);
-			LoggerUtil.info("[Weixin login code=]" + code);
-			LoggerUtil.info("[Weixin login returnUrl=]" + returnUrl);
 			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
 			LoggerUtil.info("[Weixin login token=]" + token);
 			if (StringUtils.isNotBlank(code) && token != null) {
-				String openId = token.getOpenid();
-				LoggerUtil.info("[Weixin login token=]" + token);
-				LoggerUtil.info("[Weixin login openId=]" + openId);
-				if (sessionUser != null && StringUtils.isNotBlank(openId)) {
-					sessionUser.setWeixinId(openId);
+				String unionId = token.getUnionid();
+				if (sessionUser != null && StringUtils.isNotBlank(unionId)) {
+					sessionUser.setWeixinId(unionId);
 					userService.updateUser(sessionUser);
 					request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, sessionUser);
 					LoggerUtil.info("[Weixin code=]" + code + "[Weixin token=]" + token);
-				} else if (StringUtils.isNotBlank(openId)) {
-					User account = userService.selectUserByWeixinId(openId);
+				} else if (StringUtils.isNotBlank(unionId)) {
+					User account = userService.selectUserByWeixinId(unionId);
 					if (account != null) {
+						LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
+								String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
+						loginToken.setUser(account);
 						request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
+						request.getSession().setAttribute("loginToken", loginToken);
+						LoggerUtil.info("[Weixin loginToken=]" + loginToken);
+						CookieUtils.setSessionCookieValue(response, String.valueOf(account.getUserId()),
+								loginToken.getToken());
 						LoggerUtil.loginInfo("type=weixinLogin, userId=" + String.valueOf(account.getUserId())
 								+ ", mobile=" + String.valueOf(account.getMobile()));
+					} else {
+						User user = new User();
+						if (StringUtils.isNotBlank(unionId)) {
+							user.setWeixinId(unionId);
+						}
+						user.setStatus(UserStatus.NORMAL);
+						user.setLevel(UserLevel.MANAGER);
+						// if (inviteUserId != null) {
+						// user.setInviteUserId(Long.valueOf(inviteUserId));
+						// }
+						userService.insertUser(user);
 					}
 				}
+
 				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_CHECK, "true");
-				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN, openId);
+				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN, unionId);
 				if (StringUtils.isNotBlank(domainToken)) {
-					redisCacheService.set(domainToken, openId);
+					redisCacheService.set(domainToken, unionId);
 				}
 				request.getSession().setAttribute("token", token);
 			} else {
