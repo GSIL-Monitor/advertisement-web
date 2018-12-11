@@ -31,8 +31,10 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 public class AgencyServiceImpl implements AgencyService {
 	public final static BigDecimal MANAGER_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.1);
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
-	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.05);
+	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.25);
+	public final static BigDecimal NEW_CEO_PERCENTAGE = BigDecimal.valueOf(0.05);
 
+	public final static String NOW_DATE = "20181210";
 	@Autowired
 	private AgencyDao agencyDao;
 
@@ -180,8 +182,15 @@ public class AgencyServiceImpl implements AgencyService {
 			agencyVo.setProductName(agen.getProductName());
 			agencyVo.setUpdateTime(agen.getUpdateTimeValue());
 			agencyVo.setStatus(agen.getStatusValue());
-			if (DateUtils.compareTwoDates(DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDD), "20181210")) {
-				agencyVo.setBrokerage((agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
+			String createTime = DateUtils.format(agen.getCreateTime(), DateUtils.DATE_FORMAT_YYYYMMDD);
+
+			// if (DateUtils.compareTwoDates(DateUtils.format(new Date(),
+			// DateUtils.DATE_FORMAT_YYYYMMDD), "20181211")) {
+			// agencyVo.setBrokerage((agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
+			// RoundingMode.HALF_UP));
+			// }
+			if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
+				agencyVo.setBrokerage((agen.getBrokerage().multiply(NEW_CEO_PERCENTAGE)).setScale(2,
 						RoundingMode.HALF_UP));
 			} else {
 				if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER) {
@@ -197,8 +206,8 @@ public class AgencyServiceImpl implements AgencyService {
 					agencyVo.setBrokerage((agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE)).setScale(2,
 							RoundingMode.HALF_UP));
 				}
-			}
 
+			}
 			agencyVoList.add(agencyVo);
 		}
 		return agencyVoList;
@@ -217,6 +226,8 @@ public class AgencyServiceImpl implements AgencyService {
 		BigDecimal oneAgencyBrokerage = BigDecimal.valueOf(0);
 		BigDecimal twoAgencyBrokerage = BigDecimal.valueOf(0);
 		BigDecimal brokerage = BigDecimal.valueOf(0);
+		BigDecimal compareTimeBrokerage = BigDecimal.valueOf(0);
+		BigDecimal timeBrokerageBigDecimal = BigDecimal.valueOf(0);
 
 		for (Iterator<Agency> iterator = oneAgencyList.iterator(); iterator.hasNext();) {
 			Agency agen = (Agency) iterator.next();
@@ -252,22 +263,26 @@ public class AgencyServiceImpl implements AgencyService {
 			twoInviteUserIds.add(Long.valueOf(agencyIds.getUserId()));
 		}
 		if (twoInviteUserIds.size() != 0) {
-			twoAgencyBrokerage = agencyDao.getSumBrokerage(twoInviteUserIds);
+			twoAgencyBrokerage = agencyDao.settledTwoAgencyBrokerages(twoInviteUserIds);
 			if (twoAgencyBrokerage == null) {
 				twoAgencyBrokerage = BigDecimal.ZERO;
 			}
-			if (DateUtils.compareTwoDates(DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDD), "20181210")) {
+
+			if (user != null && user.getLevel() == UserLevel.MANAGER) {
+				brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
+			} else if (user != null && user.getLevel() == UserLevel.MAJORDOMO) {
+				brokerage = twoAgencyBrokerage.multiply(DIRECTOR_INDIRET_PERCENTAGE);
+			} else if (user != null && user.getLevel() == UserLevel.BAILLIFF) {
 				brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
 			} else {
-				if (user != null && user.getLevel() == UserLevel.MANAGER) {
-					brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
-				} else if (user != null && user.getLevel() == UserLevel.MAJORDOMO) {
-					brokerage = twoAgencyBrokerage.multiply(DIRECTOR_INDIRET_PERCENTAGE);
-				} else if (user != null && user.getLevel() == UserLevel.BAILLIFF) {
-					brokerage = twoAgencyBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
-				} else {
-					brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
+				brokerage = twoAgencyBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
+			}
+			if (DateUtils.compareTwoDates(DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDD), NOW_DATE)) {
+				compareTimeBrokerage = agencyDao.settledBrokerageAndTimeCompare(twoInviteUserIds);
+				if (compareTimeBrokerage == null) {
+					compareTimeBrokerage = BigDecimal.ZERO;
 				}
+				timeBrokerageBigDecimal = compareTimeBrokerage.multiply(NEW_CEO_PERCENTAGE);
 			}
 
 		}
@@ -277,7 +292,7 @@ public class AgencyServiceImpl implements AgencyService {
 		if (brokerage == null) {
 			brokerage = BigDecimal.ZERO;
 		}
-		BigDecimal sumAgencyBrokerage = oneAgencyBrokerage.add(brokerage);
+		BigDecimal sumAgencyBrokerage = oneAgencyBrokerage.add(brokerage).add(timeBrokerageBigDecimal);
 		return sumAgencyBrokerage;
 	}
 

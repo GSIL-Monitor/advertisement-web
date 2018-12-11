@@ -36,4 +36,8 @@ public interface AgencyDao {
 
 	public BigDecimal queryVIPAgenctSumBrokerage(Long inviteUserId);
 
+	public BigDecimal settledTwoAgencyBrokerages(List<Long> twoInviteUserIds);
+
+	public BigDecimal settledBrokerageAndTimeCompare(List<Long> twoInviteUserIds);
+
 }
