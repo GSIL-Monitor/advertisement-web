@@ -57,7 +57,35 @@
 					 close=")">
 				#{userId}
 			</foreach>
-			and status = 1
+			and status = 1 
+		</where>
+	</select>
+	
+	<select id="settledTwoAgencyBrokerages" parameterType="List" resultType="java.math.BigDecimal">
+		select
+		sum(brokerage) from
+		tb_agency
+		<where>
+			user_id in
+			<foreach item="userId" collection="list" open="(" separator=","
+					 close=")">
+				#{userId}
+			</foreach>
+			and status = 1 and create_time&lt;='2018-12-10'
+		</where>
+	</select>
+	
+	<select id="settledBrokerageAndTimeCompare" parameterType="List" resultType="java.math.BigDecimal">
+		select
+		sum(brokerage) from
+		tb_agency
+		<where>
+			user_id in
+			<foreach item="userId" collection="list" open="(" separator=","
+					 close=")">
+				#{userId}
+			</foreach>
+			and status = 1 and create_time&gt;'2018-12-10'
 		</where>
 	</select>
 	
