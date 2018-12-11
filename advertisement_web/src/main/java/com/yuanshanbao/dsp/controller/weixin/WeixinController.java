@@ -73,21 +73,28 @@ public class WeixinController extends BaseController {
 				String unionId = token.getUnionid();
 				LoggerUtil.info("[Weixin login unionId=]" + unionId);
 				if (sessionUser != null && StringUtils.isNotBlank(unionId)) {
+
 					sessionUser.setWeixinId(unionId);
 					userService.updateUser(sessionUser);
 					request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, sessionUser);
 					LoggerUtil.info("[Weixin code=]" + code + "[Weixin token=]" + token.toJsonString());
 				} else if (StringUtils.isNotBlank(unionId)) {
+
 					User account = userService.selectUserByWeixinId(unionId);
-					LoggerUtil.loginInfo("type=weixinLogin, userId=" + String.valueOf(account.getUserId())
-							+ ", mobile=" + String.valueOf(account.getMobile()) + ",weiXinId=" + account.getWeixinId());
+
+					LoggerUtil.info("type=weixinLogin, userId=" + String.valueOf(account.getUserId()) + ", mobile="
+							+ String.valueOf(account.getMobile()) + ",weiXinId=" + account.getWeixinId());
 					if (account != null) {
+
 						LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
 								String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
 						loginToken.setUser(account);
 						request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
 						request.getSession().setAttribute("loginToken", loginToken);
 
+						User accountUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+						LoggerUtil.info("[Weixin accountUser=]" + accountUser.toString() + ",userId = "
+								+ accountUser.getUserId());
 						HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(loginToken.getToken(),
 								request);
 						requestWrapper.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
@@ -95,8 +102,8 @@ public class WeixinController extends BaseController {
 
 						CookieUtils.setSessionCookieValue(response, String.valueOf(account.getUserId()),
 								loginToken.getToken());
-						LoggerUtil.loginInfo("type=weixinLogin, userId=" + String.valueOf(account.getUserId())
-								+ ", mobile=" + String.valueOf(account.getMobile()));
+						LoggerUtil.info("type=weixinLogin, userId=" + String.valueOf(account.getUserId()) + ", mobile="
+								+ String.valueOf(account.getMobile()));
 					} else {
 						User user = new User();
 						if (StringUtils.isNotBlank(unionId)) {
