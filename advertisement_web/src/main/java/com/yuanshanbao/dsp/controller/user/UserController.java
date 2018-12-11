@@ -293,15 +293,22 @@ public class UserController extends BaseController {
 				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
 			}
 			String unionId = tokenResponse.getUnionid();
+			LoggerUtil.info("[xcxLogin unionId = ] " + unionId);
+
+			if (StringUtils.isBlank(unionId)) {
+				unionId = tokenResponse.getOpenid();
+			}
 			String openId = tokenResponse.getOpenid();
+			LoggerUtil.info("[xcxLogin openId = ] " + openId);
+
 			boolean register = false;
 
 			if (StringUtils.isNotBlank(openId)) {
-				User opeenIdUser = userService.selectUserByWeixinId(openId);
-				if (opeenIdUser != null) {
+				User openIdUser = userService.selectUserByWeixinId(openId);
+				if (openIdUser != null) {
 					if (StringUtils.isNotBlank(unionId)) {
 						User updateUser = new User();
-						updateUser.setUserId(opeenIdUser.getUserId());
+						updateUser.setUserId(openIdUser.getUserId());
 						updateUser.setWeixinId(unionId);
 						userService.updateUser(updateUser);
 					}
@@ -314,9 +321,7 @@ public class UserController extends BaseController {
 
 			if (user == null) {
 				user = new User();
-				if (StringUtils.isNotBlank(unionId)) {
-					user.setWeixinId(unionId);
-				}
+				user.setWeixinId(unionId);
 				user.setRegisterFrom(from);
 				user.setStatus(UserStatus.NORMAL);
 				user.setLevel(UserLevel.MANAGER);
