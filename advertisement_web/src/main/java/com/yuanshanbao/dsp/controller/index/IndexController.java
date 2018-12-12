@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.CommonUtil;
+import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.advertisement.model.AdvertisementPosition;
@@ -116,6 +118,17 @@ public class IndexController extends BaseController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;
+	}
+
+	@RequestMapping("/get/sid")
+	@ResponseBody
+	public void getSidValue(HttpServletRequest request, HttpServletResponse response) {
+		String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SESSION_ID);
+		if (StringUtils.isBlank(sid)) {
+			String sidString = CommonUtil.getRandomID();
+			CookieUtils.setSessionCookieValue(response, SessionConstants.COOKIE_SESSION_ID, sidString);
+		}
+
 	}
 
 	@RequestMapping("")
