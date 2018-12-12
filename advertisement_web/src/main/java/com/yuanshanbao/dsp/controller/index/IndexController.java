@@ -29,6 +29,7 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.IniBean;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -76,9 +77,17 @@ public class IndexController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Activity activity = null;
-			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
-			LoginToken loginToken = (LoginToken) request.getSession().getAttribute("loginToken");
+			String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SESSION_ID);
+			LoggerUtil.info("[home sid--]: " + sid);
+			HttpServletRequestWrapper httpServletRequestWrapper = new HttpServletRequestWrapper(sid, request);
+			LoginToken loginToken = (LoginToken) httpServletRequestWrapper.getAttribute("loginToken");
+			User sessionUser = (User) httpServletRequestWrapper.getAttribute(SessionConstants.SESSION_ACCOUNT);
+			// User sessionUser = (User)
+			// request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+			// LoginToken loginToken = (LoginToken)
+			// request.getSession().getAttribute("loginToken");
 			LoggerUtil.info("[home sessionUser--]: " + sessionUser);
+
 			LoggerUtil.info("[home loginToken--]: " + loginToken);
 
 			if (token == null || token == "") {
@@ -123,10 +132,10 @@ public class IndexController extends BaseController {
 	@RequestMapping("/get/sid")
 	@ResponseBody
 	public void getSidValue(HttpServletRequest request, HttpServletResponse response) {
-		String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SESSION_ID);
+		String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
 		if (StringUtils.isBlank(sid)) {
 			String sidString = CommonUtil.getRandomID();
-			CookieUtils.setSessionCookieValue(response, SessionConstants.COOKIE_SESSION_ID, sidString);
+			CookieUtils.setSessionCookieValue(response, SessionConstants.COOKIE_SID, sidString);
 		}
 
 	}

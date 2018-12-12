@@ -27,6 +27,7 @@ public class RedisConstant {
 	public final static String WX_XCX_CODE = "wz_code";
 	public final static String WX_XCX_DETAIL_CODE = "wz_detail_code";
 
+	public final static String H5_LOGIN_TOKEN_SID = "sid";
 	public final static String WX_XCX_H5_CODE = "wz_h5_code";
 	public final static String WX_XCX_H5_DETAIL_CODE = "wz_h5_detail_code";
 
