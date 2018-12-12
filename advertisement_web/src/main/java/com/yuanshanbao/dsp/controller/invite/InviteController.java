@@ -35,7 +35,7 @@ import com.yuanshanbao.dsp.weixin.service.WeixinService;
 @RequestMapping("/i/invite")
 public class InviteController extends BaseController {
 
-	private static final String URL = "pages/invitecard/invitecard";
+	private static final String URL = "pages/index/index";
 	private static final String H5URL = "https://wz.huhad.com/w/products";
 	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/detail";
 	private static final String DETAILURL = "pages/index/detail/detail";
@@ -72,8 +72,7 @@ public class InviteController extends BaseController {
 				User userAvatar = userService.selectUserById(user.getUserId());
 				if (userAvatar != null) {
 					if (userAvatar.getAvatar() == null || "undefined".equals(userAvatar.getAvatar())) {
-						applayCardCode = ZXingCode.getLogoQRCode(H5Url,
-								"https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541566698341_1135.jpg");
+						applayCardCode = ZXingCode.getLogoQRCode(H5Url, user.getAvatar());
 						resultMap.put("QRcode", applayCardCode);
 					} else {
 						applayCardCode = ZXingCode.getLogoQRCode(H5Url, userAvatar.getAvatar());
