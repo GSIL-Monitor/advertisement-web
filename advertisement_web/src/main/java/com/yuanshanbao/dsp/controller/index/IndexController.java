@@ -89,8 +89,14 @@ public class IndexController extends BaseController {
 					if (h5User == null) {
 						throw new BusinessException(ComRetCode.TOKEN_INVALID);
 					} else {
-						activity = ConfigManager.getActivityByKey(WANGZHUAN);
-						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+
+						if (token == "") {
+							activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+						} else {
+							activity = ConfigManager.getActivityByKey(WANGZHUAN);
+							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+						}
 					}
 				}
 			} else {
