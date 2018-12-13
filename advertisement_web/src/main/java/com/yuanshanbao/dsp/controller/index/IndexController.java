@@ -89,8 +89,10 @@ public class IndexController extends BaseController {
 					if (h5User == null) {
 						throw new BusinessException(ComRetCode.TOKEN_INVALID);
 					} else {
-
-						if (token == "") {
+						if (h5User.getLevel() == null) {
+							h5User.setLevel(UserLevel.MANAGER);
+						}
+						if (h5User.getLevel() == UserLevel.VIP_AGENT) {
 							activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
 							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 						} else {
@@ -107,6 +109,7 @@ public class IndexController extends BaseController {
 				}
 
 				User user = userService.selectUserByToken(token);
+				LoggerUtil.info("[home xcxUserToken--]: " + token);
 				if (user != null) {
 					if (user.getLevel() == null) {
 						user.setLevel(UserLevel.MANAGER);
@@ -119,7 +122,7 @@ public class IndexController extends BaseController {
 						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 					}
 				} else {
-					activity = ConfigManager.getActivityByKey(WANGZHUAN);
+					activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
 					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 				}
 			}
