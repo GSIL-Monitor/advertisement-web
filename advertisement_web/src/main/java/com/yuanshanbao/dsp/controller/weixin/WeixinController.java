@@ -90,18 +90,18 @@ public class WeixinController extends BaseController {
 					LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
 							String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
 					loginToken.setUser(account);
-					request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
+					request.getSession().setAttribute(SessionConstants.SESSION_USER, account);
 					request.getSession().setAttribute("loginToken", loginToken);
 
-					User accountUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+					User accountUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
 
 					String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
-					LoggerUtil.info("[Weixin login : getCookieSidValue == ]" + sid);
+					LoggerUtil.info("[Weixin login : getCookieValue == ]" + sid);
 					HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(sid, request);
 
 					redisCacheService.set(RedisConstant.H5_LOGIN_TOKEN_SID, loginToken.getToken());
 
-					requestWrapper.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, account);
+					requestWrapper.getSession().setAttribute(SessionConstants.SESSION_USER, account);
 					requestWrapper.getSession().setAttribute("loginToken", loginToken);
 					LoggerUtil.info("[Weixin accountUser=]" + accountUser.toString() + ",userId = "
 							+ accountUser.getUserId());

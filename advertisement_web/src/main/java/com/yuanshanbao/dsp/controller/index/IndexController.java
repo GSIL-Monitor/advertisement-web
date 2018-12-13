@@ -76,6 +76,10 @@ public class IndexController extends BaseController {
 			PageBounds pageBounds, String token, Integer client, String version) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+
+			User sUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
+			LoggerUtil.info("[home SESSION_USER--]: " + sUser);
+
 			Activity activity = null;
 			String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
 			LoggerUtil.info("[home sid--]: " + sid);
