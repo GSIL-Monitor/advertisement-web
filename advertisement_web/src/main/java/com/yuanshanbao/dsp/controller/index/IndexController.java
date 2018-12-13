@@ -77,53 +77,51 @@ public class IndexController extends BaseController {
 		try {
 			Activity activity = null;
 			// 区分小程序登录 h5登录
-			if (StringUtils.isBlank(token)) {
-				User sUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
-				String H5Token = (String) request.getSession().getAttribute(SessionConstants.SESSION_TOKEN);
-				LoggerUtil.info("[home SESSION_USER--]: " + sUser);
-				LoggerUtil.info("[home SESSION_TOKEN--]: " + H5Token);
-				if (StringUtils.isBlank(H5Token)) {
-					throw new BusinessException(ComRetCode.TOKEN_INVALID);
-				} else {
-					User h5User = userService.selectUserByToken(H5Token);
-					if (h5User == null) {
+			if (token == "") {
+				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+			} else {
+				if (StringUtils.isBlank(token)) {
+					User sUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
+					String H5Token = (String) request.getSession().getAttribute(SessionConstants.SESSION_TOKEN);
+					LoggerUtil.info("[home SESSION_USER--]: " + sUser);
+					LoggerUtil.info("[home SESSION_TOKEN--]: " + H5Token);
+					if (StringUtils.isBlank(H5Token)) {
 						throw new BusinessException(ComRetCode.TOKEN_INVALID);
 					} else {
-						if (h5User.getLevel() == null) {
-							h5User.setLevel(UserLevel.MANAGER);
+						User h5User = userService.selectUserByToken(H5Token);
+						if (h5User == null) {
+							throw new BusinessException(ComRetCode.TOKEN_INVALID);
+						} else {
+							activity = ConfigManager.getActivityByKey(WANGZHUAN);
+							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+
 						}
-						if (h5User.getLevel() == UserLevel.VIP_AGENT) {
+					}
+				} else {
+					if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
+						resultMap.put("version", true);
+					} else {
+						resultMap.put("version", false);
+					}
+
+					User user = userService.selectUserByToken(token);
+					LoggerUtil.info("[home xcxUserToken--]: " + token);
+					if (user != null) {
+						if (user.getLevel() == null) {
+							user.setLevel(UserLevel.MANAGER);
+						}
+						if (user.getLevel() == UserLevel.VIP_AGENT) {
 							activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
 							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 						} else {
 							activity = ConfigManager.getActivityByKey(WANGZHUAN);
 							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 						}
-					}
-				}
-			} else {
-				if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
-					resultMap.put("version", true);
-				} else {
-					resultMap.put("version", false);
-				}
-
-				User user = userService.selectUserByToken(token);
-				LoggerUtil.info("[home xcxUserToken--]: " + token);
-				if (user != null) {
-					if (user.getLevel() == null) {
-						user.setLevel(UserLevel.MANAGER);
-					}
-					if (user.getLevel() == UserLevel.VIP_AGENT) {
-						activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
-						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 					} else {
 						activity = ConfigManager.getActivityByKey(WANGZHUAN);
 						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 					}
-				} else {
-					activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
-					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 				}
 			}
 
