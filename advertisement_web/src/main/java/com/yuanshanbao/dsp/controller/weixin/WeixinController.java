@@ -96,6 +96,7 @@ public class WeixinController extends BaseController {
 					User accountUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
 
 					String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
+					LoggerUtil.info("[Weixin login : getCookieSidValue == ]" + sid);
 					HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(sid, request);
 
 					redisCacheService.set(RedisConstant.H5_LOGIN_TOKEN_SID, loginToken.getToken());

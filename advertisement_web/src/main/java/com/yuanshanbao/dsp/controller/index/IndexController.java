@@ -77,7 +77,7 @@ public class IndexController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			Activity activity = null;
-			String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SESSION_ID);
+			String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
 			LoggerUtil.info("[home sid--]: " + sid);
 			HttpServletRequestWrapper httpServletRequestWrapper = new HttpServletRequestWrapper(sid, request);
 			LoginToken loginToken = (LoginToken) httpServletRequestWrapper.getAttribute("loginToken");
@@ -133,8 +133,10 @@ public class IndexController extends BaseController {
 	@ResponseBody
 	public void getSidValue(HttpServletRequest request, HttpServletResponse response) {
 		String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
+		LoggerUtil.info("[Index : getCookieValue = ] " + sid);
 		if (StringUtils.isBlank(sid)) {
 			String sidString = CommonUtil.getRandomID();
+			LoggerUtil.info("[Index : getRandomID = ] " + sidString);
 			CookieUtils.setSessionCookieValue(response, SessionConstants.COOKIE_SID, sidString);
 		}
 
