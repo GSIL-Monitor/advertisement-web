@@ -11,6 +11,9 @@ public class SessionConstants {
 	public static final String SESSION_ACCOUNT = "session_account";
 
 	public static final String SESSION_USER = "session_user";
+
+	public static final String SESSION_TOKEN = "session_token";
+
 	public static final String SESSION_WEIXIN = "session_weixin";
 	public static final String SESSION_WEIXIN_CHECK = "session_weixin_check";
 	public static final String SESSION_WEIXIN_TRY = "session_weixin_try";

@@ -74,16 +74,13 @@ public class WeixinController extends BaseController {
 			String unionId = token.getUnionid();
 			LoggerUtil.info("[Weixin login unionId=]" + unionId);
 			if (sessionUser != null && StringUtils.isNotBlank(unionId)) {
-
 				sessionUser.setWeixinId(unionId);
 				userService.updateUser(sessionUser);
 				request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, sessionUser);
 				// LoggerUtil.info("[Weixin code=]" + code +
 				// "[Weixin token=]" + token.toJsonString());
 			} else if (StringUtils.isNotBlank(unionId)) {
-
 				User account = userService.selectUserByWeixinId(unionId);
-
 				LoggerUtil.info("type=weixinLogin, userId=" + String.valueOf(account.getUserId()) + ", mobile="
 						+ String.valueOf(account.getMobile()) + ",weiXinId=" + account.getWeixinId());
 				if (account != null) {
@@ -91,8 +88,8 @@ public class WeixinController extends BaseController {
 							String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
 					loginToken.setUser(account);
 					request.getSession().setAttribute(SessionConstants.SESSION_USER, account);
-					request.getSession().setAttribute("loginToken", loginToken);
-
+					request.getSession().setAttribute(SessionConstants.SESSION_TOKEN, loginToken.getToken());
+					LoggerUtil.info("[Weixin login : SESSION_TOKEN == ]" + loginToken.getToken());
 					User accountUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
 
 					String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
@@ -121,7 +118,6 @@ public class WeixinController extends BaseController {
 					// }
 					userService.insertUser(user);
 				}
-
 				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_CHECK, "true");
 				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN, unionId);
 				if (StringUtils.isNotBlank(domainToken)) {

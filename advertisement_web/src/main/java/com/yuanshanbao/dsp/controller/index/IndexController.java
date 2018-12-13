@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.CommonUtil;
 import com.yuanshanbao.common.util.CookieUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
@@ -76,27 +75,24 @@ public class IndexController extends BaseController {
 			PageBounds pageBounds, String token, Integer client, String version) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-
-			User sUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
-			LoggerUtil.info("[home SESSION_USER--]: " + sUser);
-
 			Activity activity = null;
-			String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
-			LoggerUtil.info("[home sid--]: " + sid);
-			HttpServletRequestWrapper httpServletRequestWrapper = new HttpServletRequestWrapper(sid, request);
-			LoginToken loginToken = (LoginToken) httpServletRequestWrapper.getAttribute("loginToken");
-			User sessionUser = (User) httpServletRequestWrapper.getAttribute(SessionConstants.SESSION_ACCOUNT);
-			// User sessionUser = (User)
-			// request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
-			// LoginToken loginToken = (LoginToken)
-			// request.getSession().getAttribute("loginToken");
-			LoggerUtil.info("[home sessionUser--]: " + sessionUser);
-
-			LoggerUtil.info("[home loginToken--]: " + loginToken);
-
-			if (token == null || token == "") {
-				activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
-				getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+			// 区分小程序登录 h5登录
+			if (StringUtils.isBlank(token)) {
+				User sUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
+				String H5Token = (String) request.getSession().getAttribute(SessionConstants.SESSION_TOKEN);
+				LoggerUtil.info("[home SESSION_USER--]: " + sUser);
+				LoggerUtil.info("[home SESSION_TOKEN--]: " + H5Token);
+				if (StringUtils.isBlank(H5Token)) {
+					throw new BusinessException(ComRetCode.TOKEN_INVALID);
+				} else {
+					User h5User = userService.selectUserByToken(H5Token);
+					if (h5User == null) {
+						throw new BusinessException(ComRetCode.TOKEN_INVALID);
+					} else {
+						activity = ConfigManager.getActivityByKey(WANGZHUAN);
+						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+					}
+				}
 			} else {
 				if (StringUtils.isNoneBlank(version) && version.equals(IniBean.getIniValue("wzxcxProductChannel"))) {
 					resultMap.put("version", true);
@@ -120,8 +116,30 @@ public class IndexController extends BaseController {
 					activity = ConfigManager.getActivityByKey(WANGZHUAN);
 					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 				}
-
 			}
+
+			String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
+			LoggerUtil.info("[home sid--]: " + sid);
+			HttpServletRequestWrapper httpServletRequestWrapper = new HttpServletRequestWrapper(sid, request);
+			LoginToken loginToken = (LoginToken) httpServletRequestWrapper.getAttribute("loginToken");
+			User sessionUser = (User) httpServletRequestWrapper.getAttribute(SessionConstants.SESSION_ACCOUNT);
+			// User sessionUser = (User)
+			// request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
+			// LoginToken loginToken = (LoginToken)
+			// request.getSession().getAttribute("loginToken");
+			LoggerUtil.info("[home sessionUser--]: " + sessionUser);
+
+			LoggerUtil.info("[home loginToken--]: " + loginToken);
+
+			/*
+			 * if (token == null || token == "") { activity =
+			 * ConfigManager.getActivityByKey(WANGZHUANAGENT);
+			 * getHomeInfos(resultMap, activity, product, pageBounds, request,
+			 * client); } else {
+			 * 
+			 * 
+			 * }
+			 */
 
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -133,18 +151,20 @@ public class IndexController extends BaseController {
 		return resultMap;
 	}
 
-	@RequestMapping("/get/sid")
-	@ResponseBody
-	public void getSidValue(HttpServletRequest request, HttpServletResponse response) {
-		String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
-		LoggerUtil.info("[Index : getCookieValue = ] " + sid);
-		if (StringUtils.isBlank(sid)) {
-			String sidString = CommonUtil.getRandomID();
-			LoggerUtil.info("[Index : getRandomID = ] " + sidString);
-			CookieUtils.setSessionCookieValue(response, SessionConstants.COOKIE_SID, sidString);
-		}
-
-	}
+	/*
+	 * @RequestMapping("/get/sid")
+	 * 
+	 * @ResponseBody public void getSidValue(HttpServletRequest request,
+	 * HttpServletResponse response) { String sid =
+	 * CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SESSION_ID);
+	 * LoggerUtil.info("[Index : getCookieValue = ] " + sid); if
+	 * (StringUtils.isBlank(sid)) { String sidString = CommonUtil.getRandomID();
+	 * LoggerUtil.info("[Index : getRandomID = ] " + sidString);
+	 * CookieUtils.setSessionCookieValue(response,
+	 * SessionConstants.COOKIE_SESSION_ID, sidString); }
+	 * 
+	 * }
+	 */
 
 	@RequestMapping("")
 	public String indexWeb(HttpServletRequest request, ModelMap resultMap) {
