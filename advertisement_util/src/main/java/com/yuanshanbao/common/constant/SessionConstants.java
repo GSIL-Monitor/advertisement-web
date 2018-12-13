@@ -4,6 +4,7 @@ public class SessionConstants {
 	public static final String COOKIE_SESSION_ID = "sid";
 	public static final String COOKIE_PERSIST_ID = "pid";
 
+	public static final String COOKIE_SID = "cookid_sid";
 	public static final String SESSION_PROJECT_ID = "session_project_id";
 	public static final String SESSION_PROJECT_KEY = "session_project_key";
 
