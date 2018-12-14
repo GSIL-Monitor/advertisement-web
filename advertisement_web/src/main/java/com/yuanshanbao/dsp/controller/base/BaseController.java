@@ -148,6 +148,20 @@ public class BaseController {
 		return user;
 	}
 
+	protected User differentiateTokenUser(HttpServletRequest request, String token) {
+		if (StringUtils.isBlank(token)) {
+			String hToken = (String) request.getSession().getAttribute(SessionConstants.SESSION_TOKEN);
+			LoggerUtil.info("[BaseController-differentToken-h5Token]" + hToken);
+			User hUser = getLoginUser(hToken);
+			if (hUser == null || hUser.getUserId() == 0) {
+				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
+			}
+			return hUser;
+		}
+		LoggerUtil.info("[BaseController-differentToken-token]" + token);
+		return getLoginUser(token);
+	}
+
 	protected boolean checkRepeatPostRequest(HttpServletRequest request) {
 		String token = request.getParameter(POST_UNIQUE_TOKEN);
 		if (StringUtils.isBlank(token)) {
@@ -526,6 +540,7 @@ public class BaseController {
 		String approvelProductVersion = IniBean.getIniValue("approvelProductVersion");
 		String invalidProductVersion = IniBean.getIniValue("invalidProductVersion");
 		String approvalProductChannel = IniBean.getIniValue("approvalProductChannel");
+
 		if (StringUtils.isBlank(appId)) {
 			if (StringUtils.isNotBlank(approvelProductVersion)) {
 				return true;

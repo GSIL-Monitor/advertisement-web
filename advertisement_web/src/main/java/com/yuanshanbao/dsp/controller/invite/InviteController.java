@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,10 +55,10 @@ public class InviteController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/inviteQRcode")
-	public Object inviteFriend(String token) {
+	public Object inviteFriend(HttpServletRequest request, String token) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User user = getLoginUser(token);
+			User user = differentiateTokenUser(request, token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
@@ -79,7 +81,6 @@ public class InviteController extends BaseController {
 						resultMap.put("QRcode", applayCardCode);
 					}
 				}
-
 				resultMap.put("inviteImageUrl", h5InviteImageUrl);
 				resultMap.put("user", user);
 				resultMap.put("url", H5Url);
@@ -150,10 +151,11 @@ public class InviteController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/xcxGetDetailCode")
-	public Object xcxGetDetailCode(String token, @RequestParam(value = "productId", required = false) String productId) {
+	public Object xcxGetDetailCode(HttpServletRequest request, String token,
+			@RequestParam(value = "productId", required = false) String productId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User user = tokenService.verifyLoginToken(token);
+			User user = differentiateTokenUser(request, token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
@@ -212,10 +214,11 @@ public class InviteController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/getUrl")
-	public Object getUrl(String token, @RequestParam(value = "productId", required = false) String productId) {
+	public Object getUrl(HttpServletRequest request, String token,
+			@RequestParam(value = "productId", required = false) String productId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User user = tokenService.verifyLoginToken(token);
+			User user = differentiateTokenUser(request, token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
