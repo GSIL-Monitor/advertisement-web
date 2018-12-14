@@ -38,7 +38,7 @@ public class UserBankCardController extends BaseController {
 			@RequestParam("userName") String userName, @RequestParam("mobile") String mobile, String userId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User sUser = differentiateTokenUser(request, token);
+
 			if (!ValidateUtil.isPhoneNo(mobile)) {
 				throw new BusinessException(ComRetCode.WRONG_MOBILE);
 			}
