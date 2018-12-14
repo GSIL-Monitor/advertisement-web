@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DataFormat;
@@ -29,7 +28,6 @@ import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.earnings.model.Earnings;
 import com.yuanshanbao.dsp.earnings.service.EarningsService;
 import com.yuanshanbao.dsp.payment.PaymentInterfaceService;
@@ -98,18 +96,10 @@ public class AccountController extends BaseController {
 	public Object getBalance(String token, HttpServletRequest request) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-
-			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_ACCOUNT);
-			HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(token, request);
-			User wrapperUser = (User) requestWrapper.getAttribute(SessionConstants.SESSION_ACCOUNT);
-			LoggerUtil.info("[balance sessionUser=]" + sessionUser);
-			LoggerUtil.info("[balance wrapper=]" + wrapperUser);
-			LoggerUtil.info("[balance sessionId = =]" + request.getSession().getId());
-			User user = getLoginUser(token);
+			User user = differentiateTokenUser(request, token);
 			if (user == null) {
-				throw new BusinessException(ComRetCode.TOKEN_LOSE_EFFICACY);
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
-
 			resultMap.putAll(paymentInterfaceService.queryBalance(String.valueOf(user.getUserId())));
 
 			Object withdrawAmount = paymentInterfaceService.queryBillAmount(String.valueOf(user.getUserId()),
@@ -144,7 +134,6 @@ public class AccountController extends BaseController {
 					brokerages = BigDecimal.ZERO;
 				}
 			}
-
 			resultMap.put("brokerageAmount", brokerageAmount);
 			resultMap.put("user", userService.selectUserById(user.getUserId()));
 			Integer level = user.getLevel();
@@ -284,10 +273,10 @@ public class AccountController extends BaseController {
 
 	@RequestMapping("/queryIdentity")
 	@ResponseBody
-	public Object queryIdentity(String token, PageBounds pageBounds) {
+	public Object queryIdentity(HttpServletRequest request, String token, PageBounds pageBounds) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User loginToken = tokenService.verifyLoginToken(token);
+			User loginToken = differentiateTokenUser(request, token);
 			if (loginToken == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
@@ -314,7 +303,7 @@ public class AccountController extends BaseController {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String name = parameterMap.get("name");
 			String identityCard = parameterMap.get("identityCard");
-			User loginToken = getLoginUser(token);
+			User loginToken = differentiateTokenUser(request, token);
 			if (!ValidateUtil.isChineseName(name)) {
 				throw new BusinessException(ComRetCode.NAME_FORMAT_ERROR);
 			}
@@ -337,10 +326,10 @@ public class AccountController extends BaseController {
 
 	@RequestMapping("/queryBankCard")
 	@ResponseBody
-	public Object queryBankCard(@RequestParam String token, PageBounds pageBounds) {
+	public Object queryBankCard(@RequestParam String token, PageBounds pageBounds, HttpServletRequest request) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			User loginToken = tokenService.verifyLoginToken(token);
+			User loginToken = differentiateTokenUser(request, token);
 			if (loginToken == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
@@ -365,7 +354,7 @@ public class AccountController extends BaseController {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String bankCardNumber = parameterMap.get("bankCardNumber");
 
-			User loginToken = getLoginUser(token);
+			User loginToken = differentiateTokenUser(request, token);
 			if (loginToken == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}

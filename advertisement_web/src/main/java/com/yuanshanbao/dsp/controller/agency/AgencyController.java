@@ -46,8 +46,13 @@ public class AgencyController extends BaseController {
 
 		Map<Object, Object> resultMap = new HashMap<>();
 		try {
+
 			// 获取当前用户信息
-			User user = getLoginUser(token);
+
+			User user = differentiateTokenUser(request, token);
+			if (user == null) {
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
+			}
 			if (user.getLevel() == null) {
 				user.setLevel(UserLevel.MANAGER);
 				userService.updateUser(user);
@@ -60,7 +65,9 @@ public class AgencyController extends BaseController {
 				resultMap.put("agencyList", agencyInfos);
 			}
 			resultMap.put("user", user);
+
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
@@ -76,7 +83,10 @@ public class AgencyController extends BaseController {
 		Map<String, Object> resultMap = new HashMap<>();
 		List<Agency> twoAgencyList = new ArrayList<>();
 		try {
-			User user = getLoginUser(token);
+			User user = differentiateTokenUser(request, token);
+			if (user == null) {
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
+			}
 			if (user.getLevel() == null) {
 				user.setLevel(UserLevel.MANAGER);
 				userService.updateUser(user);

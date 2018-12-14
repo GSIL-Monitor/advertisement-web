@@ -87,7 +87,8 @@ public class IndexController extends BaseController {
 					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 					resultMap.put("H5Token", H5Token);
 				} else {
-					User h5User = userService.selectUserByToken(H5Token);
+					User h5User = getLoginUser(H5Token);
+					// = userService.selectUserByToken(H5Token);
 					if (h5User == null) {
 						throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
 					} else {

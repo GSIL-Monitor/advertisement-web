@@ -11,7 +11,8 @@ public class CommonStatus {
 	public static final String ONLINE_DESCRIPTION = "上线";
 	public static final int OFFLINE = -1;
 	public static final String OFFLINE_DESCRIPTION = "下线";
-
+	public static final int DETERMINED = 2;
+	public static final String DETERMINED_DESCRIPTION = "待定";
 	static {
 		initCodeDescriptionMap();
 	}
@@ -19,6 +20,7 @@ public class CommonStatus {
 	public static void initCodeDescriptionMap() {
 		codeDescriptionMap.put(ONLINE, ONLINE_DESCRIPTION);
 		codeDescriptionMap.put(OFFLINE, OFFLINE_DESCRIPTION);
+		codeDescriptionMap.put(DETERMINED, DETERMINED_DESCRIPTION);
 	}
 
 	public static String getDescription(Integer code) {

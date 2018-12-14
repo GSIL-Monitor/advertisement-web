@@ -3,6 +3,8 @@ package com.yuanshanbao.dsp.controller.user.card;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,10 +34,11 @@ public class UserBankCardController extends BaseController {
 
 	@RequestMapping("/applyCard")
 	@ResponseBody
-	public Object applyCard(String token, @RequestParam("productId") String productId,
+	public Object applyCard(HttpServletRequest request, String token, @RequestParam("productId") String productId,
 			@RequestParam("userName") String userName, @RequestParam("mobile") String mobile, String userId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+			User sUser = differentiateTokenUser(request, token);
 			if (!ValidateUtil.isPhoneNo(mobile)) {
 				throw new BusinessException(ComRetCode.WRONG_MOBILE);
 			}
