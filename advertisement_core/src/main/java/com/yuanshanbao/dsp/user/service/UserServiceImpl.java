@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
+import com.yuanshanbao.common.qrcode.ZXingCode;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.MD5Util;
@@ -457,6 +458,24 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException(ComRetCode.FAIL);
 		}
 		return result;
+	}
+
+	@Override
+	public void createQRCodeURL(User user, String h5Url, Map<String, Object> resultMap) {
+		String applayCardCode = null;
+		// 插入logo
+		User userAvatar = selectUserById(user.getUserId());
+		if (userAvatar != null) {
+			if (userAvatar.getAvatar() == null || "undefined".equals(userAvatar.getAvatar())) {
+				applayCardCode = ZXingCode.getLogoQRCode(h5Url, user.getAvatar());
+				resultMap.put("QRcode", applayCardCode);
+			} else {
+				applayCardCode = ZXingCode.getLogoQRCode(h5Url, userAvatar.getAvatar());
+				resultMap.put("QRcode", applayCardCode);
+			}
+		}
+		resultMap.put("user", user);
+		resultMap.put("url", h5Url);
 	}
 
 }

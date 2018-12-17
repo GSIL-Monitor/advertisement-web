@@ -74,4 +74,6 @@ public interface UserService {
 	public Boolean changeMobile(User tokenUser, User user, String mobile);
 
 	public int getUserLevelMajordomo(Long userId);
+
+	public void createQRCodeURL(User user, String h5Url, Map<String, Object> resultMap);
 }
