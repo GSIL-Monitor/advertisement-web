@@ -156,20 +156,25 @@ public class IndexController extends BaseController {
 		return resultMap;
 	}
 
-	/*
-	 * @RequestMapping("/get/sid")
-	 * 
-	 * @ResponseBody public void getSidValue(HttpServletRequest request,
-	 * HttpServletResponse response) { String sid =
-	 * CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SESSION_ID);
-	 * LoggerUtil.info("[Index : getCookieValue = ] " + sid); if
-	 * (StringUtils.isBlank(sid)) { String sidString = CommonUtil.getRandomID();
-	 * LoggerUtil.info("[Index : getRandomID = ] " + sidString);
-	 * CookieUtils.setSessionCookieValue(response,
-	 * SessionConstants.COOKIE_SESSION_ID, sidString); }
-	 * 
-	 * }
-	 */
+	@RequestMapping("/get/sid")
+	@ResponseBody
+	public Object getSidValue(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			String token = (String) request.getAttribute(SessionConstants.SESSION_TOKEN);
+			if (StringUtils.isBlank(token)) {
+				resultMap.put("sid", false);
+			} else {
+				resultMap.put("sid", true);
+			}
+
+		} catch (Exception e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			LoggerUtil.error("[Result: error]", e);
+		}
+
+		return resultMap;
+	}
 
 	@RequestMapping("")
 	public String indexWeb(HttpServletRequest request, ModelMap resultMap) {
