@@ -22,4 +22,6 @@ public interface AdminUserService {
 	public boolean updateUser(User user);
 
 	public boolean updateUserPwd(User user);
+
+	public List<User> queryUserByUserName(User user);
 }

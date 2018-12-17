@@ -32,7 +32,6 @@ import com.yuanshanbao.ms.service.cache.UserLoginFailCacheService;
 import com.yuanshanbao.ms.service.monitor.UserMonitorLogService;
 import com.yuanshanbao.ms.utils.UserLoginInfo;
 import com.yuanshanbao.ms.utils.security.EntryptDecryptUtils;
-import com.yuanshanbao.paginator.domain.PageBounds;
 
 public class SysUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	public static final String VALIDATE_CODE = "validateCode";
@@ -128,7 +127,7 @@ public class SysUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
 								User query = new User();
 								query.setUsername(username);
 								query.setProjectId(ConstantsManager.getProjectId(projectService, request));
-								List<User> users = userService.queryUsers(query, new PageBounds());
+								List<User> users = userService.queryUserByUserName(query);
 								if (users != null && users.size() > 0) {
 									user = users.get(0);
 								}
@@ -219,7 +218,7 @@ public class SysUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
 			User query = new User();
 			query.setUsername(username);
 			query.setProjectId(ConstantsManager.getProjectId(projectService, request));
-			List<User> users = userService.queryUsers(query, new PageBounds());
+			List<User> users = userService.queryUserByUserName(query);
 			if (users != null && users.size() > 0) {
 				user = users.get(0);
 			}

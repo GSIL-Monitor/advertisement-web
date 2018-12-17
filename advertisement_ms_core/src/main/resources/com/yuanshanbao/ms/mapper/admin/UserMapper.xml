@@ -46,6 +46,29 @@
 		</where>
 	</select>
 	
+	<select id="queryUserByUserName" parameterType="com.yuanshanbao.ms.model.admin.User" resultType="com.yuanshanbao.ms.model.admin.User">
+		select 
+		username,
+		project_id as projectId, password, description,
+		last_time, first_login_force, login_count,
+		last_chgpwd_time, email, pwd_keep_time, name, department_id as departmentId,
+		department_name as departmentName, user_level, is_locked, bind_user_ids,
+		create_time, bind_company_id as bindCompanyId, 
+		bind_channel as bindChannel, company_name as companyName
+		 from tb_admin_users u
+		<where>
+			<trim suffixOverrides="and">
+				<if test="username != null and username != ''">
+				username =#{username} and
+				</if>
+				
+				<if test="projectId != null">
+				project_id=#{projectId} and
+				</if>
+			</trim>
+		</where>
+	</select>
+	
 	<select id="queryUserByName" parameterType="string" resultType="com.yuanshanbao.ms.model.admin.User">
 		select
 		* from tb_admin_users 

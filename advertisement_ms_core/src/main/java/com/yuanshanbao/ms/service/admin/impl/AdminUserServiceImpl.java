@@ -135,4 +135,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 		}
 	}
 
+	@Override
+	public List<User> queryUserByUserName(User user) {
+		return userMapper.queryUserByUserName(user);
+	}
+
 }
