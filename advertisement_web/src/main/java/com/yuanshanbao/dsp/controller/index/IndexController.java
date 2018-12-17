@@ -87,14 +87,22 @@ public class IndexController extends BaseController {
 					getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 					resultMap.put("H5Token", H5Token);
 				} else {
+
 					User h5User = getLoginUser(H5Token);
 					// = userService.selectUserByToken(H5Token);
 					if (h5User == null) {
 						throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
 					} else {
-						activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
-						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
-
+						if (h5User.getLevel() == null) {
+							h5User.setLevel(UserLevel.MANAGER);
+						}
+						if (h5User.getLevel() == UserLevel.VIP_AGENT) {
+							activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+						} else {
+							activity = ConfigManager.getActivityByKey(WANGZHUAN);
+							getHomeInfos(resultMap, activity, product, pageBounds, request, client);
+						}
 					}
 				}
 			} else {
@@ -161,13 +169,12 @@ public class IndexController extends BaseController {
 	public Object getSidValue(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			String token = (String) request.getAttribute(SessionConstants.SESSION_TOKEN);
+			String token = (String) request.getSession().getAttribute(SessionConstants.SESSION_TOKEN);
 			if (StringUtils.isBlank(token)) {
 				resultMap.put("sid", false);
 			} else {
 				resultMap.put("sid", true);
 			}
-
 		} catch (Exception e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 			LoggerUtil.error("[Result: error]", e);
