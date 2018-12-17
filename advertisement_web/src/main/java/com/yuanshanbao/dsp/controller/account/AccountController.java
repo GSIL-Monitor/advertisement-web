@@ -326,7 +326,7 @@ public class AccountController extends BaseController {
 
 	@RequestMapping("/queryBankCard")
 	@ResponseBody
-	public Object queryBankCard(@RequestParam String token, PageBounds pageBounds, HttpServletRequest request) {
+	public Object queryBankCard(String token, PageBounds pageBounds, HttpServletRequest request) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
 			User loginToken = differentiateTokenUser(request, token);

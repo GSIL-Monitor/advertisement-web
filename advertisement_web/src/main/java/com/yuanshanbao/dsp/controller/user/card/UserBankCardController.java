@@ -43,7 +43,7 @@ public class UserBankCardController extends BaseController {
 				throw new BusinessException(ComRetCode.WRONG_MOBILE);
 			}
 			if (StringUtils.isBlank(userId)) {
-				User loginUser = getLoginUser(token);
+				User loginUser = differentiateTokenUser(request, token);
 				bankCardService.getApplyBankCardInfo(loginUser, Long.valueOf(productId), userName, mobile);
 			} else {
 				User user = userService.selectUserById(userId);
