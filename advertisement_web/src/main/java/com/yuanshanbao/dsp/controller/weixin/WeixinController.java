@@ -18,6 +18,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.user.model.BaseInfo;
@@ -106,7 +107,7 @@ public class WeixinController extends BaseController {
 						account.setAvatar(userInfo.getHeadimgurl());
 						account.setNickName(userInfo.getNickname());
 					}
-					if (inviteUserId != null) {
+					if (inviteUserId != null && ValidateUtil.isNumber(inviteUserId)) {
 						account.setInviteUserId(Long.valueOf(inviteUserId));
 					}
 					userService.insertUser(account);
