@@ -69,7 +69,9 @@ public class WeixinController extends BaseController {
 		try {
 			User sessionUser = getSessionUser(request);
 			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
-			GetUserInfoResponse userInfo = weixinService.getUserInfo(token.getAccessToken(), token.getOpenid());
+
+			GetUserInfoResponse userInfo = weixinService.getUserInfo(token.getOpenid());
+
 			LoggerUtil.info("[Weixin login userInfo=]" + userInfo);
 			LoggerUtil.info("[Weixin login token=]" + token);
 			LoggerUtil.info("[Weixin login getAccessToken=]" + token.getAccessToken());

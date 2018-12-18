@@ -160,7 +160,19 @@ public class InviteController extends BaseController {
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId
 						+ "&fromPage=products";
-				userService.createQRCodeURL(user, H5Url, resultMap);
+				String applayCardCode = null;
+				Product product = productService.selectProduct(Long.valueOf(productId));
+				if (product != null) {
+					if (StringUtils.isNotBlank(product.getImageUrl())) {
+						applayCardCode = ZXingCode.getLogoQRCode(H5Url, product.getImageUrl());
+						resultMap.put("QRcode", applayCardCode);
+					}
+				} else {
+					applayCardCode = ZXingCode.getLogoQRCode(H5Url, null);
+					resultMap.put("QRcode", applayCardCode);
+				}
+				resultMap.put("user", user);
+				resultMap.put("url", H5Url);
 			} else {
 
 				if (StringUtils.isBlank(token)) {
