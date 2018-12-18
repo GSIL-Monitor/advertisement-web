@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
 import com.github.sd4324530.fastweixin.api.response.OauthGetTokenResponse;
 import com.yuanshanbao.common.constant.SessionConstants;
-import com.yuanshanbao.common.util.CookieUtils;
+import com.yuanshanbao.common.exception.BusinessException;
+import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
-import com.yuanshanbao.dsp.core.http.HttpServletRequestWrapper;
 import com.yuanshanbao.dsp.user.model.BaseInfo;
 import com.yuanshanbao.dsp.user.model.LoginToken;
 import com.yuanshanbao.dsp.user.model.User;
@@ -47,11 +46,12 @@ public class WeixinController extends BaseController {
 	private TokenService tokenService;
 
 	@RequestMapping("/auth")
-	public String auth(HttpServletRequest request, String returnUrl) throws UnsupportedEncodingException {
+	public String auth(HttpServletRequest request, String returnUrl, String inviteUserId)
+			throws UnsupportedEncodingException {
 		try {
 			String host = request.getHeader("Host");
 			String redirectUrl = "https://" + host + "/i/weixin/oauth/login?returnUrl="
-					+ URLEncoder.encode(returnUrl, "utf-8");
+					+ URLEncoder.encode(returnUrl, "utf-8") + "&inviteUserId=" + inviteUserId;
 			String aString = weixinService.getUserInfoRedirectUrl(redirectUrl);
 			LoggerUtil.info("[Weixin auth redirectUrl=]" + redirectUrl);
 			LoggerUtil.info("[Weixin auth url=]" + aString);
@@ -64,60 +64,59 @@ public class WeixinController extends BaseController {
 
 	@RequestMapping("/login")
 	public String login(HttpServletRequest request, String returnUrl, String code, String domainToken,
-			HttpServletResponse response) {
+			String inviteUserId, HttpServletResponse response) {
 		try {
 			User sessionUser = getSessionUser(request);
 			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
-
+			GetUserInfoResponse userInfo = weixinService.getUserInfo(token.getAccessToken(), token.getOpenid());
+			LoggerUtil.info("[Weixin login userInfo=]" + userInfo);
 			LoggerUtil.info("[Weixin login token=]" + token);
 
 			String unionId = token.getUnionid();
 			LoggerUtil.info("[Weixin login unionId=]" + unionId);
 			if (sessionUser != null && StringUtils.isNotBlank(unionId)) {
-				sessionUser.setWeixinId(unionId);
-				userService.updateUser(sessionUser);
+				User sUser = new User();
+				sUser.setUserId(sessionUser.getUserId());
+				if (sessionUser.getAvatar() != null && "undefined".equals(sessionUser.getAvatar())) {
+					sUser.setAvatar(sessionUser.getAvatar());
+				}
+				if (sessionUser.getNickName() != null && "undefined".equals(sessionUser.getNickName())) {
+					sUser.setNickName(sessionUser.getNickName());
+				}
+				sUser.setWeixinId(unionId);
+				userService.updateUser(sUser);
 				request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, sessionUser);
+				LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
+						String.valueOf(sessionUser.getUserId()), JSPHelper.getRemoteAddr(request));
+				request.getSession().setAttribute(SessionConstants.SESSION_TOKEN, loginToken.getToken());
+				LoggerUtil.info("[Weixin login sessionUser !=SESSION_TOKEN == ]" + loginToken.getToken());
+
 				// LoggerUtil.info("[Weixin code=]" + code +
 				// "[Weixin token=]" + token.toJsonString());
 			} else if (StringUtils.isNotBlank(unionId)) {
 				User account = userService.selectUserByWeixinId(unionId);
-				LoggerUtil.info("type=weixinLogin, userId=" + String.valueOf(account.getUserId()) + ", mobile="
-						+ String.valueOf(account.getMobile()) + ",weiXinId=" + account.getWeixinId());
-				if (account != null) {
-					LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
-							String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
-					loginToken.setUser(account);
-					request.getSession().setAttribute(SessionConstants.SESSION_USER, account);
-					request.getSession().setAttribute(SessionConstants.SESSION_TOKEN, loginToken.getToken());
-					LoggerUtil.info("[Weixin login : SESSION_TOKEN == ]" + loginToken.getToken());
-					User accountUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
-
-					String sid = CookieUtils.getCookieValue(request, SessionConstants.COOKIE_SID);
-					LoggerUtil.info("[Weixin login : getCookieValue == ]" + sid);
-					HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(sid, request);
-
-					redisCacheService.set(RedisConstant.H5_LOGIN_TOKEN_SID, loginToken.getToken());
-
-					requestWrapper.getSession().setAttribute(SessionConstants.SESSION_USER, account);
-					requestWrapper.getSession().setAttribute("loginToken", loginToken);
-					LoggerUtil.info("[Weixin accountUser=]" + accountUser.toString() + ",userId = "
-							+ accountUser.getUserId());
-					LoggerUtil.info("[Weixin loginToken=]" + loginToken.toString());
-
-					LoggerUtil.info("type=weixinLogin, userId=" + String.valueOf(account.getUserId()) + ", mobile="
-							+ String.valueOf(account.getMobile()));
-				} else {
-					User user = new User();
-					if (StringUtils.isNotBlank(unionId)) {
-						user.setWeixinId(unionId);
+				if (account == null) {
+					account.setWeixinId(unionId);
+					account.setStatus(UserStatus.NORMAL);
+					account.setLevel(UserLevel.MANAGER);
+					if (userInfo != null) {
+						account.setAvatar(userInfo.getHeadimgurl());
+						account.setNickName(userInfo.getNickname());
 					}
-					user.setStatus(UserStatus.NORMAL);
-					user.setLevel(UserLevel.MANAGER);
-					// if (inviteUserId != null) {
-					// user.setInviteUserId(Long.valueOf(inviteUserId));
-					// }
-					userService.insertUser(user);
+					if (inviteUserId != null) {
+						account.setInviteUserId(Long.valueOf(inviteUserId));
+					}
+					userService.insertUser(account);
 				}
+				LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
+						String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
+				loginToken.setUser(account);
+				request.getSession().setAttribute(SessionConstants.SESSION_TOKEN, loginToken.getToken());
+				LoggerUtil.info("[Weixin login : SESSION_TOKEN == ]" + loginToken.getToken());
+
+				LoggerUtil.info("type=weixinLogin, userId=" + String.valueOf(account.getUserId()) + ", mobile="
+						+ String.valueOf(account.getMobile()));
+
 				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_CHECK, "true");
 				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN, unionId);
 				if (StringUtils.isNotBlank(domainToken)) {
@@ -125,15 +124,20 @@ public class WeixinController extends BaseController {
 				}
 				// request.getSession().setAttribute("token", token);
 			} else {
-				Object weixinTry = request.getSession().getAttribute(SessionConstants.SESSION_WEIXIN_TRY);
-				LoggerUtil.info("[Weixin login weixinTry=]" + weixinTry);
-
-				if (weixinTry != null && weixinTry.equals("true")) {
-					request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_CHECK, "true");
-				}
-				// LoggerUtil.info("[Weixin login code=]" + code + "token" +
-				// token);
-				request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_TRY, "true");
+				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
+				//
+				// Object weixinTry =
+				// request.getSession().getAttribute(SessionConstants.SESSION_WEIXIN_TRY);
+				// LoggerUtil.info("[Weixin login weixinTry=]" + weixinTry);
+				//
+				// if (weixinTry != null && weixinTry.equals("true")) {
+				// request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_CHECK,
+				// "true");
+				// }
+				// // LoggerUtil.info("[Weixin login code=]" + code + "token" +
+				// // token);
+				// request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_TRY,
+				// "true");
 			}
 			return "redirect:" + returnUrl;
 		} catch (Exception e) {

@@ -35,7 +35,7 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 public class BankCardServiceImpl implements BankCardService {
 
 	public final static BigDecimal MANAGER_PERCENTAGE = BigDecimal.valueOf(0.85);
-	public final static BigDecimal DIRECTOR_PERCENTAGE = BigDecimal.valueOf(0.9);
+	public final static BigDecimal DIRECTOR_PERCENTAGE = BigDecimal.valueOf(0.95);
 
 	public final static BigDecimal MANAGER_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.1);
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
@@ -105,7 +105,7 @@ public class BankCardServiceImpl implements BankCardService {
 				if (inviteUser.getLevel() == null) {
 					inviteUser.setLevel(UserLevel.MANAGER);
 				}
-				agency.setBrokerage(product.getBrokerage());
+				agency.setBrokerage(product.getBrokerage().multiply(DIRECTOR_PERCENTAGE));
 				/*
 				 * if (inviteUser != null && inviteUser.getLevel() ==
 				 * UserLevel.MANAGER) {
