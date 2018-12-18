@@ -71,6 +71,8 @@ public class WeixinController extends BaseController {
 			GetUserInfoResponse userInfo = weixinService.getUserInfo(token.getAccessToken(), token.getOpenid());
 			LoggerUtil.info("[Weixin login userInfo=]" + userInfo);
 			LoggerUtil.info("[Weixin login token=]" + token);
+			LoggerUtil.info("[Weixin login getAccessToken=]" + token.getAccessToken());
+			LoggerUtil.info("[Weixin login getOpenid=]" + token.getOpenid());
 
 			String unionId = token.getUnionid();
 			LoggerUtil.info("[Weixin login unionId=]" + unionId);
@@ -96,6 +98,7 @@ public class WeixinController extends BaseController {
 			} else if (StringUtils.isNotBlank(unionId)) {
 				User account = userService.selectUserByWeixinId(unionId);
 				if (account == null) {
+					account = new User();
 					account.setWeixinId(unionId);
 					account.setStatus(UserStatus.NORMAL);
 					account.setLevel(UserLevel.MANAGER);
