@@ -23,6 +23,8 @@ import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -69,6 +71,8 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private QuotaService quotaService;
 	@Autowired
 	private PlanService planService;
+	@Autowired
+	private ChannelService channelService;
 
 	@Override
 	public void insertAdvertisementStatistics(AdvertisementStatistics advertisementStatistics) {
@@ -113,16 +117,21 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	private List<AdvertisementStatistics> setProperty(List<AdvertisementStatistics> selectAdvertisementStatistics) {
 		List<Long> advertisementIds = new ArrayList<Long>();
 		List<Long> planIds = new ArrayList<Long>();
+		List<String> channelKeys = new ArrayList<String>();
 		for (AdvertisementStatistics adStatistics : selectAdvertisementStatistics) {
 			advertisementIds.add(adStatistics.getAdvertisementId());
 			planIds.add(adStatistics.getPlanId());
+			channelKeys.add(adStatistics.getChannel());
 		}
 
 		Map<Long, Advertisement> map = advertisementService.selectAdvertisementByIds(advertisementIds);
 		Map<Long, Plan> planMap = planService.selectPlanByIds(planIds);
+		Map<String, Channel> channelMap = channelService.selectChannelByKeys(channelKeys);
 		for (AdvertisementStatistics adStatistics : selectAdvertisementStatistics) {
 			adStatistics.setAdvertisement(map.get(adStatistics.getAdvertisementId()));
 			adStatistics.setPlan(planMap.get(adStatistics.getPlanId()));
+			adStatistics.setChannelObject(channelMap.get(adStatistics.getChannel()));
+
 		}
 		return selectAdvertisementStatistics;
 	}
@@ -1025,9 +1034,11 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 			} else {
 				for (Probability pro : probabilityList) {
 					Plan plan = planService.selectPlan(pro.getPlanId());
+					Channel channelObject = channelService.selectChannel(pro.getChannel());
 					AdvertisementStatistics statistic = createPlanStatistic(diffDate, pv, pro.getPlanId(),
 							pro.getChannel());
 					statistic.setPlan(plan);
+					statistic.setChannelObject(channelObject);
 					addPlanToResultMap(resultMap, pro.getPlanId(), statistic);
 				}
 				result.addAll(resultMap.values());

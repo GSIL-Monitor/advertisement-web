@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 import com.yuanshanbao.common.util.NumberUtil;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.channel.model.Channel;
 import com.yuanshanbao.dsp.plan.model.Plan;
 
 public class AdvertisementStatistics {
@@ -31,11 +32,13 @@ public class AdvertisementStatistics {
 	private Timestamp updateTime;
 	private BigDecimal avgPrice;
 	private Integer total;
+	private BigDecimal cost;
 
 	private String queryStartTime;
 	private String queryEndTime;
 
 	private Advertisement advertisement;
+	private Channel channelObject;
 
 	private Plan plan;
 
@@ -280,5 +283,25 @@ public class AdvertisementStatistics {
 
 	public void setPlan(Plan plan) {
 		this.plan = plan;
+	}
+
+	public Channel getChannelObject() {
+		return channelObject;
+	}
+
+	public void setChannelObject(Channel channelObject) {
+		this.channelObject = channelObject;
+	}
+
+	public BigDecimal getCost() {
+		if (channelObject != null && channelObject.getUnitPrice() != null) {
+			return new BigDecimal(clickCount).multiply(channelObject.getUnitPrice());
+		} else {
+			return null;
+		}
+	}
+
+	public void setCost(BigDecimal cost) {
+		this.cost = cost;
 	}
 }

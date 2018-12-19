@@ -28,7 +28,6 @@ public class CommonZuHeController extends BaseGameController {
 	public Object activityCombineIndex(HttpServletRequest request, ModelMap modelMap, String activityKey, String channel) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			System.err.println(request.getSession().getId());
 			setCombineIndex(request, resultMap, activityKey, channel, null, null);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

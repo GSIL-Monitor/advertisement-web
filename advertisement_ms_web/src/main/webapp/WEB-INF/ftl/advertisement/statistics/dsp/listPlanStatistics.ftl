@@ -22,6 +22,8 @@
 		    }, {
 		    	"data": "showCount"
 		    }, {
+		    	"data": "cost"
+		    },{
 		    	"data": "planId",
 		        "render": function ( data, type, full, meta ) {
 		            return '<a href="${rc.contextPath}/admin/${functionName}/planMediaStatistic.do?planId='+data+'"  class="btn btn-cyan" target="_blank">查看广告统计</a>';
@@ -105,6 +107,7 @@
 									<td>点击率</td>
 									<td>点击量</td>
 									<td>曝光量</td>
+									<td>成本消耗</td>
 									<td>计划详细数据</td>
 								</tr>
 							</thead>

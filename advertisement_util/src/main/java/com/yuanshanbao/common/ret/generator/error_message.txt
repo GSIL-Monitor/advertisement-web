@@ -92,4 +92,5 @@ NO_BEST_BID_DESC = 请填写出价
 NO_PLANORORDER_NAME_DESC = 请填写名称
 NO_AMOUNT_DESC = 请填写金额
 NO_LINK_DESC = 请填写链接
+PARTNER_INTERFACE_ERROR_DESC = 调用合作方接口失败，请联系管理员
 

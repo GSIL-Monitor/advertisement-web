@@ -21,6 +21,8 @@
 		    }, {
 		    	"data": "showCount"
 		    }, {
+		    	"data": "cost"
+		    }, {
 		    	"data": "advertisement",
 		        "render": function ( data, type, full, meta ) {
 		            return '<a href="${rc.contextPath}/admin/${functionName}/advertisementChannel.do?"  class="btn btn-info" target="_blank">查看渠道统计</a>';
@@ -99,6 +101,7 @@
 									<td>总数</td>
 									<td>点击量</td>
 									<td>曝光量</td>
+									<td>成本消耗</td>
 									<td>渠道统计</td>
 								</tr>
 							</thead>

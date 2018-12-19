@@ -69,15 +69,51 @@ public class IndexJyController {
 		return resultMap;
 	}
 
+	@RequestMapping(value = "/j/content", produces = "text/json;charset=UTF-8")
+	@ResponseBody
+	public String getJContent(HttpServletRequest request, HttpServletResponse response, String callback,
+			MediaInformation mediaInformation) {
+		Map<String, Object> resultMap = new HashMap<>();
+		try {
+			Project project = ConstantsManager.getProjectByKey("dsp");
+			if (project != null) {
+				Channel channelObject = ConfigManager.getChannel(mediaInformation.getChannel());
+				if (channelObject != null) {
+					List<AdvertisementDetails> seatBid = probabilityService.pickProbabilityByPlan(request,
+							project.getProjectId(), channelObject, mediaInformation);
+					resultMap.put("seatBid", seatBid);
+					if (seatBid.size() == 0) {
+						throw new Exception(EMPTYINFO);
+					}
+				}
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
+		} catch (Exception e) {
+			if (!EMPTYINFO.equals(e.getMessage())) {
+				LoggerUtil.error("[advertisement dsp]: ", e);
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.NO_ADVERTISEMENT);
+		}
+		JSONObject jsonObject = JSONObject.fromObject(resultMap);
+		if (StringUtils.isNotBlank(callback)) {
+			return callback + "(" + jsonObject.toString() + ")";
+		} else {
+			return jsonObject.toString();
+		}
+	}
+
 	// 广告曝光
 	@RequestMapping(value = "/ad/show", method = RequestMethod.POST)
 	@ResponseBody
-	public Object adShow(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
+	public Object adShow(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody AdvertisementCountInfo info) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			String channel = (String) body.get("channel");
-			String pId = (String) body.get("pId");
-			String key = (String) body.get("key");
+			String channel = info.getChannel();
+			String pId = info.getPid();
+			String key = info.getKey();
 			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
@@ -102,12 +138,13 @@ public class IndexJyController {
 	// 广告点击
 	@RequestMapping(value = "/ad/click", method = RequestMethod.POST)
 	@ResponseBody
-	public Object adClick(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject body) {
+	public Object adClick(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody AdvertisementCountInfo info) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			String channel = (String) body.get("channel");
-			String pId = (String) body.get("pId");
-			String key = (String) body.get("key");
+			String channel = info.getChannel();
+			String pId = info.getPid();
+			String key = info.getKey();
 			if (StringUtils.isEmpty(channel) || StringUtils.isEmpty(pId) || StringUtils.isEmpty(key)) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}

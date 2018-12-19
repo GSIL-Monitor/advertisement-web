@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementDetails;
 import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.partner.agent.feifan.model.FeiFanAdvertisement;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
@@ -51,5 +52,8 @@ public interface ProbabilityService {
 			Channel channelObject, MediaInformation mediaInformation);
 
 	public void recordPlanCount(String pId, String probabilityId, String channel, boolean isClick);
+
+	List<FeiFanAdvertisement> pickFeiFanAd(HttpServletRequest request, Long projectId, Channel channelObject,
+			MediaInformation mediaInformation);
 
 }

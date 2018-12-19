@@ -10,6 +10,7 @@ public class Advertiser {
 
 	private Long advertiserId;
 	private Long projectId;
+	private String customerKey;
 	private String name;
 	private String companyName;
 	private String description;
@@ -19,6 +20,7 @@ public class Advertiser {
 	private String bindUserName;
 	private String businessNumber;
 	private String businessPicture;
+	private String adxId;
 	private BigDecimal balance;
 	private Integer status;
 	private Timestamp createTime;
@@ -150,6 +152,22 @@ public class Advertiser {
 
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
+	}
+
+	public String getAdxId() {
+		return adxId;
+	}
+
+	public void setAdxId(String adxId) {
+		this.adxId = adxId;
+	}
+
+	public String getCustomerKey() {
+		return customerKey;
+	}
+
+	public void setCustomerKey(String customerKey) {
+		this.customerKey = customerKey;
 	}
 
 }

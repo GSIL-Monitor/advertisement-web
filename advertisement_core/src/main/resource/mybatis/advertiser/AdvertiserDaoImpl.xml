@@ -8,6 +8,7 @@
 		<id property="advertiserId" column="advertiser_id" jdbcType="NUMERIC" />
 		<result property="projectId" column="project_id" jdbcType="VARCHAR" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="customerKey" column="customer_key" jdbcType="VARCHAR" />
 		<result property="companyName" column="company_name" jdbcType="VARCHAR" />
 		<result property="phone" column="phone" jdbcType="VARCHAR" />
 		<result property="wechat" column="wechat" jdbcType="VARCHAR" />
@@ -16,6 +17,7 @@
 		<result property="bindUserName" column="bind_username" jdbcType="VARCHAR" />
 		<result property="businessNumber" column="business_number" jdbcType="VARCHAR" />
 		<result property="businessPicture" column="business_picture" jdbcType="VARCHAR" />
+		<result property="adxId" column="adx_id" jdbcType="VARCHAR" />
 		<result property="balance" column="balance" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
@@ -73,12 +75,12 @@
 
 	<insert id="insertAdvertiser" parameterType="Advertiser">
 		insert into
-		tb_advertiser(project_id,name,company_name, phone,wechat,address,
-		 description, bind_username, business_number,business_picture,balance,status, create_time, update_time)
+		tb_advertiser(project_id,name,customer_key,company_name, phone,wechat,address,
+		 description, bind_username, business_number,business_picture,adx_id,balance,status, create_time, update_time)
 		values
-		(#{projectId},#{name}, #{companyName}, #{phone},#{wechat},
+		(#{projectId},#{name},#{customerKey}, #{companyName}, #{phone},#{wechat},
 		#{address},#{description},#{bindUserName}, #{businessNumber},
-		#{businessPicture},#{balance},#{status}, sysdate(), sysdate())
+		#{businessPicture},#{adxId},#{balance},#{status}, sysdate(), sysdate())
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="advertiserId">
 			SELECT LAST_INSERT_ID()

@@ -21,6 +21,7 @@ public class MediaInformation {
 	private String carrier;
 	private Integer w;
 	private Integer h;
+	private String impId;
 
 	private String channel;
 	private Long activityId;
@@ -199,6 +200,14 @@ public class MediaInformation {
 
 	public void setOs(String os) {
 		this.os = os;
+	}
+
+	public String getImpId() {
+		return impId;
+	}
+
+	public void setImpId(String impId) {
+		this.impId = impId;
 	}
 
 }

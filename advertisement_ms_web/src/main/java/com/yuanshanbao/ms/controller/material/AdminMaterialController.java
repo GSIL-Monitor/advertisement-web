@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,6 +32,7 @@ import com.yuanshanbao.dsp.material.model.MaterialStatus;
 import com.yuanshanbao.dsp.material.model.MaterialType;
 import com.yuanshanbao.dsp.material.service.MaterialService;
 import com.yuanshanbao.dsp.order.model.Order;
+import com.yuanshanbao.dsp.partner.agent.AbstractDspHandler;
 import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
@@ -107,7 +109,7 @@ public class AdminMaterialController extends PaginationController {
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(HttpServletRequest request, HttpServletResponse response, Material material,
+	public Object insert(HttpServletRequest request, HttpServletResponse response, Material material, String partner,
 			MultipartFile image) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
@@ -124,6 +126,15 @@ public class AdminMaterialController extends PaginationController {
 			validateParameters(material);
 			material.setStatus(MaterialStatus.UNREVIEWED);
 			materialService.insertMaterial(material);
+			// 调用合作方
+			if (!StringUtils.isEmpty(partner)) {
+				Advertiser advertiser = advertiserService.selectAdvertiser(material.getAdvertiserId());
+				AbstractDspHandler dspHandler = (AbstractDspHandler) Class.forName(partner).newInstance();
+				Material resultMaterial = dspHandler.createMaterial(material, advertiser);
+				if (resultMaterial == null) {
+					throw new BusinessException(ComRetCode.PARTNER_INTERFACE_ERROR);
+				}
+			}
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());

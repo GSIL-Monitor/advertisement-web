@@ -43,6 +43,7 @@ import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.location.service.IpLocationService;
 import com.yuanshanbao.dsp.material.model.Material;
 import com.yuanshanbao.dsp.order.service.OrderService;
+import com.yuanshanbao.dsp.partner.agent.feifan.model.FeiFanAdvertisement;
 import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.plan.service.PlanService;
@@ -506,11 +507,60 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		if (probability == null) {
 			return resultList;
 		}
-		resultList = getContent(probability, channelObject);
+		resultList = getContent(probability, channelObject, mediaInformation);
 		// 本地记录曝光
 		if (resultList.size() > 0) {
 			recordPlanLocalCount(probability);
 		}
+		return resultList;
+	}
+
+	// 查找计划并展示
+	@Override
+	public List<FeiFanAdvertisement> pickFeiFanAd(HttpServletRequest request, Long projectId, Channel channelObject,
+			MediaInformation mediaInformation) {
+		List<FeiFanAdvertisement> resultList = new ArrayList<FeiFanAdvertisement>();
+		Map<Long, Probability> probabilityMap = selectPlanFromCache(request, projectId, channelObject.getKey(),
+				mediaInformation);
+		if (probabilityMap.size() <= 0) {
+			return resultList;
+		}
+		Map<Long, BigDecimal> bidMap = DspConstantsManager.getBidByChannel(channelObject.getKey());
+		if (bidMap == null || bidMap.size() == 0) {
+			return resultList;
+		}
+		Long probabilityId = dealWithCTRAndBid(bidMap, probabilityMap);
+		if (probabilityId == null) {
+			return resultList;
+		}
+		Probability probability = probabilityMap.get(probabilityId);
+		if (probability == null) {
+			return resultList;
+		}
+		resultList = getFeiFanContent(mediaInformation, probability, channelObject,
+				bidMap.get(probability.getProbabilityId()));
+		// 本地记录曝光
+		if (resultList.size() > 0) {
+			recordPlanLocalCount(probability);
+		}
+		return resultList;
+	}
+
+	private List<FeiFanAdvertisement> getFeiFanContent(MediaInformation mediaInformation, Probability probability,
+			Channel channelObject, BigDecimal price) {
+		List<FeiFanAdvertisement> resultList = new ArrayList<FeiFanAdvertisement>();
+		Plan plan = ConfigManager.getPlanById(probability.getPlanId());
+		// 获取展示素材
+		Material material = getDisplayMaterial(probability, channelObject, mediaInformation);
+		if (material == null) {
+			return resultList;
+		}
+		// 生成返回信息
+		String planKey = getEncryptKey(plan.getPlanId() + ":" + "");
+		String probabilityKey = getEncryptKey(probability.getProbabilityId() + "");
+		FeiFanAdvertisement advertisement = new FeiFanAdvertisement(mediaInformation.getImpId(), planKey,
+				probabilityKey, material, channelObject.getKey(), price);
+		resultList.add(advertisement);
 		return resultList;
 	}
 
@@ -519,7 +569,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 				probability.getChannel()));
 	}
 
-	private List<AdvertisementDetails> getContent(Probability probability, Channel channelObject) {
+	private List<AdvertisementDetails> getContent(Probability probability, Channel channelObject,
+			MediaInformation mediaInformation) {
 		List<AdvertisementDetails> resultList = new ArrayList<AdvertisementDetails>();
 		try {
 			Plan plan = ConfigManager.getPlanById(probability.getPlanId());
@@ -550,6 +601,38 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			LoggerUtil.error("getContent", e);
 		}
 		return resultList;
+	}
+
+	private Material getDisplayMaterial(Probability probability, Channel channelObject,
+			MediaInformation mediaInformation) {
+		Plan plan = ConfigManager.getPlanById(probability.getPlanId());
+		if (StringUtils.isEmpty(plan.getMaterial())) {
+			return null;
+		}
+		String[] creativeList = plan.getMaterial().split(",");
+		Integer w = null;
+		Integer h = null;
+		// 若媒体传尺寸大小， 优先对媒体尺寸进行匹配
+		if (mediaInformation.getW() != null && mediaInformation.getH() != null) {
+			w = mediaInformation.getW();
+			h = mediaInformation.getH();
+		} else {
+			w = channelObject.getWidth();
+			h = channelObject.getHeight();
+		}
+		if (w == null || h == null) {
+			return null;
+		}
+		for (String creativeId : creativeList) {
+			// 判断素材与媒体尺寸大小是否相等
+			Material material = ConstantsManager.getMaterialById(Long.valueOf(creativeId));
+			if (material != null) {
+				if (w.equals(material.getWidth()) && h.equals(material.getHeight())) {
+					return material;
+				}
+			}
+		}
+		return null;
 	}
 
 	private String getIncrePlanUrl(Channel channelObject) {

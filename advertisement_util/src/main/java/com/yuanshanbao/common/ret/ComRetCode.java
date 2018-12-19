@@ -320,6 +320,10 @@ public class ComRetCode {
 	public static final int NO_LINK = 816;
 	public static final String NO_LINK_DESC = "请填写链接";
 
+	/* 817调用合作方接口失败，请联系管理员 */
+	public static final int PARTNER_INTERFACE_ERROR = 817;
+	public static final String PARTNER_INTERFACE_ERROR_DESC = "调用合作方接口失败，请联系管理员";
+
 	public static Map<Integer, String> retCodeMap = new LinkedHashMap<Integer, String>();
 
 	static {

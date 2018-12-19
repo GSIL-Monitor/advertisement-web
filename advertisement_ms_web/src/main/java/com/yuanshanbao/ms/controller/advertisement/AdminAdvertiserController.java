@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,9 @@ import com.yuanshanbao.dsp.bill.model.Bill;
 import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.partner.agent.AbstractDspHandler;
+import com.yuanshanbao.dsp.partner.agent.DspAgentType;
+import com.yuanshanbao.dsp.partner.agent.feifan.model.FeiFanMedia;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.ms.controller.common.AdminServerController;
 import com.yuanshanbao.ms.model.admin.User;
@@ -88,13 +92,15 @@ public class AdminAdvertiserController extends PaginationController {
 	@RequestMapping("/insertWindow.do")
 	public String insertWindow(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("partnerList", DspAgentType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("feifanMediaList", FeiFanMedia.getCodeDescriptionMap().entrySet());
 		return PAGE_INSERT;
 	}
 
 	@ResponseBody
 	@RequestMapping("/insert.do")
-	public Object insert(Advertiser advertiser, User user, MultipartFile image, HttpServletRequest request,
-			HttpServletResponse response) {
+	public Object insert(Advertiser advertiser, User user, MultipartFile image, String partner,
+			HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
@@ -113,6 +119,14 @@ public class AdminAdvertiserController extends PaginationController {
 				result.put(RET_CODE_PARAM, RET_INTERROR);
 				result.put(ComRetCode.RET_DESC, "该用户已经存在，请重新输入用户名！");
 				return result;
+			}
+			// 调用合作方
+			if (!StringUtils.isEmpty(partner)) {
+				AbstractDspHandler dspHandler = (AbstractDspHandler) Class.forName(partner).newInstance();
+				Advertiser resultAdvertiser = dspHandler.creatAdvertiser(advertiser);
+				if (resultAdvertiser == null) {
+					throw new BusinessException(ComRetCode.PARTNER_INTERFACE_ERROR);
+				}
 			}
 			userService.insertUser(user);
 			advertiserService.insertAdvertiser(advertiser);
