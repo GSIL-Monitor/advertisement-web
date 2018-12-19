@@ -21,7 +21,6 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
@@ -103,8 +102,8 @@ public class WeixinController extends BaseController {
 			if (sessionUser != null && StringUtils.isNotBlank(unionId)) {
 				User sUser = new User();
 				sUser.setUserId(sessionUser.getUserId());
-				if (sessionUser.getAvatar() != null && "undefined".equals(sessionUser.getAvatar())) {
-					sUser.setAvatar(sessionUser.getAvatar());
+				if (StringUtils.isNotBlank(avatar) && !("undefined".equals(avatar))) {
+					sUser.setAvatar(avatar);
 				}
 				if (sessionUser.getNickName() != null && "undefined".equals(sessionUser.getNickName())) {
 					sUser.setNickName(sessionUser.getNickName());
@@ -140,13 +139,18 @@ public class WeixinController extends BaseController {
 					Agency agency = new Agency();
 					if (wxUser != null && inviteUserId != null) {
 						agency.setUserId(wxUser.getUserId());
-						if (!StringUtil.isEmpty(wxUser.getNickName()) && !("undefined".equals(wxUser.getNickName()))) {
+						if (!StringUtils.isBlank(wxUser.getNickName()) && !("undefined".equals(wxUser.getNickName()))) {
 							agency.setAgencyName(wxUser.getNickName());
 						} else {
 							agency.setAgencyName("");
 						}
 						agency.setInviteUserId(Long.valueOf(inviteUserId));
 						agencyService.insertAgency(agency);
+					}
+				} else {
+					if (StringUtils.isNotBlank(avatar)) {
+						account.setAvatar(avatar);
+						userService.updateUser(account);
 					}
 				}
 				LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
