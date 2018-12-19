@@ -78,28 +78,22 @@ public class InviteController extends BaseController {
 					userService.createQRCodeURL(user, H5Url, resultMap);
 					resultMap.put("inviteImageUrl", h5InviteImageUrl);
 				} else {
-					/*
-					 * String code =
-					 * redisCacheService.get(RedisConstant.WX_XCX_CODE +
-					 * user.getUserId()); if (StringUtils.isBlank(code)) {
-					 * byte[] bytes =
-					 * weixinService.dealQRCode(weixinService.CONFIG_WZXCX,
-					 * String.valueOf(user.getUserId()), URL); if (bytes !=
-					 * null) { InputStream input = new
-					 * ByteArrayInputStream(bytes); String qrCode =
-					 * UploadUtils.uploadBytes(input, input.available(),
-					 * "test/image/avatar" + System.nanoTime() + (int)
-					 * (Math.random() * 10000) + ".png");
-					 * redisCacheService.set(RedisConstant.WX_XCX_CODE +
-					 * user.getUserId(), qrCode); resultMap.put("QRcode",
-					 * qrCode); } } else { resultMap.put("QRcode", code); }
-					 */
-					String H5Url = H5_HOME_URL + "?userId=" + user.getUserId();
-					userService.createQRCodeURL(user, H5Url, resultMap);
+					String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
+					if (StringUtils.isBlank(code)) {
+						byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX,
+								String.valueOf(user.getUserId()), URL);
+						if (bytes != null) {
+							InputStream input = new ByteArrayInputStream(bytes);
+							String qrCode = UploadUtils.uploadBytes(input, input.available(), "test/image/avatar"
+									+ System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+							redisCacheService.set(RedisConstant.WX_XCX_CODE + user.getUserId(), qrCode);
+							resultMap.put("QRcode", qrCode);
+						}
+					} else {
+						resultMap.put("QRcode", code);
+					}
 					String url = URL + "?userId=" + user.getUserId();
-					resultMap.put("inviteImageUrl", h5InviteImageUrl);
-
-					// resultMap.put("inviteImageUrl", xcxInviteImageUrl);
+					resultMap.put("inviteImageUrl", xcxInviteImageUrl);
 					resultMap.put("user", user);
 					resultMap.put("url", url);
 				}
@@ -176,22 +170,29 @@ public class InviteController extends BaseController {
 					String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId;
 					userService.createQRCodeURL(user, H5Url, resultMap);
 				} else {
-					String code = redisCacheService
-							.get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() + productId);
-					if (StringUtils.isBlank(code)) {
-						byte[] bytes = weixinService.dealQRCode(weixinService.CONFIG_WZXCX,
-								productId + "," + user.getUserId(), DETAILURL);
-						if (bytes != null) {
-							InputStream input = new ByteArrayInputStream(bytes);
-							String qrCode = UploadUtils.uploadBytes(input, input.available(), "test/image/avatar"
-									+ System.nanoTime() + (int) (Math.random() * 10000) + ".png");
-							redisCacheService.set(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId() + productId,
-									qrCode);
-							resultMap.put("QRcode", qrCode);
-						}
-					} else {
-						resultMap.put("QRcode", code);
-					}
+					// String code = redisCacheService
+					// .get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId()
+					// + productId);
+					// if (StringUtils.isBlank(code)) {
+					// byte[] bytes =
+					// weixinService.dealQRCode(weixinService.CONFIG_WZXCX,
+					// productId + "," + user.getUserId(), DETAILURL);
+					// if (bytes != null) {
+					// InputStream input = new ByteArrayInputStream(bytes);
+					// String qrCode = UploadUtils.uploadBytes(input,
+					// input.available(), "test/image/avatar"
+					// + System.nanoTime() + (int) (Math.random() * 10000) +
+					// ".png");
+					// redisCacheService.set(RedisConstant.WX_XCX_DETAIL_CODE +
+					// user.getUserId() + productId,
+					// qrCode);
+					// resultMap.put("QRcode", qrCode);
+					// }
+					// } else {
+					// resultMap.put("QRcode", code);
+					// }
+					String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId;
+					userService.createQRCodeURL(user, H5Url, resultMap);
 					resultMap.put("user", user);
 				}
 
