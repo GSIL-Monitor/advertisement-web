@@ -473,6 +473,9 @@ public class UserServiceImpl implements UserService {
 				applayCardCode = ZXingCode.getLogoQRCode(h5Url, userAvatar.getAvatar());
 				resultMap.put("QRcode", applayCardCode);
 			}
+		} else {
+			applayCardCode = ZXingCode.getLogoQRCode(h5Url, null);
+			resultMap.put("QRcode", applayCardCode);
 		}
 		resultMap.put("user", user);
 		resultMap.put("url", h5Url);

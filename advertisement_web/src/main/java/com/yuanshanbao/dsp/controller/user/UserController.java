@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.channel.model.Channel;
+import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.CommonStatus;
@@ -81,6 +85,9 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private AgencyService agencyService;
+
+	@Autowired
+	private RedisService redisService;
 
 	@ResponseBody
 	@RequestMapping("/login")
@@ -292,6 +299,9 @@ public class UserController extends BaseController {
 			if (tokenResponse == null) {
 				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
 			}
+			JSONObject jsonObject = JSONObject.fromObject(result);
+			String sessionKey = (String) jsonObject.get("session_key");
+
 			String unionId = tokenResponse.getUnionid();
 			LoggerUtil.info("[xcxLogin unionId = ] " + unionId);
 
@@ -314,40 +324,41 @@ public class UserController extends BaseController {
 					}
 				}
 			}
-			User user = null;
+			User user = userService.selectUserByWeixinId(unionId);
 			if (StringUtils.isNotBlank(unionId)) {
-				user = userService.selectUserByWeixinId(unionId);
-			}
-
-			if (user == null) {
-				user = new User();
-				user.setWeixinId(unionId);
-				user.setRegisterFrom(from);
-				user.setStatus(UserStatus.NORMAL);
-				user.setLevel(UserLevel.MANAGER);
-				if (inviteUserId != null) {
-					user.setInviteUserId(Long.valueOf(inviteUserId));
-				}
-				userService.insertUser(user);
-				register = true;
-				User wxUser = userService.selectUserByWeixinId(unionId);
-				Agency agency = new Agency();
-				if (wxUser != null && inviteUserId != null) {
-					agency.setUserId(wxUser.getUserId());
-					if (!StringUtil.isEmpty(wxUser.getNickName()) && !("undefined".equals(wxUser.getNickName()))) {
-						agency.setAgencyName(wxUser.getNickName());
-					} else {
-						agency.setAgencyName("");
+				if (user == null) {
+					user = new User();
+					user.setWeixinId(unionId);
+					user.setRegisterFrom(from);
+					user.setStatus(UserStatus.NORMAL);
+					user.setLevel(UserLevel.MANAGER);
+					if (inviteUserId != null) {
+						user.setInviteUserId(Long.valueOf(inviteUserId));
 					}
-					agency.setInviteUserId(Long.valueOf(inviteUserId));
-					agencyService.insertAgency(agency);
+					userService.insertUser(user);
+					register = true;
+					User wxUser = userService.selectUserByWeixinId(unionId);
+					Agency agency = new Agency();
+					if (wxUser != null && inviteUserId != null) {
+						agency.setUserId(wxUser.getUserId());
+						if (!StringUtil.isEmpty(wxUser.getNickName()) && !("undefined".equals(wxUser.getNickName()))) {
+							agency.setAgencyName(wxUser.getNickName());
+						} else {
+							agency.setAgencyName("");
+						}
+						agency.setInviteUserId(Long.valueOf(inviteUserId));
+						agencyService.insertAgency(agency);
+					}
 				}
+			} else {
+				throw new BusinessException(ComRetCode.WEIXIN_LOGIN_FAIL);
 			}
 
 			LoginToken loginToken = tokenService.generateLoginToken(appId, user.getUserId() + "",
 					JSPHelper.getRemoteAddr(request));
 			loginToken.setRegister(register);
 			setSession(request, loginToken.getToken(), user);
+			redisCacheService.set(RedisConstant.SESSION_KEY + user.getUserId(), sessionKey);
 			resultMap.put("loginToken", loginToken);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 			return resultMap;
@@ -377,6 +388,7 @@ public class UserController extends BaseController {
 			String gender = parameterMap.get("gender");
 
 			userService.updateUserBaseInfoIfNotExists(user, name, avatar, gender);
+
 			User updateUser = new User();
 			updateUser.setUserId(user.getUserId());
 			if (StringUtils.isNotBlank(name) && !("undefined".equals(name))) {
@@ -405,6 +417,58 @@ public class UserController extends BaseController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 			return resultMap;
 		}
+	}
+
+	@RequestMapping("/decryptUnionId")
+	public Object decryptWeiXinUnionId(HttpServletRequest request, HttpServletResponse response, String token,
+			String encryptedData, String iv) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		try {
+			User logUser = getLoginUser(token);
+			String result = null;
+			if (logUser == null) {
+				throw new BusinessException(ComRetCode.NOT_LOGIN);
+			}
+			User user = userService.selectUserById(logUser.getUserId());
+
+			String sessionKey = redisCacheService.get(RedisConstant.SESSION_KEY + user.getUserId());
+			if (StringUtils.isNotBlank(sessionKey)) {
+				result = new String(AESUtils.decryptWeiXinUnionId(Base64.decodeBase64(encryptedData),
+						Base64.decodeBase64(sessionKey), Base64.decodeBase64(iv)));
+			}
+			if (result != null) {
+				JSONObject jsonObject = JSONObject.fromObject(result);
+				String unionId = (String) jsonObject.get("unionId");
+
+				if (StringUtils.isNotBlank(unionId)) {
+					if (unionId.equals(user.getWeixinId())) {
+						resultMap.put("unionId", unionId);
+						LoggerUtil.info("[decryptUnionId : unionId : ]" + unionId);
+						InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+						return resultMap;
+					} else {
+						user.setWeixinId(unionId);
+						userService.updateUser(user);
+					}
+					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+
+				} else {
+					throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+				}
+			} else {
+				throw new BusinessException(ComRetCode.FAIL);
+			}
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
+			return resultMap;
+		} catch (Exception e) {
+			LoggerUtil.error("[getTempToken] exception: ", e);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			return resultMap;
+		}
+
+		return resultMap;
 	}
 
 	@ResponseBody
@@ -510,7 +574,7 @@ public class UserController extends BaseController {
 				return resultMap;
 			}
 		} catch (Exception e) {
-			LoggerUtil.error("[register] exception: ", e);
+			LoggerUtil.error("[decryptUnionId] exception: ", e);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 			return resultMap;
 		}
