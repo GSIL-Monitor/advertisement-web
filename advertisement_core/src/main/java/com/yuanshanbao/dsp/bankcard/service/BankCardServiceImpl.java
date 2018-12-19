@@ -138,8 +138,8 @@ public class BankCardServiceImpl implements BankCardService {
 		Product product = productService.selectProduct(productId);
 		Agency param = new Agency();
 		param.setProductId(productId);
-		param.setInviteUserId(inviteUserId);
 		param.setMobile(mobile);
+		param.setType(AgencyType.AGENT_CREDIT_CARD);
 		param.setName(userName);
 		List<Agency> agencyList = agencyService.selectAgencys(param, new PageBounds());
 		if (agencyList.size() == 0) {
@@ -170,10 +170,11 @@ public class BankCardServiceImpl implements BankCardService {
 		// TODO Auto-generated method stub
 		try {
 			List<Agency> list = new ArrayList<Agency>();
+
 			Product product = productService.selectProduct(Long.valueOf(productId));
 			for (BankCard bank : bankCardList) {
 				// 筛选批核人数
-				if (bank.getStatus() == BankCardStatus.APPROVED) {
+				if (bank.getStatus() != null && bank.getStatus() == BankCardStatus.APPROVED) {
 					Agency param = new Agency();
 					param.setMobile(bank.getMobile().substring(7, bank.getMobile().length()));
 					param.setName(bank.getName().substring(0, 1));
@@ -202,6 +203,7 @@ public class BankCardServiceImpl implements BankCardService {
 		if (list.size() != 0) {
 			for (Agency agen : list) {
 				agen.setStatus(AgencyStatus.OFFCHECK);
+
 				agencyService.updateAgency(agen);
 				// 给办卡人上级佣金
 				if (agen.getInviteUserId() != null) {
@@ -213,6 +215,8 @@ public class BankCardServiceImpl implements BankCardService {
 					if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
 						User user = userService.selectUserById(agen.getInviteUserId());
 						if (user != null) {
+
+							// 按时间算佣金
 							if (user.getLevel() == null) {
 								user.setLevel(UserLevel.MANAGER);
 							}
