@@ -1,6 +1,9 @@
 package com.yuanshanbao.dsp.controller.weixin;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +21,11 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.StringUtil;
+import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.user.model.BaseInfo;
@@ -46,6 +53,9 @@ public class WeixinController extends BaseController {
 	@Autowired
 	private TokenService tokenService;
 
+	@Autowired
+	private AgencyService agencyService;
+
 	@RequestMapping("/auth")
 	public String auth(HttpServletRequest request, String returnUrl, String inviteUserId)
 			throws UnsupportedEncodingException {
@@ -68,9 +78,20 @@ public class WeixinController extends BaseController {
 			String inviteUserId, HttpServletResponse response) {
 		try {
 			User sessionUser = getSessionUser(request);
+			String avatar = null;
 			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
 
 			GetUserInfoResponse userInfo = weixinService.getUserInfo(token.getOpenid());
+			if (userInfo != null) {
+				URL url = new URL(userInfo.getHeadimgurl());
+				URLConnection con = url.openConnection();
+				InputStream headimgIs = con.getInputStream();
+				avatar = UploadUtils.uploadBytes(headimgIs, headimgIs.available(),
+						"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+
+				LoggerUtil.info("[Weixin login avatar=]" + avatar);
+
+			}
 
 			LoggerUtil.info("[Weixin login userInfo=]" + userInfo);
 			LoggerUtil.info("[Weixin login token=]" + token);
@@ -106,13 +127,27 @@ public class WeixinController extends BaseController {
 					account.setStatus(UserStatus.NORMAL);
 					account.setLevel(UserLevel.MANAGER);
 					if (userInfo != null) {
-						account.setAvatar(userInfo.getHeadimgurl());
 						account.setNickName(userInfo.getNickname());
+					}
+					if (StringUtils.isNotBlank(avatar)) {
+						account.setAvatar(avatar);
 					}
 					if (inviteUserId != null && ValidateUtil.isNumber(inviteUserId)) {
 						account.setInviteUserId(Long.valueOf(inviteUserId));
 					}
 					userService.insertUser(account);
+					User wxUser = userService.selectUserByWeixinId(unionId);
+					Agency agency = new Agency();
+					if (wxUser != null && inviteUserId != null) {
+						agency.setUserId(wxUser.getUserId());
+						if (!StringUtil.isEmpty(wxUser.getNickName()) && !("undefined".equals(wxUser.getNickName()))) {
+							agency.setAgencyName(wxUser.getNickName());
+						} else {
+							agency.setAgencyName("");
+						}
+						agency.setInviteUserId(Long.valueOf(inviteUserId));
+						agencyService.insertAgency(agency);
+					}
 				}
 				LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
 						String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
