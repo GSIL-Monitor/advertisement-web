@@ -76,17 +76,21 @@ public class WeixinController extends BaseController {
 	public String login(HttpServletRequest request, String returnUrl, String code, String domainToken,
 			String inviteUserId, HttpServletResponse response) {
 		try {
-			User sessionUser = getSessionUser(request);
+			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
 			String avatar = null;
 			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
-
+			LoggerUtil.info("[Weixin login code=]" + code);
 			GetUserInfoResponse userInfo = weixinService.getUserInfo(token.getOpenid());
+			LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" + userInfo.getHeadimgurl());
+
 			if (userInfo != null) {
-				URL url = new URL(userInfo.getHeadimgurl());
-				URLConnection con = url.openConnection();
-				InputStream headimgIs = con.getInputStream();
-				avatar = UploadUtils.uploadBytes(headimgIs, headimgIs.available(),
-						"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+				if (userInfo.getHeadimgurl() != null) {
+					URL url = new URL(userInfo.getHeadimgurl());
+					URLConnection con = url.openConnection();
+					InputStream headimgIs = con.getInputStream();
+					avatar = UploadUtils.uploadBytes(headimgIs, headimgIs.available(),
+							"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+				}
 
 				LoggerUtil.info("[Weixin login avatar=]" + avatar);
 
@@ -105,12 +109,13 @@ public class WeixinController extends BaseController {
 				if (StringUtils.isNotBlank(avatar) && !("undefined".equals(avatar))) {
 					sUser.setAvatar(avatar);
 				}
-				if (sessionUser.getNickName() != null && "undefined".equals(sessionUser.getNickName())) {
+				if (StringUtils.isNotBlank(sessionUser.getNickName())
+						&& !("undefined".equals(sessionUser.getNickName()))) {
 					sUser.setNickName(sessionUser.getNickName());
 				}
 				sUser.setWeixinId(unionId);
 				userService.updateUser(sUser);
-				request.getSession().setAttribute(SessionConstants.SESSION_ACCOUNT, sessionUser);
+				request.getSession().setAttribute(SessionConstants.SESSION_USER, sessionUser);
 				LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
 						String.valueOf(sessionUser.getUserId()), JSPHelper.getRemoteAddr(request));
 				request.getSession().setAttribute(SessionConstants.SESSION_TOKEN, loginToken.getToken());
@@ -156,6 +161,8 @@ public class WeixinController extends BaseController {
 				LoginToken loginToken = tokenService.generateLoginToken(WeixinService.CONFIG_SERVICE,
 						String.valueOf(account.getUserId()), JSPHelper.getRemoteAddr(request));
 				loginToken.setUser(account);
+				request.getSession().setAttribute(SessionConstants.SESSION_USER, sessionUser);
+
 				request.getSession().setAttribute(SessionConstants.SESSION_TOKEN, loginToken.getToken());
 				LoggerUtil.info("[Weixin login : SESSION_TOKEN == ]" + loginToken.getToken());
 
