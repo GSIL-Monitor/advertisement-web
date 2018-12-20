@@ -41,7 +41,7 @@ public class InviteController extends BaseController {
 	private static final String H5_AGENT_URL = "https://wz.huhad.com/w/products";
 	private static final String H5_HOME_URL = "https://wz.huhad.com/w/home";
 	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/detail";
-	private static final String H5_BANK_INFO = "https://wz.huhad.com/w/applicant";
+	private static final String H5_BANK_INFO = "https://wz.huhad.com/w/applicants.html";
 	private static final String DETAILURL = "pages/index/detail/detail";
 
 	private static final String xcxInviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541159952231_7337.png";
@@ -118,7 +118,6 @@ public class InviteController extends BaseController {
 			User user = tokenService.verifyLoginToken(token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
-
 			}
 			String applayCardCode = null;
 			// H5代理版二维码
