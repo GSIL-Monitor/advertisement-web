@@ -82,10 +82,17 @@ public class WeixinController extends BaseController {
 			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
 			String avatar = null;
 			GetUserInfoResponse userInfo = null;
-			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
 
+			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
 			LoggerUtil.info("[Weixin login code=]" + code);
 
+			String h5AccessToken = HttpsUtil.doGet(
+					"https://api.weixin.qq.com/sns/oauth2/access_token",
+					"appid=" + weixinService.getAppId(WeixinService.CONFIG_SERVICE) + "&secret="
+							+ weixinService.getAppSecret(WeixinService.CONFIG_SERVICE) + "&code=" + code
+							+ "&grant_type=authorization_code", "UTF-8", 30000, 30000);
+
+			LoggerUtil.info("[Weixin login h5AccessToken =]" + h5AccessToken);
 			// GetUserInfoResponse userInfo =
 			// weixinService.getUserInfo("16_Vg-cwKjMjlJi9atX4vGhtFKYBj_MynNvFBT2",
 			// "o-9_s0VyIKePYPsYzzDi3WuchzBA");
@@ -97,12 +104,14 @@ public class WeixinController extends BaseController {
 			}
 
 			LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" + userInfo.getHeadimgurl());
-			String result = HttpsUtil.doGet("https://api.weixin.qq.com/cgi-bin/user/info",
+			String result = HttpsUtil.doGet("https://api.weixin.qq.com/cgi-bin/user/info", "access_token"
+					+ h5AccessToken + "&openid" + token.getOpenid() + "&lang=zh_CN", "UTF-8", 30000, 30000);
+			String aa = HttpsUtil.doGet("https://api.weixin.qq.com/cgi-bin/user/info",
 					"access_token" + token.getAccessToken() + "&openid" + token.getOpenid() + "&lang=zh_CN", "UTF-8",
 					30000, 30000);
 
 			LoggerUtil.info("[Weixin login result =]" + result);
-
+			LoggerUtil.info("[Weixin login result =]" + aa);
 			JSONObject jsonObject = JSONObject.fromObject(result);
 
 			LoggerUtil.info("[Weixin login JSONObject =]" + jsonObject);
