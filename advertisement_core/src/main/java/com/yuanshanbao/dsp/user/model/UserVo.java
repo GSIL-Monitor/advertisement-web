@@ -9,11 +9,17 @@ public class UserVo implements Serializable {
 	private static final long serialVersionUID = 4165445835251317169L;
 
 	private Long userId;
+	private String mobile;
+	private String weixinId;
 	private String name;
+	private String nickName;
 	private String avatar;
 	private Long gender;
 	private String channel;
 	private String bindAlias;
+	private String inviteUserId;
+	private String status;
+	private String level;
 
 	public UserVo() {
 		super();
@@ -28,6 +34,54 @@ public class UserVo implements Serializable {
 			this.channel = user.getRegisterFrom();
 			this.bindAlias = CommonUtil.getBindPrefix() + user.getUserId();
 		}
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getWeixinId() {
+		return weixinId;
+	}
+
+	public void setWeixinId(String weixinId) {
+		this.weixinId = weixinId;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getInviteUserId() {
+		return inviteUserId;
+	}
+
+	public void setInviteUserId(String inviteUserId) {
+		this.inviteUserId = inviteUserId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getLevelValue() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
 
 	public String getName() {

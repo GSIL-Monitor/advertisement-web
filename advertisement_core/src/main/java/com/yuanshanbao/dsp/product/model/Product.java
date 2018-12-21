@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementProjectType;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
@@ -373,6 +374,10 @@ public class Product {
 
 	public Long getActivityId() {
 		return activityId;
+	}
+
+	public String getActivityIdValue() {
+		return AdvertisementProjectType.getDescription(activityId.intValue());
 	}
 
 	public void setActivityId(Long activityId) {

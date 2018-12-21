@@ -16,6 +16,9 @@ public class ProductType {
 	public static final int ONLINE = 1;
 	public static final String ONLINE_DESCRIPTION = "常规";
 
+	public static final int WANGZHUAN = 1;
+	public static final String WANGZHUAN_DESCRIPTION = "网赚";
+
 	static {
 		initCodeDescriptionMap();
 	}
@@ -24,6 +27,7 @@ public class ProductType {
 		codeDescriptionMap.put(INSURANCE, INSURANCE_DESCRIPTION);
 		codeDescriptionMap.put(LOAN, LOAN_DESCRIPTION);
 		codeDescriptionMap.put(ONLINE, ONLINE_DESCRIPTION);
+		codeDescriptionMap.put(WANGZHUAN, WANGZHUAN_DESCRIPTION);
 	}
 
 	public static String getTypeDescription(Integer code) {
