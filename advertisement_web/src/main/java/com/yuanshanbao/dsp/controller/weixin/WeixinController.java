@@ -9,6 +9,8 @@ import java.net.URLEncoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import com.github.sd4324530.fastweixin.api.response.OauthGetTokenResponse;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.HttpsUtil;
 import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
@@ -78,10 +81,32 @@ public class WeixinController extends BaseController {
 		try {
 			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
 			String avatar = null;
+			GetUserInfoResponse userInfo = null;
 			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
+
 			LoggerUtil.info("[Weixin login code=]" + code);
-			GetUserInfoResponse userInfo = weixinService.getUserInfo(token.getOpenid());
+
+			// GetUserInfoResponse userInfo =
+			// weixinService.getUserInfo("16_Vg-cwKjMjlJi9atX4vGhtFKYBj_MynNvFBT2",
+			// "o-9_s0VyIKePYPsYzzDi3WuchzBA");
+			// GetUserInfoResponse userInfo =
+			// weixinService.getUserInfo("o-9_s0VyIKePYPsYzzDi3WuchzBA");
+			String openId = token.getOpenid();
+			if (StringUtils.isNotBlank(openId)) {
+				userInfo = weixinService.getUserInfo(token.getOpenid());
+			}
+
 			LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" + userInfo.getHeadimgurl());
+			String result = HttpsUtil.doGet("https://api.weixin.qq.com/cgi-bin/user/info",
+					"access_token" + token.getAccessToken() + "&openid" + token.getOpenid() + "&lang=zh_CN", "UTF-8",
+					30000, 30000);
+
+			LoggerUtil.info("[Weixin login result =]" + result);
+
+			JSONObject jsonObject = JSONObject.fromObject(result);
+
+			LoggerUtil.info("[Weixin login JSONObject =]" + jsonObject);
+			https: // api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
 
 			if (userInfo != null) {
 				if (userInfo.getHeadimgurl() != null) {
@@ -102,6 +127,7 @@ public class WeixinController extends BaseController {
 			LoggerUtil.info("[Weixin login getOpenid=]" + token.getOpenid());
 
 			String unionId = token.getUnionid();
+			// String unionId = "ollV61EDX3GEfpoaiBqgOVghh7Og";
 			LoggerUtil.info("[Weixin login unionId=]" + unionId);
 			if (sessionUser != null && StringUtils.isNotBlank(unionId)) {
 				User sUser = new User();
