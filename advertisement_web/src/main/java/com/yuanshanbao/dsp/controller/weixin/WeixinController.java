@@ -108,7 +108,7 @@ public class WeixinController extends BaseController {
 
 			LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" + userInfo.getHeadimgurl());
 			if (userInfo != null) {
-				if (userInfo.getHeadimgurl() != null) {
+				if (StringUtils.isNotBlank(userInfo.getHeadimgurl())) {
 					URL url = new URL(userInfo.getHeadimgurl());
 					URLConnection con = url.openConnection();
 					InputStream headimgIs = con.getInputStream();
@@ -120,9 +120,10 @@ public class WeixinController extends BaseController {
 							"UTF-8", 30000, 30000);
 					if (StringUtils.isNotBlank(info)) {
 						JSONObject jsonObject = JSONObject.fromObject(info);
-						headimgurl = (String) jsonObject.get("headimgurl");
-						nickname = (String) jsonObject.get("nickname");
-
+						if (jsonObject != null) {
+							headimgurl = (String) jsonObject.get("headimgurl");
+							nickname = (String) jsonObject.get("nickname");
+						}
 						LoggerUtil.info("[Weixin login headimgurl===]" + headimgurl);
 						LoggerUtil.info("[Weixin login nickname=====]" + nickname);
 						if (StringUtils.isNotBlank(headimgurl)) {
@@ -156,6 +157,10 @@ public class WeixinController extends BaseController {
 				if (StringUtils.isNotBlank(sessionUser.getNickName())
 						&& !("undefined".equals(sessionUser.getNickName()))) {
 					sUser.setNickName(sessionUser.getNickName());
+				} else {
+					if (StringUtils.isNotBlank(nickname)) {
+						sUser.setNickName(nickname);
+					}
 				}
 				sUser.setWeixinId(unionId);
 				userService.updateUser(sUser);
@@ -202,7 +207,16 @@ public class WeixinController extends BaseController {
 					}
 				} else {
 					if (StringUtils.isNotBlank(avatar)) {
-						account.setAvatar(avatar);
+						if (StringUtils.isNotBlank(avatar)) {
+							account.setAvatar(avatar);
+						}
+						if (StringUtils.isNotBlank(userInfo.getNickname())) {
+							account.setNickName(userInfo.getNickname());
+						} else {
+							if (StringUtils.isNotBlank(nickname)) {
+								account.setNickName(nickname);
+							}
+						}
 						userService.updateUser(account);
 					}
 				}

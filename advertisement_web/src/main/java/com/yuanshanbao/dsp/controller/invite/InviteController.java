@@ -77,7 +77,7 @@ public class InviteController extends BaseController {
 				if (StringUtils.isBlank(token)) {
 					String H5Url = H5_HOME_URL + "?userId=" + user.getUserId();
 					userService.createQRCodeURL(user, H5Url, resultMap);
-					resultMap.put("inviteImageUrl", h5InviteImageUrl);
+					resultMap.put("inviteImageUrl", xcxInviteImageUrl);
 				} else {
 					String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
 					if (StringUtils.isBlank(code)) {
@@ -229,4 +229,5 @@ public class InviteController extends BaseController {
 		return resultMap;
 
 	}
+
 }
