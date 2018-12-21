@@ -79,19 +79,23 @@ public class WeixinController extends BaseController {
 	public String login(HttpServletRequest request, String returnUrl, String code, String domainToken,
 			String inviteUserId, HttpServletResponse response) {
 		try {
+			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
 
 			String avatar = null;
 			GetUserInfoResponse userInfo = null;
-
+			String headimgurl = null;
+			String nickname = null;
 			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
 			LoggerUtil.info("[Weixin login code=]" + code);
-			String h5AccessToken = HttpsUtil.doGet(
-					"https://api.weixin.qq.com/sns/oauth2/access_token",
-					"appid=" + weixinService.getAppId(WeixinService.CONFIG_SERVICE) + "&secret="
-							+ weixinService.getAppSecret(WeixinService.CONFIG_SERVICE) + "&code=" + code
-							+ "&grant_type=authorization_code", "UTF-8", 30000, 30000);
-			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
-			LoggerUtil.info("[Weixin login h5AccessToken =]" + h5AccessToken);
+			// String h5AccessToken = HttpsUtil.doGet(
+			// "https://api.weixin.qq.com/sns/oauth2/access_token",
+			// "appid=" + weixinService.getAppId(WeixinService.CONFIG_SERVICE) +
+			// "&secret="
+			// + weixinService.getAppSecret(WeixinService.CONFIG_SERVICE) +
+			// "&code=" + code
+			// + "&grant_type=authorization_code", "UTF-8", 30000, 30000);
+			// LoggerUtil.info("[Weixin login h5AccessToken =]" +
+			// h5AccessToken);
 			// GetUserInfoResponse userInfo =
 			// weixinService.getUserInfo("16_Vg-cwKjMjlJi9atX4vGhtFKYBj_MynNvFBT2",
 			// "o-9_s0VyIKePYPsYzzDi3WuchzBA");
@@ -102,25 +106,7 @@ public class WeixinController extends BaseController {
 				userInfo = weixinService.getUserInfo(token.getOpenid());
 			}
 
-			https: // api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
-
 			LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" + userInfo.getHeadimgurl());
-			String aaa = HttpsUtil.doGet("https://api.weixin.qq.com/sns/userinfo",
-					"access_token=" + token.getAccessToken() + "&openid=" + token.getOpenid() + "&lang=zh_CN", "UTF-8",
-					30000, 30000);
-
-			String result = HttpsUtil.doGet("https://api.weixin.qq.com/sns/userinfo", "access_token=" + h5AccessToken
-					+ "&openid=" + token.getOpenid() + "&lang=zh_CN", "UTF-8", 30000, 30000);
-
-			https: // api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
-			LoggerUtil.info("[Weixin login result =]" + result);
-			LoggerUtil.info("[Weixin login result =]" + aaa);
-
-			JSONObject jsonObject = JSONObject.fromObject(result);
-
-			LoggerUtil.info("[Weixin login JSONObject =]" + jsonObject);
-			https: // api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
-
 			if (userInfo != null) {
 				if (userInfo.getHeadimgurl() != null) {
 					URL url = new URL(userInfo.getHeadimgurl());
@@ -128,6 +114,25 @@ public class WeixinController extends BaseController {
 					InputStream headimgIs = con.getInputStream();
 					avatar = UploadUtils.uploadBytes(headimgIs, headimgIs.available(),
 							"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+				} else {
+					String info = HttpsUtil.doGet("https://api.weixin.qq.com/sns/userinfo",
+							"access_token=" + token.getAccessToken() + "&openid=" + token.getOpenid() + "&lang=zh_CN",
+							"UTF-8", 30000, 30000);
+					if (StringUtils.isNotBlank(info)) {
+						JSONObject jsonObject = JSONObject.fromObject(info);
+						headimgurl = (String) jsonObject.get("headimgurl");
+						nickname = (String) jsonObject.get("nickname");
+
+						LoggerUtil.info("[Weixin login headimgurl===]" + headimgurl);
+						LoggerUtil.info("[Weixin login nickname=====]" + nickname);
+						if (StringUtils.isNotBlank(headimgurl)) {
+							URL url = new URL(headimgurl);
+							URLConnection con = url.openConnection();
+							InputStream headimgIs = con.getInputStream();
+							avatar = UploadUtils.uploadBytes(headimgIs, headimgIs.available(), "test/image/avatar"
+									+ System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+						}
+					}
 				}
 
 				LoggerUtil.info("[Weixin login avatar=]" + avatar);
@@ -170,7 +175,11 @@ public class WeixinController extends BaseController {
 					account.setStatus(UserStatus.NORMAL);
 					account.setLevel(UserLevel.MANAGER);
 					if (userInfo != null) {
-						account.setNickName(userInfo.getNickname());
+						if (StringUtils.isNotBlank(userInfo.getNickname())) {
+							account.setNickName(userInfo.getNickname());
+						} else {
+							account.setNickName(nickname);
+						}
 					}
 					if (StringUtils.isNotBlank(avatar)) {
 						account.setAvatar(avatar);
