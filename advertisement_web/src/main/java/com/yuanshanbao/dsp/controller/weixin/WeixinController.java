@@ -105,12 +105,17 @@ public class WeixinController extends BaseController {
 			https: // api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
 
 			LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" + userInfo.getHeadimgurl());
+			String aaa = HttpsUtil.doGet("https://api.weixin.qq.com/sns/userinfo",
+					"access_token=" + token.getAccessToken() + "&openid=" + token.getOpenid() + "&lang=zh_CN", "UTF-8",
+					30000, 30000);
 
 			String result = HttpsUtil.doGet("https://api.weixin.qq.com/sns/userinfo", "access_token=" + h5AccessToken
 					+ "&openid=" + token.getOpenid() + "&lang=zh_CN", "UTF-8", 30000, 30000);
 
 			https: // api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
 			LoggerUtil.info("[Weixin login result =]" + result);
+			LoggerUtil.info("[Weixin login result =]" + aaa);
+
 			JSONObject jsonObject = JSONObject.fromObject(result);
 
 			LoggerUtil.info("[Weixin login JSONObject =]" + jsonObject);
