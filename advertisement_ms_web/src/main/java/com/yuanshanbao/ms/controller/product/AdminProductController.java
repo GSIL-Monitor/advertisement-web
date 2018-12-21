@@ -69,8 +69,7 @@ public class AdminProductController extends PaginationController {
 		request.setAttribute("merchantId", merchantId);
 		request.setAttribute("merchant", merchantService.selectMerchant(merchantId));
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
-		Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
-		request.setAttribute("activity", activity);
+
 		return PAGE_LIST;
 	}
 
@@ -80,8 +79,11 @@ public class AdminProductController extends PaginationController {
 	public Object query(String range, Product product, HttpServletRequest request, HttpServletResponse response) {
 
 		Object object = productService.selectProducts(product, getPageBounds(range, request));
-
 		PageList pageList = (PageList) object;
+		Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
+		Activity agentActivity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+		request.setAttribute("activityName", activity.getName());
+		request.setAttribute("ageactivityName", activity.getName());
 		return setPageInfo(request, response, pageList);
 	}
 

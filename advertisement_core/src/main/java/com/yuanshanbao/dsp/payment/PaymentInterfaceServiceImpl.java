@@ -1,23 +1,30 @@
 package com.yuanshanbao.dsp.payment;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.yuanshanbao.common.exception.BusinessException;
-import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.*;
-import com.yuanshanbao.dsp.common.constant.CommonConstant;
-import com.yuanshanbao.dsp.common.constant.ResultConstant;
-import com.yuanshanbao.dsp.core.InterfaceRetCode;
-import com.yuanshanbao.dsp.order.model.Order;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.yuanshanbao.common.exception.BusinessException;
+import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.CommonUtil;
+import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.HttpUtil;
+import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.PropertyUtil;
+import com.yuanshanbao.common.util.RSAUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
+import com.yuanshanbao.dsp.common.constant.ResultConstant;
+import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.order.model.Order;
 
 @Service
 public class PaymentInterfaceServiceImpl implements PaymentInterfaceService {
@@ -301,8 +308,10 @@ public class PaymentInterfaceServiceImpl implements PaymentInterfaceService {
 		parameters.put("handleId", handleId);
 		parameters.put("platformOrderId", orderId);
 		parameters.put("distributeAmount", trueAmount.toString());
-		parameters.put("checkDistributeUrl",
-				PropertyUtil.getProperty("lottery.host") + PropertyUtil.getProperty("lottery.url.checkDistribute"));
+		parameters.put(
+				"checkDistributeUrl",
+				PropertyUtil.getProperty("advertisement.host")
+						+ PropertyUtil.getProperty("advertisement.url.checkDistribute"));
 		return addSignature(parameters);
 	}
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DataFormat;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.RequestUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
@@ -60,7 +61,8 @@ public class AccountController extends BaseController {
 	public final static BigDecimal MANAGER_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.1);
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
 	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.2);
-
+	public final static BigDecimal NEW_CEO_PERCENTAGE = BigDecimal.valueOf(0.05);
+	public final static String NOW_DATE = "20181210";
 	@Autowired
 	private AppService appService;
 
@@ -443,22 +445,33 @@ public class AccountController extends BaseController {
 			BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
 			String inviteUserId = accountId.substring(2, accountId.length());
 			User user = userService.selectUserById(Long.valueOf(orderId));
-			agency.setId(Long.valueOf(handleId.substring(17, handleId.length())));
+			agency.setId(Long.valueOf(handleId.substring(14, handleId.length())));
+
+			LoggerUtil.info("pay-distribute-check ： user： " + user);
 			List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
 			if (!orderId.equals(String.valueOf(agencyList.get(0).getUserId()))) {
 				if (user != null) {
-					// 间接上级
-					if (user.getInviteUserId() != null && inviteUserId.equals(String.valueOf(user.getInviteUserId()))) {
+					// 间接上级邀请人
 
-						if (user.getLevel() == null) {
-							user.setLevel(UserLevel.MANAGER);
-						}
-						if (user.getLevel() == UserLevel.MANAGER) {
-							indiretBrokerage = agencyList.get(0).getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE);
-						} else if (user.getLevel() == UserLevel.MAJORDOMO) {
-							indiretBrokerage = agencyList.get(0).getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE);
-						} else if (user.getLevel() == UserLevel.BAILLIFF) {
-							indiretBrokerage = agencyList.get(0).getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
+					if (user.getInviteUserId() != null && inviteUserId.equals(String.valueOf(user.getInviteUserId()))) {
+						String createTime = DateUtils.format(agencyList.get(0).getCreateTime(),
+								DateUtils.DATE_FORMAT_YYYYMMDD);
+
+						if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
+							indiretBrokerage = agencyList.get(0).getBrokerage().multiply(NEW_CEO_PERCENTAGE);
+						} else {
+							if (user.getLevel() == null) {
+								user.setLevel(UserLevel.MANAGER);
+							}
+							if (user.getLevel() == UserLevel.MANAGER) {
+								indiretBrokerage = agencyList.get(0).getBrokerage()
+										.multiply(MANAGER_INDIRET_PERCENTAGE);
+							} else if (user.getLevel() == UserLevel.MAJORDOMO) {
+								indiretBrokerage = agencyList.get(0).getBrokerage()
+										.multiply(DIRECTOR_INDIRET_PERCENTAGE);
+							} else if (user.getLevel() == UserLevel.BAILLIFF) {
+								indiretBrokerage = agencyList.get(0).getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
+							}
 						}
 						resultMap.put("distributeAmount", indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
 					} else {

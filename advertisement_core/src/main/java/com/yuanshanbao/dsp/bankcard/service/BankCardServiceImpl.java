@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.bankcard.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
@@ -40,6 +42,9 @@ public class BankCardServiceImpl implements BankCardService {
 	public final static BigDecimal MANAGER_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.1);
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
 	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.25);
+	public final static BigDecimal NEW_CEO_PERCENTAGE = BigDecimal.valueOf(0.05);
+
+	public final static String NOW_DATE = "20181210";
 
 	@Autowired
 	private BankCardDao bankCardDao;
@@ -170,7 +175,7 @@ public class BankCardServiceImpl implements BankCardService {
 		// TODO Auto-generated method stub
 		try {
 			List<Agency> list = new ArrayList<Agency>();
-
+			List<Agency> agencieList = null;
 			Product product = productService.selectProduct(Long.valueOf(productId));
 			for (BankCard bank : bankCardList) {
 				// 筛选批核人数
@@ -180,68 +185,107 @@ public class BankCardServiceImpl implements BankCardService {
 					param.setName(bank.getName().substring(0, 1));
 					param.setProductId(product.getProductId());
 					param.setProductName(product.getName());
-					list.addAll(agencyService.selectAgencys(param, new PageBounds()));
+					agencieList = agencyService.selectAgencys(param, new PageBounds());
+					if (agencieList != null && agencieList.size() > 1) {
+						LoggerUtil.error("transferUserAccount  error,agencieList.size={}>1 ", agencyService
+								.selectAgencys(param, new PageBounds()).size());
+						LoggerUtil.error("数据重复，请人工审核", agencyService.selectAgencys(param, new PageBounds()).size());
+						continue;
+					} else {
+						list.addAll(agencieList);
+					}
+
 				}
+				BankCard bCard = new BankCard();
+				bCard.setBankName(product.getName());
+				bCard.setProductId(product.getProductId());
+				bCard.setMobile(bank.getMobile());
+				bCard.setName(bank.getName());
+				bCard.setStatus(bank.getStatus());
+				insertBankCard(bCard);
 			}
 			updateAgencyStatusAndTransfer(list);
-			for (BankCard bankCard : bankCardList) {
-				bankCard.setBankName(product.getName());
-				// bank.setProductId(Long.valueOf(productId));
-				insertBankCard(bankCard);
-			}
 
-		} catch (Exception e2) {
-			LoggerUtil.error("transferUserAccount transfer function - error", e2);
+		} catch (Exception e) {
+			throw new BusinessException(ComRetCode.COMMON_FAIL);
 		}
-
 	}
 
 	private void updateAgencyStatusAndTransfer(List<Agency> list) {
 		// 更新批卡成功状态
 		// 收益金额转到账户余额
+		int num = 0;
 		BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
 		if (list.size() != 0) {
 			for (Agency agen : list) {
 				agen.setStatus(AgencyStatus.OFFCHECK);
-
 				agencyService.updateAgency(agen);
-				// 给办卡人上级佣金
+				// 给办卡人直接上级佣金
 				if (agen.getInviteUserId() != null) {
 					Map<String, Object> checkResultMap = paymentInterfaceService.distribute(
 							String.valueOf(agen.getInviteUserId()),
-							System.nanoTime() + String.format("%06d", agen.getId()), String.valueOf(agen.getUserId()),
-							agen.getBrokerage());
+							DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agen.getId(),
+							String.valueOf(agen.getUserId()), agen.getBrokerage());
 					Integer retCode = Integer.valueOf(checkResultMap.get("retCode").toString());
+					LoggerUtil.info("[updateAgencyStatusAndTransfer : transfer SUCCESS : ]" + retCode
+							+ "inviteUserId: " + agen.getInviteUserId());
 					if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
+						String createTime = DateUtils.format(agen.getCreateTime(), DateUtils.DATE_FORMAT_YYYYMMDD);
+						// 二级上级佣金
 						User user = userService.selectUserById(agen.getInviteUserId());
 						if (user != null) {
-
 							// 按时间算佣金
-							if (user.getLevel() == null) {
-								user.setLevel(UserLevel.MANAGER);
+							if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
+								indiretBrokerage = agen.getBrokerage().multiply(NEW_CEO_PERCENTAGE);
+							} else {
+								if (user.getLevel() == null) {
+									user.setLevel(UserLevel.MANAGER);
+								}
+								if (user.getLevel() == UserLevel.MANAGER) {
+									indiretBrokerage = agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE);
+								} else if (user.getLevel() == UserLevel.MAJORDOMO) {
+									indiretBrokerage = agen.getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE);
+								} else if (user.getLevel() == UserLevel.BAILLIFF) {
+									indiretBrokerage = agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
+								}
 							}
-							if (user.getLevel() == UserLevel.MANAGER) {
-								indiretBrokerage = agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE);
-							} else if (user.getLevel() == UserLevel.MAJORDOMO) {
-								indiretBrokerage = agen.getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE);
-							} else if (user.getLevel() == UserLevel.BAILLIFF) {
-								indiretBrokerage = agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
-							}
+
 							if (user.getInviteUserId() != null) {
 								/**
 								 * userId 邀请人id handleId agency办卡记录id orderId
 								 * 当前用户id
 								 */
-								paymentInterfaceService.distribute(String.valueOf(user.getInviteUserId()),
-										System.nanoTime() + String.format("%06d", agen.getId()),
-										String.valueOf(user.getUserId()),
+								Map<String, Object> map = paymentInterfaceService.distribute(
+										String.valueOf(user.getInviteUserId()),
+										DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS)
+												+ agen.getId(), String.valueOf(user.getUserId()),
 										indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
-							}
+								Integer code = Integer.valueOf(map.get("retCode").toString());
+								if (code != null && code.equals(ComRetCode.SUCCESS)) {
+									LoggerUtil.info("[indirectUserAccouont : transfer SUCCESS : ]" + code
+											+ "transferID: " + user.getInviteUserId());
+								} else {
 
+									LoggerUtil.error("[indirectUserAccouont transfer ERROR : code={},inviteuserId={}]",
+											code, agen.getInviteUserId());
+
+								}
+
+							}
 						}
+					} else {
+						LoggerUtil.error("[directUser : transfer ERROR : code ={},inviteUserId ={} ]", retCode,
+								agen.getInviteUserId());
+
 					}
+				} else {
+					// 记数 邀请人为空
+					num++;
+					// TODO
 				}
 			}
+		} else {
+			throw new BusinessException(ComRetCode.COMMON_FAIL);
 		}
 	}
 }

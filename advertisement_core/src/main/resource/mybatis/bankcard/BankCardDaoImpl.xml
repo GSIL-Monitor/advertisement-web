@@ -9,6 +9,7 @@
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
 		<result property="bankName" column="bank_name" jdbcType="VARCHAR" />
+		<result property="productId" column="product_id" jdbcType="NUMERIC" />
 		<result property="status" column="status" jdbcType="NUMERIC" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -36,6 +37,9 @@
 				<if test="bankName != null">
 					bank_name like CONCAT(CONCAT('%', #{bankName},'%')) and
 				</if>
+				<if test="productId != null">
+					product_id= #{productId} and
+				</if>
 				<if test="status != null">
 					status= #{status} and
 				</if>
@@ -52,9 +56,9 @@
 
 	<insert id="insertBankCard" parameterType="BankCard">
 		insert into
-		tb_bank_order(bank_id,name,mobile,bank_name,status,create_time,update_time)
+		tb_bank_order(bank_id,name,mobile,bank_name,product_id,status,create_time,update_time)
 		values
-		( #{bankId},#{name},#{mobile}, #{bankName},#{status},sysdate(),sysdate() )
+		( #{bankId},#{name},#{mobile}, #{bankName},#{productId},#{status},sysdate(),sysdate() )
 		<selectKey resultType="java.lang.Long" order="AFTER"
 				   keyProperty="bankId">
 			SELECT LAST_INSERT_ID()
