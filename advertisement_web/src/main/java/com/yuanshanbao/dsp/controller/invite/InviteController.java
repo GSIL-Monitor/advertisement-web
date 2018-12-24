@@ -169,7 +169,7 @@ public class InviteController extends BaseController {
 			} else {
 
 				if (StringUtils.isBlank(token)) {
-					String H5Url = H5_DETAIL_URL + "?productId=" + productId + "&fromPage=scanning";
+					String H5Url = H5_DETAIL_URL + "?productId=" + productId + "&fromPage=scene";
 					userService.createQRCodeURL(user, H5Url, resultMap);
 				} else {
 					// String code = redisCacheService
