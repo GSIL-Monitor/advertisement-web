@@ -215,13 +215,17 @@ public class BankCardServiceImpl implements BankCardService {
 		// 更新批卡成功状态
 		// 收益金额转到账户余额
 		int num = 0;
+		LoggerUtil.info("[agencyLists size ==]" + list);
+
 		BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
 		if (list.size() != 0) {
 			for (Agency agen : list) {
 				agen.setStatus(AgencyStatus.OFFCHECK);
 				agencyService.updateAgency(agen);
+				LoggerUtil.info("[updateAgencyStatus]" + ComRetCode.SUCCESS);
 				// 给办卡人直接上级佣金
 				if (agen.getInviteUserId() != null) {
+					LoggerUtil.info("[inviteUserId : ]" + agen.getInviteUserId());
 					Map<String, Object> checkResultMap = paymentInterfaceService.distribute(
 							String.valueOf(agen.getInviteUserId()),
 							DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agen.getId(),
