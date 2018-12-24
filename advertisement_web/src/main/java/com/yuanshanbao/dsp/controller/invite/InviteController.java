@@ -146,6 +146,9 @@ public class InviteController extends BaseController {
 	@RequestMapping("/xcxGetDetailCode")
 	public Object xcxGetDetailCode(HttpServletRequest request, String token, String productId) {
 		Map<String, Object> resultMap = new HashMap<>();
+
+		resultMap.put("productId", productId);
+		LoggerUtil.info("xcxGetDetailCode productId = " + productId);
 		try {
 			User user = differentiateTokenUser(request, token);
 			if (user == null) {
