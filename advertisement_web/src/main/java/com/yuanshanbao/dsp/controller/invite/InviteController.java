@@ -144,9 +144,11 @@ public class InviteController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/xcxGetDetailCode")
-	public Object xcxGetDetailCode(HttpServletRequest request, String token,
-			@RequestParam(value = "productId", required = false) String productId) {
+	public Object xcxGetDetailCode(HttpServletRequest request, String token, String productId) {
 		Map<String, Object> resultMap = new HashMap<>();
+
+		resultMap.put("productId", productId);
+		LoggerUtil.info("xcxGetDetailCode productId = " + productId);
 		try {
 			User user = differentiateTokenUser(request, token);
 			if (user == null) {
@@ -159,7 +161,7 @@ public class InviteController extends BaseController {
 			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId
-						+ "&fromPage=products";
+						+ "&fromPage=products&scene=scanning";
 				String applayCardCode = ZXingCode.getLogoQRCode(H5Url, null);
 				resultMap.put("QRcode", applayCardCode);
 				resultMap.put("user", user);
@@ -167,7 +169,7 @@ public class InviteController extends BaseController {
 			} else {
 
 				if (StringUtils.isBlank(token)) {
-					String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId;
+					String H5Url = H5_DETAIL_URL + "?productId=" + productId + "&scene=scanning";
 					userService.createQRCodeURL(user, H5Url, resultMap);
 				} else {
 					// String code = redisCacheService
@@ -182,7 +184,7 @@ public class InviteController extends BaseController {
 					// String qrCode = UploadUtils.uploadBytes(input,
 					// input.available(), "test/image/avatar"
 					// + System.nanoTime() + (int) (Math.random() * 10000) +
-					// ".png");
+					// ".png");]
 					// redisCacheService.set(RedisConstant.WX_XCX_DETAIL_CODE +
 					// user.getUserId() + productId,
 					// qrCode);

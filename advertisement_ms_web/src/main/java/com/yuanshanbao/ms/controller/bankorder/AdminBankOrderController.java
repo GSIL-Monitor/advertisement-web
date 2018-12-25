@@ -52,9 +52,9 @@ import com.yuanshanbao.paginator.domain.PageList;
 public class AdminBankOrderController extends PaginationController {
 	private static final String WANGZHUAN = "wangzhuan";
 
-	private static final String PAGE_LIST = "advertisement/bankOrder/listBankOrder";
+	private static final String PAGE_LIST = "advertisement/bankorder/listBankOrder";
 
-	private static final String PAGE_INSERT = "advertisement/bankOrder/insertBankOrder";
+	private static final String PAGE_INSERT = "advertisement/bankorder/insertBankOrder";
 
 	@Autowired
 	private BankCardService bankCardService;
@@ -197,10 +197,6 @@ public class AdminBankOrderController extends PaginationController {
 				if (!(StringUtil.isEmpty(bankCard.getBankName()) && StringUtil.isEmpty(bankCard.getMobile()))) {
 					list.add(bankCard);
 				}
-			}
-			for (BankCard bankCard : list) {
-				bankCardService.insertBankCard(bankCard);
-				LoggerUtil.error("【BankOrder】：success");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

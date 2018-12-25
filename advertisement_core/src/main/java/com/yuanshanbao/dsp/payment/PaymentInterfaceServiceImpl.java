@@ -280,10 +280,16 @@ public class PaymentInterfaceServiceImpl implements PaymentInterfaceService {
 		try {
 			String url = PropertyUtil.getProperty("payment.host") + PropertyUtil.getProperty("payment.url.distribute");
 			String parameters = generateDistributeParameters(userId, handleId, orderId, trueAmount);
+			LoggerUtil.info("[distribute : url=]" + url);
+			LoggerUtil.info("[distribute : parameters=]" + parameters);
 			String result = HttpUtil.sendPostRequest(url, parameters, "UTF-8");
 			JSONObject jsonObject = (JSONObject) JSON.parse(result);
 			String code = jsonObject.get("retCode").toString();
+			LoggerUtil.info("[distribute : resultInfo=]" + result);
+
+			LoggerUtil.info("[distribute : code=]" + code);
 			if (ValidateUtil.isNumber(code)) {
+
 				int retCode = Integer.parseInt(code);
 				if (ComRetCode.SUCCESS == retCode) {
 					return jsonObject;
@@ -308,10 +314,8 @@ public class PaymentInterfaceServiceImpl implements PaymentInterfaceService {
 		parameters.put("handleId", handleId);
 		parameters.put("platformOrderId", orderId);
 		parameters.put("distributeAmount", trueAmount.toString());
-		parameters.put(
-				"checkDistributeUrl",
-				PropertyUtil.getProperty("advertisement.host")
-						+ PropertyUtil.getProperty("advertisement.url.checkDistribute"));
+		parameters.put("checkDistributeUrl",
+				PropertyUtil.getProperty("wangzhuan.host") + PropertyUtil.getProperty("wangzhuan.url.checkDistribute"));
 		return addSignature(parameters);
 	}
 }

@@ -105,7 +105,6 @@ public class WeixinController extends BaseController {
 			if (StringUtils.isNotBlank(openId)) {
 				userInfo = weixinService.getUserInfo(token.getOpenid());
 			}
-
 			LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" + userInfo.getHeadimgurl());
 			if (userInfo != null) {
 				if (StringUtils.isNotBlank(userInfo.getHeadimgurl())) {
@@ -126,6 +125,7 @@ public class WeixinController extends BaseController {
 						}
 						LoggerUtil.info("[Weixin login headimgurl===]" + headimgurl);
 						LoggerUtil.info("[Weixin login nickname=====]" + nickname);
+
 						if (StringUtils.isNotBlank(headimgurl)) {
 							URL url = new URL(headimgurl);
 							URLConnection con = url.openConnection();
@@ -189,7 +189,7 @@ public class WeixinController extends BaseController {
 					if (StringUtils.isNotBlank(avatar)) {
 						account.setAvatar(avatar);
 					}
-					if (inviteUserId != null && ValidateUtil.isNumber(inviteUserId)) {
+					if (StringUtils.isNotBlank(inviteUserId) && ValidateUtil.isNumber(inviteUserId)) {
 						account.setInviteUserId(Long.valueOf(inviteUserId));
 					}
 					userService.insertUser(account);
@@ -200,9 +200,13 @@ public class WeixinController extends BaseController {
 						if (!StringUtils.isBlank(wxUser.getNickName()) && !("undefined".equals(wxUser.getNickName()))) {
 							agency.setAgencyName(wxUser.getNickName());
 						} else {
-							agency.setAgencyName("");
+							if (StringUtils.isNotBlank(nickname)) {
+								agency.setAgencyName(nickname);
+							}
 						}
-						agency.setInviteUserId(Long.valueOf(inviteUserId));
+						if (ValidateUtil.isNumber(inviteUserId)) {
+							agency.setInviteUserId(Long.valueOf(inviteUserId));
+						}
 						agencyService.insertAgency(agency);
 					}
 				} else {
