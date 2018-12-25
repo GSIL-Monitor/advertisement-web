@@ -283,7 +283,10 @@ public class PaymentInterfaceServiceImpl implements PaymentInterfaceService {
 			String result = HttpUtil.sendPostRequest(url, parameters, "UTF-8");
 			JSONObject jsonObject = (JSONObject) JSON.parse(result);
 			String code = jsonObject.get("retCode").toString();
+
+			LoggerUtil.info("[distribute : code=]" + code);
 			if (ValidateUtil.isNumber(code)) {
+
 				int retCode = Integer.parseInt(code);
 				if (ComRetCode.SUCCESS == retCode) {
 					return jsonObject;

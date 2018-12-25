@@ -187,9 +187,8 @@ public class BankCardServiceImpl implements BankCardService {
 					param.setProductName(product.getName());
 					agencieList = agencyService.selectAgencys(param, new PageBounds());
 					if (agencieList != null && agencieList.size() > 1) {
-						LoggerUtil.error("transferUserAccount  error,agencieList.size={}>1 ", agencyService
-								.selectAgencys(param, new PageBounds()).size());
-						LoggerUtil.error("数据重复，请人工审核", agencyService.selectAgencys(param, new PageBounds()).size());
+						LoggerUtil.error("transferUserAccount  ERROR : agencieList{}= ",
+								agencyService.selectAgencys(param, new PageBounds()).size());
 						continue;
 					} else {
 						list.addAll(agencieList);

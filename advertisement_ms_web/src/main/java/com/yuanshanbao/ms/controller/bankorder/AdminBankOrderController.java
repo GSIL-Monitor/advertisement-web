@@ -198,10 +198,6 @@ public class AdminBankOrderController extends PaginationController {
 					list.add(bankCard);
 				}
 			}
-			for (BankCard bankCard : list) {
-				bankCardService.insertBankCard(bankCard);
-				LoggerUtil.error("【BankOrder】：success");
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

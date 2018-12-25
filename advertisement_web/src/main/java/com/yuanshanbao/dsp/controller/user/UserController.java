@@ -420,55 +420,55 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping("/decryptUnionId")
-	public Object decryptWeiXinUnionId(HttpServletRequest request, HttpServletResponse response, String token,
+	public void decryptWeiXinUnionId(HttpServletRequest request, HttpServletResponse response, String token,
 			String encryptedData, String iv) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
 		try {
-			User logUser = getLoginUser(token);
-			String result = null;
-			if (logUser == null) {
+			User user = getLoginUser(token);
+
+			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
-			User user = userService.selectUserById(logUser.getUserId());
-
 			String sessionKey = redisCacheService.get(RedisConstant.SESSION_KEY + user.getUserId());
 			if (StringUtils.isNotBlank(sessionKey)) {
-				result = new String(AESUtils.decryptWeiXinUnionId(Base64.decodeBase64(encryptedData),
+				String result = new String(AESUtils.decryptWeiXinUnionId(Base64.decodeBase64(encryptedData),
 						Base64.decodeBase64(sessionKey), Base64.decodeBase64(iv)));
-			}
-			if (result != null) {
-				JSONObject jsonObject = JSONObject.fromObject(result);
-				String unionId = (String) jsonObject.get("unionId");
 
-				if (StringUtils.isNotBlank(unionId)) {
-					if (unionId.equals(user.getWeixinId())) {
-						resultMap.put("unionId", unionId);
-						LoggerUtil.info("[decryptUnionId : unionId : ]" + unionId);
+				if (StringUtils.isNotBlank(result)) {
+					JSONObject jsonObject = JSONObject.fromObject(result);
+					String unionId = (String) jsonObject.get("unionId");
+
+					if (StringUtils.isNotBlank(unionId)) {
+						if (unionId.equals(user.getWeixinId())) {
+							LoggerUtil.info("[decryptUnionId unionId =]" + unionId);
+							return;
+						} else {
+							user.setWeixinId(unionId);
+							userService.updateUser(user);
+							LoggerUtil.info("[userWeixinId weixinId =]" + user.getWeixinId() + "==> decryptUnionId]"
+									+ unionId);
+							LoggerUtil.error("[updateUnionId success : userId={},unionId={}]", user.getUserId(),
+									unionId);
+						}
+						resultMap.put("result", result);
 						InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
-						return resultMap;
 					} else {
-						user.setWeixinId(unionId);
-						userService.updateUser(user);
+						LoggerUtil.error("[decryptUnionId ERROR : unionId={}]", unionId);
 					}
-					InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
-
 				} else {
-					throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+					LoggerUtil.error("[decryptResult ERROR : result={}]", result);
 				}
 			} else {
-				throw new BusinessException(ComRetCode.FAIL);
+				LoggerUtil.error("[session_key null]");
 			}
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
-			return resultMap;
+
 		} catch (Exception e) {
 			LoggerUtil.error("[getTempToken] exception: ", e);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
-			return resultMap;
 		}
-
-		return resultMap;
 	}
 
 	@ResponseBody
