@@ -33,6 +33,7 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 	public final static String CHECK_MATERIAL_STATUS = "/ampEntityDsp/checkEntityState";
 	public final static String DSP_ID = "yuanshan";
 	public final static String DSP_TOKEN = "8d0129f8385741fe9c8556a90724729f";
+	public final static String DEFAULT_CHARSET = "utf-8";
 
 	@Override
 	public Advertiser creatAdvertiser(Advertiser advertiser) {
@@ -42,9 +43,10 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 		paramMap.put("adxId", advertiser.getAdxId());
 		paramMap.put("token", DSP_TOKEN);
 		paramMap.put("dspId", DSP_ID);
-		String url = getReuqestUrl(CREATE_ADVERTISER, paramMap);
+		String content = getRequestContent(paramMap);
+		// String result = HttpUtil.sendGetRequest(url);
 		try {
-			String result = HttpUtil.sendGetRequest(url);
+			String result = HttpUtil.sendPostRequest(DOMAIN + CREATE_ADVERTISER, content, DEFAULT_CHARSET);
 			LoggerUtil.info("feifan createAdvertiser" + result);
 			JSONObject jsonObject = JSONObject.parseObject(result);
 			if (jsonObject.get("code").toString().equals("A000000")) {
@@ -54,10 +56,10 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 					return advertiser;
 				}
 			}
-		} catch (IOException | AppException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			LoggerUtil.error("feifan creatAdvertiser error", e);
 		}
+
 		return null;
 	}
 
@@ -96,9 +98,9 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 		paramMap.put("adxId", advertiser.getAdxId());
 		paramMap.put("token", DSP_TOKEN);
 		paramMap.put("dspId", DSP_ID);
-		String url = getReuqestUrl(CHECK_ADVERTISER_STATUS, paramMap);
+		String content = getRequestContent(paramMap);
 		try {
-			String result = HttpUtil.sendGetRequest(url);
+			String result = HttpUtil.sendPostRequest(DOMAIN + CHECK_ADVERTISER_STATUS, content, DEFAULT_CHARSET);
 			LoggerUtil.info("feifan checkAdvertisersStatus" + result);
 			JSONObject jsonObject = JSONObject.parseObject(result);
 			if (jsonObject.getString("code").equals("A000000")) {
@@ -118,9 +120,8 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 					}
 				}
 			}
-		} catch (IOException | AppException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			LoggerUtil.error("feifan checkAdvertiser error", e);
 		}
 	}
 
@@ -129,17 +130,19 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 		SortedMap<Object, Object> paramMap = new TreeMap<Object, Object>();
 		paramMap.put("entityName", material.getName());
 		paramMap.put("extId", material.getMaterialId());
+		paramMap.put("entityUrl", material.getImageUrl());
 		paramMap.put("landUrl", material.getLink());
 		paramMap.put("width", material.getWidth());
 		paramMap.put("height", material.getHeight());
-		paramMap.put("entityType", material.getLink());
-		paramMap.put("media", material.getLink());
-		paramMap.put("customerKey", material.getLink());
+		paramMap.put("entityType", 36);
+		paramMap.put("media", material.getAdxId());
+		paramMap.put("customerKey", advertiser.getCustomerKey());
 		paramMap.put("token", DSP_TOKEN);
 		paramMap.put("dspId", DSP_ID);
-		String url = getReuqestUrl(CREATE_MATERIAL, paramMap);
+		String content = getRequestContent(paramMap);
 		try {
-			String result = HttpUtil.sendGetRequest(url);
+			String result = HttpUtil.sendPostRequest(DOMAIN + CREATE_MATERIAL, content, DEFAULT_CHARSET);
+			LoggerUtil.info("feifan createMaterial" + result);
 			JSONObject jsonObject = JSONObject.parseObject(result);
 			if (jsonObject.getString("code").equals("A000000")) {
 				JSONObject data = (JSONObject) jsonObject.get("data");
@@ -148,9 +151,8 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 					return material;
 				}
 			}
-		} catch (IOException | AppException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			LoggerUtil.error("feifan creatMaterial error", e);
 		}
 		return null;
 	}
@@ -167,9 +169,9 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 		paramMap.put("token", DSP_TOKEN);
 		paramMap.put("dspId", DSP_ID);
 
-		String url = getReuqestUrl(UPDATE_MATERIAL, paramMap);
+		String content = getRequestContent(paramMap);
 		try {
-			String result = HttpUtil.sendGetRequest(url);
+			String result = HttpUtil.sendPostRequest(DOMAIN + UPDATE_MATERIAL, content, DEFAULT_CHARSET);
 			JSONObject jsonObject = JSONObject.parseObject(result);
 			if (jsonObject.getString("code").equals("A000000")) {
 				JSONObject data = (JSONObject) jsonObject.get("data");
@@ -177,9 +179,8 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 					// success
 				}
 			}
-		} catch (IOException | AppException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			LoggerUtil.error("feifan updateMaterial error", e);
 		}
 	}
 
@@ -191,9 +192,9 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 		paramMap.put("token", DSP_TOKEN);
 		paramMap.put("dspId", DSP_ID);
 
-		String url = getReuqestUrl(CHECK_MATERIAL_STATUS, paramMap);
+		String content = getRequestContent(paramMap);
 		try {
-			String result = HttpUtil.sendGetRequest(url);
+			String result = HttpUtil.sendPostRequest(DOMAIN + UPDATE_MATERIAL, content, DEFAULT_CHARSET);
 			JSONObject jsonObject = JSONObject.parseObject(result);
 			if (jsonObject.get("code").toString().equals("A000000")) {
 				JSONObject data = (JSONObject) jsonObject.get("data");
@@ -210,13 +211,10 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 		}
 	}
 
-	private static String getReuqestUrl(String interfaceName, SortedMap<Object, Object> paramMap) {
+	private String getRequestContent(SortedMap<Object, Object> paramMap) {
 		String key = getMD5Key(paramMap);
 		String params = getParams(paramMap);
 		StringBuffer sb = new StringBuffer();
-		sb.append(DOMAIN);
-		sb.append(interfaceName);
-		sb.append("?");
 		sb.append(params);
 		sb.append("&");
 		sb.append("key=");
@@ -226,14 +224,23 @@ public class FeiFanDspHandler extends AbstractDspHandler {
 
 	public static void main(String[] args) throws MalformedURLException, IOException, AppException {
 		SortedMap<Object, Object> paramMap = new TreeMap<Object, Object>();
-		paramMap.put("adxId", "60,62,184,185,121");
-		paramMap.put("customerKey", "44bcdfd96048474f");
+		paramMap.put("extId", "23");
+		paramMap.put("customerKey", "b8a1df91cb4847c7");
 		paramMap.put("token", DSP_TOKEN);
 		paramMap.put("dspId", DSP_ID);
-
-		String url = getReuqestUrl(CHECK_ADVERTISER_STATUS, paramMap);
-		String result = HttpUtil.sendGetRequest(url);
-		System.err.println(result);
+		// String content = getRequestContent(paramMap);
+		// String result = HttpUtil.sendPostRequest(DOMAIN +
+		// CHECK_MATERIAL_STATUS, content, DEFAULT_CHARSET);
+		// System.err.println(result);
+		// String url = getRequestContent(paramMap);
+		// System.err.println(url);
+		// // String result = HttpUtil.sendGetRequest(url);
+		// String result = HttpUtil
+		// .sendPostRequest(
+		// "http://api.route.f2time.com/ampAdvertisersDsp/checkAdvertisersStatus",
+		// "adxId=60,62,184,185,121&customerKey=44bcdfd96048474f&dspId=yuanshan&token=8d0129f8385741fe9c8556a90724729f&key=05e59a90b0f499da60f0af258d6c7daebaa615",
+		// "utf-8");
+		// System.err.println(result);
 	}
 
 	private static String getParams(SortedMap<Object, Object> parameters) {

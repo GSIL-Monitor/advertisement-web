@@ -33,6 +33,8 @@ import com.yuanshanbao.dsp.material.model.MaterialType;
 import com.yuanshanbao.dsp.material.service.MaterialService;
 import com.yuanshanbao.dsp.order.model.Order;
 import com.yuanshanbao.dsp.partner.agent.AbstractDspHandler;
+import com.yuanshanbao.dsp.partner.agent.DspAgentType;
+import com.yuanshanbao.dsp.partner.agent.feifan.model.FeiFanMedia;
 import com.yuanshanbao.dsp.plan.model.PlanStatus;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
@@ -105,6 +107,8 @@ public class AdminMaterialController extends PaginationController {
 			request.setAttribute("advertiserList", advertiserService.selectAdvertiser(param, new PageBounds()));
 		}
 		request.setAttribute("typeList", MaterialType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("partnerList", DspAgentType.getCodeDescriptionMap().entrySet());
+		request.setAttribute("feifanMediaList", FeiFanMedia.getCodeDescriptionMap().entrySet());
 	}
 
 	@ResponseBody
@@ -129,10 +133,12 @@ public class AdminMaterialController extends PaginationController {
 			// 调用合作方
 			if (!StringUtils.isEmpty(partner)) {
 				Advertiser advertiser = advertiserService.selectAdvertiser(material.getAdvertiserId());
-				AbstractDspHandler dspHandler = (AbstractDspHandler) Class.forName(partner).newInstance();
-				Material resultMaterial = dspHandler.createMaterial(material, advertiser);
-				if (resultMaterial == null) {
-					throw new BusinessException(ComRetCode.PARTNER_INTERFACE_ERROR);
+				if (advertiser.getCustomerKey() != null) {
+					AbstractDspHandler dspHandler = (AbstractDspHandler) Class.forName(partner).newInstance();
+					Material resultMaterial = dspHandler.createMaterial(material, advertiser);
+					if (resultMaterial == null) {
+						throw new BusinessException(ComRetCode.PARTNER_INTERFACE_ERROR);
+					}
 				}
 			}
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);

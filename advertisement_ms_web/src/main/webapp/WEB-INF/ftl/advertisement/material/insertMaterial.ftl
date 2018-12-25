@@ -59,6 +59,36 @@
 										</td>
 									</tr>
 									<tr>
+										<td>广告链接：</td>
+										<td>
+											<input type="text" name="link" placeholder="请输入广告链接"  style="width:60%;"></td>
+										</td>
+									</tr>
+									<tr>
+										<td>合作方：</td>
+										<td>
+											<div style="width:60%;">
+												<select name="partner" class="selectpicker form-control">
+													<#list partnerList as partner>
+														<option value="${partner.key}">${partner.value}</option>
+													</#list>
+												</select>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>非凡媒体分类：</td>
+										<td>
+												<div style="width:60%;">
+													<select name="adxId" class="selectpicker form-control">
+														<#list feifanMediaList as media>
+															<option value="${media.key}">${media.value}</option>
+														</#list>
+													</select>
+												</div>
+										</td>
+									</tr>
+									<tr>
 										<td>创意类型：</td>
 										<td>
 											<div style="width:60%;">

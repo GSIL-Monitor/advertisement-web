@@ -21,6 +21,7 @@ public class Material {
 	private String remark;
 	private Integer width;
 	private Integer height;
+	private Integer adxId;
 	private Integer type;
 	private Integer status;
 	private Timestamp createTime;
@@ -186,5 +187,13 @@ public class Material {
 
 	public void setAdvertiser(Advertiser advertiser) {
 		this.advertiser = advertiser;
+	}
+
+	public Integer getAdxId() {
+		return adxId;
+	}
+
+	public void setAdxId(Integer adxId) {
+		this.adxId = adxId;
 	}
 }
