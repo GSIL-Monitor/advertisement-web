@@ -161,7 +161,7 @@ public class InviteController extends BaseController {
 			}
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String H5Url = H5_DETAIL_URL + "?userId=" + user.getUserId() + "&productId=" + productId
-						+ "&fromPage=products";
+						+ "&fromPage=products&scene=scanning";
 				String applayCardCode = ZXingCode.getLogoQRCode(H5Url, null);
 				resultMap.put("QRcode", applayCardCode);
 				resultMap.put("user", user);
