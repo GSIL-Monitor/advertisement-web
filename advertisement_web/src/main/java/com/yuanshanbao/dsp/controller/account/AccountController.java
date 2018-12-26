@@ -441,19 +441,22 @@ public class AccountController extends BaseController {
 	public Object checkDistribute(@RequestParam String platformId, @RequestParam String accountId,
 			@RequestParam String handleId) {
 		Map<String, Object> resultMap = new HashMap<>();
+		LoggerUtil.info("accountId  = " + accountId);
+		LoggerUtil.info("handleId  =" + handleId);
 		try {
 			String[] handParams = handleId.split(CommonConstant.COMMA_SPLIT_STR);
-			String orderId = handParams[1];
-
+			if (handParams.length < 2) {
+				LoggerUtil.error("handledId split:length={} " + handParams.length);
+			}
 			Agency agency = new Agency();
 			BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
 			String inviteUserId = accountId.substring(2, accountId.length());
-			User user = userService.selectUserById(Long.valueOf(orderId));
+			User user = userService.selectUserById(Long.valueOf(handParams[1]));
 			agency.setId(Long.valueOf(handParams[0].substring(14, handParams[0].length())));
 
 			LoggerUtil.info("pay-distribute-check ： user： " + user);
 			List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
-			if (!orderId.equals(String.valueOf(agencyList.get(0).getUserId()))) {
+			if (!handParams[1].equals(String.valueOf(agencyList.get(0).getUserId()))) {
 				if (user != null) {
 					// 间接上级邀请人
 
@@ -488,6 +491,7 @@ public class AccountController extends BaseController {
 					logger.info("checkDistribute user error :" + user);
 
 				}
+
 			} else {
 				// 是直接上级
 				User inviteUser = userService.selectUserById(inviteUserId);
