@@ -480,14 +480,15 @@ public class AccountController extends BaseController {
 								indiretBrokerage = agencyList.get(0).getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
 							}
 						}
-						resultMap.put("distributeAmount", indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
+						resultMap.put("distributeAmount",
+								String.valueOf(indiretBrokerage.setScale(2, RoundingMode.HALF_UP)));
 					} else {
-						resultMap.put("distributeAmount", indiretBrokerage);
+						resultMap.put("distributeAmount", String.valueOf(indiretBrokerage));
 						logger.info("checkDistribute inDirectUserBrokerage error:" + inviteUserId + "不等于"
 								+ user.getInviteUserId());
 					}
 				} else {
-					resultMap.put("distributeAmount", indiretBrokerage);
+					resultMap.put("distributeAmount", String.valueOf(indiretBrokerage));
 					logger.info("checkDistribute user error :" + user);
 
 				}
@@ -496,13 +497,13 @@ public class AccountController extends BaseController {
 				// 是直接上级
 				User inviteUser = userService.selectUserById(inviteUserId);
 				if (inviteUser != null) {
-					resultMap.put("distributeAmount", agencyList.get(0).getBrokerage()
-							.setScale(2, RoundingMode.HALF_UP));
+					resultMap.put("distributeAmount",
+							String.valueOf(agencyList.get(0).getBrokerage().setScale(2, RoundingMode.HALF_UP)));
 				} else {
-					resultMap.put("distributeAmount", BigDecimal.valueOf(0));
+					resultMap.put("distributeAmount", String.valueOf(BigDecimal.valueOf(0)));
 				}
 			}
-			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+			resultMap.put("retCode", ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {
