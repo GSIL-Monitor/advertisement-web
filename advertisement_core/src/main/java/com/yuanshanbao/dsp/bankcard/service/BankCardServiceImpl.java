@@ -22,6 +22,7 @@ import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.bankcard.dao.BankCardDao;
 import com.yuanshanbao.dsp.bankcard.model.BankCard;
 import com.yuanshanbao.dsp.bankcard.model.vo.BankCardStatus;
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.payment.PaymentInterfaceService;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.service.ProductService;
@@ -227,8 +228,9 @@ public class BankCardServiceImpl implements BankCardService {
 					LoggerUtil.info("[inviteUserId : ]" + agen.getInviteUserId());
 					Map<String, Object> checkResultMap = paymentInterfaceService.distribute(
 							String.valueOf(agen.getInviteUserId()),
-							DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agen.getId(),
-							String.valueOf(agen.getUserId()), agen.getBrokerage());
+							DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agen.getId()
+									+ CommonConstant.COMMA_SPLIT_STR + String.valueOf(agen.getUserId()),
+							String.valueOf(Math.random() * 10000), agen.getBrokerage());
 					Integer retCode = Integer.valueOf(checkResultMap.get("retCode").toString());
 					LoggerUtil.info("[updateAgencyStatusAndTransfer : transfer SUCCESS : ]" + retCode
 							+ "inviteUserId: " + agen.getInviteUserId());
@@ -261,7 +263,9 @@ public class BankCardServiceImpl implements BankCardService {
 								Map<String, Object> map = paymentInterfaceService.distribute(
 										String.valueOf(user.getInviteUserId()),
 										DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS)
-												+ agen.getId(), String.valueOf(user.getUserId()),
+												+ agen.getId() + CommonConstant.COMMA_SPLIT_STR
+												+ String.valueOf(user.getUserId()),
+										String.valueOf(Math.random() * 10000),
 										indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
 								Integer code = Integer.valueOf(map.get("retCode").toString());
 								if (code != null && code.equals(ComRetCode.SUCCESS)) {

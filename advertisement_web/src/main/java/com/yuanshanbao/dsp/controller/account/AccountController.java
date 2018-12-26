@@ -27,6 +27,7 @@ import com.yuanshanbao.common.util.VerifyIdcard;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.earnings.model.Earnings;
@@ -438,14 +439,17 @@ public class AccountController extends BaseController {
 	@RequestMapping("/pay/distribute/check")
 	@ResponseBody
 	public Object checkDistribute(@RequestParam String platformId, @RequestParam String accountId,
-			@RequestParam String orderId, @RequestParam String handleId) {
+			@RequestParam String handleId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+			String[] handParams = handleId.split(CommonConstant.COMMA_SPLIT_STR);
+			String orderId = handParams[1];
+
 			Agency agency = new Agency();
 			BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
 			String inviteUserId = accountId.substring(2, accountId.length());
 			User user = userService.selectUserById(Long.valueOf(orderId));
-			agency.setId(Long.valueOf(handleId.substring(14, handleId.length())));
+			agency.setId(Long.valueOf(handParams[0].substring(14, handParams[0].length())));
 
 			LoggerUtil.info("pay-distribute-check ： user： " + user);
 			List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
