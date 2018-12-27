@@ -426,4 +426,35 @@ public class WeixinServiceImpl implements WeixinService {
 		}
 		return null;
 	}
+
+	public String getJSAPITicket(String accessToken) {
+
+		try {
+			String ticket = redisCacheService.get(RedisConstant.JSAPI_TICKET);
+			if (StringUtils.isBlank(ticket)) {
+				String result = HttpsUtil.doGet("https://api.weixin.qq.com/cgi-bin/ticket/getticket", "access_token="
+						+ accessToken + "&type=jsapi", "UTF-8", 30000, 30000);
+				if (StringUtils.isNotBlank(result)) {
+					JSONObject jsonObject = JSONObject.fromObject(result);
+					Integer errcode = (Integer) jsonObject.get("errcode");
+					if (errcode == 40001) {
+						redisCacheService.del(RedisConstant.ACCESS_TOKEN);
+						LoggerUtil.error("getJSAPITicket : access_token : expire ");
+					}
+					ticket = (String) jsonObject.get("ticket");
+					if (StringUtils.isNotBlank(ticket)) {
+						redisCacheService.set(RedisConstant.JSAPI_TICKET, 60 * 60 + 60 * 30, ticket);
+						LoggerUtil.info("getTicket jsapi_ticket = " + ticket);
+						return ticket;
+					}
+				}
+			}
+			return ticket;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }
