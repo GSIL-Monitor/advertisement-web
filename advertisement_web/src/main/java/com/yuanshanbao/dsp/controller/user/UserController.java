@@ -218,7 +218,8 @@ public class UserController extends BaseController {
 				}
 				loginToken.setUser(user);
 				setSession(request, loginToken.getToken(), user);
-				CookieUtils.setSessionCookieValue(response, SessionConstants.COOKIE_SESSION_ID, loginToken.getToken());
+				// CookieUtils.setSessionCookieValue(response,
+				// SessionConstants.COOKIE_SESSION_ID, loginToken.getToken());
 				resultMap.put("loginToken", loginToken);
 				InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 				return resultMap;
@@ -310,7 +311,6 @@ public class UserController extends BaseController {
 			}
 			String openId = tokenResponse.getOpenid();
 			LoggerUtil.info("[xcxLogin openId = ] " + openId);
-
 			boolean register = false;
 
 			if (StringUtils.isNotBlank(openId)) {
