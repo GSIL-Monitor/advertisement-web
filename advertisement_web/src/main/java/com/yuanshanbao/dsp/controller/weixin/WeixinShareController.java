@@ -35,7 +35,9 @@ public class WeixinShareController {
 		try {
 			String accessToken = null;
 			String jsapi_ticket = null;
-
+			if (StringUtils.isBlank(url)) {
+				url = "https://wz.huhad.com/w/home";
+			}
 			accessToken = weixinService.getAccessToken();
 			if (StringUtils.isBlank(accessToken)) {
 				LoggerUtil.error(" weiXinShare:  accessToken ={}", accessToken);
