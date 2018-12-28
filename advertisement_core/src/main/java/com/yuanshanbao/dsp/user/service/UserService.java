@@ -76,4 +76,7 @@ public interface UserService {
 	public int getUserLevelMajordomo(Long userId);
 
 	public void createQRCodeURL(User user, String h5Url, Map<String, Object> resultMap);
+
+	public void updateWeiXinId(String unionId, String openId);
+
 }

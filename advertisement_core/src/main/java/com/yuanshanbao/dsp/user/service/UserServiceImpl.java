@@ -481,4 +481,24 @@ public class UserServiceImpl implements UserService {
 		resultMap.put("url", h5Url);
 	}
 
+	@Transactional
+	@Override
+	public void updateWeiXinId(String unionId, String openId) {
+		LoggerUtil.info("updateWeiXinId : unionid=" + unionId + ", openId= " + openId);
+		User openIdUser = null;
+		User unionIdUser = null;
+		if (StringUtils.isNotBlank(unionId) && StringUtils.isNotBlank(openId)) {
+			if (!openId.equals(unionId)) {
+				// 替换unionId
+				unionIdUser = selectUserByWeixinId(unionId);
+				openIdUser = selectUserByWeixinId(openId);
+				if (unionIdUser != null && openIdUser != null) {
+					unionIdUser.setWeixinId(openIdUser.getUserId() + openIdUser.getWeixinId());
+					updateUser(unionIdUser);
+					openIdUser.setWeixinId(unionId);
+					updateUser(openIdUser);
+				}
+			}
+		}
+	}
 }

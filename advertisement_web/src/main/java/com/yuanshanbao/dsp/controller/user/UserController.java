@@ -311,19 +311,9 @@ public class UserController extends BaseController {
 			}
 			String openId = tokenResponse.getOpenid();
 			LoggerUtil.info("[xcxLogin openId = ] " + openId);
-			boolean register = false;
 
-			if (StringUtils.isNotBlank(openId)) {
-				User openIdUser = userService.selectUserByWeixinId(openId);
-				if (openIdUser != null) {
-					if (StringUtils.isNotBlank(unionId)) {
-						User updateUser = new User();
-						updateUser.setUserId(openIdUser.getUserId());
-						updateUser.setWeixinId(unionId);
-						userService.updateUser(updateUser);
-					}
-				}
-			}
+			userService.updateWeiXinId(unionId, openId);
+			boolean register = false;
 			User user = userService.selectUserByWeixinId(unionId);
 			if (StringUtils.isNotBlank(unionId)) {
 				if (user == null) {
