@@ -188,7 +188,7 @@ public class UserController extends BaseController {
 			try {
 				smsCodeService.validateSmsCode(mobile, smsCode, "", userIp);
 				User user = userService.selectUserByMobile(mobile);
-				User tokenUser = getLoginUser(token);
+				User tokenUser = differentiateTokenUser(request, token);
 				LoginToken loginToken = null;
 				if (user != null) {
 					if (user.getStatus() != null && user.getStatus() == UserStatus.LOCK) {
