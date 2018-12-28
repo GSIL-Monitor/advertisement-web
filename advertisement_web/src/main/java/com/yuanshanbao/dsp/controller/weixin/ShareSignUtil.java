@@ -14,7 +14,7 @@ public class ShareSignUtil {
 	 * @throws Exception
 	 */
 	public static String getSignature(String ticket, String nonceStr, String timeStamp, String url) throws Exception {
-		String sKey = "jsapi_ticket=" + ticket + "&noncestr=" + nonceStr + "×tamp=" + timeStamp + "&url=" + url;
+		String sKey = "jsapi_ticket=" + ticket + "&noncestr=" + nonceStr + "&timestamp=" + timeStamp + "&url=" + url;
 		System.out.println(sKey);
 		return getSignature(sKey);
 	}
