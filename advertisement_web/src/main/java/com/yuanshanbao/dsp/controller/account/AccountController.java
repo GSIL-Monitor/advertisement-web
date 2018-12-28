@@ -27,6 +27,7 @@ import com.yuanshanbao.common.util.VerifyIdcard;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
+import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.earnings.model.Earnings;
@@ -438,18 +439,24 @@ public class AccountController extends BaseController {
 	@RequestMapping("/pay/distribute/check")
 	@ResponseBody
 	public Object checkDistribute(@RequestParam String platformId, @RequestParam String accountId,
-			@RequestParam String orderId, @RequestParam String handleId) {
+			@RequestParam String handleId) {
 		Map<String, Object> resultMap = new HashMap<>();
+		LoggerUtil.info("accountId  = " + accountId);
+		LoggerUtil.info("handleId  =" + handleId);
 		try {
+			String[] handParams = handleId.split(CommonConstant.COMMA_SPLIT_STR);
+			if (handParams.length < 2) {
+				LoggerUtil.error("handledId split:length={} " + handParams.length);
+			}
 			Agency agency = new Agency();
 			BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
 			String inviteUserId = accountId.substring(2, accountId.length());
-			User user = userService.selectUserById(Long.valueOf(orderId));
-			agency.setId(Long.valueOf(handleId.substring(14, handleId.length())));
+			User user = userService.selectUserById(Long.valueOf(handParams[1]));
+			agency.setId(Long.valueOf(handParams[0].substring(14, handParams[0].length())));
 
 			LoggerUtil.info("pay-distribute-check ： user： " + user);
 			List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
-			if (!orderId.equals(String.valueOf(agencyList.get(0).getUserId()))) {
+			if (!handParams[1].equals(String.valueOf(agencyList.get(0).getUserId()))) {
 				if (user != null) {
 					// 间接上级邀请人
 
@@ -473,28 +480,30 @@ public class AccountController extends BaseController {
 								indiretBrokerage = agencyList.get(0).getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
 							}
 						}
-						resultMap.put("distributeAmount", indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
+						resultMap.put("distributeAmount",
+								String.valueOf(indiretBrokerage.setScale(2, RoundingMode.HALF_UP)));
 					} else {
-						resultMap.put("distributeAmount", indiretBrokerage);
+						resultMap.put("distributeAmount", String.valueOf(indiretBrokerage));
 						logger.info("checkDistribute inDirectUserBrokerage error:" + inviteUserId + "不等于"
 								+ user.getInviteUserId());
 					}
 				} else {
-					resultMap.put("distributeAmount", indiretBrokerage);
+					resultMap.put("distributeAmount", String.valueOf(indiretBrokerage));
 					logger.info("checkDistribute user error :" + user);
 
 				}
+
 			} else {
 				// 是直接上级
 				User inviteUser = userService.selectUserById(inviteUserId);
 				if (inviteUser != null) {
-					resultMap.put("distributeAmount", agencyList.get(0).getBrokerage()
-							.setScale(2, RoundingMode.HALF_UP));
+					resultMap.put("distributeAmount",
+							String.valueOf(agencyList.get(0).getBrokerage().setScale(2, RoundingMode.HALF_UP)));
 				} else {
-					resultMap.put("distributeAmount", BigDecimal.valueOf(0));
+					resultMap.put("distributeAmount", String.valueOf(BigDecimal.valueOf(0)));
 				}
 			}
-			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+			resultMap.put("retCode", ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
 		} catch (Exception e) {

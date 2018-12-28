@@ -50,4 +50,6 @@ public interface WeixinService {
 
 	public String getAccessToken();
 
+	public String getJSAPITicket(String accessToken);
+
 }
