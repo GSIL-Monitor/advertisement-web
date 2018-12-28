@@ -55,6 +55,7 @@ public class SysSessionFilter extends HttpServlet implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		request.getParameterMap();
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		HttpServletRequestWrapper buildRequestWrapper = buildRequestWrapper(request, response);
 		if (buildRequestWrapper != null) {
