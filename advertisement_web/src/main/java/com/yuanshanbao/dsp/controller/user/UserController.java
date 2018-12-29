@@ -413,7 +413,6 @@ public class UserController extends BaseController {
 	public void decryptWeiXinUnionId(HttpServletRequest request, HttpServletResponse response, String token,
 			String encryptedData, String iv) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-
 		try {
 			User user = getLoginUser(token);
 
@@ -421,36 +420,42 @@ public class UserController extends BaseController {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
 			String sessionKey = redisCacheService.get(RedisConstant.SESSION_KEY + user.getUserId());
-			if (StringUtils.isNotBlank(sessionKey)) {
-				String result = new String(AESUtils.decryptWeiXinUnionId(Base64.decodeBase64(encryptedData),
-						Base64.decodeBase64(sessionKey), Base64.decodeBase64(iv)));
+			if (StringUtils.isNotBlank(sessionKey) && StringUtils.isNotBlank(encryptedData)
+					&& StringUtils.isNotBlank(iv)) {
+				byte[] decyptUserInfo = AESUtils.decryptWeiXinUnionId(Base64.decodeBase64(encryptedData),
+						Base64.decodeBase64(sessionKey), Base64.decodeBase64(iv));
 
-				if (StringUtils.isNotBlank(result)) {
-					JSONObject jsonObject = JSONObject.fromObject(result);
-					String unionId = (String) jsonObject.get("unionId");
+				if (decyptUserInfo != null) {
+					String result = new String(decyptUserInfo);
+					if (StringUtils.isNotBlank(result)) {
+						JSONObject jsonObject = JSONObject.fromObject(result);
+						String unionId = (String) jsonObject.get("unionId");
 
-					if (StringUtils.isNotBlank(unionId)) {
-						if (unionId.equals(user.getWeixinId())) {
-							LoggerUtil.info("[decryptUnionId unionId =]" + unionId);
-							return;
+						if (StringUtils.isNotBlank(unionId)) {
+							if (unionId.equals(user.getWeixinId())) {
+								LoggerUtil.info("[decryptUnionId unionId =]" + unionId);
+								return;
+							} else {
+								user.setWeixinId(unionId);
+								userService.updateUser(user);
+								LoggerUtil.info("[userWeixinId weixinId =]" + user.getWeixinId()
+										+ "==> decryptUnionId]" + unionId);
+								LoggerUtil.error("[updateUnionId success : userId={},unionId={}]", user.getUserId(),
+										unionId);
+							}
+							resultMap.put("result", result);
+							InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 						} else {
-							user.setWeixinId(unionId);
-							userService.updateUser(user);
-							LoggerUtil.info("[userWeixinId weixinId =]" + user.getWeixinId() + "==> decryptUnionId]"
-									+ unionId);
-							LoggerUtil.error("[updateUnionId success : userId={},unionId={}]", user.getUserId(),
-									unionId);
+							LoggerUtil.error("[decryptUnionId ERROR : unionId={}]", unionId);
 						}
-						resultMap.put("result", result);
-						InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 					} else {
-						LoggerUtil.error("[decryptUnionId ERROR : unionId={}]", unionId);
+						LoggerUtil.error("[decryptResult ERROR : result={}]", result);
 					}
 				} else {
-					LoggerUtil.error("[decryptResult ERROR : result={}]", result);
+					LoggerUtil.error("[decryptWeiXinUnionId : decyptUserInfo={}]", decyptUserInfo);
 				}
 			} else {
-				LoggerUtil.error("[session_key null]");
+				LoggerUtil.info("session_key = " + sessionKey + ",encryptedData=" + encryptedData + ",iv=" + iv);
 			}
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode());
