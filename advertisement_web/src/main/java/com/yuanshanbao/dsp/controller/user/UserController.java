@@ -440,19 +440,11 @@ public class UserController extends BaseController {
 								userService.updateUser(user);
 								LoggerUtil.info("[userWeixinId weixinId =]" + user.getWeixinId()
 										+ "==> decryptUnionId]" + unionId);
-								LoggerUtil.error("[updateUnionId success : userId={},unionId={}]", user.getUserId(),
-										unionId);
 							}
 							resultMap.put("result", result);
 							InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
-						} else {
-							LoggerUtil.error("[decryptUnionId ERROR : unionId={}]", unionId);
 						}
-					} else {
-						LoggerUtil.error("[decryptResult ERROR : result={}]", result);
 					}
-				} else {
-					LoggerUtil.error("[decryptWeiXinUnionId : decyptUserInfo={}]", decyptUserInfo);
 				}
 			} else {
 				LoggerUtil.info("session_key = " + sessionKey + ",encryptedData=" + encryptedData + ",iv=" + iv);
