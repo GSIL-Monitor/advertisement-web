@@ -49,6 +49,10 @@ public class IndexController extends BaseController {
 
 	private static final String WANGZHUAN = "wangzhuan";
 
+	private static final String BAOXIAN = "baoxian";
+
+	private static final String JIAOYU = "jiaoyu";
+
 	private static final String WANGZHUANAGENT = "wangzhuanagent";
 
 	private static final String WZXCX_PRODUCT_CHANNEL = "wzxcxProductChannel";
@@ -120,6 +124,7 @@ public class IndexController extends BaseController {
 					}
 					if (user.getLevel() == UserLevel.VIP_AGENT) {
 						activity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+
 						getHomeInfos(resultMap, activity, product, pageBounds, request, client);
 					} else {
 						activity = ConfigManager.getActivityByKey(WANGZHUAN);
@@ -221,6 +226,19 @@ public class IndexController extends BaseController {
 		PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 				formatPageBounds(pageBounds));
 
+		List<Object> list = new ArrayList<Object>();
+		Map<String, List<Product>> productMap = new HashMap<String, List<Product>>();
+
+		String activityChannels = IniBean.getIniValue("sxzxgActivityChannel");
+		String[] activitys = activityChannels.split(",");
+		Activity acti = null;
+		for (int i = 0; i < activitys.length; i++) {
+			acti = ConfigManager.getActivityByKey(activitys[i]);
+			product.setActivityId(acti.getActivityId());
+			list.addAll(productService.selectProducts(product, pageBounds));
+			resultMap.put(activitys[i] + "List", productService.selectProducts(product, pageBounds));
+		}
+
 		List<Tags> tagsList = new ArrayList<>();
 		for (Product prod : productList) {
 			Tags tags = new Tags();
@@ -250,6 +268,6 @@ public class IndexController extends BaseController {
 		resultMap.put("productList", productList);
 		resultMap.put("messageList", messageList);
 		resultMap.put("tagsList", tagsList);
-	}
 
+	}
 }
