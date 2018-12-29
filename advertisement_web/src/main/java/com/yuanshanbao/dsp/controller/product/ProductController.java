@@ -239,11 +239,13 @@ public class ProductController extends BaseController {
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
 			// }
-			if (vo.getActivityId() == 117 || vo.getActivityId() == 118) {
-				resultMap.put("activity", schoolTime);
-			} else {
-				resultMap.put("activity", null);
+			if (vo.getActivityId() != null) {
+				if (vo.getActivityId() == 117 || vo.getActivityId() == 118) {
+					resultMap.put("activity", schoolTime);
+				} else {
+					resultMap.put("activity", null);
 
+				}
 			}
 			resultMap.put("product", vo);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);

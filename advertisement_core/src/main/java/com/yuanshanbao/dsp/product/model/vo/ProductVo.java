@@ -63,7 +63,7 @@ public class ProductVo {
 		this.discountAmount = product.getDiscountAmount();
 		this.schoolTime = getDivideDetail(product.getSchoolTime());
 		this.brandFeature = getDivideDetail(product.getBrandFeature());
-		this.productId = product.getActivityId();
+		this.activityId = product.getActivityId();
 	}
 
 	public Long getProductId() {
