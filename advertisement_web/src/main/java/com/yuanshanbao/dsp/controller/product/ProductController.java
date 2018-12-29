@@ -239,11 +239,13 @@ public class ProductController extends BaseController {
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
 			// }
+			String[] activity = new String[0];
+
 			if (vo.getActivityId() != null) {
 				if (vo.getActivityId() == 117 || vo.getActivityId() == 118) {
 					resultMap.put("activity", schoolTime);
 				} else {
-					resultMap.put("activity", null);
+					resultMap.put("activity", activity);
 
 				}
 			}
