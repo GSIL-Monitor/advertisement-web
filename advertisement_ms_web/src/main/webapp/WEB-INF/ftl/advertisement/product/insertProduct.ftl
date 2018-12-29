@@ -80,13 +80,13 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>优惠活动：</td>
+                    <td>基本权益：</td>
                     <td>
                       <input type="text" name="brandFeature" style="width:90%;">
                     </td>
                   </tr>
                    <tr>
-                    <td>基本权益：</td>
+                    <td>优惠活动：</td>
                     <td>
                       <input type="text" name="schoolTime" style="width:90%;">
                     </td>
