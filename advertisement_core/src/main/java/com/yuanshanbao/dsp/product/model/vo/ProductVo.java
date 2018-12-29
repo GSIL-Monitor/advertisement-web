@@ -15,6 +15,7 @@ import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
 public class ProductVo {
 
 	private Long productId;
+	private Long activityId;
 	private String name;
 	private String title;
 	private String description;
@@ -62,6 +63,7 @@ public class ProductVo {
 		this.discountAmount = product.getDiscountAmount();
 		this.schoolTime = getDivideDetail(product.getSchoolTime());
 		this.brandFeature = getDivideDetail(product.getBrandFeature());
+		this.productId = product.getActivityId();
 	}
 
 	public Long getProductId() {
@@ -258,4 +260,13 @@ public class ProductVo {
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
+
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
+	}
+
 }
