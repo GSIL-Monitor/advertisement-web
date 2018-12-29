@@ -2,6 +2,7 @@ package com.yuanshanbao.dsp.product.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,6 +128,19 @@ public class Product {
 
 	public BigDecimal getBrokerage() {
 		return brokerage;
+	}
+
+	public String getBrokerageValue() {
+
+		if (brokerage != null) {
+
+			if (brokerage.compareTo(new BigDecimal(1)) == -1) {
+				NumberFormat nt = NumberFormat.getPercentInstance();
+				nt.setMinimumFractionDigits(2);
+				return nt.format(brokerage);
+			}
+		}
+		return String.valueOf(brokerage);
 	}
 
 	public void setBrokerage(BigDecimal brokerage) {
