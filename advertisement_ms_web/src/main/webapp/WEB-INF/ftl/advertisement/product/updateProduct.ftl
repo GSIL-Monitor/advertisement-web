@@ -36,7 +36,7 @@
                     <td width="20%">所属活动：</td>
                     <td>
                       <div style="width:60%;">
-                      <select name="activityId" class="selectpicker form-control">
+                      <select name="activityId" class="selectpicker form-control" >
                         <#list activityList as activity>
                         	<option value="${activity.activityId}">${activity.name}</option>
                         </#list>

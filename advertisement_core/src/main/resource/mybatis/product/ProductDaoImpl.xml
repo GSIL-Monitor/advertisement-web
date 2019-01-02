@@ -168,6 +168,9 @@
 				<if test="title != null">
 					title= #{title},
 				</if>
+				<if test="activityId != null">
+					activity_id= #{activityId},
+				</if>
 				<if test="description != null">
 					description= #{description},
 				</if>

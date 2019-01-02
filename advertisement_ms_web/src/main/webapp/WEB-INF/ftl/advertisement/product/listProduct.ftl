@@ -84,7 +84,7 @@
 									<th></th>
 								</tr>
 								<tr>
-								 <td>
+					 <td>
                       <div style="width:60%;">
                       <select  id ="activityId" name="activityId" class="selectpicker form-control">
                         <#list activityList as activity>

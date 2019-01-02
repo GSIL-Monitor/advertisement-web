@@ -37,13 +37,7 @@ import com.yuanshanbao.paginator.domain.PageList;
 @RequestMapping("/admin/product")
 public class AdminProductController extends PaginationController {
 
-	private static final String WANGZHUAN = "wangzhuan";
-
-	private static final String WANGZHUANAGENT = "wangzhuanagent";
-
 	private static final String PAGE_LIST = "advertisement/product/listProduct";
-
-	private static final String PAGE_AGENT_LIST = "advertisement/product/agentListProduct";
 
 	private static final String PAGE_INSERT = "advertisement/product/insertProduct";
 
