@@ -61,6 +61,8 @@ public class ProductController extends BaseController {
 
 	private static final String WZXCX_PRODUCT_CHANNEL = "wzxcxProductChannel";
 
+	private static final String BANK_FLOW = "https://wz.huhad.com/creditcard/images/bankImage.png";
+
 	@Autowired
 	private ProductService productService;
 
@@ -243,7 +245,9 @@ public class ProductController extends BaseController {
 
 			if (vo.getActivityId() != null) {
 				if (vo.getActivityId() == 117 || vo.getActivityId() == 118) {
+					vo.setBankFlowUrl(BANK_FLOW);
 					resultMap.put("activity", schoolTime);
+
 				} else {
 					resultMap.put("activity", activity);
 

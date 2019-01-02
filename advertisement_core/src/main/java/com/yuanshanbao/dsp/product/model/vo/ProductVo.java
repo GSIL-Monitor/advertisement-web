@@ -23,6 +23,7 @@ public class ProductVo {
 	private String smallImageUrl;
 	private String detailImageUrl;
 	private String bigImageUrl;
+	private String bankFlowUrl;
 	private String schoolTime;
 	private String brandFeature;
 	private Integer minAge;
@@ -64,6 +65,14 @@ public class ProductVo {
 		this.schoolTime = getDivideDetail(product.getSchoolTime());
 		this.brandFeature = getDivideDetail(product.getBrandFeature());
 		this.activityId = product.getActivityId();
+	}
+
+	public String getBankFlowUrl() {
+		return bankFlowUrl;
+	}
+
+	public void setBankFlowUrl(String bankFlowUrl) {
+		this.bankFlowUrl = bankFlowUrl;
 	}
 
 	public Long getProductId() {
