@@ -36,7 +36,7 @@
 		dataTableConfig.columns = [{
       		"data": "${functionId}"
     	}, {
-	    	"data": "activityId"
+	    	"data": "activityIdValue"
 	    }, {
 	    	"data": "name"
 	    },{
@@ -57,8 +57,8 @@
 	var dataTable = $('#dataTable').DataTable(dataTableConfig);
 	
 	$('#queryButton').on('click', function(){
-		var searchText=$('#search').val();
-		var newUrl="${rc.contextPath}/admin/${functionName}/query.do?name="+encodeURI(encodeURI(searchText));
+		var activity=$('#activityId').val();
+		var newUrl="${rc.contextPath}/admin/${functionName}/queryProductDB.do?activityId="+encodeURI(encodeURI(activity));
 		dataTable.ajax.url(newUrl);
 		dataTable.ajax.reload();
 	});
@@ -76,14 +76,36 @@
         <div class="widget-box">
           <div class="widget-title"> <span class="icon"><i class="icon-th"></i></span>
             <h5>数据表格</h5>
+            <div class="filter-box">
+							<table border="0">
+								<tr>
+									<th></th>
+									<th></th>
+									<th></th>
+								</tr>
+								<tr>
+								 <td>
+                      <div style="width:60%;">
+                      <select  id ="activityId" name="activityId" class="selectpicker form-control">
+                        <#list activityList as activity>
+                        	<option value="${activity.activityId}">${activity.name}</option>
+                        </#list>
+                      </select>
+                      </div>
+                    </td>
+						</tr>
+				</div>
           </div>
+          <td>
+					<div class="btn btn-green" id="queryButton">确定</div>
+		  </td>
           <div class="widget-content nopadding">
             <table class="table table-bordered data-table" id="dataTable">
               <thead>
               
                 <tr>
                   <th>产品ID</th>
-                   <th>活动ID</th>
+                   <th>活动产品</th>
                   <th>产品名称</th>
 				  <th>操作</th>
                   <th>修改</th>

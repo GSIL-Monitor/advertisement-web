@@ -76,7 +76,7 @@
           		  <tr>
                     <td>查询链接：</td>
                     <td>
-                      <input type="text" name="stock" style="width:90%;">
+                      <input type="text" name="queryUrl" style="width:90%;">
                     </td>
                   </tr>
                   <tr>

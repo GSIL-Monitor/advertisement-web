@@ -6,6 +6,7 @@
 
 	<resultMap id="productMap" type="Product">
 		<id property="productId" column="product_id" jdbcType="NUMERIC" />
+		<result property="activityId" column="activity_id" jdbcType="NUMERIC" />
 		<result property="name" column="name" jdbcType="VARCHAR" />
 		<result property="title" column="title" jdbcType="VARCHAR" />
 		<result property="description" column="description" jdbcType="VARCHAR" />
@@ -34,6 +35,9 @@
 			<trim suffixOverrides="and">
 				<if test="productId != null">
 					product_id= #{productId} and
+				</if>
+				<if test="activityId != null">
+					activity_id= #{activityId} and
 				</if>
 				<if test="name != null">
 					name= #{name} and
