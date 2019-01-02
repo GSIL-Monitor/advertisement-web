@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.NumberFormat;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 
 /**
@@ -148,13 +149,16 @@ public class Agency implements Serializable {
 
 	public String getBrokerageValue() {
 		if (brokerage != null) {
-			if (brokerage.compareTo(new BigDecimal(1)) == -1) {
-				NumberFormat nt = NumberFormat.getPercentInstance();
+			NumberFormat nt = NumberFormat.getPercentInstance();
+			if (brokerage.compareTo(BigDecimal.valueOf(0.1)) == -1) {
 				nt.setMinimumFractionDigits(2);
+				LoggerUtil.info(" getBrokerageValue = " + nt.format(brokerage));
+				return nt.format(brokerage);
+			} else if (brokerage.compareTo(BigDecimal.valueOf(1)) == -1) {
 				return nt.format(brokerage);
 			}
 		}
-		return String.valueOf(brokerage);
+		return brokerage.stripTrailingZeros().toPlainString();
 	}
 
 	public Integer getStatus() {
