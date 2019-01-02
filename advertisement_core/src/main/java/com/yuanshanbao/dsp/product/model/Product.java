@@ -9,8 +9,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementProjectType;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.tags.model.Tags;
@@ -131,9 +131,7 @@ public class Product {
 	}
 
 	public String getBrokerageValue() {
-
 		if (brokerage != null) {
-
 			if (brokerage.compareTo(new BigDecimal(1)) == -1) {
 				NumberFormat nt = NumberFormat.getPercentInstance();
 				nt.setMinimumFractionDigits(2);
@@ -391,7 +389,10 @@ public class Product {
 	}
 
 	public String getActivityIdValue() {
-		return AdvertisementProjectType.getDescription(activityId.intValue());
+		if (activityId != null) {
+			return ConfigManager.getActivityById(activityId).getName();
+		}
+		return null;
 	}
 
 	public void setActivityId(Long activityId) {
