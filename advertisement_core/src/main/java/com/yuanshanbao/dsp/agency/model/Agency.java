@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.agency.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
@@ -43,12 +44,12 @@ public class Agency implements Serializable {
 		return mobile;
 	}
 
-	public String getHideMobile() {
-		if (mobile != null) {
-			return mobile.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
-		}
-		return mobile;
-	}
+	// public String getHideMobile() {
+	// if (mobile != null) {
+	// return mobile.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
+	// }
+	// return mobile;
+	// }
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
@@ -122,12 +123,12 @@ public class Agency implements Serializable {
 		return name;
 	}
 
-	public String getHideName() {
-		if (name != null) {
-			return name.replaceAll(name.substring(1, name.length()), "****");
-		}
-		return name;
-	}
+	// public String getHideName() {
+	// if (name != null) {
+	// return name.replaceAll(name.substring(1, name.length()), "****");
+	// }
+	// return name;
+	// }
 
 	public void setName(String name) {
 		this.name = name;
@@ -146,6 +147,13 @@ public class Agency implements Serializable {
 	}
 
 	public String getBrokerageValue() {
+		if (brokerage != null) {
+			if (brokerage.compareTo(new BigDecimal(1)) == -1) {
+				NumberFormat nt = NumberFormat.getPercentInstance();
+				nt.setMinimumFractionDigits(2);
+				return nt.format(brokerage);
+			}
+		}
 		return String.valueOf(brokerage);
 	}
 
