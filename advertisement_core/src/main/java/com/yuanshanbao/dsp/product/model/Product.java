@@ -197,7 +197,7 @@ public class Product {
 		if (StringUtils.isNotBlank(imageUrl)) {
 			return imageUrl + "?time=" + Long.toString(System.currentTimeMillis() / 1000);
 		}
-		return bigImageUrl;
+		return imageUrl;
 	}
 
 	public void setImageUrl(String imageUrl) {
