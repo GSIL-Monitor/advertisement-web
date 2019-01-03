@@ -194,7 +194,7 @@ public class Product {
 	}
 
 	public String getImageUrl() {
-		return imageUrl + "?time=" + System.nanoTime();
+		return imageUrl;
 	}
 
 	public void setImageUrl(String imageUrl) {
@@ -452,7 +452,7 @@ public class Product {
 	}
 
 	public String getBigImageUrl() {
-		return bigImageUrl + "?time=" + System.nanoTime();
+		return bigImageUrl;
 	}
 
 	public void setBigImageUrl(String bigImageUrl) {
