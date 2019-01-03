@@ -194,6 +194,7 @@ public class Product {
 	}
 
 	public String getImageUrl() {
+
 		return imageUrl;
 	}
 
