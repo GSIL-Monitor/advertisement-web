@@ -456,7 +456,7 @@ public class Product {
 
 	public String getBigImageUrl() {
 		if (StringUtils.isNotBlank(bigImageUrl)) {
-			return imageUrl + "?bigTime=" + Long.toString(System.currentTimeMillis() / 1000);
+			return bigImageUrl + "?bigTime=" + Long.toString(System.currentTimeMillis() / 1000);
 		}
 		return bigImageUrl;
 	}
