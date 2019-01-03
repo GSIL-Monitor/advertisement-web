@@ -194,8 +194,10 @@ public class Product {
 	}
 
 	public String getImageUrl() {
-
-		return imageUrl;
+		if (StringUtils.isNotBlank(imageUrl)) {
+			return imageUrl + "?time=" + Long.toString(System.currentTimeMillis() / 1000);
+		}
+		return bigImageUrl;
 	}
 
 	public void setImageUrl(String imageUrl) {
@@ -453,6 +455,9 @@ public class Product {
 	}
 
 	public String getBigImageUrl() {
+		if (StringUtils.isNotBlank(bigImageUrl)) {
+			return imageUrl + "?bigTime=" + Long.toString(System.currentTimeMillis() / 1000);
+		}
 		return bigImageUrl;
 	}
 
