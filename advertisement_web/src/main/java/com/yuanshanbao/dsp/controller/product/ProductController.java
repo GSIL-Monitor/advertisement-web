@@ -232,10 +232,8 @@ public class ProductController extends BaseController {
 			if (product.getActivityId() != 122) {
 				schoolTime = product.getSchoolTimeValue();
 			}
-
-			List<Tags> featureList = null;
-			// Map<String, String> brandFeatureMap =
-			// productService.getBrandFeatureMap(brandFeature);
+			List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
+			resultMap.put("brandFeatureList", featureList);
 			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
 			List<TagsVo> recommendTagsList = vo.getRecommendTagsList();
@@ -250,6 +248,7 @@ public class ProductController extends BaseController {
 					resultMap.put("activity", schoolTime);
 
 				} else if (vo.getActivityId() == 122) {
+
 					String[] schoolTimeGame = { product.getSchoolTime() };
 					resultMap.put("activity", schoolTimeGame);
 				} else {
