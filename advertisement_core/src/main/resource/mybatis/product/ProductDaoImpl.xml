@@ -183,6 +183,9 @@
 				<if test="detailImageUrl != null">
 					detail_image_url= #{detailImageUrl},
 				</if>
+				<if test="queryUrl != null">
+					query_url= #{queryUrl},
+				</if>
 				<if test="featureTags != null">
 					feature_tags= #{featureTags},
 				</if>
