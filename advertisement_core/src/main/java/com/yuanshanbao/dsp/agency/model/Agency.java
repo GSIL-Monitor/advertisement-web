@@ -38,7 +38,9 @@ public class Agency implements Serializable {
 	}
 
 	public BigDecimal getBrokerage() {
+
 		return brokerage;
+
 	}
 
 	public String getMobile() {
@@ -150,15 +152,15 @@ public class Agency implements Serializable {
 	public String getBrokerageValue() {
 		if (brokerage != null) {
 			NumberFormat nt = NumberFormat.getPercentInstance();
-			if (brokerage.compareTo(BigDecimal.valueOf(0.1)) == -1) {
+			if (brokerage.compareTo(BigDecimal.valueOf(1)) == -1) {
 				nt.setMinimumFractionDigits(2);
 				LoggerUtil.info(" getBrokerageValue = " + nt.format(brokerage));
 				return nt.format(brokerage);
-			} else if (brokerage.compareTo(BigDecimal.valueOf(1)) == -1) {
-				return nt.format(brokerage);
 			}
+			return brokerage.stripTrailingZeros().toPlainString();
+
 		}
-		return brokerage.stripTrailingZeros().toPlainString();
+		return String.valueOf(brokerage);
 	}
 
 	public Integer getStatus() {

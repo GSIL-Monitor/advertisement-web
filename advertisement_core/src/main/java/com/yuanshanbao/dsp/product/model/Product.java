@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.config.ConfigManager;
@@ -132,11 +133,15 @@ public class Product {
 
 	public String getBrokerageValue() {
 		if (brokerage != null) {
-			if (brokerage.compareTo(new BigDecimal(1)) == -1) {
-				NumberFormat nt = NumberFormat.getPercentInstance();
+			NumberFormat nt = NumberFormat.getPercentInstance();
+			if (brokerage.compareTo(BigDecimal.valueOf(0.1)) == -1) {
 				nt.setMinimumFractionDigits(2);
+				LoggerUtil.info(" getBrokerageValue = " + nt.format(brokerage));
+				return nt.format(brokerage);
+			} else if (brokerage.compareTo(BigDecimal.valueOf(1)) == -1) {
 				return nt.format(brokerage);
 			}
+			return brokerage.stripTrailingZeros().toPlainString();
 		}
 		return String.valueOf(brokerage);
 	}
