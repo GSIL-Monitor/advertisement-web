@@ -229,11 +229,14 @@ public class ProductController extends BaseController {
 			}
 			String brandFeature = product.getBrandFeature();
 			String[] schoolTime = product.getSchoolTimeValue();
-
+			List<Tags> featureList = null;
 			// Map<String, String> brandFeatureMap =
 			// productService.getBrandFeatureMap(brandFeature);
-			List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
-			resultMap.put("brandFeatureList", featureList);
+			// 游戏活动
+			if (product.getActivityId() != 122) {
+				featureList = productService.getBrandFeatureMap(brandFeature);
+				resultMap.put("brandFeatureList", featureList);
+			}
 			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
 			List<TagsVo> recommendTagsList = vo.getRecommendTagsList();
