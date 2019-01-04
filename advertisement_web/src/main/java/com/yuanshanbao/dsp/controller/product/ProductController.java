@@ -229,13 +229,11 @@ public class ProductController extends BaseController {
 			}
 			String brandFeature = product.getBrandFeature();
 			String[] schoolTime = null;
-			List<Tags> featureList = null;
 			if (product.getActivityId() != 122) {
 				schoolTime = product.getSchoolTimeValue();
 			}
-			if (StringUtils.isNotBlank(brandFeature)) {
-				featureList = productService.getBrandFeatureMap(brandFeature);
-			}
+
+			List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
 			resultMap.put("brandFeatureList", featureList);
 			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
