@@ -233,11 +233,17 @@ public class ProductController extends BaseController {
 				schoolTime = product.getSchoolTimeValue();
 			}
 
-			List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
-			resultMap.put("brandFeatureList", featureList);
+			if (StringUtils.isNotBlank(brandFeature)) {
+				List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
+				resultMap.put("brandFeatureList", featureList);
+
+			} else {
+				resultMap.put("brandFeatureList", "");
+			}
 			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
 			List<TagsVo> recommendTagsList = vo.getRecommendTagsList();
+
 			checkApplyStatus(token, vo);
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
