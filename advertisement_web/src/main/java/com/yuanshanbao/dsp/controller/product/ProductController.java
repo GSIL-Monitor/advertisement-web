@@ -232,11 +232,6 @@ public class ProductController extends BaseController {
 			List<Tags> featureList = null;
 			// Map<String, String> brandFeatureMap =
 			// productService.getBrandFeatureMap(brandFeature);
-			// 游戏活动
-			if (product.getActivityId() != 122) {
-				featureList = productService.getBrandFeatureMap(brandFeature);
-				resultMap.put("brandFeatureList", featureList);
-			}
 			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
 			List<TagsVo> recommendTagsList = vo.getRecommendTagsList();
@@ -245,15 +240,16 @@ public class ProductController extends BaseController {
 			// vo.setApplyInterface(null);
 			// }
 			String[] activity = new String[0];
-
 			if (vo.getActivityId() != null) {
 				if (vo.getActivityId() == 117 || vo.getActivityId() == 118) {
 					vo.setBankFlowUrl(BANK_FLOW);
 					resultMap.put("activity", schoolTime);
 
+				} else if (vo.getActivityId() == 122) {
+					String[] schoolTimeGame = { product.getSchoolTime() };
+					resultMap.put("activity", schoolTimeGame);
 				} else {
 					resultMap.put("activity", activity);
-
 				}
 			}
 			resultMap.put("product", vo);
