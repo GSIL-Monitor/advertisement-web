@@ -228,7 +228,11 @@ public class ProductController extends BaseController {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
 			String brandFeature = product.getBrandFeature();
-			String[] schoolTime = product.getSchoolTimeValue();
+			String[] schoolTime = null;
+			if (product.getActivityId() != 122) {
+				schoolTime = product.getSchoolTimeValue();
+			}
+
 			List<Tags> featureList = null;
 			// Map<String, String> brandFeatureMap =
 			// productService.getBrandFeatureMap(brandFeature);
