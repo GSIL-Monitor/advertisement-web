@@ -1,15 +1,10 @@
 package com.yuanshanbao.dsp.controller.weixin;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +16,8 @@ import com.github.sd4324530.fastweixin.api.response.OauthGetTokenResponse;
 import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
-import com.yuanshanbao.common.util.HttpsUtil;
 import com.yuanshanbao.common.util.JSPHelper;
 import com.yuanshanbao.common.util.LoggerUtil;
-import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
@@ -68,9 +61,7 @@ public class WeixinController extends BaseController {
 			String aString = weixinService.getUserInfoRedirectUrl(redirectUrl);
 			LoggerUtil.info("[Weixin auth redirectUrl=]" + redirectUrl);
 			LoggerUtil.info("[Weixin auth url=]" + aString);
-			// return "redirect:" +
-			// weixinService.getUserInfoRedirectUrl(redirectUrl);
-			return "redirect:" + redirectUrl;
+			return "redirect:" + weixinService.getUserInfoRedirectUrl(redirectUrl);
 		} catch (Exception e) {
 			logger.error("[Weixin auth error]", e);
 		}
@@ -87,67 +78,78 @@ public class WeixinController extends BaseController {
 			GetUserInfoResponse userInfo = null;
 			String headimgurl = null;
 			String nickname = null;
-			OauthGetTokenResponse token = weixinService.getTokenResponse(code);
-			LoggerUtil.info("[Weixin login code=]" + code);
-			// String h5AccessToken = HttpsUtil.doGet(
-			// "https://api.weixin.qq.com/sns/oauth2/access_token",
-			// "appid=" + weixinService.getAppId(WeixinService.CONFIG_SERVICE) +
-			// "&secret="
-			// + weixinService.getAppSecret(WeixinService.CONFIG_SERVICE) +
-			// "&code=" + code
-			// + "&grant_type=authorization_code", "UTF-8", 30000, 30000);
-			// LoggerUtil.info("[Weixin login h5AccessToken =]" +
-			// h5AccessToken);
-			// GetUserInfoResponse userInfo =
+			// OauthGetTokenResponse token =
+			// weixinService.getTokenResponse(code);
+			// LoggerUtil.info("[Weixin login code=]" + code);
+			// // String h5AccessToken = HttpsUtil.doGet(
+			// // "https://api.weixin.qq.com/sns/oauth2/access_token",
+			// // "appid=" +
+			// weixinService.getAppId(WeixinService.CONFIG_SERVICE) +
+			// // "&secret="
+			// // + weixinService.getAppSecret(WeixinService.CONFIG_SERVICE) +
+			// // "&code=" + code
+			// // + "&grant_type=authorization_code", "UTF-8", 30000, 30000);
+			// // LoggerUtil.info("[Weixin login h5AccessToken =]" +
+			// // h5AccessToken);
+			// // GetUserInfoResponse userInfo =
+			// //
 			// weixinService.getUserInfo("16_Vg-cwKjMjlJi9atX4vGhtFKYBj_MynNvFBT2",
-			// "o-9_s0VyIKePYPsYzzDi3WuchzBA");
-			// GetUserInfoResponse userInfo =
-			// weixinService.getUserInfo("o-9_s0VyIKePYPsYzzDi3WuchzBA");
-			String openId = token.getOpenid();
-			if (StringUtils.isNotBlank(openId)) {
-				userInfo = weixinService.getUserInfo(token.getOpenid());
-			}
-			LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" + userInfo.getHeadimgurl());
-			if (userInfo != null) {
-				if (StringUtils.isNotBlank(userInfo.getHeadimgurl())) {
-					URL url = new URL(userInfo.getHeadimgurl());
-					URLConnection con = url.openConnection();
-					InputStream headimgIs = con.getInputStream();
-					avatar = UploadUtils.uploadBytes(headimgIs, headimgIs.available(),
-							"test/image/avatar" + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
-				} else {
-					String info = HttpsUtil.doGet("https://api.weixin.qq.com/sns/userinfo",
-							"access_token=" + token.getAccessToken() + "&openid=" + token.getOpenid() + "&lang=zh_CN",
-							"UTF-8", 30000, 30000);
-					if (StringUtils.isNotBlank(info)) {
-						JSONObject jsonObject = JSONObject.fromObject(info);
-						if (jsonObject != null) {
-							headimgurl = (String) jsonObject.get("headimgurl");
-							nickname = (String) jsonObject.get("nickname");
-						}
-						LoggerUtil.info("[Weixin login headimgurl===]" + headimgurl);
-						LoggerUtil.info("[Weixin login nickname=====]" + nickname);
+			// // "o-9_s0VyIKePYPsYzzDi3WuchzBA");
+			// // GetUserInfoResponse userInfo =
+			// // weixinService.getUserInfo("o-9_s0VyIKePYPsYzzDi3WuchzBA");
+			// String openId = token.getOpenid();
+			// if (StringUtils.isNotBlank(openId)) {
+			// userInfo = weixinService.getUserInfo(token.getOpenid());
+			// }
+			// LoggerUtil.info("[Weixin login userInfo.getHeadimgurl=]" +
+			// userInfo.getHeadimgurl());
+			// if (userInfo != null) {
+			// if (StringUtils.isNotBlank(userInfo.getHeadimgurl())) {
+			// URL url = new URL(userInfo.getHeadimgurl());
+			// URLConnection con = url.openConnection();
+			// InputStream headimgIs = con.getInputStream();
+			// avatar = UploadUtils.uploadBytes(headimgIs,
+			// headimgIs.available(),
+			// "test/image/avatar" + System.nanoTime() + (int) (Math.random() *
+			// 10000) + ".png");
+			// } else {
+			// String info =
+			// HttpsUtil.doGet("https://api.weixin.qq.com/sns/userinfo",
+			// "access_token=" + token.getAccessToken() + "&openid=" +
+			// token.getOpenid() + "&lang=zh_CN",
+			// "UTF-8", 30000, 30000);
+			// if (StringUtils.isNotBlank(info)) {
+			// JSONObject jsonObject = JSONObject.fromObject(info);
+			// if (jsonObject != null) {
+			// headimgurl = (String) jsonObject.get("headimgurl");
+			// nickname = (String) jsonObject.get("nickname");
+			// }
+			// LoggerUtil.info("[Weixin login headimgurl===]" + headimgurl);
+			// LoggerUtil.info("[Weixin login nickname=====]" + nickname);
+			//
+			// if (StringUtils.isNotBlank(headimgurl)) {
+			// URL url = new URL(headimgurl);
+			// URLConnection con = url.openConnection();
+			// InputStream headimgIs = con.getInputStream();
+			// avatar = UploadUtils.uploadBytes(headimgIs,
+			// headimgIs.available(), "test/image/avatar"
+			// + System.nanoTime() + (int) (Math.random() * 10000) + ".png");
+			// }
+			// }
+			// }
+			//
+			// LoggerUtil.info("[Weixin login avatar=]" + avatar);
+			//
+			// }
+			//
+			// LoggerUtil.info("[Weixin login userInfo=]" + userInfo);
+			// LoggerUtil.info("[Weixin login token=]" + token);
+			// LoggerUtil.info("[Weixin login getAccessToken=]" +
+			// token.getAccessToken());
+			// LoggerUtil.info("[Weixin login getOpenid=]" + token.getOpenid());
 
-						if (StringUtils.isNotBlank(headimgurl)) {
-							URL url = new URL(headimgurl);
-							URLConnection con = url.openConnection();
-							InputStream headimgIs = con.getInputStream();
-							avatar = UploadUtils.uploadBytes(headimgIs, headimgIs.available(), "test/image/avatar"
-									+ System.nanoTime() + (int) (Math.random() * 10000) + ".png");
-						}
-					}
-				}
-
-				LoggerUtil.info("[Weixin login avatar=]" + avatar);
-
-			}
-
-			LoggerUtil.info("[Weixin login userInfo=]" + userInfo);
-			LoggerUtil.info("[Weixin login token=]" + token);
-			LoggerUtil.info("[Weixin login getAccessToken=]" + token.getAccessToken());
-			LoggerUtil.info("[Weixin login getOpenid=]" + token.getOpenid());
-
-			String unionId = token.getUnionid();
+			// String unionId = token.getUnionid();
+			String unionId = "ollV61DXBHWg1EELEHRqq8k06roc";
 			// String unionId = "ollV61EDX3GEfpoaiBqgOVghh7Og";
 			LoggerUtil.info("[Weixin login unionId=]" + unionId);
 			if (sessionUser != null && StringUtils.isNotBlank(unionId)) {
