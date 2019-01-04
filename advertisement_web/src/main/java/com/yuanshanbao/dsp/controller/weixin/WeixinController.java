@@ -68,7 +68,9 @@ public class WeixinController extends BaseController {
 			String aString = weixinService.getUserInfoRedirectUrl(redirectUrl);
 			LoggerUtil.info("[Weixin auth redirectUrl=]" + redirectUrl);
 			LoggerUtil.info("[Weixin auth url=]" + aString);
-			return "redirect:" + weixinService.getUserInfoRedirectUrl(redirectUrl);
+			// return "redirect:" +
+			// weixinService.getUserInfoRedirectUrl(redirectUrl);
+			return "redirect:" + redirectUrl;
 		} catch (Exception e) {
 			logger.error("[Weixin auth error]", e);
 		}
