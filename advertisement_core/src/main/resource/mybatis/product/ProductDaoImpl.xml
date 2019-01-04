@@ -147,7 +147,7 @@
 		 recommend_tags, authorize_tags,school_time,brand_feature,total_amount,discount_amount,min_age,max_age, requirements, apply_flow, advantage,
 		  guide, type, sort, positive_rate, brokerage,status, create_time, update_time )
 		values
-		( #{name}, #{title},#{activityId},#{merchantId}, #{description}, #{imageUrl},#{queryUrl},#{bigImageUrl},#{detailImageUrl},
+		( #{name}, #{title},#{activityId},#{merchantId}, #{description}, #{imageUrl},#{bigImageUrl},#{detailImageUrl},#{queryUrl},
 		  #{featureTags}, #{recommendTags}, #{authorizeTags},#{schoolTime},#{brandFeature},
 		  #{totalAmount},#{discountAmount},#{minAge},#{maxAge}, #{requirements},
 		  #{applyFlow}, #{advantage}, #{guide}, #{type}, 
@@ -168,6 +168,9 @@
 				<if test="title != null">
 					title= #{title},
 				</if>
+				<if test="activityId != null">
+					activity_id= #{activityId},
+				</if>
 				<if test="description != null">
 					description= #{description},
 				</if>
@@ -179,6 +182,9 @@
 				</if>
 				<if test="detailImageUrl != null">
 					detail_image_url= #{detailImageUrl},
+				</if>
+				<if test="queryUrl != null">
+					query_url= #{queryUrl},
 				</if>
 				<if test="featureTags != null">
 					feature_tags= #{featureTags},

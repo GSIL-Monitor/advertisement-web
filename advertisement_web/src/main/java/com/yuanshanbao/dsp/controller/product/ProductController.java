@@ -61,6 +61,8 @@ public class ProductController extends BaseController {
 
 	private static final String WZXCX_PRODUCT_CHANNEL = "wzxcxProductChannel";
 
+	private static final String BANK_FLOW = "https://wz.huhad.com/creditcard/images/bankImage.png";
+
 	@Autowired
 	private ProductService productService;
 
@@ -227,11 +229,14 @@ public class ProductController extends BaseController {
 			}
 			String brandFeature = product.getBrandFeature();
 			String[] schoolTime = product.getSchoolTimeValue();
-
+			List<Tags> featureList = null;
 			// Map<String, String> brandFeatureMap =
 			// productService.getBrandFeatureMap(brandFeature);
-			List<Tags> featureList = productService.getBrandFeatureMap(brandFeature);
-			resultMap.put("brandFeatureList", featureList);
+			// 游戏活动
+			if (product.getActivityId() != 122) {
+				featureList = productService.getBrandFeatureMap(brandFeature);
+				resultMap.put("brandFeatureList", featureList);
+			}
 			product.setApplyCount(applyService.getProductApplyCount(product.getProductId()));
 			ProductVo vo = new ProductVo(product);
 			List<TagsVo> recommendTagsList = vo.getRecommendTagsList();
@@ -239,9 +244,19 @@ public class ProductController extends BaseController {
 			// if (isApprovalEdition(request, product)) {
 			// vo.setApplyInterface(null);
 			// }
+			String[] activity = new String[0];
 
+			if (vo.getActivityId() != null) {
+				if (vo.getActivityId() == 117 || vo.getActivityId() == 118) {
+					vo.setBankFlowUrl(BANK_FLOW);
+					resultMap.put("activity", schoolTime);
+
+				} else {
+					resultMap.put("activity", activity);
+
+				}
+			}
 			resultMap.put("product", vo);
-			resultMap.put("activity", schoolTime);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());

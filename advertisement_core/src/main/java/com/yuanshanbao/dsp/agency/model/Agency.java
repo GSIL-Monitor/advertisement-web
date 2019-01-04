@@ -3,8 +3,10 @@ package com.yuanshanbao.dsp.agency.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 
 /**
@@ -36,19 +38,21 @@ public class Agency implements Serializable {
 	}
 
 	public BigDecimal getBrokerage() {
+
 		return brokerage;
+
 	}
 
 	public String getMobile() {
 		return mobile;
 	}
 
-	public String getHideMobile() {
-		if (mobile != null) {
-			return mobile.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
-		}
-		return mobile;
-	}
+	// public String getHideMobile() {
+	// if (mobile != null) {
+	// return mobile.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
+	// }
+	// return mobile;
+	// }
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
@@ -122,12 +126,12 @@ public class Agency implements Serializable {
 		return name;
 	}
 
-	public String getHideName() {
-		if (name != null) {
-			return name.replaceAll(name.substring(1, name.length()), "****");
-		}
-		return name;
-	}
+	// public String getHideName() {
+	// if (name != null) {
+	// return name.replaceAll(name.substring(1, name.length()), "****");
+	// }
+	// return name;
+	// }
 
 	public void setName(String name) {
 		this.name = name;
@@ -146,6 +150,16 @@ public class Agency implements Serializable {
 	}
 
 	public String getBrokerageValue() {
+		if (brokerage != null) {
+			NumberFormat nt = NumberFormat.getPercentInstance();
+			if (brokerage.compareTo(BigDecimal.valueOf(1)) == -1) {
+				nt.setMinimumFractionDigits(2);
+				LoggerUtil.info(" getBrokerageValue = " + nt.format(brokerage));
+				return nt.format(brokerage);
+			}
+			return brokerage.stripTrailingZeros().toPlainString();
+
+		}
 		return String.valueOf(brokerage);
 	}
 

@@ -15,6 +15,7 @@ import com.yuanshanbao.dsp.tags.model.vo.TagsVo;
 public class ProductVo {
 
 	private Long productId;
+	private Long activityId;
 	private String name;
 	private String title;
 	private String description;
@@ -22,6 +23,7 @@ public class ProductVo {
 	private String smallImageUrl;
 	private String detailImageUrl;
 	private String bigImageUrl;
+	private String bankFlowUrl;
 	private String schoolTime;
 	private String brandFeature;
 	private Integer minAge;
@@ -62,6 +64,15 @@ public class ProductVo {
 		this.discountAmount = product.getDiscountAmount();
 		this.schoolTime = getDivideDetail(product.getSchoolTime());
 		this.brandFeature = getDivideDetail(product.getBrandFeature());
+		this.activityId = product.getActivityId();
+	}
+
+	public String getBankFlowUrl() {
+		return bankFlowUrl;
+	}
+
+	public void setBankFlowUrl(String bankFlowUrl) {
+		this.bankFlowUrl = bankFlowUrl;
 	}
 
 	public Long getProductId() {
@@ -258,4 +269,13 @@ public class ProductVo {
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
+
+	public Long getActivityId() {
+		return activityId;
+	}
+
+	public void setActivityId(Long activityId) {
+		this.activityId = activityId;
+	}
+
 }

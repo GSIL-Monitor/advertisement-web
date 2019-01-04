@@ -20,7 +20,6 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
-import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
@@ -38,13 +37,7 @@ import com.yuanshanbao.paginator.domain.PageList;
 @RequestMapping("/admin/product")
 public class AdminProductController extends PaginationController {
 
-	private static final String WANGZHUAN = "wangzhuan";
-
-	private static final String WANGZHUANAGENT = "wangzhuanagent";
-
 	private static final String PAGE_LIST = "advertisement/product/listProduct";
-
-	private static final String PAGE_AGENT_LIST = "advertisement/product/agentListProduct";
 
 	private static final String PAGE_INSERT = "advertisement/product/insertProduct";
 
@@ -69,6 +62,7 @@ public class AdminProductController extends PaginationController {
 		request.setAttribute("merchantId", merchantId);
 		request.setAttribute("merchant", merchantService.selectMerchant(merchantId));
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("activityList", activityService.selectActivitys(new Activity(), new PageBounds()));
 
 		return PAGE_LIST;
 	}
@@ -80,10 +74,6 @@ public class AdminProductController extends PaginationController {
 
 		Object object = productService.selectProducts(product, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
-		Activity activity = ConfigManager.getActivityByKey(WANGZHUAN);
-		Activity agentActivity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
-		request.setAttribute("activityName", activity.getName());
-		request.setAttribute("ageactivityName", activity.getName());
 		return setPageInfo(request, response, pageList);
 	}
 
@@ -156,6 +146,7 @@ public class AdminProductController extends PaginationController {
 		}
 
 		request.setAttribute("statusList", CommonStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("activityList", activityService.selectActivitys(new Activity(), new PageBounds()));
 		request.setAttribute("itemEdit", product);
 		return PAGE_UPDATE;
 	}
@@ -217,5 +208,16 @@ public class AdminProductController extends PaginationController {
 		}
 
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping("/queryProductDB.do")
+	public Object queryStatisticFromDB(String queryChannel, Product product, HttpServletRequest request,
+			HttpServletResponse response) {
+		Object object = productService.selectProducts(product, getPageBounds(queryChannel, request));
+
+		PageList<Product> pageList = (PageList<Product>) object;
+		return setPageInfo(request, response, pageList);
 	}
 }

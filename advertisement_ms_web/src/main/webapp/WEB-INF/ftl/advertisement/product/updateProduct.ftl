@@ -32,6 +32,18 @@
                     <td width="80%">
                       <input type="text" name="name" style="width:60%;" <#if itemEdit.name??>value="${itemEdit.name}"</#if>></td>
                   </tr>
+                   <tr>
+                    <td width="20%">所属活动：</td>
+                    <td>
+                      <div style="width:60%;">
+                      <select name="activityId" class="selectpicker form-control" >
+                        <#list activityList as activity>
+                        	<option value="${activity.activityId}">${activity.name}</option>
+                        </#list>
+                      </select>
+                      </div>
+                    </td>
+                  </tr>
                   <tr>
                     <td width="20%">标题：</td>
                     <td width="80%">

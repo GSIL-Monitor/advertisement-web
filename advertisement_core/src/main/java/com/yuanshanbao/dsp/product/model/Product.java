@@ -8,9 +8,10 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
-import com.yuanshanbao.dsp.advertisement.model.AdvertisementProjectType;
 import com.yuanshanbao.dsp.common.constant.ConstantsManager;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.CommonStatus;
 import com.yuanshanbao.dsp.merchant.model.Merchant;
 import com.yuanshanbao.dsp.tags.model.Tags;
@@ -131,14 +132,16 @@ public class Product {
 	}
 
 	public String getBrokerageValue() {
-
 		if (brokerage != null) {
-
-			if (brokerage.compareTo(new BigDecimal(1)) == -1) {
-				NumberFormat nt = NumberFormat.getPercentInstance();
+			NumberFormat nt = NumberFormat.getPercentInstance();
+			if (brokerage.compareTo(BigDecimal.valueOf(0.1)) == -1) {
 				nt.setMinimumFractionDigits(2);
+				LoggerUtil.info(" getBrokerageValue = " + nt.format(brokerage));
+				return nt.format(brokerage);
+			} else if (brokerage.compareTo(BigDecimal.valueOf(1)) == -1) {
 				return nt.format(brokerage);
 			}
+			return brokerage.stripTrailingZeros().toPlainString();
 		}
 		return String.valueOf(brokerage);
 	}
@@ -196,6 +199,9 @@ public class Product {
 	}
 
 	public String getImageUrl() {
+		if (StringUtils.isNotBlank(imageUrl)) {
+			return imageUrl + "?time=" + Long.toString(System.currentTimeMillis() / 1000);
+		}
 		return imageUrl;
 	}
 
@@ -391,7 +397,10 @@ public class Product {
 	}
 
 	public String getActivityIdValue() {
-		return AdvertisementProjectType.getDescription(activityId.intValue());
+		if (activityId != null) {
+			return ConfigManager.getActivityById(activityId).getName();
+		}
+		return null;
 	}
 
 	public void setActivityId(Long activityId) {
@@ -451,6 +460,9 @@ public class Product {
 	}
 
 	public String getBigImageUrl() {
+		if (StringUtils.isNotBlank(bigImageUrl)) {
+			return bigImageUrl + "?bigTime=" + Long.toString(System.currentTimeMillis() / 1000);
+		}
 		return bigImageUrl;
 	}
 
