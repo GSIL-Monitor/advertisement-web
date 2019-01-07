@@ -41,6 +41,8 @@ public class InviteController extends BaseController {
 	private static final String H5_AGENT_URL = "https://wz.huhad.com/w/products";
 	private static final String H5_HOME_URL = "https://wz.huhad.com/w/home";
 	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/detail";
+	private static final String H5_DETAIL_GOOODS_URL = "https://wz.huhad.com/w/goods";
+
 	private static final String H5_BANK_INFO = "https://wz.huhad.com/w/applicants.html";
 	private static final String DETAILURL = "pages/index/detail/detail";
 
@@ -169,7 +171,7 @@ public class InviteController extends BaseController {
 			} else {
 
 				if (StringUtils.isBlank(token)) {
-					String H5Url = H5_DETAIL_URL + "?productId=" + productId + "&scene=scanning";
+					String H5Url = H5_DETAIL_GOOODS_URL + "?productId=" + productId + "&scene=scanning";
 					userService.createQRCodeURL(user, H5Url, resultMap);
 				} else {
 					// String code = redisCacheService
