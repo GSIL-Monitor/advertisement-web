@@ -254,7 +254,7 @@ public class ProductController extends BaseController {
 					vo.setBankFlowUrl(BANK_FLOW);
 					resultMap.put("activity", schoolTime);
 
-				} else if (vo.getActivityId() == 122) {
+				} else if (vo.getActivityId() == 122 || vo.getActivityId() == 121) {
 
 					String[] schoolTimeGame = { product.getSchoolTime() };
 					resultMap.put("activity", schoolTimeGame);
