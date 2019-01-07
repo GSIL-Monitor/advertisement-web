@@ -255,9 +255,10 @@ public class ProductController extends BaseController {
 					resultMap.put("activity", schoolTime);
 
 				} else if (vo.getActivityId() == 122) {
-
 					String[] schoolTimeGame = { product.getSchoolTime() };
 					resultMap.put("activity", schoolTimeGame);
+				} else if (vo.getActivityId() == 121) {
+					resultMap.put("activity", schoolTime);
 				} else {
 					resultMap.put("activity", activity);
 				}

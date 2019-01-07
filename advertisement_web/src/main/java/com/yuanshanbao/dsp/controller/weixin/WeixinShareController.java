@@ -1,10 +1,13 @@
 package com.yuanshanbao.dsp.controller.weixin;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +67,41 @@ public class WeixinShareController {
 			InterfaceRetCode.setAppCodeDesc(map, ComRetCode.FAIL);
 		}
 		return map;
+	}
+
+	@ResponseBody
+	@RequestMapping("/wechat")
+	public String wexinChat(HttpServletRequest request, HttpServletResponse response) {
+
+		LoggerUtil.error("微信公众号URL测试进入");
+		// 微信加密签名
+		String signature = request.getParameter("signature");
+		// 时间戳
+		String timestamp = request.getParameter("timestamp");
+		// 随机数
+		String nonce = request.getParameter("nonce");
+		// 随机字符串
+		String echostr = request.getParameter("echostr");
+
+		try {
+			if (signature != null && ShareSignUtil.checkSignature(signature, timestamp, nonce)) {
+				try {
+					Writer print = response.getWriter();
+					print.write(echostr);
+					print.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			LoggerUtil.error("微信公众号URL测试成功");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 
 }
