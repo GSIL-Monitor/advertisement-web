@@ -171,14 +171,15 @@ public class InviteController extends BaseController {
 			} else {
 
 				if (StringUtils.isBlank(token)) {
-					String H5Url = H5_DETAIL_GOOODS_URL + "?productId=" + productId + "&scene=scanning";
+					String H5Url = H5_DETAIL_GOOODS_URL + "?productId=" + productId
+							+ "&fromPage=products&scene=scanning";
 					userService.createQRCodeURL(user, H5Url, resultMap);
 				} else {
 					// String code = redisCacheService
 					// .get(RedisConstant.WX_XCX_DETAIL_CODE + user.getUserId()
 					// + productId);
 					// if (StringUtils.isBlank(code)) {
-					// byte[] bytes =
+					// byte[] bytes =d
 					// weixinService.dealQRCode(weixinService.CONFIG_WZXCX,
 					// productId + "," + user.getUserId(), DETAILURL);
 					// if (bytes != null) {
