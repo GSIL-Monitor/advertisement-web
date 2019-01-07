@@ -28,6 +28,9 @@ public class CommonZuHeController extends BaseGameController {
 	public Object activityCombineIndex(HttpServletRequest request, ModelMap modelMap, String activityKey, String channel) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
+			if (activityKey == null) {
+				return resultMap;
+			}
 			setCombineIndex(request, resultMap, activityKey, channel, null, null);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -80,7 +83,6 @@ public class CommonZuHeController extends BaseGameController {
 	@ResponseBody
 	@RequestMapping("/checkIsFromCombine")
 	public Object checkIsFromCombine(HttpServletRequest request, ModelMap modelMap, String channel) {
-		System.err.println(request.getSession().getId());
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		String combineChannel = (String) request.getSession().getAttribute(
 				SessionConstants.SESSION_ACTIVITY_COMBINE_CHANNEL);

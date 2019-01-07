@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.controller;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +17,11 @@ import com.yuanshanbao.common.constant.SessionConstants;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.AESUtils;
 import com.yuanshanbao.common.util.CommonUtil;
+import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
+import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -32,6 +36,8 @@ public class RedirectJumper extends BaseController {
 
 	@Autowired
 	private AdvertisementService advertisementService;
+	@Autowired
+	private RedisService redisService;
 
 	@Autowired
 	private QuotaService quotaService;
@@ -57,13 +63,14 @@ public class RedirectJumper extends BaseController {
 	@RequestMapping("/adCount")
 	@ResponseBody
 	public Object adCount(HttpServletRequest request, ModelMap modelMap, String id, String position, String channel,
-			String activityKey, boolean isShow) {
+			String pId, String activityKey, boolean isShow) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if (isShow) {
 				addAdvertisementShowCount(request, id, channel);
 			} else {
 				addAdvertisementClickCount(request, id, channel);
+				increConsume(pId, channel);
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (Exception e) {
@@ -123,6 +130,20 @@ public class RedirectJumper extends BaseController {
 		}
 		if (StringUtils.isNotBlank(channel)) {
 			redisCacheService.incr(RedisConstant.getPlanClickLocalCountPVKey(null, id, channel));
+		}
+	}
+
+	private void increConsume(String probabilityId, String channel) {
+		try {
+			Map<Long, BigDecimal> proCostMap = DspConstantsManager.getHdBidChannelMap(channel);
+			// 在各个媒体消耗金额
+			if (proCostMap.get(Long.valueOf(probabilityId)) == null) {
+				return;
+			}
+			redisService.increByDouble(RedisConstant.getProbabilityBalanceCountKey(null, Long.valueOf(probabilityId)),
+					proCostMap.get(Long.valueOf(probabilityId)).doubleValue());
+		} catch (Exception e) {
+			LoggerUtil.error("increConsume", e);
 		}
 	}
 }

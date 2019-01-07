@@ -20,12 +20,15 @@ import com.yuanshanbao.dsp.plan.model.Plan;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.probability.model.ProbabilityStatus;
 import com.yuanshanbao.dsp.probability.service.ProbabilityService;
+import com.yuanshanbao.dsp.quota.model.Quota;
 import com.yuanshanbao.dsp.quota.model.QuotaType;
+import com.yuanshanbao.dsp.quota.service.QuotaService;
 import com.yuanshanbao.paginator.domain.PageBounds;
 
 public class DspConstantsManager {
 
 	private static Map<String, Map<Long, BigDecimal>> channelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
+	private static Map<String, Map<Long, BigDecimal>> hdChannelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
 	private static DspConstantsManager instance = null;
 
 	@Resource
@@ -34,6 +37,8 @@ public class DspConstantsManager {
 	private ChannelService channelService;
 	@Resource
 	private ProbabilityService probabilityService;
+	@Resource
+	private QuotaService quotaService;
 
 	public static void refresh() {
 		if (instance != null) {
@@ -49,6 +54,7 @@ public class DspConstantsManager {
 	private void refreshConstants() {
 		LoggerUtil.info("init DspConstants");
 		refreshChannelBidMap();
+		refreshAdvertisementChannelMap();
 	}
 
 	private void refreshChannelBidMap() {
@@ -78,7 +84,7 @@ public class DspConstantsManager {
 			if (probabilityBidMap.size() == 0) {
 				continue;
 			}
-			Map<Long, BigDecimal> sortMap = SortUtil.sortByValueDescending(probabilityBidMap);
+			Map<Long, BigDecimal> sortMap = SortUtil.sortByValueAscending(probabilityBidMap);
 			// 为每一条计划设置价格
 			Map<Long, BigDecimal> bidMap = setPlanBid(channel, sortMap);
 			tempChannelBidMap.put(channel.getKey(), bidMap);
@@ -86,8 +92,52 @@ public class DspConstantsManager {
 		channelBidMap = tempChannelBidMap;
 	}
 
+	private void refreshAdvertisementChannelMap() {
+		Channel channelParams = new Channel();
+		channelParams.setStatus(CommonStatus.ONLINE);
+		List<Channel> channelList = channelService.selectChannels(channelParams, new PageBounds());
+		Map<String, Map<Long, BigDecimal>> tempChannelBidMap = new HashMap<String, Map<Long, BigDecimal>>();
+		for (Channel channel : channelList) {
+			Map<Long, BigDecimal> probabilityBidMap = new HashMap<Long, BigDecimal>();
+			Probability proParams = new Probability();
+			proParams.setChannel(channel.getKey());
+			proParams.setStatus(ProbabilityStatus.ONLINE);
+			List<Probability> proList = probabilityService.selectProbabilitys(proParams, new PageBounds());
+			if (proList == null || proList.size() == 0) {
+				continue;
+			}
+			List<Long> proIds = new ArrayList<Long>();
+			for (Probability probability : proList) {
+				proIds.add(probability.getProbabilityId());
+			}
+			Map<Long, Quota> quotaMap = quotaService.selectQuotaByProbabilityId(proIds);
+			for (Probability probability : proList) {
+				Quota quota = quotaMap.get(probability.getProbabilityId());
+				if (quota == null) {
+					continue;
+				}
+				if (quota.getUnitPrice() == null) {
+					continue;
+				}
+				BigDecimal unitPrice = quota.getUnitPrice();
+				probabilityBidMap.put(probability.getProbabilityId(), unitPrice);
+			}
+			if (probabilityBidMap.size() == 0) {
+				continue;
+			}
+			Map<Long, BigDecimal> sortMap = SortUtil.sortByValueAscending(probabilityBidMap);
+			tempChannelBidMap.put(channel.getKey(), sortMap);
+		}
+		hdChannelBidMap = tempChannelBidMap;
+	}
+
 	public static Map<Long, BigDecimal> getBidByChannel(String channel) {
 		Map<Long, BigDecimal> map = channelBidMap.get(channel);
+		return map;
+	}
+
+	public static Map<Long, BigDecimal> getHdBidChannelMap(String channel) {
+		Map<Long, BigDecimal> map = hdChannelBidMap.get(channel);
 		return map;
 	}
 

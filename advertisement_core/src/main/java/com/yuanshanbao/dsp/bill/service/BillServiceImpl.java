@@ -22,6 +22,7 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertiser.dao.AdvertiserDao;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
@@ -582,6 +583,54 @@ public class BillServiceImpl implements BillService {
 			for (Bill bill : list) {
 				bill.setStatus(CommonStatus.OFFLINE);
 				updateBill(bill);
+			}
+		}
+	}
+
+	@Override
+	public void createBill(Advertisement advertisement, Probability probability, double nowCount, double lastCount,
+			int type) {
+		Bill bill = new Bill();
+		bill.setPlanId(advertisement.getAdvertisementId());
+		bill.setAdvertiserId(advertisement.getAdvertiserId());
+		bill.setProbabilityId(probability.getProbabilityId());
+		bill.setAmount(BigDecimal.valueOf(nowCount).subtract(BigDecimal.valueOf(lastCount)));
+		bill.setDate(DateUtils.format(new Date()));
+		bill.setChannel(probability.getChannel());
+		bill.setNowCount(BigDecimal.valueOf(nowCount));
+		bill.setType(type);
+		bill.setStatus(CommonStatus.ONLINE);
+		insertBill(bill);
+		LoggerUtil.info("createAdvertisementBill success={}", JacksonUtil.obj2json(bill));
+		Advertiser advertiser = advertiserService.selectAdvertiserForUpdate(advertisement.getAdvertiserId());
+		if (advertiser != null) {
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("advertiserId", advertisement.getAdvertiserId());
+			parameters.put("amount", bill.getAmount());
+			int result = advertiserDao.cutPayment(parameters);
+			if (result < 0) {
+				throw new BusinessException(ComRetCode.FAIL);
+			}
+			LoggerUtil.info("cutPayment success={}  amount={}", JacksonUtil.obj2json(advertiser), bill.getAmount());
+		}
+	}
+
+	@Override
+	public void checkBillAndCount(Advertisement advertisement, Probability probability, double lastCount) {
+		Bill param = new Bill();
+		param.setAdvertisementId(advertisement.getAdvertisementId());
+		param.setDate(DateUtils.format(new Date()));
+		param.setChannel(probability.getChannel());
+		param.setProbabilityId(probability.getProbabilityId());
+		param.setType(BillType.DEDUCTION);
+		List<Bill> list = selectBill(param, new PageBounds());
+		if (list != null && list.size() > 0) {
+			Bill bill = list.get(0);
+			if (bill.getNowCount().compareTo(BigDecimal.valueOf(lastCount).setScale(5, BigDecimal.ROUND_HALF_DOWN)) == 0) {
+				return;
+			} else {
+				LoggerUtil.error("checkBill error,bill={},last={}", JacksonUtil.obj2json(bill),
+						String.valueOf(lastCount));
 			}
 		}
 	}

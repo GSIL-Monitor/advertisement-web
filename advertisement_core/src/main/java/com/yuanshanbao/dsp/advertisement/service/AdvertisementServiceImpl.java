@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.advertisement.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ import com.yuanshanbao.dsp.advertisement.model.MediaInformation;
 import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
+import com.yuanshanbao.dsp.bill.model.BillType;
+import com.yuanshanbao.dsp.bill.service.BillService;
 import com.yuanshanbao.dsp.channel.service.ChannelService;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
@@ -74,6 +77,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
 	@Autowired
 	private ActivityService activityService;
+
+	@Autowired
+	private RedisService redisService;
+
+	@Autowired
+	private BillService billService;
 
 	@Override
 	public void insertAdvertisement(Advertisement advertisement) {
@@ -498,5 +507,45 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void paymentForAdvertisement(Advertisement advertisement) {
+		Probability params = new Probability();
+		params.setAdvertisementId(advertisement.getAdvertisementId());
+		List<Probability> list = probabilityService.selectProbabilitys(params, new PageBounds());
+		for (Probability probability : list) {
+			// 总消耗
+			double nowCount = getCount(RedisConstant
+					.getProbabilityBalanceCountKey(null, probability.getProbabilityId()));
+			// 上次操作扣费时消耗的金额
+			double lastCount = getCount(RedisConstant.getProbabilityLastBalanceCountKey(null,
+					probability.getProbabilityId()));
+			double difference = BigDecimal.valueOf(nowCount).subtract(BigDecimal.valueOf(lastCount)).doubleValue();
+			if (difference > 0) {
+				billService.checkBillAndCount(advertisement, probability, lastCount);
+				billService.createBill(advertisement, probability, nowCount, lastCount, BillType.DEDUCTION);
+				redisService.set(RedisConstant.getProbabilityLastBalanceCountKey(null, probability.getProbabilityId()),
+						String.valueOf(nowCount));
+				// 该计划当日消耗金额，用于日限额限制
+				// redisService.increByDouble(RedisConstant.getPlanDayBalanceCountKey(null,
+				// plan.getPlanId()), difference);
+				// 计划总金额消耗
+				// redisService.increByDouble(RedisConstant.getPlanBalanceCountKey(plan.getPlanId()),
+				// difference);
+				// 订单总金额消耗
+				// redisService.increByDouble(RedisConstant.getOrderBalanceCountKey(plan.getOrderId()),
+				// difference);
+			}
+		}
+		// calculateIncrement(plan.getPlanId());
+	}
+
+	private double getCount(String key) {
+		String str = (String) redisService.get(key);
+		if (ValidateUtil.isPositiveFloat(str)) {
+			return Double.parseDouble(str);
+		}
+		return 0;
 	}
 }

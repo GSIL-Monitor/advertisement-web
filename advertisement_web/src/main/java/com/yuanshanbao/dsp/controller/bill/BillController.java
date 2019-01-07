@@ -17,6 +17,8 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.advertisement.model.Advertisement;
+import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.advertiser.service.AdvertiserService;
 import com.yuanshanbao.dsp.bill.service.BillService;
@@ -38,6 +40,9 @@ public class BillController {
 	@Autowired
 	private AdvertiserService advertiserService;
 
+	@Autowired
+	private AdvertisementService advertisementService;
+
 	@ResponseBody
 	@RequestMapping("/creatPlanBill")
 	public Object creatPlanBill() {
@@ -48,6 +53,24 @@ public class BillController {
 		try {
 			for (Plan plan : list) {
 				planService.paymentForPlan(plan);
+			}
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (Exception e2) {
+			LoggerUtil.error("creatPlanBill  function -  error", e2);
+		}
+		return resultMap;
+	}
+
+	@ResponseBody
+	@RequestMapping("/creatAdvertisementBill")
+	public Object creatAdvertisementBill() {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Advertisement param = new Advertisement();
+		param.setStatus(PlanStatus.ONLINE);
+		List<Advertisement> list = advertisementService.selectAdvertisement(param, new PageBounds());
+		try {
+			for (Advertisement advertisement : list) {
+				advertisementService.paymentForAdvertisement(advertisement);
 			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (Exception e2) {

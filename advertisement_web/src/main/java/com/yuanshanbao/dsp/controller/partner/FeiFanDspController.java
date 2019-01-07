@@ -54,6 +54,9 @@ public class FeiFanDspController {
 			Project project = ConstantsManager.getProjectByKey("dsp");
 			if (project != null) {
 				MediaInformation mediaInformation = coverToDspInformation(feifanRequest);
+				if (mediaInformation == null) {
+					throw new Exception(EMPTYINFO);
+				}
 				Channel channelObject = ConfigManager.getChannel(mediaInformation.getChannel());
 				if (channelObject != null) {
 					List<FeiFanAdvertisement> ads = probabilityService.pickFeiFanAd(request, project.getProjectId(),
@@ -108,8 +111,12 @@ public class FeiFanDspController {
 
 	private MediaInformation coverToDspInformation(FeiFanRequest feifanRequest) {
 		MediaInformation mediaInformation = new MediaInformation();
-		Impression imp = feifanRequest.getImp().get(0);
+		List<Impression> impList = feifanRequest.getImp();
 		FeiFanDevice device = feifanRequest.getDevice();
+		if (impList == null || impList.size() == 0 || device == null) {
+			return null;
+		}
+		Impression imp = feifanRequest.getImp().get(0);
 		mediaInformation.setImpId(imp.getId());
 		mediaInformation.setW(imp.getS1());
 		mediaInformation.setH(imp.getS2());

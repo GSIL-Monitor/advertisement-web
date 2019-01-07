@@ -286,6 +286,7 @@ public class AdminActivityCombineController extends PaginationController {
 			probability.setProjectId(getProjectId(request));
 			quota.setProjectId(getProjectId(request));
 			probabilityService.insertProbability(probability);
+			quota.setProbabilityId(probability.getProbabilityId());
 			// quotaService.insertQuota(quota);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

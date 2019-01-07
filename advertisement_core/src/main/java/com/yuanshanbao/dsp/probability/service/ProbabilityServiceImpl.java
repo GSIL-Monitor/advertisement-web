@@ -39,6 +39,7 @@ import com.yuanshanbao.dsp.common.constant.ConstantsManager;
 import com.yuanshanbao.dsp.common.constant.DspConstantsManager;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.config.ConfigConstants;
 import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.location.service.IpLocationService;
 import com.yuanshanbao.dsp.material.model.Material;
@@ -247,6 +248,11 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 			throw new BusinessException();
 		}
 		List<Probability> probabilityList = selectProbabilityByKeyFromCache(projectId, activityKey, channel, null);
+		// 如果按照价格进行排序
+		if (!ConfigConstants.TRUE.equals(ConfigManager.getConfigValue(activity.getActivityId(), channel,
+				ConfigConstants.ADVERTISEMENT_SORT_CONFIG))) {
+			probabilityList = sortByPrice(probabilityList, channel);
+		}
 		Map<Long, Probability> advertisementIdMap = new LinkedHashMap<Long, Probability>();
 		// 判断时间是否符合
 		checkProbabilityTime(probabilityList, advertisementIdMap);
@@ -260,6 +266,23 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		checkQuotaTimeAndCount(quotaList, advertisementIdMap);
 
 		resultList.addAll(advertisementIdMap.values());
+
+		return resultList;
+	}
+
+	private List<Probability> sortByPrice(List<Probability> probabilityList, String channel) {
+		List<Probability> resultList = new ArrayList<Probability>();
+		Map<Long, Probability> advertisementIdMap = new LinkedHashMap<Long, Probability>();
+		for (Probability probability : probabilityList) {
+			advertisementIdMap.put(probability.getAdvertisementId(), probability);
+		}
+		Map<Long, BigDecimal> sortMap = DspConstantsManager.getHdBidChannelMap(channel);
+		for (Map.Entry<Long, BigDecimal> entrMap : sortMap.entrySet()) {
+			Probability probability = advertisementIdMap.get(entrMap.getKey());
+			if (probability != null) {
+				resultList.add(probability);
+			}
+		}
 		return resultList;
 	}
 
@@ -280,7 +303,6 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 	}
 
 	private void checkQuotaTimeAndCount(List<Quota> quotaList, Map<Long, Probability> advertisementIdMap) {
-
 		for (Quota quota : quotaList) {
 			if (quota.getCount() != null && quota.getCount() > 0 && quota.getType() != null) {
 				String countValue = "";
@@ -323,7 +345,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 		double current = 0;
 		for (int i = 0; i < probabilityList.size(); i++) {
 			if (probabilityList.get(i).getProbability() == null) {
-				continue;
+				return probabilityList.get(probabilityList.size() - 1);
+				// continue;
 			}
 			current += probabilityList.get(i).getProbability();
 			if (value < current) {

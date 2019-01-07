@@ -9,6 +9,7 @@ import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 public class Bill {
 	private Long billId;
 	private Long advertiserId;
+	private Long advertisementId;
 	private Long probabilityId;
 	private Long planId;
 	private Long orderId;
@@ -177,6 +178,14 @@ public class Bill {
 
 	public void setLastCount(BigDecimal lastCount) {
 		this.lastCount = lastCount;
+	}
+
+	public Long getAdvertisementId() {
+		return advertisementId;
+	}
+
+	public void setAdvertisementId(Long advertisementId) {
+		this.advertisementId = advertisementId;
 	}
 
 }

@@ -136,6 +136,8 @@ public interface ConfigConstants {
 	public static final String REPEAT_ENTRY_URL_CONFIG = "repeatEntryUrlConfig";
 	public static final String THIRD_STAT_CODE_CONFIG = "thirdStatCodeConfig";
 
+	public static final String ADVERTISEMENT_SORT_CONFIG = "advertisementSortConfig";
+
 	/**
 	 * 首页
 	 */

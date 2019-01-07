@@ -39,4 +39,6 @@ public interface AdvertisementService {
 	public List<AdvertisementVo> selectGift(String activityId, String channel);
 
 	public List<Advertisement> getGift(Long projectId, String activityKey, String channelKey, MediaInformation instance);
+
+	public void paymentForAdvertisement(Advertisement advertisement);
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.bill.model.Bill;
 import com.yuanshanbao.dsp.order.model.Order;
@@ -41,6 +42,11 @@ public interface BillService {
 	public void createBill(Plan plan, Probability probability, double nowCount, double lastCount, int type);
 
 	public void checkBillAndCount(Plan plan, Probability probability, double lastCount);
+
+	public void createBill(Advertisement advertisement, Probability probability, double nowCount, double lastCount,
+			int type);
+
+	public void checkBillAndCount(Advertisement advertisement, Probability probability, double lastCount);
 
 	public void combineAdvertiserBill(Advertiser advertiser, String date);
 

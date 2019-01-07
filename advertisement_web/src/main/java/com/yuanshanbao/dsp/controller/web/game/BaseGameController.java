@@ -198,8 +198,10 @@ public class BaseGameController extends BaseController {
 		Activity activity = ConfigManager.getActivityByKey(activityKey);
 		List<Long> pickedPrizeIdList = parsePickedPrize(request, channel, true);
 		List<Long> pickAllPrizeIdList = parseAllPickedPrize(request, channel, true);
+		// 默认按照概率进行排序
 		List<Probability> probabilityList = probabilityService.selectProbabilitys(request, getProjectId(request),
 				parentKey, channel);
+		// 为组合下的活动分配奖品
 		Map<Long, List<Probability>> chanceMap = allocatePrize(parentKey, activityKey, probabilityList, channel);
 		List<Probability> subList = chanceMap.get(activity.getActivityId());
 		if (subList == null) {
@@ -207,12 +209,14 @@ public class BaseGameController extends BaseController {
 		}
 		Probability probability = probabilityService.pickSubPrize(subList, pickedPrizeIdList);
 		Advertisement advertisement = null;
+		// 设置Cookie
 		if (probability != null) {
 			pickedPrizeIdList.add(probability.getAdvertisementId());
 			pickAllPrizeIdList.add(probability.getAdvertisementId());
 			setPickedPrizeCookie(request, response, channel, pickedPrizeIdList);
 			setAllPickedPrizeCookie(request, response, pickAllPrizeIdList);
 			advertisement = ConfigManager.getAdvertisement(probability.getAdvertisementId() + "");
+			resultMap.put("pId", probability.getProbabilityId());
 			// advertisement.addChannelToLink(channel);
 		}
 		return advertisement;
@@ -507,6 +511,9 @@ public class BaseGameController extends BaseController {
 			String channel, String[] prizeName, double[] probabilityRandom) {
 		request.getSession().setAttribute(activityKey + SessionConstants.SESSION_USER_FROM, channel);
 		Activity activity = ConfigManager.getActivityByKey(activityKey);
+		if (activity == null) {
+			return;
+		}
 		ActivityCombine params = new ActivityCombine();
 		params.setParentId(activity.getActivityId());
 		List<ActivityCombine> list = activityCombineService.selectActivityCombine(params, new PageBounds());
@@ -622,7 +629,8 @@ public class BaseGameController extends BaseController {
 		ActivityCombine activityCombine = new ActivityCombine();
 		activityCombine.setParentId(parentActivity.getActivityId());
 		List<ActivityCombine> list = activityCombineService.selectActivityCombine(activityCombine, new PageBounds());
-		List<ActivityCombine> list2 = ConfigManager.getActivityCombineList(parentActivity.getActivityId());
+		// List<ActivityCombine> list2 =
+		// ConfigManager.getActivityCombineList(parentActivity.getActivityId());
 		// 若活动奖品数量过少，则不进行分配
 		Iterator<ActivityCombine> iterator = list.iterator();
 		while (iterator.hasNext()) {
@@ -683,6 +691,7 @@ public class BaseGameController extends BaseController {
 		String allocateConfig = ConfigManager.getConfigValue(activityCombine.getParentId(), channel,
 				ConfigConstants.ACTIVITY_COMBINE_PRIZE_ALLOCATE_CONFIG);
 		List<String> countPro = new ArrayList<String>();
+		// 设置奖品分配比例
 		if (allocateConfig != null) {
 			String[] config = allocateConfig.split(",");
 			countPro = Arrays.asList(config);
