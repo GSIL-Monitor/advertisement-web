@@ -51,7 +51,7 @@ public class UserBankCardController extends BaseController {
 					bankCardService.addVIPAgentOrBankCardInfo(user.getUserId(), Long.valueOf(productId), userName,
 							mobile);
 				} else {
-					User loginUser = getLoginUser(token);
+					User loginUser = differentiateTokenUser(request, token);
 					bankCardService.getApplyBankCardInfo(loginUser, Long.valueOf(productId), userName, mobile);
 				}
 
