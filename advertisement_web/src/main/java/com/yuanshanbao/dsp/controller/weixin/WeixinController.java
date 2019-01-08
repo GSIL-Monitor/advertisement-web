@@ -58,6 +58,8 @@ public class WeixinController extends BaseController {
 	@Autowired
 	private AgencyService agencyService;
 
+	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/detail";
+
 	@RequestMapping("/auth")
 	public String auth(HttpServletRequest request, String returnUrl, String inviteUserId, String productId)
 			throws UnsupportedEncodingException {
@@ -259,7 +261,8 @@ public class WeixinController extends BaseController {
 				// "true");
 			}
 			if (StringUtils.isNotBlank(productId) && ValidateUtil.isNumber(productId)) {
-				return "redirect:" + returnUrl + "?fromPage=goods&scene=scanning&productId=" + productId;
+				String url = H5_DETAIL_URL + "?fromPage=goods&productId=" + productId;
+				return "redirect:" + url;
 			}
 			return "redirect:" + returnUrl;
 		} catch (Exception e) {
