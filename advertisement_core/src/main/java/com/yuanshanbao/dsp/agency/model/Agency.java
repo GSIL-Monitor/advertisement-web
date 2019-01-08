@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
@@ -103,6 +105,11 @@ public class Agency implements Serializable {
 	}
 
 	public String getProductName() {
+		if (StringUtils.isNotBlank(productName)) {
+			if (productName.length() > 6) {
+				return productName.substring(0, 6);
+			}
+		}
 		return productName;
 	}
 
@@ -123,6 +130,11 @@ public class Agency implements Serializable {
 	}
 
 	public String getName() {
+		if (StringUtils.isNotBlank(name)) {
+			if (name.length() > 3) {
+				return name.substring(0, 3);
+			}
+		}
 		return name;
 	}
 

@@ -2,6 +2,8 @@ package com.yuanshanbao.dsp.agency.model.vo;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Created by Administrator on 2018/11/15.
  */
@@ -78,6 +80,11 @@ public class AgencyVo {
 	}
 
 	public String getName() {
+		if (StringUtils.isNotBlank(name)) {
+			if (name.length() > 3) {
+				return name.substring(0, 3);
+			}
+		}
 		return name;
 	}
 
@@ -102,6 +109,11 @@ public class AgencyVo {
 	}
 
 	public String getProductName() {
+		if (StringUtils.isNotBlank(productName)) {
+			if (productName.length() > 6) {
+				return productName.substring(0, 6);
+			}
+		}
 		return productName;
 	}
 
