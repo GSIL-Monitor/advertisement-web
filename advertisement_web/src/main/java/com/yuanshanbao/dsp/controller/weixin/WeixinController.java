@@ -59,12 +59,13 @@ public class WeixinController extends BaseController {
 	private AgencyService agencyService;
 
 	@RequestMapping("/auth")
-	public String auth(HttpServletRequest request, String returnUrl, String inviteUserId)
+	public String auth(HttpServletRequest request, String returnUrl, String inviteUserId, String productId)
 			throws UnsupportedEncodingException {
 		try {
 			String host = request.getHeader("Host");
 			String redirectUrl = "https://" + host + "/i/weixin/oauth/login?returnUrl="
-					+ URLEncoder.encode(returnUrl, "utf-8") + "&inviteUserId=" + inviteUserId;
+					+ URLEncoder.encode(returnUrl, "utf-8") + "&inviteUserId=" + inviteUserId + "&productId="
+					+ productId;
 			String aString = weixinService.getUserInfoRedirectUrl(redirectUrl);
 			LoggerUtil.info("[Weixin auth redirectUrl=]" + redirectUrl);
 			LoggerUtil.info("[Weixin auth url=]" + aString);
@@ -77,7 +78,7 @@ public class WeixinController extends BaseController {
 
 	@RequestMapping("/login")
 	public String login(HttpServletRequest request, String returnUrl, String code, String domainToken,
-			String inviteUserId, HttpServletResponse response) {
+			String productId, String inviteUserId, HttpServletResponse response) {
 		try {
 			User sessionUser = (User) request.getSession().getAttribute(SessionConstants.SESSION_USER);
 
@@ -256,6 +257,9 @@ public class WeixinController extends BaseController {
 				// // token);
 				// request.getSession().setAttribute(SessionConstants.SESSION_WEIXIN_TRY,
 				// "true");
+			}
+			if (StringUtils.isNotBlank(productId) && ValidateUtil.isNumber(productId)) {
+				return "redirect:" + returnUrl + "?fromPage=goods&scene=scanning&productId=" + productId;
 			}
 			return "redirect:" + returnUrl;
 		} catch (Exception e) {
