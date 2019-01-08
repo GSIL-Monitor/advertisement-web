@@ -889,7 +889,7 @@ public class AdminStatisticsController extends PaginationController {
 			HttpServletRequest request, HttpServletResponse response, String statisticsDate, Boolean isPv,
 			String channel) {
 		List<AdvertisementStatistics> result = advertisementStatisticsService.selectChannelAdvertisementStatistic(
-				advertisementStatistics, isPv, channel);
+				advertisementStatistics, isPv, channel, getProjectId(request));
 		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(result, new Paginator()));
 	}
 
@@ -916,7 +916,7 @@ public class AdminStatisticsController extends PaginationController {
 	public Object queryAdvertisementStatistic(AdvertisementStatistics advertisementStatistics,
 			HttpServletRequest request, HttpServletResponse response, Boolean isPv, Long advertisementId) {
 		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistic(
-				advertisementStatistics, isPv, advertisementId);
+				advertisementStatistics, isPv, advertisementId, getProjectId(request));
 		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(list, new Paginator()));
 	}
 
@@ -964,7 +964,7 @@ public class AdminStatisticsController extends PaginationController {
 			AdvertisementStatistics advertisementStatistics, Boolean isPv, ModelMap modelMap) {
 		List<AdvertisementStatistics> resultList = new ArrayList<AdvertisementStatistics>();
 		List<AdvertisementStatistics> list = advertisementStatisticsService.selectAdvertisementStatistic(
-				advertisementStatistics, isPv, null);
+				advertisementStatistics, isPv, null, getProjectId(request));
 		Advertiser advertiser = getBindAdvertiserByUser();
 		if (advertiser == null) {
 			return resultList;

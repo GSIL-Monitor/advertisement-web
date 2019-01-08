@@ -69,8 +69,10 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 
 	@Autowired
 	private QuotaService quotaService;
+
 	@Autowired
 	private PlanService planService;
+
 	@Autowired
 	private ChannelService channelService;
 
@@ -691,9 +693,10 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	}
 
 	public List<AdvertisementStatistics> selectChannelAdvertisementStatistic(
-			AdvertisementStatistics advertisementStatistics, Boolean pv, String channelKey) {
+			AdvertisementStatistics advertisementStatistics, Boolean pv, String channelKey, Long projectId) {
 		Probability probability = new Probability();
 		probability.setStatus(CommonStatus.ONLINE);
+		probability.setProjectId(projectId);
 		int diffDate = getDateDiff(advertisementStatistics);
 		Map<String, AdvertisementStatistics> resultMap = new HashMap<String, AdvertisementStatistics>();
 		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();
@@ -785,9 +788,10 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	}
 
 	public List<AdvertisementStatistics> selectAdvertisementStatistic(AdvertisementStatistics advertisementStatistics,
-			Boolean pv, Long advertisementId) {
+			Boolean pv, Long advertisementId, Long projectId) {
 		Probability probability = new Probability();
 		probability.setStatus(CommonStatus.ONLINE);
+		probability.setProjectId(projectId);
 		int diffDate = getDateDiff(advertisementStatistics);
 		Map<Long, AdvertisementStatistics> resultMap = new HashMap<Long, AdvertisementStatistics>();
 		List<AdvertisementStatistics> result = new ArrayList<AdvertisementStatistics>();

@@ -7,7 +7,7 @@
 <script>
 	$(document).ready(function(){
 		dataTableConfig.iDisplayLength = 1000;
-		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryMediaAdvertisements.do";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/queryChannelAdvertisements.do";
 		dataTableConfig.columns = [
 			{
 		    	"data": "channel"	

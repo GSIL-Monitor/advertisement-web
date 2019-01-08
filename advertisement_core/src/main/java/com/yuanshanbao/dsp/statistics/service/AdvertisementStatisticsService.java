@@ -29,10 +29,10 @@ public interface AdvertisementStatisticsService {
 			List<String> channels);
 
 	public List<AdvertisementStatistics> selectAdvertisementStatistic(AdvertisementStatistics advertisementStatistics,
-			Boolean pv, Long advertisementId);
+			Boolean pv, Long advertisementId, Long projectId);
 
 	public List<AdvertisementStatistics> selectChannelAdvertisementStatistic(
-			AdvertisementStatistics advertisementStatistics, Boolean pv, String channelKey);
+			AdvertisementStatistics advertisementStatistics, Boolean pv, String channelKey, Long projectId);
 
 	public List<SuccessPageClick> selectSuccessPageClicks(int dateDiff, boolean fromDB);
 
