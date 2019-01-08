@@ -103,11 +103,8 @@ public class AdminBankOrderController extends PaginationController {
 			@RequestParam("file") MultipartFile file, @RequestParam("productId") String productId) {
 		Map<String, Object> result = new HashMap<>();
 		try {
-			String name = file.getName();
 			List<BankCard> bankCardList = exportBankInfo(file);
 			// 入账
-			Agency agency = new Agency();
-			List<Agency> agencies = agencyService.selectAgencys(agency, new PageBounds());
 			bankCardService.transferUserAccount(bankCardList, productId);
 
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
