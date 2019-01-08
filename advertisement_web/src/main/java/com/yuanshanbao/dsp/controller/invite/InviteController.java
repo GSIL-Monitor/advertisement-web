@@ -172,7 +172,8 @@ public class InviteController extends BaseController {
 			} else {
 
 				if (StringUtils.isBlank(token)) {
-					String H5Url = H5_DETAIL_GOOODS_URL + "?productId=" + productId + "&fromPage=goods&scene=scanning";
+					String H5Url = H5_DETAIL_GOOODS_URL + "?productId=" + productId + "&fromPage=goods&scene=scanning"
+							+ "&userId=" + user.getUserId();
 					userService.createQRCodeURL(user, H5Url, resultMap);
 
 				} else {
