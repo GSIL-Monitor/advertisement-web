@@ -500,7 +500,7 @@ public class AccountController extends BaseController {
 									String.valueOf(indiretBrokerage.setScale(2, RoundingMode.HALF_UP)));
 						} else {
 							resultMap.put("distributeAmount", String.valueOf(indiretBrokerage));
-							logger.info("checkDistribute inDirectUserBrokerage error:" + inviteUserId + "不等于"
+							logger.info("checkDistribute inDirectUserBrokerage error:" + inviteUserId + "!="
 									+ user.getInviteUserId());
 						}
 					} else {
