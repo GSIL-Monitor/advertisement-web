@@ -189,7 +189,7 @@ public class BankCardServiceImpl implements BankCardService {
 					param.setProductName(product.getName());
 					agencieList = agencyService.selectAgencys(param, new PageBounds());
 					if (agencieList != null && agencieList.size() > 1) {
-						LoggerUtil.error("transferUserAccount  ERROR : agencieList{}= ",
+						LoggerUtil.error("transferUserAccount  ERROR : agencieList={} ",
 								agencyService.selectAgencys(param, new PageBounds()).size());
 						continue;
 					} else {
@@ -267,6 +267,8 @@ public class BankCardServiceImpl implements BankCardService {
 
 			if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
 				// 更新审核记录
+				LoggerUtil.error("directUserBrokerageTransfer retCode={},transferId={},transferBrokerage={}", retCode,
+						agen.getInviteUserId(), agen.getBrokerage().setScale(2, RoundingMode.HALF_UP));
 				agen.setStatus(AgencyStatus.OFFCHECK);
 				agencyService.updateAgency(agen);
 				LoggerUtil.info("[updateAgencyStatus]" + ComRetCode.SUCCESS);
@@ -315,6 +317,8 @@ public class BankCardServiceImpl implements BankCardService {
 					if (code != null && code.equals(ComRetCode.SUCCESS)) {
 						LoggerUtil.info("[indirectUserAccouont : transfer SUCCESS : ]" + code + "transferID: "
 								+ user.getInviteUserId());
+						LoggerUtil.error("indirectUserBrokerageTransfer retCode={},transferId={},transferBrokerage={}",
+								code, user.getInviteUserId(), indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
 					} else {
 						LoggerUtil.error("[indirectUserAccouont transfer ERROR : code={},inviteuserId={}]", code,
 								agency.getInviteUserId());
