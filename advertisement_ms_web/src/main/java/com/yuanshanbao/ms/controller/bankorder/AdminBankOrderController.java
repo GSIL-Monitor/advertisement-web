@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
+import com.yuanshanbao.common.util.ExcelUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.StringUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
@@ -67,9 +68,11 @@ public class AdminBankOrderController extends PaginationController {
 
 	@RequestMapping("/list.do")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
+		request.setAttribute("statusList", BankCardStatus.getCodeDescriptionMap().entrySet());
 		return PAGE_LIST;
 	}
 
+	@SuppressWarnings("unchecked")
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, HttpServletRequest request, HttpServletResponse response, BankCard bankCard,
@@ -80,6 +83,7 @@ public class AdminBankOrderController extends PaginationController {
 		// List<Agency> agencyList = agencyService.selectAgencys(agency, new
 		// PageBounds());
 
+		@SuppressWarnings("rawtypes")
 		PageList<BankCard> pageList = (PageList) bankCardList;
 
 		return setPageInfo(request, response, pageList);
@@ -103,9 +107,29 @@ public class AdminBankOrderController extends PaginationController {
 			@RequestParam("file") MultipartFile file, @RequestParam("productId") String productId) {
 		Map<String, Object> result = new HashMap<>();
 		try {
-			List<BankCard> bankCardList = exportBankInfo(file);
+			// List<BankCard> bankCardList = exportBankInfo(file);
 			// 入账
-			bankCardService.transferUserAccount(bankCardList, productId);
+			List<String> aString = null;
+			List<BankCard> bankCards = new ArrayList<BankCard>();
+
+			List<List<String>> list = ExcelUtil.readExcel03And13(file, productId);
+			for (int i = 1; i < list.size(); i++) {
+				aString = list.get(i);
+				BankCard bankCard = new BankCard();
+				bankCard.setName(aString.get(0));
+				bankCard.setMobile(aString.get(1));
+				if (BankCardStatus.APPROVED_DESCRIPTION.equals(aString.get(2))) {
+					bankCard.setStatus(BankCardStatus.APPROVED);
+				} else if (BankCardStatus.REFESEND_TO_DESCRIPTION.equals(aString.get(2))) {
+					bankCard.setStatus(BankCardStatus.REFESEND_TO);
+				} else if (BankCardStatus.CANCEL_DESCRIPTION.equals(aString.get(2))) {
+					bankCard.setStatus(BankCardStatus.CANCEL);
+				} else if (BankCardStatus.APPROVING_DESCRIPTION.equals(aString.get(2))) {
+					bankCard.setStatus(BankCardStatus.APPROVING);
+				}
+				bankCards.add(bankCard);
+			}
+			bankCardService.transferUserAccount(bankCards, productId);
 
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 

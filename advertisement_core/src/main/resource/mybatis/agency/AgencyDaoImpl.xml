@@ -200,7 +200,6 @@
 					type= #{type}
 				</if>
 			</trim>
-			and status != -1
 		</where>
 		order by invite_time desc
 	</select>
