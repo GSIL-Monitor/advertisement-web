@@ -35,6 +35,7 @@ import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.common.util.VerifyFormatUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyType;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
 import com.yuanshanbao.dsp.channel.model.Channel;
@@ -337,6 +338,7 @@ public class UserController extends BaseController {
 							agency.setAgencyName("");
 						}
 						agency.setInviteUserId(Long.valueOf(inviteUserId));
+						agency.setType(AgencyType.INVITE);
 						agencyService.insertAgency(agency);
 					}
 				}
