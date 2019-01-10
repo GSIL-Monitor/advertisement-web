@@ -3,6 +3,8 @@ package com.yuanshanbao.dsp.controller.agency;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -94,6 +96,12 @@ public class AgencyController extends BaseController {
 				agency.setInviteUserId(user.getUserId());
 				agency.setType(AgencyType.AGENT_CREDIT_CARD);
 				List<Agency> agentList = agencyService.selectAgencys(agency, pageBounds);
+				Collections.sort(agentList, new Comparator<Agency>() {
+					@Override
+					public int compare(Agency b, Agency a) {
+						return a.getUpdateTime().compareTo(b.getUpdateTime());
+					}
+				});
 				BigDecimal sumBrokerage = agencyService.queryVIPAgenctSumBrokerage(user.getUserId());
 				if (sumBrokerage == null) {
 					sumBrokerage = BigDecimal.ZERO;
