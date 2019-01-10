@@ -120,6 +120,14 @@ public class AgencyController extends BaseController {
 					}
 
 				}
+				if (oneAgencyList.size() > 0) {
+					Collections.sort(oneAgencyList, new Comparator<Agency>() {
+						@Override
+						public int compare(Agency b, Agency a) {
+							return a.getUpdateTime().compareTo(b.getUpdateTime());
+						}
+					});
+				}
 				for (Iterator<Agency> iterator = oneAgencyList.iterator(); iterator.hasNext();) {
 					Agency agen = (Agency) iterator.next();
 					if (agen.getBrokerage() == null) {
