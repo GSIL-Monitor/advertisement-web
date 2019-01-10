@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -188,111 +189,148 @@ public class BankCardServiceImpl implements BankCardService {
 					param.setProductName(product.getName());
 					agencieList = agencyService.selectAgencys(param, new PageBounds());
 					if (agencieList != null && agencieList.size() > 1) {
-						LoggerUtil.error("transferUserAccount  ERROR : agencieList{}= ",
+						LoggerUtil.error("transferUserAccount  ERROR : agencieList={} ",
 								agencyService.selectAgencys(param, new PageBounds()).size());
 						continue;
 					} else {
 						list.addAll(agencieList);
 					}
-
 				}
-				BankCard bCard = new BankCard();
-				bCard.setBankName(product.getName());
-				bCard.setProductId(product.getProductId());
-				bCard.setMobile(bank.getMobile());
-				bCard.setName(bank.getName());
-				bCard.setStatus(bank.getStatus());
-				insertBankCard(bCard);
 			}
-			updateAgencyStatusAndTransfer(list);
+			Map<String, Object> updateTransferMap = updateAgencyStatusAndTransfer(list);
+			Integer retCode = (Integer) updateTransferMap.get("retCode");
+			if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
+				for (BankCard bankCard : bankCardList) {
+					BankCard bCard = new BankCard();
+					bCard.setBankName(product.getName());
+					bCard.setProductId(product.getProductId());
+					bCard.setMobile(bankCard.getMobile());
+					bCard.setName(bankCard.getName());
+					bCard.setStatus(bankCard.getStatus());
+					insertBankCard(bCard);
+				}
+			} else {
+				LoggerUtil.error("updateAgencyStatusAndTransfer error");
+			}
 
 		} catch (Exception e) {
 			throw new BusinessException(ComRetCode.COMMON_FAIL);
 		}
 	}
 
-	private void updateAgencyStatusAndTransfer(List<Agency> list) {
+	private Map<String, Object> updateAgencyStatusAndTransfer(List<Agency> list) {
 		// 更新批卡成功状态
 		// 收益金额转到账户余额
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		int num = 0;
 		LoggerUtil.info("[agencyLists size ==]" + list);
+		try {
+			if (list.size() != 0) {
+				for (Agency agen : list) {
+					if (agen.getStatus() == 1) {
+						LoggerUtil.error("updateAgencyStatus status={}", agen.getStatus());
+						continue;
+					}
+					User user = userService.selectUserById(agen.getInviteUserId());
+					if (agen.getInviteUserId() != null) {
+						// 直推上级入账
+						Map<String, Object> checkResultMap = directUserBrokerageTransfer(agen);
+						LoggerUtil.info("[ updateAgencyStatusAndTransfer : inviteUserId : ]" + agen.getInviteUserId());
+						Integer retCode = (Integer) checkResultMap.get("retCode");
+						LoggerUtil.info("[updateAgencyStatusAndTransfer : transfer SUCCESS : ]" + retCode
+								+ "inviteUserId: " + agen.getInviteUserId());
+						// 二级上级佣金
+						if (agen.getUserId() != null) {
+							indirectUserBrokerageTransfer(user, agen);
+						}
+					}
+				}
 
-		BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
-		if (list.size() != 0) {
-			for (Agency agen : list) {
+			}
+			resultMap.put("retCode", ComRetCode.SUCCESS);
+
+		} catch (Exception e) {
+			throw new BusinessException(ComRetCode.COMMON_FAIL);
+		}
+		return resultMap;
+	}
+
+	private Map<String, Object> directUserBrokerageTransfer(Agency agen) {
+		Map<String, Object> checkResultMap = new HashMap<String, Object>();
+		try {
+			checkResultMap = paymentInterfaceService.distribute(String.valueOf(agen.getInviteUserId()),
+					DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agen.getId()
+							+ CommonConstant.COMMA_SPLIT_STR + String.valueOf(agen.getUserId()),
+					String.valueOf(System.nanoTime() + (int) Math.random() * 10000),
+					agen.getBrokerage().setScale(2, RoundingMode.HALF_UP));
+			Integer retCode = (Integer) checkResultMap.get("retCode");
+
+			if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
+				// 更新审核记录
+				LoggerUtil.error("directUserBrokerageTransfer retCode={},transferId={},transferBrokerage={}", retCode,
+						agen.getInviteUserId(), agen.getBrokerage().setScale(2, RoundingMode.HALF_UP));
 				agen.setStatus(AgencyStatus.OFFCHECK);
 				agencyService.updateAgency(agen);
 				LoggerUtil.info("[updateAgencyStatus]" + ComRetCode.SUCCESS);
-				// 给办卡人直接上级佣金
-				if (agen.getInviteUserId() != null) {
-					LoggerUtil.info("[inviteUserId : ]" + agen.getInviteUserId());
-					Map<String, Object> checkResultMap = paymentInterfaceService.distribute(
-							String.valueOf(agen.getInviteUserId()),
-							DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agen.getId()
-									+ CommonConstant.COMMA_SPLIT_STR + String.valueOf(agen.getUserId()),
-							String.valueOf(Math.random() * 10000), agen.getBrokerage());
-					Integer retCode = Integer.valueOf(checkResultMap.get("retCode").toString());
-					LoggerUtil.info("[updateAgencyStatusAndTransfer : transfer SUCCESS : ]" + retCode
-							+ "inviteUserId: " + agen.getInviteUserId());
-					if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
-						String createTime = DateUtils.format(agen.getCreateTime(), DateUtils.DATE_FORMAT_YYYYMMDD);
-						// 二级上级佣金
-						User user = userService.selectUserById(agen.getInviteUserId());
-						if (user != null) {
-							// 按时间算佣金
-							if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
-								indiretBrokerage = agen.getBrokerage().multiply(NEW_CEO_PERCENTAGE);
-							} else {
-								if (user.getLevel() == null) {
-									user.setLevel(UserLevel.MANAGER);
-								}
-								if (user.getLevel() == UserLevel.MANAGER) {
-									indiretBrokerage = agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE);
-								} else if (user.getLevel() == UserLevel.MAJORDOMO) {
-									indiretBrokerage = agen.getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE);
-								} else if (user.getLevel() == UserLevel.BAILLIFF) {
-									indiretBrokerage = agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
-								}
-							}
-
-							if (user.getInviteUserId() != null) {
-								/**
-								 * userId 邀请人id handleId agency办卡记录id orderId
-								 * 当前用户id
-								 */
-								Map<String, Object> map = paymentInterfaceService.distribute(
-										String.valueOf(user.getInviteUserId()),
-										DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS)
-												+ agen.getId() + CommonConstant.COMMA_SPLIT_STR
-												+ String.valueOf(user.getUserId()),
-										String.valueOf(Math.random() * 10000),
-										indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
-								Integer code = Integer.valueOf(map.get("retCode").toString());
-								if (code != null && code.equals(ComRetCode.SUCCESS)) {
-									LoggerUtil.info("[indirectUserAccouont : transfer SUCCESS : ]" + code
-											+ "transferID: " + user.getInviteUserId());
-								} else {
-
-									LoggerUtil.error("[indirectUserAccouont transfer ERROR : code={},inviteuserId={}]",
-											code, agen.getInviteUserId());
-
-								}
-
-							}
-						}
-					} else {
-						LoggerUtil.error("[directUser : transfer ERROR : code ={},inviteUserId ={} ]", retCode,
-								agen.getInviteUserId());
-
-					}
-				} else {
-					// 记数 邀请人为空
-					num++;
-					// TODO
-				}
+			} else {
+				LoggerUtil.error("directUserBrokerageTransfer retCode={}", retCode);
 			}
-		} else {
+		} catch (Exception e) {
+			LoggerUtil.error("[directUserBrokerageTransfer ERROR : ]: ", e);
 			throw new BusinessException(ComRetCode.COMMON_FAIL);
 		}
+		return checkResultMap;
 	}
+
+	private void indirectUserBrokerageTransfer(User user, Agency agency) {
+		try {
+			BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
+			if (user != null) {
+				// 按时间算佣金
+				String createTime = DateUtils.format(agency.getCreateTime(), DateUtils.DATE_FORMAT_YYYYMMDD);
+				if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
+					indiretBrokerage = agency.getBrokerage().multiply(NEW_CEO_PERCENTAGE);
+				} else {
+					if (user.getLevel() == null) {
+						user.setLevel(UserLevel.MANAGER);
+					}
+					if (user.getLevel() == UserLevel.MANAGER) {
+						indiretBrokerage = agency.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE);
+					} else if (user.getLevel() == UserLevel.MAJORDOMO) {
+						indiretBrokerage = agency.getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE);
+					} else if (user.getLevel() == UserLevel.BAILLIFF) {
+						indiretBrokerage = agency.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
+					}
+				}
+
+				if (user.getInviteUserId() != null) {
+					/**
+					 * userId 邀请人id handleId agency办卡记录id orderId 当前用户id
+					 */
+					Map<String, Object> map = paymentInterfaceService.distribute(
+							String.valueOf(user.getInviteUserId()),
+							DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agency.getId()
+									+ CommonConstant.COMMA_SPLIT_STR + String.valueOf(user.getUserId()),
+							String.valueOf((int) Math.random() * 10000),
+							indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
+					Integer code = Integer.valueOf(map.get("retCode").toString());
+					if (code != null && code.equals(ComRetCode.SUCCESS)) {
+						LoggerUtil.info("[indirectUserAccouont : transfer SUCCESS : ]" + code + "transferID: "
+								+ user.getInviteUserId());
+						LoggerUtil.error("indirectUserBrokerageTransfer retCode={},transferId={},transferBrokerage={}",
+								code, user.getInviteUserId(), indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
+					} else {
+						LoggerUtil.error("[indirectUserAccouont transfer ERROR : code={},inviteuserId={}]", code,
+								agency.getInviteUserId());
+					}
+
+				}
+			}
+		} catch (Exception e) {
+			LoggerUtil.error("[indirectUserBrokerageTransfer error : ]: ", e);
+			throw new BusinessException(ComRetCode.COMMON_FAIL);
+		}
+
+	}
+
 }

@@ -1,4 +1,3 @@
-
 <#include "core.ftl" />
 <@htmlHead title="${functionTitle}列表"/>
 <@headerPart />
@@ -43,25 +42,31 @@
 		$('#queryButton').on('click', function(){
 			var queryStartTime=$('#createTimeStart').val();
 			var queryEndTime=$('#createTimeEnd').val();
-		
-			var isAdvertiser=document.getElementById("isAdvertiser").checked;
-			var isPosition=document.getElementById("isPosition").checked;
-			var isDate=document.getElementById("isDate").checked;
+
 			
-			var params = "isAdvertiser=" + isAdvertiser + "&isPosition=" + isPosition + "&isDate=" + isDate + "&";
-			if (isNotEmpty($('#createTimeStart').val())) {
-				params += "queryStartTime=" + encodeURI(encodeURI($('#createTimeStart').val())) + "&";
+			var params ="";
+			if (isNotEmpty($('#userId').val())) {
+				params += "userId=" +encodeURI(encodeURI($('#userId').val())) + "&";
 			}
-			if (isNotEmpty($('#createTimeEnd').val())) {
-				params += "queryEndTime="+encodeURI(encodeURI($('#createTimeEnd').val())) + "&";
+			if (isNotEmpty($('#inviteUserId').val())) {
+				params += "inviteUserId=" +encodeURI(encodeURI($('#inviteUserId').val())) + "&";
+			}
+			if (isNotEmpty($('#productName').val())) {
+				params += "productName=" +encodeURI(encodeURI($('#productName').val())) + "&";
 			}
 			if (isNotEmpty($('#name').val())) {
-				params += "companyName=" +encodeURI(encodeURI($('#name').val())) + "&";
+				params += "name=" +encodeURI(encodeURI($('#name').val())) + "&";
 			}
-			if (isNotEmpty($('#positionName').val())) {
-				params += "positionName=" +encodeURI(encodeURI($('#positionName').val())) + "&";
+			if (isNotEmpty($('#mobile').val())) {
+				params += "mobile=" +encodeURI(encodeURI($('#mobile').val()));
 			}
-			var newUrl="${rc.contextPath}/admin/${functionName}/queryStatisticFromDB.do?" + params;
+			if (isNotEmpty($('#type').val())) {
+				params += "type=" +encodeURI(encodeURI($('#type').val())) + "&";
+			}
+			if (isNotEmpty($('#status').val())) {
+				params += "status=" +encodeURI(encodeURI($('#status').val())) + "&";
+			}
+			var newUrl="${rc.contextPath}/admin/${functionName}/queryAgencyDB.do?" + params;
 			dataTable.ajax.url(newUrl);
 			dataTable.ajax.reload();
 		});
@@ -70,23 +75,31 @@
 			var queryStartTime=$('#createTimeStart').val();
 			var queryEndTime=$('#createTimeEnd').val();
 		
-			var isAdvertiser=document.getElementById("isAdvertiser").checked;
-			var isPosition=document.getElementById("isPosition").checked;
-			var isDate=document.getElementById("isDate").checked;
 			
-			var params = "isAdvertiser=" + isAdvertiser + "&isPosition=" + isPosition + "&isDate=" + isDate + "&";
-			if (isNotEmpty($('#createTimeStart').val())) {
-				params += "queryStartTime=" + encodeURI(encodeURI($('#createTimeStart').val())) + "&";
-			}
-			if (isNotEmpty($('#createTimeEnd').val())) {
-				params += "queryEndTime="+encodeURI(encodeURI($('#createTimeEnd').val())) + "&";
-			}
+			var params = "";
+			
 			if (isNotEmpty($('#userId').val())) {
 				params += "userId=" +encodeURI(encodeURI($('#userId').val())) + "&";
 			}
-			if (isNotEmpty($('#positionName').val())) {
-				params += "positionName=" +encodeURI(encodeURI($('#positionName').val())) + "&";
+			if (isNotEmpty($('#inviteUserId').val())) {
+				params += "inviteUserId=" +encodeURI(encodeURI($('#inviteUserId').val())) + "&";
 			}
+			if (isNotEmpty($('#productName').val())) {
+				params += "productName=" +encodeURI(encodeURI($('#productName').val())) + "&";
+			}
+			if (isNotEmpty($('#mobile').val())) {
+				params += "mobile=" +encodeURI(encodeURI($('#mobile').val())) + "&";
+			}
+			if (isNotEmpty($('#name').val())) {
+				params += "name=" +encodeURI(encodeURI($('#name').val())) + "&";
+			}
+			if (isNotEmpty($('#status').val())) {
+				params += "status=" +encodeURI(encodeURI($('#status').val())) + "&";
+			}
+			if (isNotEmpty($('#type').val())) {
+				params += "type=" +encodeURI(encodeURI($('#type').val())) + "&";
+			}
+			
 			var url="${rc.contextPath}/admin/${functionName}/download.do?" + params;
 			 $.ajax({
                 type: "POST",
@@ -143,10 +156,10 @@
 								</tr>
 								<tr>
 									<td>
-				            			<div class="filter-component">
-											<h6>日期：</h6>
-											<@timeRangeSearchBar/>
-										</div>	  
+										<div class="filter-component">
+											<h6>邀请用户ID：</h6>
+											<input type="text" name="inviteUserId" id="inviteUserId" placeholder="搜索邀请ID" />
+										</div>	 
 									</td>
 									<td>
 										<div class="filter-component">
@@ -156,32 +169,48 @@
 									</td>
 									<td>
 										<div class="filter-component">
-											<h6>银行：</h6>
-											<input type="text" name="productName" id="productName" placeholder="搜索银行" />
+											<h6>姓名：</h6>
+											<input type="text" name="productName" id="productName" placeholder="搜索办理产品" />
 										</div>	 
 									</td>
-									
+									<td>
+										<div class="filter-component">
+											<h6>姓名：</h6>
+											<input type="text" name="name" id="name" placeholder="搜索办卡姓名" />
+										</div>	 
+									</td>
+									<td>
+										<div class="filter-component">
+											<h6>手机号：</h6>
+											<input type="text" name="mobile" id="mobile" placeholder="搜索办卡手机号" />
+										</div>	 
+									</td>
 									<td>
 										<div class="filter-component">
 											<h6>类型：</h6>
 											<input type="text" name="type" id="type" placeholder="类型" />
 										</div>	 
 									</td>
+									<td>
+									    
+										 <div style="width:60%;">
+										 <h6>状态：</h6>
+					                      <select name="status" class="selectpicker form-control">
+						                        <#list statusList as status>
+						                        	<option value="${status.key}">${status.value}</option>
+						                        </#list>
+					                      </select>
+                      					 </div>	 
+									</td>
 								</tr>
 								<tr>
 									<td>
-				            			<div class="btn-group">
-				            				  <h6>合并广告主：</h6><input type="checkbox" name="box1" id="isAdvertiser" onClick="countChoices(this)">
-				            				  <h6>合并位置：</h6><input type="checkbox" name="box2" id="isPosition" onClick="countChoices(this)">
-				            				  <h6>合并日期：</h6><input type="checkbox" name="box3" id="isDate" onClick="countChoices(this)">
-										</div>
-									</td>
-									<td>
-									</td>
-									<td>
 										<div class="btn btn-green" id="queryButton">确定</div>
 										<div class="btn btn-white" id="queryReset">重置</div>
+										<td>
 										<div class="btn btn-red" id="downloadButton" style = "float:right">下载</div>
+										</td>
+										
 									</td>
 								</tr>
 							</table>

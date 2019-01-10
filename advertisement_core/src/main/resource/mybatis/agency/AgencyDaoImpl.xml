@@ -162,7 +162,6 @@
 		* from
 		tb_agency
 		<where>
-		
 			<trim suffixOverrides="and">
 				<if test="id != null">
 					id=#{id} and
@@ -192,7 +191,7 @@
 					product_id= #{productId}  and
 				</if>
 				<if test="productName != null">
-					product_name= #{productName} and
+					product_name like CONCAT(CONCAT('%', #{productName}),'%') and
 				</if>
 				<if test="status != null">
 					status= #{status} and

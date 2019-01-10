@@ -48,7 +48,6 @@ public class AgencyController extends BaseController {
 		try {
 
 			// 获取当前用户信息
-
 			User user = differentiateTokenUser(request, token);
 			if (user == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);

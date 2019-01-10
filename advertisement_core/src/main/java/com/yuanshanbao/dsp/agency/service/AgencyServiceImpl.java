@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DateUtils;
+import com.yuanshanbao.common.util.ExcelUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.dao.AgencyDao;
 import com.yuanshanbao.dsp.agency.model.Agency;
@@ -322,6 +325,51 @@ public class AgencyServiceImpl implements AgencyService {
 			throw new BusinessException(ComRetCode.FAIL);
 		}
 		return agencyDao.queryVIPAgenctSumBrokerage(inviteUserId);
+	}
+
+	public String downAgency(List<Agency> list) {
+		String path = null;
+
+		if (list.size() != 0 && list != null) {
+			Map<String, List<List<String>>> sheetMap = new HashMap<String, List<List<String>>>();
+			List<List<String>> rowList = new ArrayList<List<String>>();
+			List<String> columnList = new ArrayList<String>();
+
+			columnList.add("邀请人ID");
+			columnList.add("办卡人ID");
+			columnList.add("办卡人姓名");
+			columnList.add("办卡人手机号");
+			columnList.add("产品名称");
+			columnList.add("佣金");
+			columnList.add("状态");
+			columnList.add("更新时间");
+			rowList.add(columnList);
+
+			for (Agency temp : list) {
+				columnList = new ArrayList<String>();
+
+				columnList.add(temp.getInviteUserId().toString());
+				if (temp.getUserId() != null) {
+					columnList.add(temp.getUserId().toString());
+				} else {
+					columnList.add("");
+				}
+				columnList.add(temp.getName());
+				columnList.add(temp.getMobile());
+				columnList.add(temp.getProductName());
+				columnList.add(temp.getBrokerageValue());
+				columnList.add(temp.getStatusValue());
+				columnList.add(temp.getUpdateTimeValue());
+				rowList.add(columnList);
+			}
+			sheetMap.put("sheet1", rowList);
+			try {
+				path = ExcelUtil.createSuffixXlsExcelByMoreSheets(sheetMap, "数据统计表");
+			} catch (Exception e) {
+				LoggerUtil.error("[excel creat error]", e);
+			}
+		}
+		return path;
 	}
 
 }
