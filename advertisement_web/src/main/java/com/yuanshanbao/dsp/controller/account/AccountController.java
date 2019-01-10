@@ -381,7 +381,7 @@ public class AccountController extends BaseController {
 		try {
 			Map<String, String> parameterMap = appService.decryptParameters(appId, params);
 			String withdrawAmount = parameterMap.get("withdrawAmount");
-			User loginToken = getLoginUser(token);
+			User loginToken = differentiateTokenUser(request, token);
 			if (loginToken == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
