@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyType;
 
 /**
  * Created by Administrator on 2018/10/22.
@@ -185,6 +186,14 @@ public class Agency implements Serializable {
 
 	public Integer getType() {
 		return type;
+	}
+
+	public String getTypeValue() {
+
+		if (type != null) {
+			return AgencyType.getDescription(type);
+		}
+		return String.valueOf(type);
 	}
 
 	public void setType(Integer type) {
