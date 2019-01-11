@@ -27,6 +27,7 @@ import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
 import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyType;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
 import com.yuanshanbao.dsp.controller.base.BaseController;
@@ -208,6 +209,7 @@ public class WeixinController extends BaseController {
 							}
 						}
 						if (ValidateUtil.isNumber(inviteUserId)) {
+							agency.setType(AgencyType.INVITE);
 							agency.setInviteUserId(Long.valueOf(inviteUserId));
 						}
 						agencyService.insertAgency(agency);

@@ -1,6 +1,8 @@
 package com.yuanshanbao.dsp.controller.index;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -225,18 +227,28 @@ public class IndexController extends BaseController {
 		product.setStatus(ProductStatus.ONLINE);
 		PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
 				formatPageBounds(pageBounds));
-
-		List<Object> list = new ArrayList<Object>();
-		Map<String, List<Product>> productMap = new HashMap<String, List<Product>>();
-
+		Collections.sort(productList, new Comparator<Product>() {
+			@Override
+			public int compare(Product b, Product a) {
+				return a.getBrokerage().compareTo(b.getBrokerage());
+			}
+		});
+		List<Product> objectList = null;
 		String activityChannels = IniBean.getIniValue("sxzxgActivityChannel");
 		String[] activitys = activityChannels.split(",");
 		Activity acti = null;
 		for (int i = 0; i < activitys.length; i++) {
 			acti = ConfigManager.getActivityByKey(activitys[i]);
 			product.setActivityId(acti.getActivityId());
-			list.addAll(productService.selectProducts(product, pageBounds));
-			resultMap.put(activitys[i] + "List", productService.selectProducts(product, pageBounds));
+			objectList = productService.selectProducts(product, pageBounds);
+			Collections.sort(objectList, new Comparator<Product>() {
+				@Override
+				public int compare(Product b, Product a) {
+					return a.getBrokerage().compareTo(b.getBrokerage());
+				}
+			});
+
+			resultMap.put(activitys[i] + "List", objectList);
 		}
 
 		List<Tags> tagsList = new ArrayList<>();

@@ -53,7 +53,11 @@ import com.yuanshanbao.paginator.domain.PageList;
 public class AdminBankOrderController extends PaginationController {
 	private static final String WANGZHUAN = "wangzhuan";
 
+	private static final String WANGZHUANAGENT = "wangzhuanagent";
+
 	private static final String PAGE_LIST = "advertisement/bankorder/listBankOrder";
+
+	private static final String PAGE_AGENT_INSERT = "advertisement/bankorder/insertAgentBankOrder";
 
 	private static final String PAGE_INSERT = "advertisement/bankorder/insertBankOrder";
 
@@ -98,7 +102,21 @@ public class AdminBankOrderController extends PaginationController {
 		product.setStatus(ProductStatus.ONLINE);
 		List<Product> productList = productService.selectProducts(product, new PageBounds());
 		request.setAttribute("productList", productList);
+
 		return PAGE_INSERT;
+	}
+
+	@RequestMapping("/insertAgentBankOrderWindow.do")
+	public String insertAgentBankOrderWindow(String range, HttpServletRequest request, HttpServletResponse reponse) {
+
+		Product product = new Product();
+		Activity agentActivity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+		product.setActivityId(agentActivity.getActivityId());
+		product.setStatus(ProductStatus.ONLINE);
+		List<Product> agentProductList = productService.selectProducts(product, new PageBounds());
+		request.setAttribute("agentProductList", agentProductList);
+
+		return PAGE_AGENT_INSERT;
 	}
 
 	@RequestMapping("/insertBankOrder.do")

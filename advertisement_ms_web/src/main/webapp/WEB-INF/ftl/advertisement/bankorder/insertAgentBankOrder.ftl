@@ -24,12 +24,13 @@
                         <div class="widget-content nopadding">
                             <table class="table table-bordered table-striped" id="">
                                 <tbody>
+                        
                                 <tr>
-                                    <td>选择银行：</td>
+                                    <td>(代理版)选择银行：</td>
                                     <td>
                                         <div style="width:60%;">
                                             <select id="productId" name="productId" class="selectpicker form-control">
-                                            <#list productList as product>
+                                            <#list agentProductList as product>
                                                 <option value="${product.productId}">${product.name}</option>
                                             </#list>
                                             </select>
@@ -42,7 +43,6 @@
                                         <input id="importFile" type="file" name="file" />
                                     </td>
                                 </tr>
-                           
                                 <tr>
                                    
                                 </tr>

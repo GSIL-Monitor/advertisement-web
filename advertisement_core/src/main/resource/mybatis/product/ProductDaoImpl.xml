@@ -119,7 +119,7 @@
 			</trim>
 
 		</where>
-		order by brokerage DESC
+		order by update_time DESC
 	</select>
 
 	<select id="selectProductByProductId" resultType="Product">

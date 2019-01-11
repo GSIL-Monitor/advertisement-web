@@ -3,6 +3,8 @@ package com.yuanshanbao.dsp.agency.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -176,6 +178,16 @@ public class AgencyServiceImpl implements AgencyService {
 	public List<AgencyVo> getAgencyListVo(List<Agency> twoAgencyList, User user) {
 
 		List<AgencyVo> agencyVoList = new ArrayList<>();
+
+		if (twoAgencyList.size() > 0) {
+			Collections.sort(twoAgencyList, new Comparator<Agency>() {
+				@Override
+				public int compare(Agency b, Agency a) {
+					return a.getUpdateTime().compareTo(b.getUpdateTime());
+				}
+			});
+		}
+
 		for (Agency agen : twoAgencyList) {
 			User inivteUser = userService.selectUserById(agen.getInviteUserId());
 			AgencyVo agencyVo = new AgencyVo();
@@ -213,6 +225,7 @@ public class AgencyServiceImpl implements AgencyService {
 			}
 			agencyVoList.add(agencyVo);
 		}
+
 		return agencyVoList;
 	}
 

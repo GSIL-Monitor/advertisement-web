@@ -23,9 +23,9 @@
 		    }, {
 		    	"data": "brokerage"
 		    }, {
-		    	"data": "status"
+		    	"data": "statusValue"
 		    }, {
-		    	"data": "type"
+		    	"data": "typeValue"
 		    }, {
 		    	"data": "updateTimeValue"
 		    }];
@@ -169,7 +169,7 @@
 									</td>
 									<td>
 										<div class="filter-component">
-											<h6>姓名：</h6>
+											<h6>产品：</h6>
 											<input type="text" name="productName" id="productName" placeholder="搜索办理产品" />
 										</div>	 
 									</td>
