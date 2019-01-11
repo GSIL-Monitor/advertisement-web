@@ -135,6 +135,9 @@ public class RedirectJumper extends BaseController {
 
 	private void increConsume(String probabilityId, String channel) {
 		try {
+			if (StringUtils.isEmpty(probabilityId)) {
+				return;
+			}
 			Map<Long, BigDecimal> proCostMap = DspConstantsManager.getHdBidChannelMap(channel);
 			// 在各个媒体消耗金额
 			if (proCostMap.get(Long.valueOf(probabilityId)) == null) {
