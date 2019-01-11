@@ -16,7 +16,7 @@
 		}, {
 			"data": "allocateTypeValue"
 		}, {
-			"data": "statusContent"
+			"data": "statusValue"
 		}, {
 			"data": "${functionId}",
 			"render": function ( data, type, full, meta ) {

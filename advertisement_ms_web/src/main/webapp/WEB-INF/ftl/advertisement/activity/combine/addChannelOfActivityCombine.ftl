@@ -42,7 +42,7 @@
                       	<div style="width:60%;">
 							<select name="channelId" id="channelId" class="selectpicker form-control">
 								<#list channelList as channel>
-									<option value="${channel.channelId}">${channel.name}</option>
+									<option value="${channel.channelId}">${channel.key}</option>
 								</#list>
 							</select>
 						</div>
@@ -61,18 +61,6 @@
                     </td>
                   </tr>
                   
-                  <tr>
-                    <td>状态：</td>
-                    <td>
-                      <div style="width:60%;">
-                      <select name="status" class="selectpicker form-control">
-                        <#list statusList as status>
-                        <option value="${status.key}">${status.value}</option>
-                        </#list>
-                      </select>
-                      </div>
-                    </td>
-                  </tr>
                
                   <tr>
                     <td colspan="4" style="text-align:center">

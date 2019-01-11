@@ -59,19 +59,7 @@
 											<div style="width:60%;">
 												<select name="advertisementId" id="advertisementId" class="selectpicker form-control">
 													<#list advertisementList as advertisement>
-														<option value="${advertisement.advertisementId}">${advertisement.title}</option>
-													</#list>
-												</select>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>位置：</td>
-										<td>
-											<div style="width:60%;">
-												<select name="positionId" class="selectpicker form-control">
-													<#list positionList as position>
-														<option value="${position.positionId}">${position.name}</option>
+														<option value="${advertisement.advertisementId}">【${advertisement.advertisementId}】${advertisement.subTitle}</option>
 													</#list>
 												</select>
 											</div>
@@ -89,12 +77,14 @@
 											<input type="text" name="sort" style="width:60%;">
 										</td>
 									</tr>
+									<!-- 
 									<tr>
 										<td>数量：</td>
 										<td>
 											<input type="text" name="count" style="width:60%;">
 										</td>
 									</tr>
+									
 									<tr>
 										<td>每日最高限额：</td>
 										<td>
@@ -119,6 +109,7 @@
 											</div>
 										</td>
 									</tr>
+									 -->
 									<tr>
 										<td>开始时间：</td>
 										<td>
@@ -129,12 +120,14 @@
 										<td>
 											<input type="text" name="endTimeValue" id="endTimeValue" style="width:60%;"></td>
 									</tr>
+									<!-- 
 									<tr>
 										<td>单价：</td>
 										<td>
 											<input type="text" name="unitPrice" style="width:60%;">
 										</td>
 									</tr>
+									-->
 									<tr>
 										<td>展示状态：</td>
 										<td>

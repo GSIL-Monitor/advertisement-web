@@ -487,13 +487,13 @@ public class AdminActivityController extends PaginationController {
 			if (probabilityId == null) {
 				throw new BusinessException(ComRetCode.WRONG_PARAMETER);
 			}
-			Probability probability = new Probability();
-			probability.setProbabilityId(probabilityId);
+			Probability probability = probabilityService.selectProbability(probabilityId);
 			probability.setStatus(CommonStatus.OFFLINE);
 			probabilityService.updateProbability(probability);
 			Quota params = new Quota();
 			params.setActivityId(probability.getActivityId());
 			params.setChannel(probability.getChannel());
+			params.setAdvertisementId(probability.getAdvertisementId());
 			params.setStatus(CommonStatus.ONLINE);
 			List<Quota> list = quotaService.selectQuota(params, new PageBounds());
 			if (list.size() > 0) {
@@ -501,7 +501,7 @@ public class AdminActivityController extends PaginationController {
 				quota.setStatus(CommonStatus.OFFLINE);
 				quotaService.updateQuota(quota);
 			}
-			AdminServerController.refreshConfirm();
+			// AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
@@ -515,9 +515,19 @@ public class AdminActivityController extends PaginationController {
 	@RequestMapping("/quotaWindow.do")
 	public String quotaWindow(Long probabilityId, HttpServletRequest request, HttpServletResponse response) {
 		Probability probability = probabilityService.selectProbability(probabilityId);
+		Quota param = new Quota();
+		param.setProbabilityId(probabilityId);
+		List<Quota> quotaList = quotaService.selectQuota(param, new PageBounds());
+		if (quotaList.size() > 0) {
+			request.setAttribute("quota", quotaList.get(0));
+		} else {
+			request.setAttribute("quota", new Quota());
+		}
 		request.setAttribute("activityId", probability.getActivityId());
+		request.setAttribute("probabilityId", probability.getProbabilityId());
 		request.setAttribute("channel", probability.getChannel());
 		request.setAttribute("advertisementId", probability.getAdvertisementId());
+		request.setAttribute("quotaTypeList", QuotaType.getCodeDescriptionMap().entrySet());
 		return PAGE_QUOTA_CONFIG;
 	}
 
@@ -526,18 +536,22 @@ public class AdminActivityController extends PaginationController {
 	public Object insertQuota(Quota quota, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
-			Advertisement advertisement = ConfigManager.getAdvertisement(quota.getAdvertisementId() + "");
-			quota.setAdvertiserId(advertisement.getAdvertiserId());
-			quota.setProjectId(getProjectId(request));
-			quota.setStatus(CommonStatus.ONLINE);
-			quota.setChannel(quota.getChannel() != null ? quota.getChannel() : "");
-			quotaService.insertQuota(quota);
-			AdminServerController.refreshConfirm();
+			if (quota.getQuotaId() == null) {
+				Advertisement advertisement = ConfigManager.getAdvertisement(quota.getAdvertisementId() + "");
+				quota.setAdvertiserId(advertisement.getAdvertiserId());
+				quota.setProjectId(getProjectId(request));
+				quota.setStatus(CommonStatus.ONLINE);
+				quota.setChannel(quota.getChannel() != null ? quota.getChannel() : "");
+				quotaService.insertQuota(quota);
+			} else {
+				quotaService.updateQuota(quota);
+			}
+			// AdminServerController.refreshConfirm();
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
 		} catch (Exception e2) {
-			LoggerUtil.error("probability insert function - reload error", e2);
+			LoggerUtil.error("quota insert function - reload error", e2);
 		}
 		return result;
 	}

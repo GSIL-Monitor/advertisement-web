@@ -41,6 +41,12 @@
 										</td>
 									</td>
 									<tr>
+										<td>广告名称：</td>
+										<td>
+											<input type="text" name="subTitle" style="width:60%;"></td>
+										</td>
+									</tr>
+									<tr>
 										<td>广告标题：</td>
 										<td>
 											<input type="text" name="title" style="width:60%;"></td>

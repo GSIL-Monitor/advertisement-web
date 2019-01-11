@@ -49,7 +49,7 @@
 		    }, {
 		    	"data": "probability.probabilityId",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/quotaWindow.do?probabilityId='+data+'"  class="btn btn-cyan" target="_blank">限额配置</a>';
+		            return '<a href="${rc.contextPath}/admin/activity/quotaWindow.do?probabilityId='+data+'"  class="btn btn-cyan" target="_blank">限额配置</a>';
 		        }
 		    }, {
 		    	"data": "probability.probabilityId",

@@ -78,6 +78,7 @@ public class AdminActivityChannelController extends PaginationController {
 			ModelMap modelMap) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
+			channel.setProjectId(getProjectId(request));
 			channelService.insertChannel(channel);
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

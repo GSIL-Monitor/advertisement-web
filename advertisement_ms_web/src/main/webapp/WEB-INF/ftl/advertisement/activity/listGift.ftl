@@ -43,9 +43,7 @@
 		    }, {
 		    	"data": "quota.count"
 		    }, {
-		    	"data": "typeValue"
-		    }, {
-		    	"data": "probability.creatTimeContent"
+		    	"data": "probability.createTimeContent"
 		    }, {
 		    	"data": "link"
 		    }, {
@@ -92,7 +90,7 @@
 	    	<a href="#" class="current">${functionTitle}列表</a>
 	    	<a href="#" class="current">奖品列表</a>
 	    	<span class="add">
-	    		<a href="${rc.contextPath}/admin/${functionName}/allocateGiftWindow.do?activityId=${activityId}&channel=${channel}" target="_blank"><button>+添加奖品</button></a>
+	    		<a href="${rc.contextPath}/admin/${functionName}/combine/allocateGiftWindow.do?activityId=${activityId}&channel=${channel}" target="_blank"><button>+添加奖品</button></a>
 	    	</span>
 	    </div>
 	</div>
@@ -108,6 +106,7 @@
 							<input type="text" name="title" id="title" placeholder="输入广告名称" />
 						</div>	  
 					</div>
+					<!-- 
 					<div class="btn-group">
             			<div style="width:60%;">
 							<h6>广告主名称：</h6>
@@ -118,16 +117,8 @@
 							</select>
 						</div>
 					</div>
-					<div class="btn-group">
-            			<div style="width:60%;">
-							<h6>广告类型：</h6>
-							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
-								<#list typeList as type>
-									<option value="${type.key}">${type.value}</option>
-								</#list>
-							</select>
-						</div>
-					</div>
+					-->
+					
 					<div class="btn-group">
             			<div style="width:60%;">
 							<h6>广告状态：</h6>
@@ -151,7 +142,6 @@
 							<th>概率</th>
 							<th>单价</th>
 							<th>奖品配额</th>
-							<th>奖品类型</th>
 							<th>添加时间</th>
 							<th>入口地址</th>
 							<th>状态</th>

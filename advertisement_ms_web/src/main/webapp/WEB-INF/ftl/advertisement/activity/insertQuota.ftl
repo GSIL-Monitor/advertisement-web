@@ -27,6 +27,8 @@
             <div class="widget-content nopadding">
               <table class="table table-bordered table-striped" id="">
                 <tbody>
+                	<input type="hidden" name="probabilityId" value="${probabilityId}" readonly="readonly" style="width:60%;">
+                	<input type="hidden" name="quotaId" value="${quota.quotaId}" readonly="readonly" style="width:60%;">
                 	<tr>
 						<td>活动：</td>
 						<td>
@@ -42,15 +44,22 @@
 					<tr>
 						<td>奖品：</td>
 						<td>
-							<input type="text" name="advertisementId" value="${advertisementId}" readonly="readonly" style="width:60%;">
+							<input type="text" name="advertisementId" value="${advertisementId?c}" readonly="readonly" style="width:60%;">
 						</td>
 					</tr>
                 	<tr>
 						<td>数量：</td>
 						<td>
-							<input type="text" name="count" style="width:60%;">
+							<input type="text" name="count" style="width:60%;" value="${quota.count?c}">
 						</td>
 					</tr>
+					<tr>
+						<td>单价：</td>
+						<td>
+							<input type="text" name="unitPrice" style="width:60%;" value="${quota.unitPrice}">
+						</td>
+					</tr>
+					<!--
 					<tr>
 						<td>每日最高限额：</td>
 						<td>
@@ -63,6 +72,7 @@
 							<input type="text" name="count" style="width:60%;">
 						</td>
 					</tr>
+					 -->
 					<tr>
 						<td>收費方式：</td>
 						<td>
@@ -75,12 +85,8 @@
 							</div>
 						</td>
 					</tr>
-					<tr>
-						<td>单价：</td>
-						<td>
-							<input type="text" name="unitPrice" style="width:60%;">
-						</td>
-					</tr>
+					
+					<!-- 
 					<tr>
 						<td>状态：</td>
 						<td>
@@ -93,6 +99,7 @@
 							</div>
 						</td>
 					</tr>
+					-->
                   	<tr>
                     	<td colspan="4" style="text-align:center">
                       	<input type="submit" name="" value="提交" class=" btn btn-green" style="width: 100px;border: 0;" id="allInputBtn" onclick="checkResult();"></td>
