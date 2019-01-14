@@ -39,7 +39,7 @@ public class WeixinShareController {
 			String accessToken = null;
 			String jsapi_ticket = null;
 			if (StringUtils.isBlank(url)) {
-				url = "https://wz.huhad.com/w/home";
+				url = "https://wz.huhad.com";
 			}
 			accessToken = weixinService.getServiceAccessToken();
 			if (StringUtils.isBlank(accessToken)) {
@@ -47,7 +47,7 @@ public class WeixinShareController {
 			}
 			jsapi_ticket = weixinService.getJSAPITicket(accessToken);// jsapi_ticket
 			if (StringUtils.isBlank(jsapi_ticket)) {
-				accessToken = weixinService.getAccessToken();
+				accessToken = weixinService.getServiceAccessToken();
 				jsapi_ticket = weixinService.getJSAPITicket(accessToken);
 			}
 			String timestamp = Long.toString(System.currentTimeMillis() / 1000);// 时间戳
