@@ -41,7 +41,7 @@ public class WeixinShareController {
 			if (StringUtils.isBlank(url)) {
 				url = "https://wz.huhad.com/w/home";
 			}
-			accessToken = weixinService.getAccessToken();
+			accessToken = weixinService.getServiceAccessToken();
 			if (StringUtils.isBlank(accessToken)) {
 				LoggerUtil.error(" weiXinShare:  accessToken ={}", accessToken);
 			}
@@ -58,7 +58,7 @@ public class WeixinShareController {
 			map.put("nonceStr", nonceStr);
 			map.put("timestamp", timestamp);
 			map.put("signature", signature);
-			map.put("appid", weixinService.getAppId(WeixinService.CONFIG_WZXCX));
+			map.put("appid", weixinService.getAppId(WeixinService.CONFIG_SERVICE));
 			InterfaceRetCode.setAppCodeDesc(map, ComRetCode.SUCCESS);
 
 		} catch (Exception e) {

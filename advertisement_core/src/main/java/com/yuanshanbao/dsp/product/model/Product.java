@@ -134,7 +134,7 @@ public class Product {
 	public String getBrokerageValue() {
 		if (brokerage != null) {
 			if (activityId != null && activityId == 121) {
-				if (productId != null && productId == 184) {
+				if (productId != null && productId == 175) {
 					NumberFormat nt = NumberFormat.getPercentInstance();
 					nt.setMinimumFractionDigits(0);
 					String format = nt.format(brokerage);

@@ -457,4 +457,29 @@ public class WeixinServiceImpl implements WeixinService {
 		return null;
 	}
 
+	@Override
+	public String getServiceAccessToken() {
+		String resultAssessToken = null;
+		try {
+			String access = redisCacheService.get(RedisConstant.SERVICE_ACCESS_TOKEN);
+			if (!StringUtil.isEmpty(access)) {
+				return access;
+			} else {
+				resultAssessToken = HttpsUtil.doGet(getAccessTokenUrl, "grant_type=client_credential&appid="
+						+ getAppId(CONFIG_SERVICE) + "&secret=" + getAppSecret(CONFIG_SERVICE), "UTF-8", 30000, 30000);
+				if (!StringUtil.isEmpty(resultAssessToken)) {
+					Map<String, Object> resultMap = JsonUtil.jsonToMap(resultAssessToken);
+					String accessToken = (String) resultMap.get("access_token");
+					redisCacheService.set(RedisConstant.SERVICE_ACCESS_TOKEN, 60 * 60 + 60 * 30, accessToken);
+					LoggerUtil.info("update servieAccessToken" + accessToken);
+					return accessToken;
+				} else {
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
