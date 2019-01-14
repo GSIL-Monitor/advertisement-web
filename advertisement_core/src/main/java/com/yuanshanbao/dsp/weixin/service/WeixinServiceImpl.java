@@ -430,6 +430,7 @@ public class WeixinServiceImpl implements WeixinService {
 	public String getJSAPITicket(String accessToken) {
 
 		try {
+			redisCacheService.del(RedisConstant.JSAPI_TICKET);
 			String ticket = redisCacheService.get(RedisConstant.JSAPI_TICKET);
 			if (StringUtils.isBlank(ticket)) {
 				String result = HttpsUtil.doGet("https://api.weixin.qq.com/cgi-bin/ticket/getticket", "access_token="
