@@ -58,7 +58,7 @@ public class WeixinShareController {
 			map.put("nonceStr", nonceStr);
 			map.put("timestamp", timestamp);
 			map.put("signature", signature);
-			map.put("appid", weixinService.getAppId(WeixinService.CONFIG_SERVICE));
+			map.put("appid", weixinService.getAppId(WeixinService.CONFIG_WZXCX));
 			InterfaceRetCode.setAppCodeDesc(map, ComRetCode.SUCCESS);
 
 		} catch (Exception e) {
