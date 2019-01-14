@@ -71,16 +71,18 @@
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
 						<h5>数据表格</h5>
-						<div style="float:right;margin:3px 8px 3px 0">
+						<div class="filter-box">
 							<select name="pv" id="pv">
 								<option value="false" selected>uv</option>
 								<option value="true">pv</option>
 							</select>
+							<!--
 							<select name="date" id="date">
 								<#list dateList as date>
 									<option value="${date}"<#if date_index == 0>selected</#if>>${date}</option>
 								</#list>
 							</select>
+ 							-->
 							<div class="filter-component">
 									<h6>日期：</h6>
 									<@timeRangeSearchBar/>

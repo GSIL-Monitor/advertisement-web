@@ -25,7 +25,7 @@
 		    }, {
 		    	"data": "advertisement",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a href="${rc.contextPath}/admin/${functionName}/advertisementChannel.do?advertisementId='+data.advertisementId+'"  class="btn btn-info" target="_blank">查看渠道统计</a>';
+		            return '<a href="${rc.contextPath}/admin/${functionName}/advertisementChannel.do?advertisementId='+data.advertisementId+'"  class="btn btn-cyan" target="_blank">查看渠道统计</a>';
 		        }
 		    }];
 		
@@ -79,7 +79,7 @@
 				<div class="widget-box">
 					<div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
 						<h5>数据表格</h5>
-						<div style="float:right;margin:3px 8px 3px 0">
+						<div class="filter-box">
 							<select name="pv" id="pv">
 								<option value="false" selected>uv</option>
 								<option value="true">pv</option>
