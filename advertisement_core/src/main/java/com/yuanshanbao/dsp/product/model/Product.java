@@ -133,6 +133,15 @@ public class Product {
 
 	public String getBrokerageValue() {
 		if (brokerage != null) {
+			if (activityId != null && activityId == 121) {
+				if (productId != null && productId == 184) {
+					NumberFormat nt = NumberFormat.getPercentInstance();
+					nt.setMinimumFractionDigits(0);
+					String format = nt.format(brokerage);
+					LoggerUtil.info("format brokerage =" + format);
+					return format + "+500元";
+				}
+			}
 			NumberFormat nt = NumberFormat.getPercentInstance();
 			if (brokerage.compareTo(BigDecimal.valueOf(0.1)) == -1) {
 				nt.setMinimumFractionDigits(2);
