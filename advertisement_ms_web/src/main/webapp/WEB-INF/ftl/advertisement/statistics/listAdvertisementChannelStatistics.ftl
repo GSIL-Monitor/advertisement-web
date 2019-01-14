@@ -12,6 +12,8 @@
 			{
 		    	"data": "channel"	
 	      	}, {
+		    	"data": "date"	
+	      	},{
 		    	"data": "total"
 		    }, {
 		    	"data": "clickCount"
@@ -93,6 +95,7 @@
 							<thead>
 								<tr>
 									<td>channel</td>
+									<td>日期</td>
 									<td>总数</td>
 									<td>点击量</td>
 									<td>曝光量</td>
