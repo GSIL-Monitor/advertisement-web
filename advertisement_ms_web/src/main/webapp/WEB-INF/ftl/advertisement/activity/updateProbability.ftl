@@ -42,7 +42,7 @@
                   <tr>
                     <td style="width:20%;">概率：</td>
                     <td>
-                      <input type="text" name="probability" style="width:60%;" value="${itemEdit.probability}">
+                      <input type="text" name="probability" style="width:60%;" value="${itemEdit.probability?c}">
                     </td>
                   </tr>
                   
