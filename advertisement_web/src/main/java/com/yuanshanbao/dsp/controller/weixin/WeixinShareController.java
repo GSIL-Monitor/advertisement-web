@@ -41,13 +41,13 @@ public class WeixinShareController {
 			if (StringUtils.isBlank(url)) {
 				url = "https://wz.huhad.com/w/home";
 			}
-			accessToken = weixinService.getAccessToken();
+			accessToken = weixinService.getServiceAccessToken();
 			if (StringUtils.isBlank(accessToken)) {
 				LoggerUtil.error(" weiXinShare:  accessToken ={}", accessToken);
 			}
 			jsapi_ticket = weixinService.getJSAPITicket(accessToken);// jsapi_ticket
 			if (StringUtils.isBlank(jsapi_ticket)) {
-				accessToken = weixinService.getAccessToken();
+				accessToken = weixinService.getServiceAccessToken();
 				jsapi_ticket = weixinService.getJSAPITicket(accessToken);
 			}
 			String timestamp = Long.toString(System.currentTimeMillis() / 1000);// 时间戳

@@ -35,6 +35,9 @@ public class RedisConstant {
 
 	public final static String ACCESS_TOKEN = "access_token"; // assess_token 缓存
 
+	public final static String SERVICE_ACCESS_TOKEN = "service_access_token"; // 公众号assess_token
+																				// 缓存
+
 	public final static String JSAPI_TICKET = "jsapi_ticket";
 	public static final String ADVERTISEMENT_CLICK_PV_COUNT = "advertisement_click_count_pv" + COMMON_REDIS_PREFIX;
 	public static final String UV_COUNT = "uv_stat_count" + COMMON_REDIS_PREFIX;
