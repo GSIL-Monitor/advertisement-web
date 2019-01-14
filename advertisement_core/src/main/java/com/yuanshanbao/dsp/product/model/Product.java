@@ -139,7 +139,7 @@ public class Product {
 					nt.setMinimumFractionDigits(0);
 					String format = nt.format(brokerage);
 					LoggerUtil.info("format brokerage =" + format);
-					return format + "+500元";
+					return format + "+500";
 				}
 			}
 			NumberFormat nt = NumberFormat.getPercentInstance();
