@@ -14,7 +14,9 @@
 		    	 "render": function ( data, type, full, meta ) {
 		            return '【'+data.advertisement.advertisementId+'】'+ data.advertisement.description;
 		        }
-	      	}, {
+	      	},  {
+		    	"data": "date"
+		    },{
 		    	"data": "total"
 		    }, {
 		    	"data": "clickCount"
@@ -96,6 +98,7 @@
 							<thead>
 								<tr>
 									<td>广告名称</td>
+									<td>日期</td>
 									<td>总数</td>
 									<td>点击量</td>
 									<td>曝光量</td>
