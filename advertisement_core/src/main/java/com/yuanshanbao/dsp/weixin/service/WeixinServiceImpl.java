@@ -430,7 +430,6 @@ public class WeixinServiceImpl implements WeixinService {
 	public String getJSAPITicket(String accessToken) {
 
 		try {
-			redisCacheService.del(RedisConstant.JSAPI_TICKET);
 			String ticket = redisCacheService.get(RedisConstant.JSAPI_TICKET);
 			if (StringUtils.isBlank(ticket)) {
 				String result = HttpsUtil.doGet("https://api.weixin.qq.com/cgi-bin/ticket/getticket", "access_token="
@@ -439,7 +438,7 @@ public class WeixinServiceImpl implements WeixinService {
 					JSONObject jsonObject = JSONObject.fromObject(result);
 					Integer errcode = (Integer) jsonObject.get("errcode");
 					if (errcode == 40001) {
-						redisCacheService.del(RedisConstant.ACCESS_TOKEN);
+						redisCacheService.del(RedisConstant.SERVICE_ACCESS_TOKEN);
 						LoggerUtil.error("getJSAPITicket : access_token : expire ");
 					}
 					ticket = (String) jsonObject.get("ticket");
