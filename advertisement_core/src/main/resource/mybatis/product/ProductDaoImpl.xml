@@ -119,7 +119,7 @@
 			</trim>
 
 		</where>
-		order by update_time DESC
+		  order by update_time DESC
 	</select>
 
 	<select id="selectProductByProductId" resultType="Product">
@@ -127,6 +127,15 @@
 		FROM tb_product
 		WHERE
 		product_id = #{productId}
+	</select>
+	
+	<select id="selectProductByActivityId" parameterType="java.lang.Long" resultMap="productMap">
+		SELECT *
+		FROM tb_product
+		WHERE
+		activity_id = #{activityId} and status != -1
+		order by status ASC,brokerage DESC
+
 	</select>
 	<select id="selectProductByIds" parameterType="List" resultMap="productMap">
 		select

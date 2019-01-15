@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.controller.weixin;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,9 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.common.redis.base.RedisService;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
+import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.weixin.service.WeixinService;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Controller
 @RequestMapping("/i/share")
@@ -30,6 +36,11 @@ public class WeixinShareController {
 
 	@Autowired
 	private RedisService redisService;
+
+	@Autowired
+	private ProductService productService;
+
+	private static final String FENXIANG = "fenxiang";
 
 	@ResponseBody
 	@RequestMapping("/get/shareParams")
@@ -59,6 +70,14 @@ public class WeixinShareController {
 			map.put("timestamp", timestamp);
 			map.put("signature", signature);
 			map.put("appid", weixinService.getAppId(WeixinService.CONFIG_SERVICE));
+
+			Activity activity = ConfigManager.getActivityByKey(FENXIANG);
+			Product product = new Product();
+			product.setActivityId(activity.getActivityId());
+			List<Product> prList = productService.selectProducts(product, new PageBounds());
+			map.put("title", prList.get(0).getTitle());
+			map.put("desc", prList.get(0).getDescription());
+			map.put("imgUrl", prList.get(0).getImageUrl());
 			InterfaceRetCode.setAppCodeDesc(map, ComRetCode.SUCCESS);
 
 		} catch (Exception e) {

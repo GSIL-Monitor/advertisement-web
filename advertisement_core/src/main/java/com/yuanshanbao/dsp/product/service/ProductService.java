@@ -34,4 +34,6 @@ public interface ProductService {
 
 	public List<Tags> getBrandFeatureMap(String brandFeature);
 
+	public List<Product> selectProductByActivityId(Long activityId, PageBounds pageBounds);
+
 }
