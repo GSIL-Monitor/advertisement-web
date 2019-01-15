@@ -1,8 +1,6 @@
 package com.yuanshanbao.dsp.controller.index;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -222,37 +220,25 @@ public class IndexController extends BaseController {
 	private void getHomeInfos(Map<String, Object> resultMap, Activity activity, Product product, PageBounds pageBounds,
 			HttpServletRequest request, Integer client) {
 		// 产品列表
-		// product.setActivityId(activity.getActivityId());
-		// product.setStatus(ProductStatus.ONLINE);
 		PageList<Product> productList = (PageList<Product>) productService.selectProductByActivityId(
 				activity.getActivityId(), formatPageBounds(pageBounds));
 
-		// PageList<Product> productList = (PageList<Product>)
-		// productService.selectProducts(product,
-		//
-		// formatPageBounds(pageBounds));
-		Collections.sort(productList, new Comparator<Product>() {
-			@Override
-			public int compare(Product b, Product a) {
-				int aa = b.getStatus().compareTo(a.getStatus());
-				return aa;
-			}
-		});
-
-		List<Product> objectList = null;
+		PageList<Product> objectList = null;
 		String activityChannels = IniBean.getIniValue("sxzxgActivityChannel");
 		String[] activitys = activityChannels.split(",");
 		Activity acti = null;
 		for (int i = 0; i < activitys.length; i++) {
 			acti = ConfigManager.getActivityByKey(activitys[i]);
 			// product.setActivityId(acti.getActivityId());
-			objectList = productService.selectProductByActivityId(acti.getActivityId(), formatPageBounds(pageBounds));
-			Collections.sort(objectList, new Comparator<Product>() {
-				@Override
-				public int compare(Product b, Product a) {
-					return b.getStatus().compareTo(a.getStatus());
-				}
-			});
+			objectList = (PageList<Product>) productService.selectProductByActivityId(acti.getActivityId(),
+					formatPageBounds(pageBounds));
+			// Collections.sort(objectList, new Comparator<Product>() {
+			// @Override
+			// public int compare(Product b, Product a) {
+			// int aa = b.getStatus().compareTo(a.getStatus());
+			// return aa;
+			// }
+			// });
 			resultMap.put(activitys[i] + "List", objectList);
 		}
 

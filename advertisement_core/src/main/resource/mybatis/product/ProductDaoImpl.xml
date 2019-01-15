@@ -134,7 +134,7 @@
 		FROM tb_product
 		WHERE
 		activity_id = #{activityId} and status != -1
-		order by status ASC
+		order by status ASC,brokerage DESC
 
 	</select>
 	<select id="selectProductByIds" parameterType="List" resultMap="productMap">
