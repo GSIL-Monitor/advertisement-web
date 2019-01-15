@@ -128,6 +128,13 @@
 		WHERE
 		product_id = #{productId}
 	</select>
+	
+	<select id="selectProductByActivityId" resultType="Product">
+		SELECT *
+		FROM tb_product
+		WHERE
+		activity_id = #{activityId} and status != -1
+	</select>
 	<select id="selectProductByIds" parameterType="List" resultMap="productMap">
 		select
 		* from

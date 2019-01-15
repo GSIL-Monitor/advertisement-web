@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.dsp.base.dao.BaseDaoImpl;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 @Repository
 public class ProductDaoImpl extends BaseDaoImpl implements ProductDao {
@@ -18,7 +18,7 @@ public class ProductDaoImpl extends BaseDaoImpl implements ProductDao {
 
 	@Override
 	public Product selectPrdouctById(Long productId) {
-		return getSqlSession().selectOne("product.selectProductByProductId",productId);
+		return getSqlSession().selectOne("product.selectProductByProductId", productId);
 	}
 
 	@Override
@@ -42,6 +42,12 @@ public class ProductDaoImpl extends BaseDaoImpl implements ProductDao {
 			return new ArrayList<Product>();
 		}
 		return getSqlSession().selectList("product.selectProductByIds", productIdList);
+	}
+
+	@Override
+	public List<Product> selectProductByActivityId(Long activityId) {
+		// TODO Auto-generated method stub
+		return getSqlSession().selectList("product.selectProductByActivityId", activityId);
 	}
 
 }

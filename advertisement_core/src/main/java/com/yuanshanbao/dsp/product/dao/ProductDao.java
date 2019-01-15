@@ -2,8 +2,8 @@ package com.yuanshanbao.dsp.product.dao;
 
 import java.util.List;
 
-import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.paginator.domain.PageBounds;
 
 public interface ProductDao {
 
@@ -18,4 +18,6 @@ public interface ProductDao {
 	public int updateProduct(Product product);
 
 	public List<Product> selectProducts(List<Long> productIdList);
+
+	public List<Product> selectProductByActivityId(Long activityId);
 }

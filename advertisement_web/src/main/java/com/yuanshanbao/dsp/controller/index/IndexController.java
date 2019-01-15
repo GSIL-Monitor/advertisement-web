@@ -35,7 +35,6 @@ import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
-import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.user.model.LoginToken;
@@ -43,7 +42,6 @@ import com.yuanshanbao.dsp.user.model.User;
 import com.yuanshanbao.dsp.user.model.UserLevel;
 import com.yuanshanbao.dsp.user.service.TokenService;
 import com.yuanshanbao.paginator.domain.PageBounds;
-import com.yuanshanbao.paginator.domain.PageList;
 
 @RequestMapping({ "/index", "/i/index" })
 @Controller
@@ -223,10 +221,8 @@ public class IndexController extends BaseController {
 	private void getHomeInfos(Map<String, Object> resultMap, Activity activity, Product product, PageBounds pageBounds,
 			HttpServletRequest request, Integer client) {
 		// 产品列表
-		product.setActivityId(activity.getActivityId());
-		product.setStatus(ProductStatus.ONLINE);
-		PageList<Product> productList = (PageList<Product>) productService.selectProducts(product,
-				formatPageBounds(pageBounds));
+
+		List<Product> productList = productService.selectProductByActivityId(activity.getActivityId());
 		Collections.sort(productList, new Comparator<Product>() {
 			@Override
 			public int compare(Product b, Product a) {
@@ -239,15 +235,13 @@ public class IndexController extends BaseController {
 		Activity acti = null;
 		for (int i = 0; i < activitys.length; i++) {
 			acti = ConfigManager.getActivityByKey(activitys[i]);
-			product.setActivityId(acti.getActivityId());
-			objectList = productService.selectProducts(product, pageBounds);
+			objectList = productService.selectProductByActivityId(acti.getActivityId());
 			Collections.sort(objectList, new Comparator<Product>() {
 				@Override
 				public int compare(Product b, Product a) {
 					return a.getBrokerage().compareTo(b.getBrokerage());
 				}
 			});
-
 			resultMap.put(activitys[i] + "List", objectList);
 		}
 
@@ -274,7 +268,7 @@ public class IndexController extends BaseController {
 				ConfigConstants.PRODUCT_CATEGORY_INDEX_CONFIG);
 		productCategorys = ConfigManager.getProductCategoryList(ids);
 		resultMap.put("productCategorys", productCategorys);
-		resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
+		// resultMap.put(ComRetCode.PAGINTOR, productList.getPaginator());
 		setAdvertisement(client, resultMap, channel, appKey, activityId, AdvertisementPosition.ADVERTISEMENT_INDEX);
 		resultMap.put("messageList", messageList);
 		resultMap.put("productList", productList);
