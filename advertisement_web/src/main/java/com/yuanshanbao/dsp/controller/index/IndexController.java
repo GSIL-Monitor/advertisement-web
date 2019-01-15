@@ -222,7 +222,6 @@ public class IndexController extends BaseController {
 		// 产品列表
 		PageList<Product> productList = (PageList<Product>) productService.selectProductByActivityId(
 				activity.getActivityId(), formatPageBounds(pageBounds));
-
 		PageList<Product> objectList = null;
 		String activityChannels = IniBean.getIniValue("sxzxgActivityChannel");
 		String[] activitys = activityChannels.split(",");
@@ -240,7 +239,6 @@ public class IndexController extends BaseController {
 			// });
 			resultMap.put(activitys[i] + "List", objectList);
 		}
-
 		List<Tags> tagsList = new ArrayList<>();
 		for (Product prod : productList) {
 			Tags tags = new Tags();
