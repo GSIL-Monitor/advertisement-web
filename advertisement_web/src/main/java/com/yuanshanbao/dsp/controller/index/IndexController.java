@@ -229,7 +229,6 @@ public class IndexController extends BaseController {
 		Activity acti = null;
 		for (int i = 0; i < activitys.length; i++) {
 			acti = ConfigManager.getActivityByKey(activitys[i]);
-			// product.setActivityId(acti.getActivityId());
 			objectList = (PageList<Product>) productService.selectProductByActivityId(acti.getActivityId(),
 					formatPageBounds(pageBounds));
 			// Collections.sort(objectList, new Comparator<Product>() {
