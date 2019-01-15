@@ -222,14 +222,12 @@ public class IndexController extends BaseController {
 		// 产品列表
 		PageList<Product> productList = (PageList<Product>) productService.selectProductByActivityId(
 				activity.getActivityId(), formatPageBounds(pageBounds));
-
 		PageList<Product> objectList = null;
 		String activityChannels = IniBean.getIniValue("sxzxgActivityChannel");
 		String[] activitys = activityChannels.split(",");
 		Activity acti = null;
 		for (int i = 0; i < activitys.length; i++) {
 			acti = ConfigManager.getActivityByKey(activitys[i]);
-			// product.setActivityId(acti.getActivityId());
 			objectList = (PageList<Product>) productService.selectProductByActivityId(acti.getActivityId(),
 					formatPageBounds(pageBounds));
 			// Collections.sort(objectList, new Comparator<Product>() {
@@ -241,7 +239,6 @@ public class IndexController extends BaseController {
 			// });
 			resultMap.put(activitys[i] + "List", objectList);
 		}
-
 		List<Tags> tagsList = new ArrayList<>();
 		for (Product prod : productList) {
 			Tags tags = new Tags();
