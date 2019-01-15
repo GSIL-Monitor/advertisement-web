@@ -35,6 +35,7 @@ import com.yuanshanbao.dsp.message.model.Message;
 import com.yuanshanbao.dsp.message.service.MessageService;
 import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.model.ProductCategory;
+import com.yuanshanbao.dsp.product.model.ProductStatus;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.tags.model.Tags;
 import com.yuanshanbao.dsp.user.model.LoginToken;
@@ -221,8 +222,9 @@ public class IndexController extends BaseController {
 	private void getHomeInfos(Map<String, Object> resultMap, Activity activity, Product product, PageBounds pageBounds,
 			HttpServletRequest request, Integer client) {
 		// 产品列表
-
-		List<Product> productList = productService.selectProductByActivityId(activity.getActivityId());
+		product.setActivityId(activity.getActivityId());
+		product.setStatus(ProductStatus.ONLINE);
+		List<Product> productList = productService.selectProducts(product, new PageBounds());
 		Collections.sort(productList, new Comparator<Product>() {
 			@Override
 			public int compare(Product b, Product a) {
@@ -235,7 +237,8 @@ public class IndexController extends BaseController {
 		Activity acti = null;
 		for (int i = 0; i < activitys.length; i++) {
 			acti = ConfigManager.getActivityByKey(activitys[i]);
-			objectList = productService.selectProductByActivityId(acti.getActivityId());
+			product.setActivityId(acti.getActivityId());
+			objectList = productService.selectProducts(product, new PageBounds());
 			Collections.sort(objectList, new Comparator<Product>() {
 				@Override
 				public int compare(Product b, Product a) {
