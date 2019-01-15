@@ -57,7 +57,7 @@
 										<td>奖品名称：</td>
 										<td>
 											<div style="width:60%;">
-												<select name="advertisementId" id="advertisementId" class="selectpicker form-control">
+												<select name="advertisementId" id="advertisementId" data-live-search="true" class="selectpicker form-control">
 													<#list advertisementList as advertisement>
 														<option value="${advertisement.advertisementId?c}">【${advertisement.advertisementId}】${advertisement.subTitle}</option>
 													</#list>

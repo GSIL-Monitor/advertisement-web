@@ -111,6 +111,7 @@
             			<div style="width:60%;">
 							<h6>广告主名称：</h6>
 							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+								<option value="">请选择</option>
 								<#list advertiserList as advertiser>
 									<option value="${advertiser.advertiserId}">${advertiser.companyName}</option>
 								</#list>
@@ -121,6 +122,7 @@
             			<div style="width:60%;">
 							<h6>广告类型：</h6>
 							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+								<option value="">请选择</option>
 								<#list typeList as type>
 									<option value="${type.key}">${type.value}</option>
 								</#list>
@@ -131,6 +133,7 @@
             			<div style="width:60%;">
 							<h6>广告状态：</h6>
 							<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+								<option value="">请选择</option>
 								<#list statusList as status>
 									<option value="${status.key}">${status.value}</option>
 								</#list>

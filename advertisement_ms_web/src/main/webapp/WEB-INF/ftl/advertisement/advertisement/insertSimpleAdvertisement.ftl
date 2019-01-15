@@ -31,7 +31,7 @@
 											<input type="hidden" name="advertiserId" value="${advertiser.advertiserId}" />
 										<#else>
 											<div style="width:60%;">
-												<select name="advertiserId" id="advertiserId" class="selectpicker form-control">
+												<select name="advertiserId" data-live-search="true" id="advertiserId" class="selectpicker form-control">
 													<#list advertiserList as advertiser>
 														<option value="${advertiser.advertiserId}">${advertiser.companyName}</option>
 													</#list>
