@@ -19,5 +19,5 @@ public interface ProductDao {
 
 	public List<Product> selectProducts(List<Long> productIdList);
 
-	public List<Product> selectProductByActivityId(Long activityId);
+	public List<Product> selectProductByActivityId(Long activityId, PageBounds pageBounds);
 }

@@ -221,11 +221,10 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> selectProductByActivityId(Long activityId) {
+	public List<Product> selectProductByActivityId(Long activityId, PageBounds pageBounds) {
 		if (activityId == null) {
 			return null;
 		}
-		return productDao.selectProductByActivityId(activityId);
+		return productDao.selectProductByActivityId(activityId, pageBounds);
 	}
-
 }

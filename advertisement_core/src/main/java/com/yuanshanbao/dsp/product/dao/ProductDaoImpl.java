@@ -45,9 +45,9 @@ public class ProductDaoImpl extends BaseDaoImpl implements ProductDao {
 	}
 
 	@Override
-	public List<Product> selectProductByActivityId(Long activityId) {
+	public List<Product> selectProductByActivityId(Long activityId, PageBounds pageBounds) {
 		// TODO Auto-generated method stub
-		return getSqlSession().selectList("product.selectProductByActivityId", activityId);
+		return getSqlSession().selectList("product.selectProductByActivityId", activityId, pageBounds);
 	}
 
 }
