@@ -12,7 +12,7 @@
 			{
 		    	"data": null,
 		    	 "render": function ( data, type, full, meta ) {
-		            return '【'+data.advertisement.advertisementId+'】'+ data.advertisement.description;
+		            return '【'+data.advertisement.advertisementId+'】'+ data.advertisement.subTitle;
 		        }
 	      	},  {
 		    	"data": "date"
