@@ -142,6 +142,14 @@ public class Product {
 					return format + "+500";
 				}
 			}
+			if (activityId != null && activityId == 120) {
+				if (productId != null && productId == 151) {
+
+					String format = brokerage.stripTrailingZeros().toPlainString();
+					LoggerUtil.info("format brokerage =" + format);
+					return format + "+1500";
+				}
+			}
 			NumberFormat nt = NumberFormat.getPercentInstance();
 			if (brokerage.compareTo(BigDecimal.valueOf(0.1)) == -1) {
 				nt.setMinimumFractionDigits(2);
