@@ -207,6 +207,7 @@ public class AdminActivityCombineController extends PaginationController {
 		}
 		Channel params = new Channel();
 		params.setAllocateType(ChannelAllocateStatus.UNALLOCATED);
+		params.setProjectId(getProjectId(request));
 		request.setAttribute("channelList", channelService.selectChannels(params, new PageBounds()));
 		request.setAttribute("independentList", ChannelIndependentStatus.getCodeDescriptionMap().entrySet());
 		return PAGE_CHANNEL_ALLOCATE;

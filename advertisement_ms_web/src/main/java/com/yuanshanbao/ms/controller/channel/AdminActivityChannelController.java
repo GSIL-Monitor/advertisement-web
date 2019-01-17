@@ -59,6 +59,7 @@ public class AdminActivityChannelController extends PaginationController {
 	@RequestMapping("/query.do")
 	public Object query(String range, Channel channel, HttpServletRequest request, HttpServletResponse response,
 			ModelMap modelMap) {
+		channel.setProjectId(getProjectId(request));
 		Object object = channelService.selectChannels(channel, getPageBounds(range, request));
 		PageList pageList = (PageList) object;
 		return setPageInfo(request, response, pageList);

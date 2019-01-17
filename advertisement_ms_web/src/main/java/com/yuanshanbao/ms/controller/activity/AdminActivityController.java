@@ -382,6 +382,7 @@ public class AdminActivityController extends PaginationController {
 			request.setAttribute("activityId", activity.getActivityId());
 		}
 		Channel params = new Channel();
+		params.setProjectId(getProjectId(request));
 		params.setAllocateType(ChannelAllocateStatus.UNALLOCATED);
 		request.setAttribute("channelList", channelService.selectChannels(params, new PageBounds()));
 		request.setAttribute("independentList", ChannelIndependentStatus.getCodeDescriptionMap().entrySet());
@@ -400,6 +401,33 @@ public class AdminActivityController extends PaginationController {
 				resultChannel.setIndependent(channel.getIndependent());
 				resultChannel.setAllocateType(ChannelAllocateStatus.ALLOCATED);
 				channelService.updateChannel(resultChannel);
+			}
+			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
+		} catch (BusinessException e) {
+			InterfaceRetCode.setAppCodeDesc(result, e.getReturnCode(), e.getMessage());
+		}
+		return result;
+	}
+
+	@ResponseBody
+	@RequestMapping("/cancelAllocateChannel.do")
+	public Object cancelAllocateChannel(Channel channel, HttpServletRequest request, HttpServletResponse response,
+			ModelMap modelMap) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Channel resultChannel = channelService.selectChannel(channel.getChannelId());
+		try {
+			if (resultChannel != null) {
+				resultChannel.setAllocateType(ChannelAllocateStatus.UNALLOCATED);
+				channelService.updateChannel(resultChannel);
+			}
+			Probability params = new Probability();
+			params.setActivityId(resultChannel.getActivityId());
+			params.setChannel(resultChannel.getKey());
+			params.setStatus(CommonStatus.ONLINE);
+			List<Probability> proList = probabilityService.selectProbabilitys(params, new PageBounds());
+			for (Probability probability : proList) {
+				probability.setStatus(CommonStatus.OFFLINE);
+				probabilityService.updateProbability(probability);
 			}
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {

@@ -4,7 +4,7 @@
 <@sideBar />
 <script>
 	$(document).ready(function(){
-		dataTableConfig.ajax = "${rc.contextPath}/admin/activity/channel/query.do?activityId=${activityId}";
+		dataTableConfig.ajax = "${rc.contextPath}/admin/activity/channel/query.do?activityId=${activityId}&allocateType=1";
 		dataTableConfig.columns = [{
 			"data": "name"
 		}, {
@@ -31,8 +31,8 @@
 		}, {
 			"data": "channelId",
 			"render": function ( data, type, full, meta ) {
-				var deleteUrl = '${rc.contextPath}/admin/activity/channel/delete.do?channelId='+data;
-					return '<a href="#" class="btn btn-red" onclick="confirmDelete(\''+deleteUrl+'\');">删除</a>';
+				var deleteUrl = '${rc.contextPath}/admin/activity/cancelAllocateChannel.do?channelId='+data;
+					return '<a href="#" class="btn btn-red" onclick="confirmDelete(\''+deleteUrl+'\');">取消分配</a>';
 			}
 		}];
 		

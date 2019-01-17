@@ -32,7 +32,7 @@
                   <tr>
                     <td style="width:20%;">活动名称：</td>
                     <td>
-                      <input type="text" name="" style="width:60%;" value="${activityName}">
+                      <input type="text" name="" style="width:60%;" readonly="readonly" value="${activityName}">
                     </td>
                   </tr>
                   
@@ -40,7 +40,7 @@
                     <td style="width:20%;">渠道名称：</td>
                     <td>
                       	<div style="width:60%;">
-							<select name="channelId" id="channelId" class="selectpicker form-control">
+							<select name="channelId" id="channelId" class="selectpicker form-control" data-live-search="true">
 								<#list channelList as channel>
 									<option value="${channel.channelId}">${channel.key}</option>
 								</#list>
