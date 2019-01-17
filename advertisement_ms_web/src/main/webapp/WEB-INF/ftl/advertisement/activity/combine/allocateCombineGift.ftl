@@ -59,7 +59,7 @@
 											<div style="width:60%;">
 												<select name="advertisementId" id="advertisementId" data-live-search="true" class="selectpicker form-control">
 													<#list advertisementList as advertisement>
-														<option value="${advertisement.advertisementId?c}">【${advertisement.advertisementId}】${advertisement.subTitle}</option>
+														<option value="${advertisement.advertisementId?c}">【${advertisement.advertisementId?c}】${advertisement.subTitle}</option>
 													</#list>
 												</select>
 											</div>
