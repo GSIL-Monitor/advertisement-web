@@ -36,7 +36,7 @@
 		    }, {
 		    	"data": "${functionId}",
 		        "render": function ( data, type, full, meta ) {
-		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/channel/list.do?${functionId}='+data+'"  class="btn btn-green">修改</a>';
+		            return '<a target="_blank" href="${rc.contextPath}/admin/activity/updateWindow.do?${functionId}='+data+'"  class="btn btn-green">修改</a>';
 		        }
 		    }, {
 		    	"data": "${functionId}",
@@ -79,7 +79,7 @@
 								<tr>
 									<th>组合ID</th>
 									<th>活动组合名称</th>
-									<th>活动个数</th>
+									<th>key</th>
 									<th>上线时间</th>
 									<th>入口地址</th> 
 									<th>状态</th>
