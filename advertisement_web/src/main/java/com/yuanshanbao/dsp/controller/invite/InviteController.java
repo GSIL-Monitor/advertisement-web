@@ -47,7 +47,7 @@ public class InviteController extends BaseController {
 	private static final String DETAILURL = "pages/index/detail/detail";
 
 	private static final String xcxInviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541159952231_7337.png";
-	private static final String h5InviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/h5inviteimage20181130.png";
+	private static final String h5InviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1548039699041_6441.png";
 	@Autowired
 	private UserService userService;
 	@Autowired
