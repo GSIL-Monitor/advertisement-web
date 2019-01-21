@@ -46,8 +46,10 @@ public class InviteController extends BaseController {
 	private static final String H5_BANK_INFO = "https://wz.huhad.com/w/applicants.html";
 	private static final String DETAILURL = "pages/index/detail/detail";
 
-	private static final String xcxInviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1541159952231_7337.png";
-	private static final String h5InviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1548039699041_6441.png";
+	private static final String xcxInviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1548039699041_6441.png";
+	private static final String h5InviteImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/h5inviteimage20181130.png";
+	private static final String inviteDaiKuanImageUrl = "https://ktadtech.oss-cn-beijing.aliyuncs.com/test/img/1548039698589_145.png";
+
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -80,6 +82,7 @@ public class InviteController extends BaseController {
 					String H5Url = H5_HOME_URL + "?userId=" + user.getUserId();
 					userService.createQRCodeURL(user, H5Url, resultMap);
 					resultMap.put("inviteImageUrl", xcxInviteImageUrl);
+
 				} else {
 					String code = redisCacheService.get(RedisConstant.WX_XCX_CODE + user.getUserId());
 					if (StringUtils.isBlank(code)) {
