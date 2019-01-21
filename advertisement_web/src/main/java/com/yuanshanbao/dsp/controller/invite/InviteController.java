@@ -3,6 +3,7 @@ package com.yuanshanbao.dsp.controller.invite;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,12 @@ import com.yuanshanbao.common.qrcode.ZXingCode;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.UploadUtils;
+import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.activity.service.ActivityService;
+import com.yuanshanbao.dsp.advertisement.model.AdvertisementPosition;
+import com.yuanshanbao.dsp.advertisement.model.vo.AdvertisementVo;
 import com.yuanshanbao.dsp.common.constant.RedisConstant;
+import com.yuanshanbao.dsp.config.ConfigManager;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.product.model.Product;
@@ -36,6 +42,9 @@ import com.yuanshanbao.dsp.weixin.service.WeixinService;
 @Controller
 @RequestMapping("/i/invite")
 public class InviteController extends BaseController {
+
+	private static final String INVITE = "invite";
+	private static final String AGENT_INVITE = "agentInvite";
 
 	private static final String URL = "pages/index/index";
 	private static final String H5_AGENT_URL = "https://wz.huhad.com/w/products";
@@ -59,10 +68,14 @@ public class InviteController extends BaseController {
 	@Autowired
 	private ProductService productService;
 
+	@Autowired
+	private ActivityService activityService;
+
 	@ResponseBody
 	@RequestMapping("/inviteQRcode")
 	public Object inviteFriend(HttpServletRequest request, String token) {
 		Map<String, Object> resultMap = new HashMap<>();
+		Activity activity = null;
 		try {
 			User user = differentiateTokenUser(request, token);
 			if (user == null) {
@@ -75,11 +88,25 @@ public class InviteController extends BaseController {
 			if (user.getLevel() == UserLevel.VIP_AGENT) {
 				String H5Url = H5_AGENT_URL + "?userId=" + user.getUserId();
 				userService.createQRCodeURL(user, H5Url, resultMap);
+				activity = ConfigManager.getActivityByKey(AGENT_INVITE);
+				if (activity != null) {
+					List<AdvertisementVo> inviteBannerList = setAdvertisementLink(
+							AdvertisementPosition.ADVERTISEMENT_INDEX, AdvertisementPosition.BANNER, null,
+							activity.getName(), activity.getActivityId(), null);
+					resultMap.put("inviteList", inviteBannerList);
+				}
 				resultMap.put("inviteImageUrl", h5InviteImageUrl);
 
 			} else {
 				if (StringUtils.isBlank(token)) {
 					String H5Url = H5_HOME_URL + "?userId=" + user.getUserId();
+					activity = ConfigManager.getActivityByKey(INVITE);
+					if (activity != null) {
+						List<AdvertisementVo> inviteBannerList = setAdvertisementLink(
+								AdvertisementPosition.ADVERTISEMENT_INDEX, AdvertisementPosition.BANNER, null,
+								activity.getName(), activity.getActivityId(), null);
+						resultMap.put("inviteList", inviteBannerList);
+					}
 					userService.createQRCodeURL(user, H5Url, resultMap);
 					resultMap.put("inviteImageUrl", xcxInviteImageUrl);
 
