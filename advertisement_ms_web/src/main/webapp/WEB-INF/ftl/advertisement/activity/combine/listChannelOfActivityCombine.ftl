@@ -26,7 +26,7 @@
 		}, {
 			"data": "${functionId}",
 			"render": function ( data, type, full, meta ) {
-					return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"	class="btn btn-blue" target="_blank">编辑</a>';
+					return '<a href="${rc.contextPath}/admin/activity/channel/config/insertWindow.do?${functionId}='+data+'"	class="btn btn-blue" target="_blank">编辑</a>';
 			}
 		}, {
 			"data": "channelId",
@@ -84,7 +84,7 @@
 								<th>上线时间</th>
 								<th>查看奖品</th>
 								<th>奖品分配查询</th>
-								<th>操作</th>
+								<th>配置</th>
 								<th>删除</th>
 							</tr>
 						</thead>

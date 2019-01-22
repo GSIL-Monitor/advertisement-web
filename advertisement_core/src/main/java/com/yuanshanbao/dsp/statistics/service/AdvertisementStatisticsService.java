@@ -2,6 +2,7 @@ package com.yuanshanbao.dsp.statistics.service;
 
 import java.util.List;
 
+import com.yuanshanbao.dsp.activity.model.ActivityRecord;
 import com.yuanshanbao.dsp.probability.model.Probability;
 import com.yuanshanbao.dsp.statistics.model.AdvertisementStatistics;
 import com.yuanshanbao.dsp.statistics.model.SuccessPageClick;
@@ -53,4 +54,6 @@ public interface AdvertisementStatisticsService {
 			AdvertisementStatistics advertisementStatistics, Boolean isPv, String channel, Long long1);
 
 	public List<AdvertisementStatistics> selectAdvertiserStatistic(AdvertisementStatistics advertisementStatistics);
+
+	public List<ActivityRecord> selectActivitysRecord(int dateDiff, boolean isFromDB);
 }

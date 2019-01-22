@@ -2,6 +2,8 @@ package com.yuanshanbao.dsp.statistics.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ import com.yuanshanbao.common.util.ExcelUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.NumberUtil;
 import com.yuanshanbao.common.util.ValidateUtil;
+import com.yuanshanbao.dsp.activity.model.ActivityRecord;
 import com.yuanshanbao.dsp.advertisement.model.Advertisement;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
@@ -1218,5 +1221,44 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 	@Override
 	public List<AdvertisementStatistics> selectAdvertiserStatistic(AdvertisementStatistics advertisementStatistics) {
 		return advertisementStatisticsDao.selectAdvertiserStatistic(advertisementStatistics);
+	}
+
+	@Override
+	public List<ActivityRecord> selectActivitysRecord(int dateDiff, boolean isFromDB) {
+		String date = DateUtils.format(DateUtils.addDays(new Date(), -dateDiff));
+		List<ActivityRecord> resultList = new ArrayList<ActivityRecord>();
+		Set<String> channels = redisService.smembers(RedisConstant.getAdvertisementChannelKey());
+		for (String channel : channels) {
+			addResultList(null, date, channel, resultList);
+		}
+		Collections.sort(resultList, new Comparator<ActivityRecord>() {
+			@Override
+			public int compare(ActivityRecord arg0, ActivityRecord arg1) {
+				return arg1.getUvCount() - arg0.getUvCount();
+			}
+		});
+		return resultList;
+	}
+
+	private void addResultList(Long activityId, String date, String channel, List<ActivityRecord> resultList) {
+		ActivityRecord activityRecord = new ActivityRecord();
+		int count = 0;
+		// UV计数
+		String uvStr = (String) redisCacheService.get(RedisConstant.getUVCountKey(date, channel));
+		if (ValidateUtil.isNumber(uvStr)) {
+			count = Integer.parseInt(uvStr);
+			activityRecord.setUvCount(count);
+		}
+		// 请求计数
+		String requestStr = (String) redisCacheService.get(RedisConstant.getRequestCountKey(date, channel));
+		if (ValidateUtil.isNumber(requestStr)) {
+			count = Integer.parseInt(requestStr);
+			activityRecord.setRequestCount(count);
+		}
+		activityRecord.setChannel(channel);
+		activityRecord.setDate(date);
+		if (count > 0) {
+			resultList.add(activityRecord);
+		}
 	}
 }

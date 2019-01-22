@@ -44,6 +44,9 @@
 				<if test="title != null">
 					title like CONCAT(CONCAT('%', #{title}),'%') and
 				</if>
+				<if test="subTitle != null">
+					subTitle like CONCAT(CONCAT('%', #{subTitle}),'%') and
+				</if>
 				<if test="link != null">
 					link = #{link} and
 				</if>

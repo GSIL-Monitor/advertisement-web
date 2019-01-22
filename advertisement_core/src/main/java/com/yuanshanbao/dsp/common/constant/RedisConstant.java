@@ -192,6 +192,14 @@ public class RedisConstant {
 		return getCachePrefix(getCachePrefix(position, UV_COUNT), date + "_" + channel);
 	}
 
+	public static String getUVCountKey(String channel) {
+		return getUVCountKey(DateUtils.format(new Date()), channel);
+	}
+
+	public static String getUVCountKey(String date, String channel) {
+		return getCachePrefix(UV_COUNT, date + "_" + channel);
+	}
+
 	public static String getResultPageChannelKey() {
 		return getResultPageChannelKey(DateUtils.format(new Date()));
 	}
@@ -365,7 +373,7 @@ public class RedisConstant {
 		return getRequestCountKey(DateUtils.format(new Date()), channel);
 	}
 
-	private static String getRequestCountKey(String date, String channel) {
+	public static String getRequestCountKey(String date, String channel) {
 		return getCachePrefix(REQUEST_COUNT, date + "_" + channel);
 	}
 

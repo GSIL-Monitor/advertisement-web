@@ -527,6 +527,7 @@ public class BaseGameController extends BaseController {
 			request.getSession().setAttribute(channel + SessionConstants.SESSION_ACTIVITY_COMBINE_KEY, activityKey);
 			request.getSession().setAttribute(SessionConstants.SESSION_ACTIVITY_COMBINE_CHANNEL, channel);
 		}
+		recordUvCount(request, channel);
 	}
 
 	private ActivityCombine getFirstSubActivity(List<ActivityCombine> list) {
@@ -597,6 +598,7 @@ public class BaseGameController extends BaseController {
 		}
 		// 获取活动奖品
 		getSubActivityPrize(request, resultMap, parentKey, activityKey, channel, probabilityList);
+		recordUvCount(request, channel);
 	}
 
 	private void getSubActivityPrize(HttpServletRequest request, Map<String, Object> resultMap, String parentKey,
@@ -692,7 +694,8 @@ public class BaseGameController extends BaseController {
 				ConfigConstants.ACTIVITY_COMBINE_PRIZE_ALLOCATE_CONFIG);
 		List<String> countPro = new ArrayList<String>();
 		// 设置奖品分配比例
-		if (allocateConfig != null) {
+		// if (allocateConfig != null) {
+		if (StringUtils.isNotEmpty(allocateConfig)) {
 			String[] config = allocateConfig.split(",");
 			countPro = Arrays.asList(config);
 		} else {

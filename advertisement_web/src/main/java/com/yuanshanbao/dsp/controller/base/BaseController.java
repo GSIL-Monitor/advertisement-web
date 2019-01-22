@@ -589,4 +589,21 @@ public class BaseController {
 		}
 		return false;
 	}
+
+	protected void recordUvCount(HttpServletRequest request, String channel) {
+		try {
+			String hasRecord = (String) request.getSession().getAttribute(SessionConstants.SESSION_UV_COUNT + channel);
+			if (StringUtils.isBlank(hasRecord)) {
+				if (channel == null) {
+					channel = "";
+				}
+				request.getSession().setAttribute(SessionConstants.SESSION_UV_COUNT + channel, "true");
+				redisCacheService.sadd(RedisConstant.getAdvertisementChannelKey(), channel);
+				redisCacheService.incr(RedisConstant.getUVCountKey(channel));
+			}
+			redisCacheService.incr(RedisConstant.getRequestCountKey(channel));
+		} catch (Exception e) {
+			LoggerUtil.error("[recordUVCount]", e);
+		}
+	}
 }

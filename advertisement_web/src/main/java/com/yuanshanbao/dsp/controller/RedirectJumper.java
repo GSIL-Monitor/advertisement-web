@@ -149,4 +149,18 @@ public class RedirectJumper extends BaseController {
 			LoggerUtil.error("increConsume", e);
 		}
 	}
+
+	@RequestMapping("/gameRecord")
+	@ResponseBody
+	public Object gameRecord(HttpServletRequest request, String channel) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			recordUvCount(request, channel);
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
+		} catch (Exception e) {
+			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
+			LoggerUtil.error("[gameRecord]", e);
+		}
+		return resultMap;
+	}
 }

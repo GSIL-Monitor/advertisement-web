@@ -35,7 +35,7 @@
 		dataTableConfig.columns = [{
 	      		"data": "advertisementId"
 	    	}, {
-	      		"data": "title"
+	      		"data": "subTitle"
 	    	}, {
 	      		"data": "advertiser.companyName"
 	    	}, {
@@ -75,7 +75,7 @@
 				params += "advertiserId=" + encodeURI(encodeURI($('#advertiserId').val())) + "&";
 			}
 			if (isNotEmpty($('#title').val())) {
-				params += "title=" + encodeURI(encodeURI($('#title').val())) + "&";
+				params += "subTitle=" + encodeURI(encodeURI($('#title').val())) + "&";
 			}
 			var newUrl="${rc.contextPath}/admin/${functionName}/query.do?" + params;
 			dataTable.ajax.url(newUrl);

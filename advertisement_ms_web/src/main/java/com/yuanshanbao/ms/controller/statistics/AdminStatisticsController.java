@@ -25,6 +25,7 @@ import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.JacksonUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.PropertyUtil;
+import com.yuanshanbao.dsp.activity.model.ActivityRecord;
 import com.yuanshanbao.dsp.advertisement.service.AdvertisementService;
 import com.yuanshanbao.dsp.advertiser.model.Advertiser;
 import com.yuanshanbao.dsp.channel.model.Channel;
@@ -91,6 +92,8 @@ public class AdminStatisticsController extends PaginationController {
 	private static final String PAGE_MONTH_LIST = "advertisement/statistics/listMonthStatistics";
 
 	private static final String PAGE_ADVERTISER_STATISTIC_LIST = "advertisement/statistics/listAdvertiserStatistics";
+
+	private static final String PAGE_WHEELS_LIST = "advertisement/statistics/listGameRecord";
 
 	// dsp后台
 	private static final String PAGE_PLAN_STATISTICS_LIST = "advertisement/statistics/dsp/listPlanStatistics";
@@ -978,6 +981,22 @@ public class AdminStatisticsController extends PaginationController {
 		return setPageInfo(request, response, new PageList<AdvertisementStatistics>(list, new Paginator()));
 	}
 
+	@RequestMapping("/gameRecord.do")
+	public String gameRecord(HttpServletRequest request, HttpServletResponse response, ModelMap modelMap) {
+		addDateList(modelMap, 0);
+		return PAGE_WHEELS_LIST;
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryGameRecord.do")
+	public Object queryGameRecord(Statistics statistics, HttpServletRequest request, HttpServletResponse response,
+			String statisticsDate) {
+		List<ActivityRecord> list = advertisementStatisticsService.selectActivitysRecord(getDateDiff(statisticsDate),
+				true);
+		return setPageInfo(request, response, new PageList<ActivityRecord>(list, new Paginator()));
+	}
+
+	// ---------------------------------------------------dsp----------------------------------------------------------
 	@ResponseBody
 	@RequestMapping("/{projectKey}/planStatistics")
 	public Object planStatistics(Integer diffDay, String fromDay, @PathVariable("projectKey") String projectKey) {

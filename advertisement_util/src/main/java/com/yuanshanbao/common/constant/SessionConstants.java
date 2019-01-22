@@ -56,5 +56,6 @@ public class SessionConstants {
 	public static final String SESSION_THIRD_STAT_CODE_CONFIG = "session_third_stat_code";
 	public static final String SESSION_INFORMATION = "session_information";
 	public static final String SESSION_GORDER_ID = "session_gorder_id";
+	public static final String SESSION_UV_COUNT = "session_uv_count";
 
 }
