@@ -836,7 +836,7 @@ public class AdvertisementStatisticsServiceImpl implements AdvertisementStatisti
 						if (advertisementStatistics.getQueryStartTime() != null
 								&& incDate(advertisementStatistics.getQueryStartTime(), i).equals(
 										adStatistics.getDate())) {
-							AdvertisementStatistics total = totalMap.get(adStatistics.getChannel());
+							AdvertisementStatistics total = totalMap.get(adStatistics.getAdvertisementId());
 							if (total == null) {
 								total = new AdvertisementStatistics();
 								total.setAdvertisement(adStatistics.getAdvertisement());
