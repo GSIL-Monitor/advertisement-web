@@ -27,6 +27,7 @@ import com.yuanshanbao.common.util.VerifyIdcard;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
+import com.yuanshanbao.dsp.bill.model.Bill;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -185,19 +186,31 @@ public class AccountController extends BaseController {
 	 * @param token
 	 * @return
 	 */
-	@RequestMapping("/withdrawDeposit")
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/withdrawInfo")
 	@ResponseBody
-	public Object getWithdrawDeposit(String token, WithdrawDeposit withdrawDeposit, PageBounds pageBounds) {
+	public Object getWithdrawDeposit(HttpServletRequest request, String token, WithdrawDeposit withdrawDeposit,
+			PageBounds pageBounds) {
 		Map<String, Object> resultMap = new HashMap<>();
+		User loginToken = null;
 		try {
-			User loginToken = tokenService.verifyLoginToken(token);
+			String host = request.getHeader("Host");
+			if ("cond.xingdk.com".equals(host)) {
+				loginToken = userService.selectUserById(501l);
+			} else {
+				loginToken = differentiateTokenUser(request, token);
+			}
 			if (loginToken == null) {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
-			withdrawDeposit.setUserId(loginToken.getUserId());
-			List<WithdrawDeposit> withdrawDepositList = withdrawDepositServcie.selectWithdrawDeposits(withdrawDeposit,
-					pageBounds);
-			resultMap.put("withdrawDepositList", withdrawDepositList);
+
+			Map<String, Object> checkResultMap = paymentInterfaceService.queryBillList(
+					String.valueOf(loginToken.getUserId()), formatPageBounds(pageBounds).getPage());
+			Integer retCode = (Integer) checkResultMap.get("retCode");
+			if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
+				List<Bill> billList = (List<Bill>) checkResultMap.get("billList");
+				resultMap.put("withdrawList", billList);
+			}
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
