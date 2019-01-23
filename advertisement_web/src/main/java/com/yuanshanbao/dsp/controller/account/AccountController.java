@@ -9,6 +9,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DataFormat;
@@ -27,7 +30,7 @@ import com.yuanshanbao.common.util.VerifyIdcard;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.app.service.AppService;
-import com.yuanshanbao.dsp.bill.model.Bill;
+import com.yuanshanbao.dsp.bill.model.BillAccountInfo;
 import com.yuanshanbao.dsp.common.constant.CommonConstant;
 import com.yuanshanbao.dsp.controller.base.BaseController;
 import com.yuanshanbao.dsp.core.InterfaceRetCode;
@@ -186,7 +189,7 @@ public class AccountController extends BaseController {
 	 * @param token
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+
 	@RequestMapping("/withdrawInfo")
 	@ResponseBody
 	public Object getWithdrawDeposit(HttpServletRequest request, String token, WithdrawDeposit withdrawDeposit,
@@ -204,13 +207,39 @@ public class AccountController extends BaseController {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
 
-			Map<String, Object> checkResultMap = paymentInterfaceService.queryBillList(
-					String.valueOf(loginToken.getUserId()), formatPageBounds(pageBounds).getPage());
+			List<BillAccountInfo> billAccountInfoList = new ArrayList<BillAccountInfo>();
+			Map<String, Object> checkResultMap = paymentInterfaceService.queryBillList(String.valueOf(757),
+					formatPageBounds(pageBounds).getPage());
 			Integer retCode = (Integer) checkResultMap.get("retCode");
 			if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
-				List<Bill> billList = (List<Bill>) checkResultMap.get("billList");
-				resultMap.put("withdrawList", billList);
+				JSONArray array = (JSONArray) checkResultMap.get("billList");
+				for (int i = 0; i < array.size(); i++) {
+					BillAccountInfo billAccountInfo = new BillAccountInfo();
+					JSONObject jo = JSONObject.fromObject(array.get(i));
+					Integer type = (Integer) jo.get("type");
+					if (type == 7) {
+						String accountId = (String) jo.get("accountId");
+						String amount = String.valueOf((BigDecimal) jo.get("amount"));
+						String typeContent = (String) jo.get("typeContent");
+						String createTimeContent = (String) jo.get("createTimeContent");
+						String balance = String.valueOf((BigDecimal) jo.get("balance"));
+						Integer status = (Integer) jo.get("status");
+						billAccountInfo.setAccountId(accountId.substring(2, accountId.length()));
+						billAccountInfo.setAmount(amount);
+						billAccountInfo.setBalance(balance);
+						billAccountInfo.setTypeContent(typeContent);
+						billAccountInfo.setType(type);
+						billAccountInfo.setStatus(status);
+						billAccountInfo.setCreateTimeContent(createTimeContent);
+					}
+					if (billAccountInfo != null) {
+						billAccountInfoList.add(billAccountInfo);
+					}
+
+				}
 			}
+			resultMap.put("withdrawList", billAccountInfoList);
+			resultMap.put("user", loginToken);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
 			InterfaceRetCode.setSpecAppCodeDesc(resultMap, e.getReturnCode(), e.getMessage());
