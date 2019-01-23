@@ -231,9 +231,9 @@ public class AccountController extends BaseController {
 						billAccountInfo.setType(type);
 						billAccountInfo.setStatus(status);
 						billAccountInfo.setCreateTimeContent(createTimeContent);
-					}
-					if (billAccountInfo != null) {
-						billAccountInfoList.add(billAccountInfo);
+						if (billAccountInfo != null) {
+							billAccountInfoList.add(billAccountInfo);
+						}
 					}
 
 				}
