@@ -51,6 +51,9 @@ public class AgencyVo {
 	}
 
 	public String getType() {
+		if (StringUtils.isBlank(type)) {
+			return "";
+		}
 		return type;
 	}
 

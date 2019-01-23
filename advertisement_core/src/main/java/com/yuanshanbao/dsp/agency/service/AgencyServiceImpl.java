@@ -340,7 +340,7 @@ public class AgencyServiceImpl implements AgencyService {
 		return agencyDao.queryVIPAgenctSumBrokerage(inviteUserId);
 	}
 
-	public String downAgency(List<Agency> list) {
+	public String downAgency(List<AgencyVo> list) {
 		String path = null;
 
 		if (list.size() != 0 && list != null) {
@@ -358,7 +358,7 @@ public class AgencyServiceImpl implements AgencyService {
 			columnList.add("更新时间");
 			rowList.add(columnList);
 
-			for (Agency temp : list) {
+			for (AgencyVo temp : list) {
 				columnList = new ArrayList<String>();
 				if (temp.getInviteUserId() != null) {
 					User user = userService.selectUserById(temp.getInviteUserId());

@@ -25,7 +25,7 @@
 		    }, {
 		    	"data": "statusValue"
 		    }, {
-		    	"data": "typeValue"
+		    	"data": "type"
 		    }, {
 		    	"data": "updateTimeValue"
 		    }];
@@ -189,6 +189,7 @@
 										<div class="filter-component">
 											<h6>类型：</h6>
 											<select name="type" id="type" class="selectpicker form-control">
+											<option value="">--请选择--</option>
 						                        <#list typeList as type>
 						                        	<option value="${type.key}">${type.value}</option>
 						                        </#list>
@@ -201,6 +202,7 @@
 										 <div style="width:60%;">
 										 <h6>审核状态：</h6>
 					                      <select name="status" id="status" class="selectpicker form-control">
+					                      <option value="">--请选择--</option>
 						                        <#list statusList as status>
 						                        	<option value="${status.key}">${status.value}</option>
 						                        </#list>
