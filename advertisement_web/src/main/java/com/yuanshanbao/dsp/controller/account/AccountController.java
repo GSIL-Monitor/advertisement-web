@@ -208,8 +208,8 @@ public class AccountController extends BaseController {
 			}
 
 			List<BillAccountInfo> billAccountInfoList = new ArrayList<BillAccountInfo>();
-			Map<String, Object> checkResultMap = paymentInterfaceService.queryBillList(String.valueOf(757),
-					formatPageBounds(pageBounds).getPage());
+			Map<String, Object> checkResultMap = paymentInterfaceService.queryBillList(
+					String.valueOf(loginToken.getUserId()), formatPageBounds(pageBounds).getPage());
 			Integer retCode = (Integer) checkResultMap.get("retCode");
 			if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
 				JSONArray array = (JSONArray) checkResultMap.get("billList");
