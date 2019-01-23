@@ -198,20 +198,19 @@ public class BankCardServiceImpl implements BankCardService {
 					}
 				}
 			}
-			Map<String, Object> updateTransferMap = updateAgencyStatusAndTransfer(list);
-			Integer retCode = (Integer) updateTransferMap.get("retCode");
-			if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
-				for (BankCard bankCard : bankCardList) {
-					BankCard bCard = new BankCard();
-					bCard.setBankName(product.getName());
-					bCard.setProductId(product.getProductId());
-					bCard.setMobile(bankCard.getMobile());
-					bCard.setName(bankCard.getName());
-					bCard.setStatus(bankCard.getStatus());
-					insertBankCard(bCard);
+			updateAgencyStatusAndTransfer(list);
+			for (Agency agency : list) {
+				if (agency.getStatus() == AgencyStatus.OFFCHECK) {
+					for (BankCard bankCard : bankCardList) {
+						BankCard bCard = new BankCard();
+						bCard.setBankName(product.getName());
+						bCard.setProductId(product.getProductId());
+						bCard.setMobile(bankCard.getMobile());
+						bCard.setName(bankCard.getName());
+						bCard.setStatus(bankCard.getStatus());
+						insertBankCard(bCard);
+					}
 				}
-			} else {
-				LoggerUtil.error("updateAgencyStatusAndTransfer error");
 			}
 
 		} catch (Exception e) {
@@ -228,7 +227,7 @@ public class BankCardServiceImpl implements BankCardService {
 		try {
 			if (list.size() != 0) {
 				for (Agency agen : list) {
-					if (agen.getStatus() == 1) {
+					if (agen.getStatus() == AgencyStatus.OFFCHECK) {
 						LoggerUtil.error("updateAgencyStatus status={}", agen.getStatus());
 						continue;
 					}
@@ -247,6 +246,8 @@ public class BankCardServiceImpl implements BankCardService {
 					}
 				}
 
+			} else {
+				LoggerUtil.error("AgencyList size()={}", list.size());
 			}
 			resultMap.put("retCode", ComRetCode.SUCCESS);
 

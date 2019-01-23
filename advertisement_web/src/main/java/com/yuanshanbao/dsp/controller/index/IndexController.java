@@ -228,17 +228,18 @@ public class IndexController extends BaseController {
 		Activity acti = null;
 		for (int i = 0; i < activitys.length; i++) {
 			acti = ConfigManager.getActivityByKey(activitys[i]);
+			// product.setActivityId(acti.getActivityId());
 			objectList = (PageList<Product>) productService.selectProductByActivityId(acti.getActivityId(),
 					formatPageBounds(pageBounds));
-			// Collections.sort(objectList, new Comparator<Product>() {
-			// @Override
-			// public int compare(Product b, Product a) {
-			// int aa = b.getStatus().compareTo(a.getStatus());
-			// return aa;
-			// }
-			// });
+			/*
+			 * Collections.sort(objectList, new Comparator<Product>() {
+			 * 
+			 * @Override public int compare(Product b, Product a) { int aa =
+			 * b.getStatus().compareTo(a.getStatus()); return aa; } });
+			 */
 			resultMap.put(activitys[i] + "List", objectList);
 		}
+
 		List<Tags> tagsList = new ArrayList<>();
 		for (Product prod : productList) {
 			Tags tags = new Tags();

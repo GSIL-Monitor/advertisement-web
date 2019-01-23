@@ -30,7 +30,9 @@ import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.ExcelUtil;
 import com.yuanshanbao.common.util.LoggerUtil;
 import com.yuanshanbao.common.util.StringUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
+import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.bankcard.model.BankCard;
@@ -61,6 +63,10 @@ public class AdminBankOrderController extends PaginationController {
 
 	private static final String PAGE_INSERT = "advertisement/bankorder/insertBankOrder";
 
+	private static final String PAGE_ACTIVITY_PRODUCT = "advertisement/bankorder/insertActivityProduct";
+
+	private static final String PRODUCT_ORDER = "advertisement/bankorder/insertProductBankOrder";
+
 	@Autowired
 	private BankCardService bankCardService;
 
@@ -69,6 +75,9 @@ public class AdminBankOrderController extends PaginationController {
 
 	@Autowired
 	private AgencyService agencyService;
+
+	@Autowired
+	private ActivityService activityService;
 
 	@RequestMapping("/list.do")
 	public String list(HttpServletRequest request, HttpServletResponse response) {
@@ -106,6 +115,20 @@ public class AdminBankOrderController extends PaginationController {
 		return PAGE_INSERT;
 	}
 
+	@RequestMapping("/insertActivityProductsWindow.do")
+	public String insertActivityProductsWindow(String range, HttpServletRequest request, HttpServletResponse reponse) {
+
+		Product product = new Product();
+		Activity agentActivity = ConfigManager.getActivityByKey(WANGZHUANAGENT);
+		product.setActivityId(agentActivity.getActivityId());
+		product.setStatus(ProductStatus.ONLINE);
+		List<Product> agentProductList = productService.selectProducts(product, new PageBounds());
+		request.setAttribute("agentProductList", agentProductList);
+		request.setAttribute("activityList", activityService.selectActivitys(new Activity(), new PageBounds()));
+
+		return PAGE_ACTIVITY_PRODUCT;
+	}
+
 	@RequestMapping("/insertAgentBankOrderWindow.do")
 	public String insertAgentBankOrderWindow(String range, HttpServletRequest request, HttpServletResponse reponse) {
 
@@ -118,6 +141,45 @@ public class AdminBankOrderController extends PaginationController {
 
 		return PAGE_AGENT_INSERT;
 	}
+
+	@RequestMapping("/insertActivityProductWindow.do")
+	@ResponseBody
+	public Object insertActivityProducts(String activityId, HttpServletRequest request, HttpServletResponse reponse) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		if (!ValidateUtil.isNumber(activityId)) {
+			throw new BusinessException(ComRetCode.WRONG_PARAMETER);
+		}
+		Product product = new Product();
+		product.setActivityId(Long.valueOf(activityId));
+		List<Product> agentProductList = productService.selectProducts(product, new PageBounds());
+		request.setAttribute("productList", agentProductList);
+		resultMap.put("code", ComRetCode.SUCCESS);
+		resultMap.put("list", agentProductList);
+		return resultMap;
+	}
+
+	/**
+	 * 教育/贷款/保险
+	 * 
+	 * @param activityId
+	 * @param request
+	 * @param reponse
+	 * @return
+	 */
+	/*
+	 * @RequestMapping("/insertProductBankOrder.do")
+	 * 
+	 * @ResponseBody public Object insertProductBankOrder(String productId,
+	 * HttpServletRequest request, HttpServletResponse reponse) { Map<String,
+	 * Object> resultMap = new HashMap<String, Object>(); if
+	 * (!ValidateUtil.isNumber(activityId)) { throw new
+	 * BusinessException(ComRetCode.WRONG_PARAMETER); } Product product = new
+	 * Product(); product.setActivityId(Long.valueOf(activityId)); List<Product>
+	 * agentProductList = productService.selectProducts(product, new
+	 * PageBounds()); request.setAttribute("productList", agentProductList);
+	 * return "redirect:" + PRODUCT_ORDER; }
+	 */
 
 	@RequestMapping("/insertBankOrder.do")
 	@ResponseBody

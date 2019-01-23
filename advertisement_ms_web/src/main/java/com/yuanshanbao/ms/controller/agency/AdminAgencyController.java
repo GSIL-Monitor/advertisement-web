@@ -17,9 +17,13 @@ import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyType;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
+import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
@@ -49,25 +53,41 @@ public class AdminAgencyController extends PaginationController {
 	@Autowired
 	private MerchantService merchantService;
 
+	@Autowired
+	private UserService userService;
+
 	@RequestMapping("/list.do")
 	public String list(Long merchantId, HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("merchantId", merchantId);
 		request.setAttribute("merchant", merchantService.selectMerchant(merchantId));
 		request.setAttribute("statusList", AgencyStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("typeList", AgencyType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("activityList", activityService.selectActivitys(new Activity(), new PageBounds()));
 
 		return PAGE_LIST;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Agency agency, HttpServletRequest request, HttpServletResponse response) {
+		List<AgencyVo> agencyVos = new ArrayList<AgencyVo>();
+		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(range, request));
+		AgencyVo agencyVo = null;
+		for (Agency agenc : agencyList) {
+			agencyVo = new AgencyVo(agenc);
+			if (agencyVo.getInviteUserId() != null) {
+				User user = userService.selectUserById(agencyVo.getInviteUserId());
+				if (user != null) {
+					if (user.getInviteUserId() == null) {
+						agencyVo.setIndirectUserId("");
+					}
+					agencyVo.setIndirectUserId(String.valueOf(user.getInviteUserId()));
+				}
+			}
+			agencyVos.add(agencyVo);
+		}
 
-		Object object = agencyService.selectAgencys(agency, getPageBounds(range, request));
-
-		PageList pageList = (PageList) object;
-		return setPageInfo(request, response, pageList);
+		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator()));
 	}
 
 	@ResponseBody

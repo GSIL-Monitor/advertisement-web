@@ -347,8 +347,8 @@ public class AgencyServiceImpl implements AgencyService {
 			Map<String, List<List<String>>> sheetMap = new HashMap<String, List<List<String>>>();
 			List<List<String>> rowList = new ArrayList<List<String>>();
 			List<String> columnList = new ArrayList<String>();
-
-			columnList.add("邀请人ID");
+			columnList.add("间接邀请人ID");
+			columnList.add("直接邀请人ID");
 			columnList.add("办卡人ID");
 			columnList.add("办卡人姓名");
 			columnList.add("办卡人手机号");
@@ -360,7 +360,12 @@ public class AgencyServiceImpl implements AgencyService {
 
 			for (Agency temp : list) {
 				columnList = new ArrayList<String>();
-
+				if (temp.getInviteUserId() != null) {
+					User user = userService.selectUserById(temp.getInviteUserId());
+					if (user != null && user.getInviteUserId() != null) {
+						columnList.add(user.getInviteUserId().toString());
+					}
+				}
 				columnList.add(temp.getInviteUserId().toString());
 				if (temp.getUserId() != null) {
 					columnList.add(temp.getUserId().toString());
