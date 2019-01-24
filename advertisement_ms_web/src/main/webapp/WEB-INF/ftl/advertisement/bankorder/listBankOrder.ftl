@@ -78,6 +78,9 @@
 	    	 <span class="add">
 	    		<a href="${rc.contextPath}/admin/${functionName}/insertAgentBankOrderWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加(代理版)${functionTitle}</button></a>
 	    	</span>
+	    	 <span class="add">
+	    		<a href="${rc.contextPath}/admin/${functionName}/insertActivityProductsWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加(其他)${functionTitle}</button></a>
+	    	</span>
         </div>
     </div>
     <div class="container-fluid">

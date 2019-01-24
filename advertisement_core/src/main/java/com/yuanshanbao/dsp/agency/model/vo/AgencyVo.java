@@ -4,24 +4,62 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.yuanshanbao.dsp.agency.model.Agency;
+
 /**
  * Created by Administrator on 2018/11/15.
  */
 public class AgencyVo {
 	private Long inviteUserId;
 	private Long userId;
+	private String indirectUserId;
 	private String agencyName;
 	private String name;
 	private String mobile;
 	private Long productId;
 	private String productName;
 	private BigDecimal brokerage;
+	private String type;
 	private String status; // 0:待审核 1:审核通过 2:审核未通过
 	private String userLevel;
 	private String inviteUserLevel;
 	private String inviteTime;
 	private String createTime;
 	private String updateTime;
+
+	public AgencyVo() {
+
+	}
+
+	public AgencyVo(Agency agency) {
+		if (agency == null) {
+			return;
+		}
+
+		this.inviteUserId = agency.getInviteUserId();
+		this.userId = agency.getUserId();
+		this.agencyName = agency.getAgencyName();
+		this.name = agency.getName();
+		this.mobile = agency.getMobile();
+		this.productId = agency.getProductId();
+		this.productName = agency.getProductName();
+		this.brokerage = agency.getBrokerage();
+		this.status = agency.getStatusValue();
+		this.type = agency.getTypeValue();
+		this.inviteTime = agency.getInviteTimeValue();
+		this.updateTime = agency.getUpdateTimeValue();
+	}
+
+	public String getType() {
+		if (StringUtils.isBlank(type)) {
+			return "";
+		}
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public Long getUserId() {
 		return userId;
@@ -159,6 +197,14 @@ public class AgencyVo {
 
 	public void setInviteUserLevel(String inviteUserLevel) {
 		this.inviteUserLevel = inviteUserLevel;
+	}
+
+	public String getIndirectUserId() {
+		return indirectUserId;
+	}
+
+	public void setIndirectUserId(String indirectUserId) {
+		this.indirectUserId = indirectUserId;
 	}
 
 }

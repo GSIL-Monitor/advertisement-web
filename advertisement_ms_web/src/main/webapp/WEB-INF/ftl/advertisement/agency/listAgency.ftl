@@ -9,7 +9,7 @@
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do";
 		dataTableConfig.columns = [
 			{
-		    	"data": "${functionId}"
+		    	"data": "indirectUserId"
 		    }, {
 		    	"data": "inviteUserId"
 		    }, {
@@ -25,7 +25,7 @@
 		    }, {
 		    	"data": "statusValue"
 		    }, {
-		    	"data": "typeValue"
+		    	"data": "type"
 		    }, {
 		    	"data": "updateTimeValue"
 		    }];
@@ -188,14 +188,21 @@
 									<td>
 										<div class="filter-component">
 											<h6>类型：</h6>
-											<input type="text" name="type" id="type" placeholder="类型" />
-										</div>	 
+											<select name="type" id="type" class="selectpicker form-control">
+											<option value="">--请选择--</option>
+						                        <#list typeList as type>
+						                        	<option value="${type.key}">${type.value}</option>
+						                        </#list>
+					                      </select>
+                      					 </div>	
+										
 									</td>
 									<td>
 									    
 										 <div style="width:60%;">
-										 <h6>状态：</h6>
-					                      <select name="status" class="selectpicker form-control">
+										 <h6>审核状态：</h6>
+					                      <select name="status" id="status" class="selectpicker form-control">
+					                      <option value="">--请选择--</option>
 						                        <#list statusList as status>
 						                        	<option value="${status.key}">${status.value}</option>
 						                        </#list>
@@ -220,9 +227,9 @@
 					<div class="widget-content nopadding">
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
-								<th>ID</th>
-			                  	<th>上级用户ID</th>
-			                  	<th>用户ID</th>
+								<th>间接上级用户ID</th>
+			                  	<th>直接上级用户ID</th>
+			                  	<th>办卡用户ID</th>
 			                  	<th>办卡姓名</th>
 			                  	<th>办卡手机号</th>
 			                  	<th>办卡银行</th>

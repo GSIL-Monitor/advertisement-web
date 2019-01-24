@@ -17,9 +17,13 @@ import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyType;
+import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
+import com.yuanshanbao.dsp.user.model.User;
+import com.yuanshanbao.dsp.user.service.UserService;
 import com.yuanshanbao.ms.controller.base.PaginationController;
 import com.yuanshanbao.paginator.domain.PageBounds;
 import com.yuanshanbao.paginator.domain.PageList;
@@ -49,34 +53,56 @@ public class AdminAgencyController extends PaginationController {
 	@Autowired
 	private MerchantService merchantService;
 
+	@Autowired
+	private UserService userService;
+
 	@RequestMapping("/list.do")
 	public String list(Long merchantId, HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("merchantId", merchantId);
 		request.setAttribute("merchant", merchantService.selectMerchant(merchantId));
 		request.setAttribute("statusList", AgencyStatus.getCodeDescriptionMap().entrySet());
+		request.setAttribute("typeList", AgencyType.getCodeDescriptionMap().entrySet());
 		request.setAttribute("activityList", activityService.selectActivitys(new Activity(), new PageBounds()));
 
 		return PAGE_LIST;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Agency agency, HttpServletRequest request, HttpServletResponse response) {
 
-		Object object = agencyService.selectAgencys(agency, getPageBounds(range, request));
+		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(range, request));
+		List<AgencyVo> agencyVos = agencyVoschannelAgencyList(agencyList);
+		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator()));
+	}
 
-		PageList pageList = (PageList) object;
-		return setPageInfo(request, response, pageList);
+	private List<AgencyVo> agencyVoschannelAgencyList(List<Agency> agencyList) {
+
+		List<AgencyVo> agencyVos = new ArrayList<AgencyVo>();
+		AgencyVo agencyVo = null;
+		for (Agency agenc : agencyList) {
+			agencyVo = new AgencyVo(agenc);
+			if (agencyVo.getInviteUserId() != null) {
+				User user = userService.selectUserById(agencyVo.getInviteUserId());
+				if (user != null) {
+					if (user.getInviteUserId() == null) {
+						agencyVo.setIndirectUserId("");
+					}
+					agencyVo.setIndirectUserId(String.valueOf(user.getInviteUserId()));
+				}
+			}
+			agencyVos.add(agencyVo);
+		}
+		return agencyVos;
 	}
 
 	@ResponseBody
 	@RequestMapping("/queryAgencyDB.do")
 	public Object queryStatisticFromDB(String queryChannel, Agency agency, HttpServletRequest request,
 			HttpServletResponse response) {
-		Object object = agencyService.selectAgencys(agency, getPageBounds(queryChannel, request));
-		PageList pageList = (PageList) object;
-		return setPageInfo(request, response, pageList);
+		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(queryChannel, request));
+		List<AgencyVo> agencyVos = agencyVoschannelAgencyList(agencyList);
+		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,10 +115,10 @@ public class AdminAgencyController extends PaginationController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		Object object = new HashMap<String, Object>();
-		List<Agency> list = new ArrayList<Agency>();
+		List<AgencyVo> list = new ArrayList<AgencyVo>();
 
 		map = (Map<String, Object>) queryAgencyFromDB(queryChannel, agency, request, response);
-		list = (List<Agency>) map.get("data");
+		list = (List<AgencyVo>) map.get("data");
 		String path = agencyService.downAgency(list);
 		result.put("path", path);
 		return result;
@@ -104,7 +130,8 @@ public class AdminAgencyController extends PaginationController {
 	public Object queryAgencyFromDB(String queryChannel, Agency agency, HttpServletRequest request,
 			HttpServletResponse response) {
 		List<Agency> agencies = agencyService.selectAgencys(agency, new PageBounds());
-		return setPageInfo(request, response, new PageList<Agency>(agencies, new Paginator()));
+		List<AgencyVo> agencyVos = agencyVoschannelAgencyList(agencies);
+		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator()));
 	}
 
 }
