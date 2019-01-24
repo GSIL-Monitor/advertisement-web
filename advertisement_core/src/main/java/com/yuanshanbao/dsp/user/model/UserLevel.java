@@ -15,6 +15,8 @@ public class UserLevel {
 	public static final String BAILLIFF_DESCRIPTION = "首席执行官";
 	public static final int VIP_AGENT = 3;
 	public static final String VIP_AGENT_DESCRIPTION = "VIP代理";
+	public static final int COLONE = 4;
+	public static final String COLONE_DESCRIPTION = "首席执行官团队长";
 	public static final int NULL = -1;
 	public static final String NULL_DESCRIPTION = "暂无";
 
@@ -27,6 +29,7 @@ public class UserLevel {
 		codeDescriptionMap.put(MAJORDOMO, MAJORDOMO_DESCRIPTION);
 		codeDescriptionMap.put(BAILLIFF, BAILLIFF_DESCRIPTION);
 		codeDescriptionMap.put(VIP_AGENT, VIP_AGENT_DESCRIPTION);
+		codeDescriptionMap.put(COLONE, COLONE_DESCRIPTION);
 		codeDescriptionMap.put(NULL, NULL_DESCRIPTION);
 	}
 

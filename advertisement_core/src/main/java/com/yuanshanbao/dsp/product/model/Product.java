@@ -147,7 +147,7 @@ public class Product {
 
 					String format = brokerage.stripTrailingZeros().toPlainString();
 					LoggerUtil.info("format brokerage =" + format);
-					return format + "+1500";
+					return format + "+1000";
 				}
 			}
 			NumberFormat nt = NumberFormat.getPercentInstance();
