@@ -14,6 +14,9 @@ public class AgencyType {
 	public static final int AGENT_CREDIT_CARD = 3;
 	public static final String AGENT_CREDIT_CARD_DESCRIPTION = "代理商办卡";
 
+	public static final int NO_INVITE = 4;
+	public static final String NO_INVITE_CARD_DESCRIPTION = "无邀请";
+
 	static {
 		initCodeDescriptionMap();
 	}
@@ -22,6 +25,7 @@ public class AgencyType {
 		codeDescriptionMap.put(INVITE, INVITE_DESCRIPTION);
 		codeDescriptionMap.put(CREDIT_CARD, CREDIT_CARD_DESCRIPTION);
 		codeDescriptionMap.put(AGENT_CREDIT_CARD, AGENT_CREDIT_CARD_DESCRIPTION);
+		codeDescriptionMap.put(NO_INVITE, NO_INVITE_CARD_DESCRIPTION);
 	}
 
 	public static String getDescription(Integer code) {

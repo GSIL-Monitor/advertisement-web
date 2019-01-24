@@ -200,6 +200,7 @@ public class WeixinController extends BaseController {
 					User wxUser = userService.selectUserByWeixinId(unionId);
 					Agency agency = new Agency();
 					if (wxUser != null && inviteUserId != null) {
+						LoggerUtil.info("WeiXin login inviteuserId= " + inviteUserId);
 						agency.setUserId(wxUser.getUserId());
 						if (!StringUtils.isBlank(wxUser.getNickName()) && !("undefined".equals(wxUser.getNickName()))) {
 							agency.setAgencyName(wxUser.getNickName());
@@ -211,6 +212,8 @@ public class WeixinController extends BaseController {
 						if (ValidateUtil.isNumber(inviteUserId)) {
 							agency.setType(AgencyType.INVITE);
 							agency.setInviteUserId(Long.valueOf(inviteUserId));
+						} else {
+							agency.setType(AgencyType.NO_INVITE);
 						}
 						agencyService.insertAgency(agency);
 					}
