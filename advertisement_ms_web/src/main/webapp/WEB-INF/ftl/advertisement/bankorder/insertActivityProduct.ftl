@@ -81,6 +81,20 @@
                                         </div>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>导入文件：</td>
+                                    <td>
+                                        <input id="importFile" type="file" name="file" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>金额：</td>
+                                    <td>
+                                        <input id="money" type="text" name="money" />
+                                       *(百分比产品请输入金额)* 
+                                    </td>
+                                   
+                                </tr>
                            
                                 <tr>
                                    

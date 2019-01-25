@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -184,14 +185,16 @@ public class AdminBankOrderController extends PaginationController {
 	@RequestMapping("/insertBankOrder.do")
 	@ResponseBody
 	public Object uploadFile(HttpServletRequest request, HttpServletResponse reponse,
-			@RequestParam("file") MultipartFile file, @RequestParam("productId") String productId) {
+			@RequestParam("file") MultipartFile file, @RequestParam("productId") String productId, String money) {
 		Map<String, Object> result = new HashMap<>();
 		try {
 			// List<BankCard> bankCardList = exportBankInfo(file);
 			// 入账
 			List<String> aString = null;
 			List<BankCard> bankCards = new ArrayList<BankCard>();
-
+			if (StringUtils.isBlank(money)) {
+				money = "null";
+			}
 			List<List<String>> list = ExcelUtil.readExcel03And13(file, productId);
 			for (int i = 1; i < list.size(); i++) {
 				aString = list.get(i);
@@ -209,7 +212,7 @@ public class AdminBankOrderController extends PaginationController {
 				}
 				bankCards.add(bankCard);
 			}
-			bankCardService.transferUserAccount(bankCards, productId);
+			bankCardService.transferUserAccount(bankCards, productId, money);
 
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 

@@ -37,6 +37,8 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.earnings.model.Earnings;
 import com.yuanshanbao.dsp.earnings.service.EarningsService;
 import com.yuanshanbao.dsp.payment.PaymentInterfaceService;
+import com.yuanshanbao.dsp.product.model.Product;
+import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.redpacket.model.RedPacket;
 import com.yuanshanbao.dsp.redpacket.model.RedPacketStatus;
 import com.yuanshanbao.dsp.redpacket.model.RedPacketVo;
@@ -97,6 +99,9 @@ public class AccountController extends BaseController {
 
 	@Autowired
 	private AgencyService agencyService;
+
+	@Autowired
+	private ProductService productService;
 
 	@RequestMapping("/balance")
 	@ResponseBody
@@ -487,9 +492,11 @@ public class AccountController extends BaseController {
 		LoggerUtil.info("handleId  =" + handleId);
 		try {
 			String[] handParams = handleId.split(CommonConstant.COMMA_SPLIT_STR);
+			String money = handParams[2];
 
 			Agency agency = new Agency();
-			BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
+			BigDecimal productBrokerage = BigDecimal.ZERO;
+			BigDecimal indiretBrokerage = BigDecimal.ZERO;
 			String inviteUserId = accountId.substring(2, accountId.length());
 			agency.setId(Long.valueOf(handParams[0].substring(14, handParams[0].length())));
 			List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
@@ -498,11 +505,19 @@ public class AccountController extends BaseController {
 				// 代理版
 				User inviteUser = userService.selectUserById(inviteUserId);
 				if (inviteUser != null) {
-					resultMap.put("distributeAmount",
-							String.valueOf(agencyList.get(0).getBrokerage().setScale(2, RoundingMode.HALF_UP)));
+					if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
+						resultMap.put(
+								"distributeAmount",
+								String.valueOf(agencyList.get(0).getBrokerage()
+										.multiply(BigDecimal.valueOf(Double.valueOf(money)))
+										.setScale(2, RoundingMode.HALF_UP)));
+					} else {
+						resultMap.put("distributeAmount",
+								String.valueOf(agencyList.get(0).getBrokerage().setScale(2, RoundingMode.HALF_UP)));
+					}
 
 				} else {
-					resultMap.put("distributeAmount", String.valueOf(BigDecimal.valueOf(0)));
+					resultMap.put("distributeAmount", String.valueOf(BigDecimal.ZERO));
 				}
 			} else {
 
@@ -520,22 +535,30 @@ public class AccountController extends BaseController {
 								&& inviteUserId.equals(String.valueOf(user.getInviteUserId()))) {
 							String createTime = DateUtils.format(agencyList.get(0).getCreateTime(),
 									DateUtils.DATE_FORMAT_YYYYMMDD);
-
+							// 二级佣金：标准佣金*5%
+							Product product = productService.selectProduct(agencyList.get(0).getProductId());
+							if (product != null && product.getBrokerage() != null) {
+								if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
+									productBrokerage = product.getBrokerage().multiply(
+											BigDecimal.valueOf(Double.valueOf(money)));
+								} else {
+									productBrokerage = product.getBrokerage();
+								}
+							}
 							if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
-								indiretBrokerage = agencyList.get(0).getBrokerage().multiply(NEW_CEO_PERCENTAGE);
+								indiretBrokerage = productBrokerage.multiply(NEW_CEO_PERCENTAGE).setScale(2,
+										RoundingMode.HALF_UP);
+
 							} else {
 								if (user.getLevel() == null) {
 									user.setLevel(UserLevel.MANAGER);
 								}
 								if (user.getLevel() == UserLevel.MANAGER) {
-									indiretBrokerage = agencyList.get(0).getBrokerage()
-											.multiply(MANAGER_INDIRET_PERCENTAGE);
+									indiretBrokerage = productBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
 								} else if (user.getLevel() == UserLevel.MAJORDOMO) {
-									indiretBrokerage = agencyList.get(0).getBrokerage()
-											.multiply(DIRECTOR_INDIRET_PERCENTAGE);
+									indiretBrokerage = productBrokerage.multiply(DIRECTOR_INDIRET_PERCENTAGE);
 								} else if (user.getLevel() == UserLevel.BAILLIFF) {
-									indiretBrokerage = agencyList.get(0).getBrokerage()
-											.multiply(CEO_INDIRET_PERCENTAGE);
+									indiretBrokerage = productBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
 								}
 							}
 							resultMap.put("distributeAmount",
@@ -555,10 +578,19 @@ public class AccountController extends BaseController {
 					// 是直接上级
 					User inviteUser = userService.selectUserById(inviteUserId);
 					if (inviteUser != null) {
-						resultMap.put("distributeAmount",
-								String.valueOf(agencyList.get(0).getBrokerage().setScale(2, RoundingMode.HALF_UP)));
+						if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
+							resultMap.put(
+									"distributeAmount",
+									String.valueOf(agencyList.get(0).getBrokerage()
+											.multiply(BigDecimal.valueOf(Double.valueOf(money)))
+											.setScale(2, RoundingMode.HALF_UP)));
+						} else {
+							resultMap.put("distributeAmount",
+									String.valueOf(agencyList.get(0).getBrokerage().setScale(2, RoundingMode.HALF_UP)));
+						}
+
 					} else {
-						resultMap.put("distributeAmount", String.valueOf(BigDecimal.valueOf(0)));
+						resultMap.put("distributeAmount", String.valueOf(BigDecimal.ZERO));
 					}
 				}
 			}

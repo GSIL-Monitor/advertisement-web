@@ -365,6 +365,8 @@ public class AgencyServiceImpl implements AgencyService {
 					if (user != null && user.getInviteUserId() != null) {
 						columnList.add(user.getInviteUserId().toString());
 					}
+				} else {
+					columnList.add("无");
 				}
 				columnList.add(temp.getInviteUserId().toString());
 				if (temp.getUserId() != null) {

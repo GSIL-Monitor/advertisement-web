@@ -73,13 +73,13 @@
             <a href="#" title="${functionTitle}管理" class="tip-bottom"><i class="icon-book"></i>${functionTitle}管理</a>
             <a href="#" class="current">${functionTitle}列表</a>
             <span class="add">
-	    		<a href="${rc.contextPath}/admin/${functionName}/insertBankOrderWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加${functionTitle}</button></a>
+	    		<a href="${rc.contextPath}/admin/${functionName}/insertBankOrderWindow.do?advertiserId=${advertiserId}" target="_blank"><button>添加${functionTitle}</button></a>
 	    	</span>
 	    	 <span class="add">
-	    		<a href="${rc.contextPath}/admin/${functionName}/insertAgentBankOrderWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加(代理版)${functionTitle}</button></a>
+	    		<a href="${rc.contextPath}/admin/${functionName}/insertAgentBankOrderWindow.do?advertiserId=${advertiserId}" target="_blank"><button>添加(代理版)${functionTitle}</button></a>
 	    	</span>
 	    	 <span class="add">
-	    		<a href="${rc.contextPath}/admin/${functionName}/insertActivityProductsWindow.do?advertiserId=${advertiserId}" target="_blank"><button>+添加(其他)${functionTitle}</button></a>
+	    		<a href="${rc.contextPath}/admin/${functionName}/insertActivityProductsWindow.do?advertiserId=${advertiserId}" target="_blank"><button>添加(其他活动)${functionTitle}</button></a>
 	    	</span>
         </div>
     </div>

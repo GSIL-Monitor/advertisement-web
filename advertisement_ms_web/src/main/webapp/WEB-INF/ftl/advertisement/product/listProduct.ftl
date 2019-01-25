@@ -52,11 +52,6 @@
 	        	var deleteUrl = '${rc.contextPath}/admin/${functionName}/delete.do?${functionId}='+data;
 	            return '<a href="#" class="btn btn-red" onclick="confirmDelete(\''+deleteUrl+'\');">删除</a>';
 	        }
-	    }, {
-	    	"data": "${functionId}",
-	        "render": function ( data, type, full, meta ) {
-	            return '<a href="${rc.contextPath}/admin/${functionName}/updateWindow.do?${functionId}='+data+'"  class="btn btn-blue" target="_blank">入账</a>';
-	        }
 	    }];
 	
 	var dataTable = $('#dataTable').DataTable(dataTableConfig);

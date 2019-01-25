@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import com.yuanshanbao.common.exception.BusinessException;
 import com.yuanshanbao.common.ret.ComRetCode;
 import com.yuanshanbao.common.util.DateUtils;
 import com.yuanshanbao.common.util.LoggerUtil;
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyType;
@@ -174,7 +176,7 @@ public class BankCardServiceImpl implements BankCardService {
 
 	@Transactional
 	@Override
-	public void transferUserAccount(List<BankCard> bankCardList, String productId) {
+	public void transferUserAccount(List<BankCard> bankCardList, String productId, String money) {
 		// TODO Auto-generated method stub
 		try {
 			List<Agency> list = new ArrayList<Agency>();
@@ -198,7 +200,7 @@ public class BankCardServiceImpl implements BankCardService {
 					}
 				}
 			}
-			updateAgencyStatusAndTransfer(list);
+			updateAgencyStatusAndTransfer(list, money, product);
 			for (Agency agency : list) {
 				if (agency.getStatus() == AgencyStatus.OFFCHECK) {
 					for (BankCard bankCard : bankCardList) {
@@ -218,7 +220,7 @@ public class BankCardServiceImpl implements BankCardService {
 		}
 	}
 
-	private Map<String, Object> updateAgencyStatusAndTransfer(List<Agency> list) {
+	private Map<String, Object> updateAgencyStatusAndTransfer(List<Agency> list, String money, Product product) {
 		// 更新批卡成功状态
 		// 收益金额转到账户余额
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -234,14 +236,14 @@ public class BankCardServiceImpl implements BankCardService {
 					User user = userService.selectUserById(agen.getInviteUserId());
 					if (agen.getInviteUserId() != null) {
 						// 直推上级入账
-						Map<String, Object> checkResultMap = directUserBrokerageTransfer(agen);
+						Map<String, Object> checkResultMap = directUserBrokerageTransfer(agen, money);
 						LoggerUtil.info("[ updateAgencyStatusAndTransfer : inviteUserId : ]" + agen.getInviteUserId());
 						Integer retCode = (Integer) checkResultMap.get("retCode");
 						LoggerUtil.info("[updateAgencyStatusAndTransfer : transfer SUCCESS : ]" + retCode
 								+ "inviteUserId: " + agen.getInviteUserId());
 						// 二级上级佣金
 						if (agen.getUserId() != null) {
-							indirectUserBrokerageTransfer(user, agen);
+							indirectUserBrokerageTransfer(user, agen, money, product);
 						}
 					}
 				}
@@ -257,14 +259,21 @@ public class BankCardServiceImpl implements BankCardService {
 		return resultMap;
 	}
 
-	private Map<String, Object> directUserBrokerageTransfer(Agency agen) {
+	private Map<String, Object> directUserBrokerageTransfer(Agency agen, String money) {
 		Map<String, Object> checkResultMap = new HashMap<String, Object>();
+		BigDecimal brokerage = BigDecimal.ZERO;
+		if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
+			brokerage = BigDecimal.valueOf(Long.valueOf(money)).multiply(agen.getBrokerage());
+		} else {
+			brokerage = agen.getBrokerage();
+		}
 		try {
 			checkResultMap = paymentInterfaceService.distribute(String.valueOf(agen.getInviteUserId()),
 					DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agen.getId()
-							+ CommonConstant.COMMA_SPLIT_STR + String.valueOf(agen.getUserId()),
+							+ CommonConstant.COMMA_SPLIT_STR + String.valueOf(agen.getUserId())
+							+ CommonConstant.COMMA_SPLIT_STR + money,
 					String.valueOf(System.nanoTime() + (int) Math.random() * 10000),
-					agen.getBrokerage().setScale(2, RoundingMode.HALF_UP));
+					brokerage.setScale(2, RoundingMode.HALF_UP));
 			Integer retCode = (Integer) checkResultMap.get("retCode");
 
 			if (retCode != null && retCode.equals(ComRetCode.SUCCESS)) {
@@ -284,25 +293,36 @@ public class BankCardServiceImpl implements BankCardService {
 		return checkResultMap;
 	}
 
-	private void indirectUserBrokerageTransfer(User user, Agency agency) {
+	private void indirectUserBrokerageTransfer(User user, Agency agency, String money, Product product) {
 		try {
-			BigDecimal indiretBrokerage = BigDecimal.valueOf(0);
+			BigDecimal productBrokerage = BigDecimal.ZERO;
+			BigDecimal indiretBrokerage = BigDecimal.ZERO;
 			if (user != null) {
-				// 按时间算佣金
-				String createTime = DateUtils.format(agency.getCreateTime(), DateUtils.DATE_FORMAT_YYYYMMDD);
-				if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
-					indiretBrokerage = agency.getBrokerage().multiply(NEW_CEO_PERCENTAGE);
+				// 是否有输入金额
+				if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
+					productBrokerage = product.getBrokerage().multiply(BigDecimal.valueOf(Double.valueOf(money)));
 				} else {
-					if (user.getLevel() == null) {
-						user.setLevel(UserLevel.MANAGER);
+					productBrokerage = product.getBrokerage();
+				}
+				// 按时间算佣金
+				if (product != null && product.getBrokerage() != null) {
+
+					String createTime = DateUtils.format(agency.getCreateTime(), DateUtils.DATE_FORMAT_YYYYMMDD);
+					if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
+						indiretBrokerage = productBrokerage.multiply(NEW_CEO_PERCENTAGE);
+					} else {
+						if (user.getLevel() == null) {
+							user.setLevel(UserLevel.MANAGER);
+						}
+						if (user.getLevel() == UserLevel.MANAGER) {
+							indiretBrokerage = productBrokerage.multiply(MANAGER_INDIRET_PERCENTAGE);
+						} else if (user.getLevel() == UserLevel.MAJORDOMO) {
+							indiretBrokerage = productBrokerage.multiply(DIRECTOR_INDIRET_PERCENTAGE);
+						} else if (user.getLevel() == UserLevel.BAILLIFF) {
+							indiretBrokerage = productBrokerage.multiply(CEO_INDIRET_PERCENTAGE);
+						}
 					}
-					if (user.getLevel() == UserLevel.MANAGER) {
-						indiretBrokerage = agency.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE);
-					} else if (user.getLevel() == UserLevel.MAJORDOMO) {
-						indiretBrokerage = agency.getBrokerage().multiply(DIRECTOR_INDIRET_PERCENTAGE);
-					} else if (user.getLevel() == UserLevel.BAILLIFF) {
-						indiretBrokerage = agency.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE);
-					}
+
 				}
 
 				if (user.getInviteUserId() != null) {
@@ -312,7 +332,8 @@ public class BankCardServiceImpl implements BankCardService {
 					Map<String, Object> map = paymentInterfaceService.distribute(
 							String.valueOf(user.getInviteUserId()),
 							DateUtils.format(new Date(), DateUtils.DATE_FORMAT_YYYYMMDDHHMMSS) + agency.getId()
-									+ CommonConstant.COMMA_SPLIT_STR + String.valueOf(user.getUserId()),
+									+ CommonConstant.COMMA_SPLIT_STR + String.valueOf(user.getUserId())
+									+ CommonConstant.COMMA_SPLIT_STR + money,
 							String.valueOf((int) Math.random() * 10000),
 							indiretBrokerage.setScale(2, RoundingMode.HALF_UP));
 					Integer code = Integer.valueOf(map.get("retCode").toString());
