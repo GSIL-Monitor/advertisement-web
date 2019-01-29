@@ -162,6 +162,12 @@ public class AgencyServiceImpl implements AgencyService {
 						agencyVo.setInviteUserLevel(UserLevel.MANAGER_DESCRIPTION);
 					}
 					agencyVoList.add(agencyVo);
+
+					// 更新类型
+					if (agen.getType() == null) {
+						agen.setType(AgencyType.INVITE);
+						updateAgency(agen);
+					}
 				}
 			} else {
 				return agencyVoList;
@@ -365,10 +371,11 @@ public class AgencyServiceImpl implements AgencyService {
 					if (user != null && user.getInviteUserId() != null) {
 						columnList.add(user.getInviteUserId().toString());
 					}
+					columnList.add(temp.getInviteUserId().toString());
 				} else {
 					columnList.add("无");
 				}
-				columnList.add(temp.getInviteUserId().toString());
+
 				if (temp.getUserId() != null) {
 					columnList.add(temp.getUserId().toString());
 				} else {

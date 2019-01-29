@@ -110,7 +110,7 @@
 				  <th>操作</th>
                   <th>修改</th>
                   <th>删除</th>
-                  <th>入账</th>
+                  
               </thead>
               <tbody>
               </tbody>

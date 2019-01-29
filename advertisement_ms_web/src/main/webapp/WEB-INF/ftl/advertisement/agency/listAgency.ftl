@@ -4,8 +4,13 @@
 <@topHeaderMenu />
 <@sideBar />
 <script>
+ function reload() {
+		var newUrl="${rc.contextPath}/admin/${functionName}/query.do";
+		dataTable.ajax.url(newUrl);
+		dataTable.ajax.reload();
+	}
 	$(document).ready(function(){
-		dataTableConfig.iDisplayLength = 1000;
+		
 		dataTableConfig.ajax = "${rc.contextPath}/admin/${functionName}/query.do";
 		dataTableConfig.columns = [
 			{
@@ -115,6 +120,31 @@
                 	}
                 }
             });
+		});
+		
+		 $("table").on("click", "#inviteId", function(){
+              alert(" sssssss!");
+         });
+		$('#inviteId').on('click', function(){
+		alert(111);
+			var userId = $('#inviteId').val();
+			var url="${rc.contextPath}/admin/${functionName}/queryUserInfo.do?userId=" + userId ;
+			 $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: url,
+                data: "",
+                success: function (data) {
+                	var newUrl = data.path;
+                	if (isNotEmpty(newUrl)){
+                    	window.location.href = newUrl;
+                	} else {
+                		alert("无数据！");
+                	}
+                }
+            });
+			
+		
 		});
 		
 		function reload() {
@@ -227,7 +257,7 @@
 					<div class="widget-content nopadding">
 						<table class="table table-bordered data-table" id="dataTable">
 							<thead>
-								<th>间接上级用户ID</th>
+								<th id ="inviteId" name="inviteId">间接上级用户ID</th>
 			                  	<th>直接上级用户ID</th>
 			                  	<th>办卡用户ID</th>
 			                  	<th>办卡姓名</th>

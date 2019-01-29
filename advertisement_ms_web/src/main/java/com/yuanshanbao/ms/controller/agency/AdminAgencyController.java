@@ -8,11 +8,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuanshanbao.common.util.ValidateUtil;
 import com.yuanshanbao.dsp.activity.model.Activity;
 import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.agency.model.Agency;
@@ -40,6 +42,8 @@ public class AdminAgencyController extends PaginationController {
 	private static final String PAGE_LIST = "advertisement/agency/listAgency";
 
 	private static final String PAGE_AGENT_LIST = "advertisement/agency/agentListProduct";
+
+	private static final String QUERY_USER = "advertisement/agency/queryUserInfo";
 
 	@Autowired
 	private AgencyService agencyService;
@@ -70,10 +74,10 @@ public class AdminAgencyController extends PaginationController {
 	@ResponseBody
 	@RequestMapping("/query.do")
 	public Object query(String range, Agency agency, HttpServletRequest request, HttpServletResponse response) {
-
-		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(range, request));
+		String length = request.getParameter("length");
+		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(request));
 		List<AgencyVo> agencyVos = agencyVoschannelAgencyList(agencyList);
-		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator()));
+		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator(1, 10, 50)));
 	}
 
 	private List<AgencyVo> agencyVoschannelAgencyList(List<Agency> agencyList) {
@@ -126,12 +130,42 @@ public class AdminAgencyController extends PaginationController {
 	}
 
 	@ResponseBody
+	@RequestMapping("/queryUserInfoWindow.do")
+	public Object queryUserInfo(String userId, Agency agency, HttpServletRequest request, HttpServletResponse response) {
+		User user = null;
+		if (StringUtils.isNotBlank(userId) && ValidateUtil.isNumber(userId)) {
+			user = userService.selectUserById(userId);
+		}
+		request.setAttribute("itemEdit", user);
+		return QUERY_USER;
+	}
+
+	@ResponseBody
 	@RequestMapping("/queryAgencyFromDB.do")
 	public Object queryAgencyFromDB(String queryChannel, Agency agency, HttpServletRequest request,
 			HttpServletResponse response) {
 		List<Agency> agencies = agencyService.selectAgencys(agency, new PageBounds());
 		List<AgencyVo> agencyVos = agencyVoschannelAgencyList(agencies);
 		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator()));
+	}
+
+	public static String getNumberString() {
+		int num = 1;
+		try {
+			Thread thread = new Thread();
+			thread.start();
+			while (num > 0 && num < 100) {
+				num++;
+			}
+		} catch (Exception e) {
+
+		}
+		return String.format("%03d", num);
+	}
+
+	public static void main(String[] args) {
+		getNumberString();
+		System.out.print(getNumberString());
 	}
 
 }
