@@ -185,34 +185,38 @@ public class AdminBankOrderController extends PaginationController {
 	@RequestMapping("/insertBankOrder.do")
 	@ResponseBody
 	public Object uploadFile(HttpServletRequest request, HttpServletResponse reponse,
-			@RequestParam("file") MultipartFile file, @RequestParam("productId") String productId, String money) {
+			@RequestParam("file") MultipartFile file, @RequestParam("productId") String productId, String money,
+			String subsidyMoney) {
 		Map<String, Object> result = new HashMap<>();
 		try {
 			// List<BankCard> bankCardList = exportBankInfo(file);
 			// 入账
-			List<String> aString = null;
+			List<String> stringList = null;
 			List<BankCard> bankCards = new ArrayList<BankCard>();
 			if (StringUtils.isBlank(money)) {
 				money = "null";
 			}
+			if (StringUtils.isBlank(subsidyMoney)) {
+				subsidyMoney = "null";
+			}
 			List<List<String>> list = ExcelUtil.readExcel03And13(file, productId);
 			for (int i = 1; i < list.size(); i++) {
-				aString = list.get(i);
+				stringList = list.get(i);
 				BankCard bankCard = new BankCard();
-				bankCard.setName(aString.get(0));
-				bankCard.setMobile(aString.get(1));
-				if (BankCardStatus.APPROVED_DESCRIPTION.equals(aString.get(2))) {
+				bankCard.setName(stringList.get(0));
+				bankCard.setMobile(stringList.get(1));
+				if (BankCardStatus.APPROVED_DESCRIPTION.equals(stringList.get(2))) {
 					bankCard.setStatus(BankCardStatus.APPROVED);
-				} else if (BankCardStatus.REFESEND_TO_DESCRIPTION.equals(aString.get(2))) {
+				} else if (BankCardStatus.REFESEND_TO_DESCRIPTION.equals(stringList.get(2))) {
 					bankCard.setStatus(BankCardStatus.REFESEND_TO);
-				} else if (BankCardStatus.CANCEL_DESCRIPTION.equals(aString.get(2))) {
+				} else if (BankCardStatus.CANCEL_DESCRIPTION.equals(stringList.get(2))) {
 					bankCard.setStatus(BankCardStatus.CANCEL);
-				} else if (BankCardStatus.APPROVING_DESCRIPTION.equals(aString.get(2))) {
+				} else if (BankCardStatus.APPROVING_DESCRIPTION.equals(stringList.get(2))) {
 					bankCard.setStatus(BankCardStatus.APPROVING);
 				}
 				bankCards.add(bankCard);
 			}
-			bankCardService.transferUserAccount(bankCards, productId, money);
+			bankCardService.transferUserAccount(bankCards, productId, money, subsidyMoney);
 
 			InterfaceRetCode.setAppCodeDesc(result, ComRetCode.SUCCESS);
 

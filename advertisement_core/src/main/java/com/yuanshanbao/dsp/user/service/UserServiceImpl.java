@@ -1,5 +1,6 @@
 package com.yuanshanbao.dsp.user.service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -500,5 +501,25 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
+	}
+
+	@Override
+	public BigDecimal getReconciliationBrokerage(String money, String subsidyMoney, Agency agency) {
+		BigDecimal brokerage = BigDecimal.ZERO;
+		if (agency != null) {
+
+			if ((StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money))
+					&& (StringUtils.isNotBlank(subsidyMoney) && ValidateUtil.isMoney(subsidyMoney))) {
+				brokerage = agency.getBrokerage().multiply(BigDecimal.valueOf(Double.valueOf(money)))
+						.add(BigDecimal.valueOf(Double.valueOf(subsidyMoney)));
+			} else if (StringUtils.isNotBlank(subsidyMoney) && ValidateUtil.isMoney(subsidyMoney)) {
+				brokerage = agency.getBrokerage().add(BigDecimal.valueOf(Double.valueOf(subsidyMoney)));
+			} else if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
+				brokerage = agency.getBrokerage().multiply(BigDecimal.valueOf(Double.valueOf(money)));
+			} else {
+				brokerage = agency.getBrokerage();
+			}
+		}
+		return brokerage;
 	}
 }

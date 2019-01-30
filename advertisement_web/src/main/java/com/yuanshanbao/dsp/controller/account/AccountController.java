@@ -491,37 +491,23 @@ public class AccountController extends BaseController {
 		LoggerUtil.info("accountId  = " + accountId);
 		LoggerUtil.info("handleId  =" + handleId);
 		try {
-			String[] handParams = handleId.split(CommonConstant.COMMA_SPLIT_STR);
-			String money = handParams[2];
-
-			Agency agency = new Agency();
 			BigDecimal productBrokerage = BigDecimal.ZERO;
 			BigDecimal indiretBrokerage = BigDecimal.ZERO;
+			Agency agency = new Agency();
+			String[] handParams = handleId.split(CommonConstant.COMMA_SPLIT_STR);
+			String money = handParams[2];
+			String subsidyMoney = handParams[3];
 			String inviteUserId = accountId.substring(2, accountId.length());
 			agency.setId(Long.valueOf(handParams[0].substring(14, handParams[0].length())));
 			List<Agency> agencyList = agencyService.selectAgencys(agency, new PageBounds());
 
 			if ("null".equals(handParams[1])) {
 				// 代理版
-				User inviteUser = userService.selectUserById(inviteUserId);
-				if (inviteUser != null) {
-					if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
-						resultMap.put(
-								"distributeAmount",
-								String.valueOf(agencyList.get(0).getBrokerage()
-										.multiply(BigDecimal.valueOf(Double.valueOf(money)))
-										.setScale(2, RoundingMode.HALF_UP)));
-					} else {
-						resultMap.put("distributeAmount",
-								String.valueOf(agencyList.get(0).getBrokerage().setScale(2, RoundingMode.HALF_UP)));
-					}
 
-				} else {
-					resultMap.put("distributeAmount", String.valueOf(BigDecimal.ZERO));
-				}
+				directUserDistribute(inviteUserId, money, subsidyMoney, agencyList, resultMap);
 			} else {
 
-				if (handParams.length < 2) {
+				if (handParams.length < 3) {
 					LoggerUtil.error("handledId split:length={} " + handParams.length);
 				}
 				// 普通版直推上级
@@ -576,22 +562,7 @@ public class AccountController extends BaseController {
 
 				} else {
 					// 是直接上级
-					User inviteUser = userService.selectUserById(inviteUserId);
-					if (inviteUser != null) {
-						if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
-							resultMap.put(
-									"distributeAmount",
-									String.valueOf(agencyList.get(0).getBrokerage()
-											.multiply(BigDecimal.valueOf(Double.valueOf(money)))
-											.setScale(2, RoundingMode.HALF_UP)));
-						} else {
-							resultMap.put("distributeAmount",
-									String.valueOf(agencyList.get(0).getBrokerage().setScale(2, RoundingMode.HALF_UP)));
-						}
-
-					} else {
-						resultMap.put("distributeAmount", String.valueOf(BigDecimal.ZERO));
-					}
+					directUserDistribute(inviteUserId, money, subsidyMoney, agencyList, resultMap);
 				}
 			}
 			resultMap.put("retCode", ComRetCode.SUCCESS);
@@ -602,6 +573,22 @@ public class AccountController extends BaseController {
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.FAIL);
 		}
 		return resultMap;
+	}
+
+	private void directUserDistribute(String inviteUserId, String money, String subsidyMoney, List<Agency> agencyList,
+			Map<String, Object> resultMap) {
+		BigDecimal brokerage = BigDecimal.ZERO;
+		User inviteUser = userService.selectUserById(inviteUserId);
+		if (inviteUser != null) {
+			for (Agency agency : agencyList) {
+				brokerage = userService.getReconciliationBrokerage(money, subsidyMoney, agency);
+			}
+			resultMap.put("distributeAmount", String.valueOf(brokerage.setScale(2, RoundingMode.HALF_UP)));
+
+		} else {
+			resultMap.put("distributeAmount", String.valueOf(BigDecimal.ZERO));
+		}
+
 	}
 
 }

@@ -370,16 +370,22 @@ public class AgencyServiceImpl implements AgencyService {
 					User user = userService.selectUserById(temp.getInviteUserId());
 					if (user != null && user.getInviteUserId() != null) {
 						columnList.add(user.getInviteUserId().toString());
+					} else {
+						columnList.add("无");
 					}
+
+				} else {
+					columnList.add("无");
+				}
+				if (temp.getIndirectUserId() != null) {
 					columnList.add(temp.getInviteUserId().toString());
 				} else {
 					columnList.add("无");
 				}
-
 				if (temp.getUserId() != null) {
 					columnList.add(temp.getUserId().toString());
 				} else {
-					columnList.add("");
+					columnList.add("无");
 				}
 				columnList.add(temp.getName());
 				columnList.add(temp.getMobile());
@@ -398,5 +404,4 @@ public class AgencyServiceImpl implements AgencyService {
 		}
 		return path;
 	}
-
 }

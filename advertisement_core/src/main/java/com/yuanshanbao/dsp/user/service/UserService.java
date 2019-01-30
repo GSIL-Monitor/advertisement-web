@@ -1,11 +1,13 @@
 package com.yuanshanbao.dsp.user.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.github.sd4324530.fastweixin.api.response.GetUserInfoResponse;
+import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.user.model.BaseInfo;
 import com.yuanshanbao.dsp.user.model.CropImage;
 import com.yuanshanbao.dsp.user.model.LoginToken;
@@ -78,5 +80,7 @@ public interface UserService {
 	public void createQRCodeURL(User user, String h5Url, Map<String, Object> resultMap);
 
 	public void updateWeiXinId(String unionId, String openId);
+
+	public BigDecimal getReconciliationBrokerage(String money, String subsidyMoney, Agency agency);
 
 }

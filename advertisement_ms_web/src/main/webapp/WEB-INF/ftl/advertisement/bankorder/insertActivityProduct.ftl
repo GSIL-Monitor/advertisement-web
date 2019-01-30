@@ -91,7 +91,15 @@
                                     <td>金额：</td>
                                     <td>
                                         <input id="money" type="text" name="money" />
-                                       *(百分比产品请输入金额)* 
+                                       *(百分比产品请输入金额,其他不必输入)* 
+                                    </td>
+                                   
+                                </tr>
+                                 <tr>
+                                    <td>补贴金额：</td>
+                                    <td>
+                                        <input id="subsidyMoney" type="text" name="subsidyMoney" />
+                                       *(有补贴金额请输入补贴金额)* 
                                     </td>
                                    
                                 </tr>

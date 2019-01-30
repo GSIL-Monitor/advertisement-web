@@ -19,7 +19,7 @@ public interface BankCardService {
 
 	public void getApplyBankCardInfo(User user, Long productId, String userName, String mobile);
 
-	public void transferUserAccount(List<BankCard> bankCardList, String productId, String money);
+	public void transferUserAccount(List<BankCard> bankCardList, String productId, String money, String subsidyMoney);
 
 	public void addVIPAgentOrBankCardInfo(Long inviteUserId, Long prodcutId, String userName, String mobile);
 
