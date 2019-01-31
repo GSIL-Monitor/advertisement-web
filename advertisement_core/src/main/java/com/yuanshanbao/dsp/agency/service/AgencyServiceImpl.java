@@ -38,6 +38,7 @@ public class AgencyServiceImpl implements AgencyService {
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
 	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.25);
 	public final static BigDecimal NEW_CEO_PERCENTAGE = BigDecimal.valueOf(0.05);
+	public final static BigDecimal DIRECT_BROKERAGE = BigDecimal.valueOf(0.95);
 
 	public final static String NOW_DATE = "20181210";
 	@Autowired
@@ -210,9 +211,11 @@ public class AgencyServiceImpl implements AgencyService {
 			// agencyVo.setBrokerage((agen.getBrokerage().multiply(CEO_INDIRET_PERCENTAGE)).setScale(2,
 			// RoundingMode.HALF_UP));
 			// }
+
 			if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
-				agencyVo.setBrokerage((agen.getBrokerage().multiply(NEW_CEO_PERCENTAGE)).setScale(2,
-						RoundingMode.HALF_UP));
+				// 按原价
+				BigDecimal original = agen.getBrokerage().divide(DIRECT_BROKERAGE);
+				agencyVo.setBrokerage((original.multiply(NEW_CEO_PERCENTAGE)).setScale(2, RoundingMode.HALF_UP));
 			} else {
 				if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER) {
 					agencyVo.setBrokerage((agen.getBrokerage().multiply(MANAGER_INDIRET_PERCENTAGE)).setScale(2,
@@ -304,7 +307,9 @@ public class AgencyServiceImpl implements AgencyService {
 				if (compareTimeBrokerage == null) {
 					compareTimeBrokerage = BigDecimal.ZERO;
 				}
-				timeBrokerageBigDecimal = compareTimeBrokerage.multiply(NEW_CEO_PERCENTAGE);
+				// 按原价
+				BigDecimal original = compareTimeBrokerage.divide(DIRECT_BROKERAGE);
+				timeBrokerageBigDecimal = original.multiply(NEW_CEO_PERCENTAGE);
 			}
 
 		}

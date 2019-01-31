@@ -278,7 +278,9 @@ public class BankCardServiceImpl implements BankCardService {
 				LoggerUtil.error("directUserBrokerageTransfer retCode={},transferId={},transferBrokerage={}", retCode,
 						agen.getInviteUserId(), agen.getBrokerage().setScale(2, RoundingMode.HALF_UP));
 				agen.setStatus(AgencyStatus.OFFCHECK);
+				agen.setBrokerage(brokerage);
 				agencyService.updateAgency(agen);
+
 				LoggerUtil.info("[updateAgencyStatus]" + ComRetCode.SUCCESS);
 			} else {
 				LoggerUtil.error("directUserBrokerageTransfer retCode={}", retCode);
