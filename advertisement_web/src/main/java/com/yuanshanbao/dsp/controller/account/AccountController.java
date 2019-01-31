@@ -433,7 +433,7 @@ public class AccountController extends BaseController {
 				throw new BusinessException(ComRetCode.NOT_LOGIN);
 			}
 			Map<String, Object> withdrawMap = paymentInterfaceService.withdraw(String.valueOf(loginToken.getUserId()),
-					withdrawAmount, RequestUtil.getRemoteAddr(request));
+					withdrawAmount, RequestUtil.getRemoteAddr(request), String.valueOf(true));
 			resultMap.putAll(withdrawMap);
 			InterfaceRetCode.setAppCodeDesc(resultMap, ComRetCode.SUCCESS);
 		} catch (BusinessException e) {
@@ -580,9 +580,7 @@ public class AccountController extends BaseController {
 		BigDecimal brokerage = BigDecimal.ZERO;
 		User inviteUser = userService.selectUserById(inviteUserId);
 		if (inviteUser != null) {
-			for (Agency agency : agencyList) {
-				brokerage = userService.getReconciliationBrokerage(money, subsidyMoney, agency);
-			}
+			brokerage = userService.getReconciliationBrokerage(money, subsidyMoney, agencyList.get(0));
 			resultMap.put("distributeAmount", String.valueOf(brokerage.setScale(2, RoundingMode.HALF_UP)));
 
 		} else {

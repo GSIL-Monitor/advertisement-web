@@ -1,16 +1,16 @@
 package com.yuanshanbao.dsp.payment;
 
-import com.yuanshanbao.dsp.order.model.Order;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import com.yuanshanbao.dsp.order.model.Order;
+
 public interface PaymentInterfaceService {
 
 	public static final int WITHDRAW = 7;
-	
+
 	public static final int BROKERAGE = 8;
 
 	// 预支付Token
@@ -30,7 +30,7 @@ public interface PaymentInterfaceService {
 
 	Map<String, Object> bindBankCard(String userId, String bankCardNumber, String userIp);
 
-	Map<String, Object> withdraw(String userId, String withdrawAmount, String userIp);
+	Map<String, Object> withdraw(String userId, String withdrawAmount, String userIp, String noCheckBankCard);
 
 	Map<String, Object> refund(String userId, String orderId, String refundId, BigDecimal refundAmount,
 			String refundReason, int refundType);

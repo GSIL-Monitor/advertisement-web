@@ -168,11 +168,12 @@ public class PaymentInterfaceServiceImpl implements PaymentInterfaceService {
 	}
 
 	@Override
-	public Map<String, Object> withdraw(String userId, String withdrawAmount, String userIp) {
+	public Map<String, Object> withdraw(String userId, String withdrawAmount, String userIp, String noCheckBankCard) {
 		Map<String, String> parameterMap = new HashMap<String, String>();
 		parameterMap.put("accountId", CommonConstant.PAYMENT_PLATFROM_NAME + userId);
 		parameterMap.put("withdrawAmount", withdrawAmount);
 		parameterMap.put("userIp", userIp);
+		parameterMap.put("noCheckBankCard", noCheckBankCard);
 		return commonPaymentsInterface("withdraw", parameterMap, true);
 	}
 
