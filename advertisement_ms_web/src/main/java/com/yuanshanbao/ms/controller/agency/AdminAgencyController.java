@@ -93,8 +93,8 @@ public class AdminAgencyController extends PaginationController {
 			HttpServletResponse response) {
 		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(queryChannel, request));
 		agencyVoschannelAgencyList(agencyList);
-		// PageList<Agency> pageList = (PageList<Agency>) agencyList;
-		return setPageInfo(request, response, new PageList<Agency>(agencyList, new Paginator()));
+		PageList<Agency> pageList = (PageList<Agency>) agencyList;
+		return setPageInfo(request, response, pageList);
 	}
 
 	private void agencyVoschannelAgencyList(List<Agency> agencyList) {

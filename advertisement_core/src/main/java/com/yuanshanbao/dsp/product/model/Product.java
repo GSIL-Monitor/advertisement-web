@@ -147,7 +147,7 @@ public class Product {
 
 					String format = brokerage.stripTrailingZeros().toPlainString();
 					LoggerUtil.info("format brokerage =" + format);
-					return format + "+1000";
+					return format + "+2000";
 				}
 			}
 			if (activityId != null && activityId == 117 || activityId == 118) {

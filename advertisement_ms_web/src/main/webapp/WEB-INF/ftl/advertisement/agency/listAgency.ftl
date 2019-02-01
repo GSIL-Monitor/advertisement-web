@@ -30,7 +30,7 @@
 		    }, {
 		    	"data": "statusValue"
 		    }, {
-		    	"data": "type"
+		    	"data": "typeValue"
 		    }, {
 		    	"data": "updateTimeValue"
 		    }];
@@ -184,6 +184,10 @@
 									<th></th>
 									<th></th>
 								</tr>
+								<div class="filter-component">
+									<h6>日期：</h6>
+									<@timeRangeSearchBar/>
+							    </div>
 								<tr>
 									<td>
 										<div class="filter-component">
