@@ -185,7 +185,7 @@ public class AgencyServiceImpl implements AgencyService {
 	public List<AgencyVo> getAgencyListVo(List<Agency> twoAgencyList, User user) {
 
 		List<AgencyVo> agencyVoList = new ArrayList<>();
-
+		BigDecimal original = BigDecimal.ZERO;
 		if (twoAgencyList.size() > 0) {
 			Collections.sort(twoAgencyList, new Comparator<Agency>() {
 				@Override
@@ -214,7 +214,7 @@ public class AgencyServiceImpl implements AgencyService {
 
 			if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {
 				// 按原价
-				BigDecimal original = agen.getBrokerage().divide(DIRECT_BROKERAGE);
+				original = agen.getBrokerage().divide(DIRECT_BROKERAGE, BigDecimal.ROUND_CEILING);
 				agencyVo.setBrokerage((original.multiply(NEW_CEO_PERCENTAGE)).setScale(2, RoundingMode.HALF_UP));
 			} else {
 				if (user.getLevel() != null && user.getLevel() == UserLevel.MANAGER) {
@@ -248,12 +248,12 @@ public class AgencyServiceImpl implements AgencyService {
 
 		List<Long> oneInviteUserIds = new ArrayList<>();
 		List<Long> twoInviteUserIds = new ArrayList<>();
-		BigDecimal oneAgencyBrokerage = BigDecimal.valueOf(0);
-		BigDecimal twoAgencyBrokerage = BigDecimal.valueOf(0);
-		BigDecimal brokerage = BigDecimal.valueOf(0);
-		BigDecimal compareTimeBrokerage = BigDecimal.valueOf(0);
-		BigDecimal timeBrokerageBigDecimal = BigDecimal.valueOf(0);
-
+		BigDecimal oneAgencyBrokerage = BigDecimal.ZERO;
+		BigDecimal twoAgencyBrokerage = BigDecimal.ZERO;
+		BigDecimal brokerage = BigDecimal.ZERO;
+		BigDecimal compareTimeBrokerage = BigDecimal.ZERO;
+		BigDecimal timeBrokerageBigDecimal = BigDecimal.ZERO;
+		BigDecimal original = BigDecimal.ZERO;
 		for (Iterator<Agency> iterator = oneAgencyList.iterator(); iterator.hasNext();) {
 			Agency agen = (Agency) iterator.next();
 			if (agen.getUserId() == null) {
@@ -308,7 +308,7 @@ public class AgencyServiceImpl implements AgencyService {
 					compareTimeBrokerage = BigDecimal.ZERO;
 				}
 				// 按原价
-				BigDecimal original = compareTimeBrokerage.divide(DIRECT_BROKERAGE);
+				original = compareTimeBrokerage.divide(DIRECT_BROKERAGE, BigDecimal.ROUND_CEILING);
 				timeBrokerageBigDecimal = original.multiply(NEW_CEO_PERCENTAGE);
 			}
 
