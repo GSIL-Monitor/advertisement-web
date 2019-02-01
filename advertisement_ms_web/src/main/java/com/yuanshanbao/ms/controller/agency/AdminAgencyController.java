@@ -20,7 +20,6 @@ import com.yuanshanbao.dsp.activity.service.ActivityService;
 import com.yuanshanbao.dsp.agency.model.Agency;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyStatus;
 import com.yuanshanbao.dsp.agency.model.vo.AgencyType;
-import com.yuanshanbao.dsp.agency.model.vo.AgencyVo;
 import com.yuanshanbao.dsp.agency.service.AgencyService;
 import com.yuanshanbao.dsp.merchant.service.MerchantService;
 import com.yuanshanbao.dsp.quota.service.QuotaService;
@@ -76,28 +75,16 @@ public class AdminAgencyController extends PaginationController {
 	public Object query(String range, Agency agency, HttpServletRequest request, HttpServletResponse response) {
 		String length = request.getParameter("length");
 		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(request));
-		List<AgencyVo> agencyVos = agencyVoschannelAgencyList(agencyList);
-		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator(1, 10, 50)));
-	}
-
-	private List<AgencyVo> agencyVoschannelAgencyList(List<Agency> agencyList) {
-
-		List<AgencyVo> agencyVos = new ArrayList<AgencyVo>();
-		AgencyVo agencyVo = null;
-		for (Agency agenc : agencyList) {
-			agencyVo = new AgencyVo(agenc);
-			if (agencyVo.getInviteUserId() != null) {
-				User user = userService.selectUserById(agencyVo.getInviteUserId());
-				if (user != null) {
-					if (user.getInviteUserId() == null) {
-						agencyVo.setIndirectUserId("");
-					}
-					agencyVo.setIndirectUserId(String.valueOf(user.getInviteUserId()));
+		for (Agency agen : agencyList) {
+			if (agen.getInviteUserId() != null) {
+				User user = userService.selectUserById(agen.getInviteUserId());
+				if (user.getInviteUserId() != null) {
+					agen.setIndirectUserId(user.getInviteUserId());
 				}
 			}
-			agencyVos.add(agencyVo);
 		}
-		return agencyVos;
+		PageList<Agency> pageList = (PageList<Agency>) agencyList;
+		return setPageInfo(request, response, pageList);
 	}
 
 	@ResponseBody
@@ -105,8 +92,20 @@ public class AdminAgencyController extends PaginationController {
 	public Object queryStatisticFromDB(String queryChannel, Agency agency, HttpServletRequest request,
 			HttpServletResponse response) {
 		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(queryChannel, request));
-		List<AgencyVo> agencyVos = agencyVoschannelAgencyList(agencyList);
-		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator()));
+		agencyVoschannelAgencyList(agencyList);
+		// PageList<Agency> pageList = (PageList<Agency>) agencyList;
+		return setPageInfo(request, response, new PageList<Agency>(agencyList, new Paginator()));
+	}
+
+	private void agencyVoschannelAgencyList(List<Agency> agencyList) {
+		for (Agency agen : agencyList) {
+			if (agen.getInviteUserId() != null) {
+				User user = userService.selectUserById(agen.getInviteUserId());
+				if (user.getInviteUserId() != null) {
+					agen.setIndirectUserId(user.getInviteUserId());
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -118,11 +117,10 @@ public class AdminAgencyController extends PaginationController {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 
-		Object object = new HashMap<String, Object>();
-		List<AgencyVo> list = new ArrayList<AgencyVo>();
+		List<Agency> list = new ArrayList<Agency>();
 
 		map = (Map<String, Object>) queryAgencyFromDB(queryChannel, agency, request, response);
-		list = (List<AgencyVo>) map.get("data");
+		list = (List<Agency>) map.get("data");
 		String path = agencyService.downAgency(list);
 		result.put("path", path);
 		return result;
@@ -145,8 +143,9 @@ public class AdminAgencyController extends PaginationController {
 	public Object queryAgencyFromDB(String queryChannel, Agency agency, HttpServletRequest request,
 			HttpServletResponse response) {
 		List<Agency> agencies = agencyService.selectAgencys(agency, new PageBounds());
-		List<AgencyVo> agencyVos = agencyVoschannelAgencyList(agencies);
-		return setPageInfo(request, response, new PageList<AgencyVo>(agencyVos, new Paginator()));
+		agencyVoschannelAgencyList(agencies);
+
+		return setPageInfo(request, response, new PageList<Agency>(agencies, new Paginator()));
 	}
 
 	public static String getNumberString() {

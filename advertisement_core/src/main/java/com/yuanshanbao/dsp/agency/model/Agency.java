@@ -19,6 +19,7 @@ public class Agency implements Serializable {
 	private static final long serialVersionUID = 4165445835251317169L;
 	private Long id;
 	private Long inviteUserId;
+	private Long indirectUserId;
 	private Long userId;
 	private String agencyName;
 	private String name;
@@ -31,6 +32,15 @@ public class Agency implements Serializable {
 	private Timestamp inviteTime;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+
+	public Long getIndirectUserId() {
+		return indirectUserId;
+	}
+
+	public void setIndirectUserId(Long indirectUserId) {
+
+		this.indirectUserId = indirectUserId;
+	}
 
 	public Long getId() {
 		return id;

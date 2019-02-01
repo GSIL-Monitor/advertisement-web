@@ -254,6 +254,7 @@ public class AgencyServiceImpl implements AgencyService {
 		BigDecimal compareTimeBrokerage = BigDecimal.ZERO;
 		BigDecimal timeBrokerageBigDecimal = BigDecimal.ZERO;
 		BigDecimal original = BigDecimal.ZERO;
+		BigDecimal differenceBrokerage = BigDecimal.ZERO;
 		for (Iterator<Agency> iterator = oneAgencyList.iterator(); iterator.hasNext();) {
 			Agency agen = (Agency) iterator.next();
 			if (agen.getUserId() == null) {
@@ -351,7 +352,7 @@ public class AgencyServiceImpl implements AgencyService {
 		return agencyDao.queryVIPAgenctSumBrokerage(inviteUserId);
 	}
 
-	public String downAgency(List<AgencyVo> list) {
+	public String downAgency(List<Agency> list) {
 		String path = null;
 
 		if (list.size() != 0 && list != null) {
@@ -369,7 +370,7 @@ public class AgencyServiceImpl implements AgencyService {
 			columnList.add("更新时间");
 			rowList.add(columnList);
 
-			for (AgencyVo temp : list) {
+			for (Agency temp : list) {
 				columnList = new ArrayList<String>();
 				if (temp.getInviteUserId() != null) {
 					User user = userService.selectUserById(temp.getInviteUserId());
