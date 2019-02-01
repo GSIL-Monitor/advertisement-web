@@ -41,6 +41,7 @@ import com.yuanshanbao.paginator.domain.PageBounds;
 public class UserServiceImpl implements UserService {
 
 	private static final String ADMIN_PASSWORD = "advertisementQwer1234";
+	public final static BigDecimal DIRECTOR_PERCENTAGE = BigDecimal.valueOf(0.95);
 
 	private static int width = 240;
 
@@ -506,18 +507,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public BigDecimal getReconciliationBrokerage(String money, String subsidyMoney, Agency agency) {
 		BigDecimal brokerage = BigDecimal.ZERO;
+		BigDecimal original = BigDecimal.ZERO;
 		if (agency != null) {
-
+			original = agency.getBrokerage().divide(DIRECTOR_PERCENTAGE, BigDecimal.ROUND_CEILING);
 			if ((StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money))
 					&& (StringUtils.isNotBlank(subsidyMoney) && ValidateUtil.isMoney(subsidyMoney))) {
-				brokerage = agency.getBrokerage().multiply(BigDecimal.valueOf(Double.valueOf(money)))
-						.add(BigDecimal.valueOf(Double.valueOf(subsidyMoney)));
+				brokerage = original.multiply(BigDecimal.valueOf(Double.valueOf(money))).add(
+						BigDecimal.valueOf(Double.valueOf(subsidyMoney)));
 			} else if (StringUtils.isNotBlank(subsidyMoney) && ValidateUtil.isMoney(subsidyMoney)) {
-				brokerage = agency.getBrokerage().add(BigDecimal.valueOf(Double.valueOf(subsidyMoney)));
+				brokerage = original.add(BigDecimal.valueOf(Double.valueOf(subsidyMoney)));
 			} else if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
-				brokerage = agency.getBrokerage().multiply(BigDecimal.valueOf(Double.valueOf(money)));
+				brokerage = original.multiply(BigDecimal.valueOf(Double.valueOf(money)));
 			} else {
-				brokerage = agency.getBrokerage();
+				brokerage = original;
 			}
 		}
 		return brokerage;

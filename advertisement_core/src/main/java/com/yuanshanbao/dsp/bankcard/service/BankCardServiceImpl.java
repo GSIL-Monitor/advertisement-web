@@ -302,7 +302,7 @@ public class BankCardServiceImpl implements BankCardService {
 				if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
 					productBrokerage = product.getBrokerage().multiply(BigDecimal.valueOf(Double.valueOf(money)));
 				} else {
-					productBrokerage = product.getBrokerage();
+					productBrokerage = product.getBrokerage().divide(DIRECTOR_PERCENTAGE, BigDecimal.ROUND_CEILING);
 				}
 				// 按时间算佣金
 				if (product != null && product.getBrokerage() != null) {
