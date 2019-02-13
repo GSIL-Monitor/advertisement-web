@@ -37,7 +37,6 @@ import com.yuanshanbao.dsp.core.InterfaceRetCode;
 import com.yuanshanbao.dsp.earnings.model.Earnings;
 import com.yuanshanbao.dsp.earnings.service.EarningsService;
 import com.yuanshanbao.dsp.payment.PaymentInterfaceService;
-import com.yuanshanbao.dsp.product.model.Product;
 import com.yuanshanbao.dsp.product.service.ProductService;
 import com.yuanshanbao.dsp.redpacket.model.RedPacket;
 import com.yuanshanbao.dsp.redpacket.model.RedPacketStatus;
@@ -69,6 +68,7 @@ public class AccountController extends BaseController {
 	public final static BigDecimal DIRECTOR_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.15);
 	public final static BigDecimal CEO_INDIRET_PERCENTAGE = BigDecimal.valueOf(0.2);
 	public final static BigDecimal NEW_CEO_PERCENTAGE = BigDecimal.valueOf(0.05);
+	public final static BigDecimal DIRECTOR_PERCENTAGE = BigDecimal.valueOf(0.95);
 	public final static String NOW_DATE = "20181210";
 	@Autowired
 	private AppService appService;
@@ -522,13 +522,14 @@ public class AccountController extends BaseController {
 							String createTime = DateUtils.format(agencyList.get(0).getCreateTime(),
 									DateUtils.DATE_FORMAT_YYYYMMDD);
 							// 二级佣金：标准佣金*5%
-							Product product = productService.selectProduct(agencyList.get(0).getProductId());
-							if (product != null && product.getBrokerage() != null) {
+							if (agencyList.get(0).getBrokerage() != null) {
 								if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
-									productBrokerage = product.getBrokerage().multiply(
-											BigDecimal.valueOf(Double.valueOf(money)));
+									productBrokerage = agencyList.get(0).getBrokerage()
+											.divide(DIRECTOR_PERCENTAGE, BigDecimal.ROUND_CEILING)
+											.multiply(BigDecimal.valueOf(Double.valueOf(money)));
 								} else {
-									productBrokerage = product.getBrokerage();
+									productBrokerage = agencyList.get(0).getBrokerage()
+											.divide(DIRECTOR_PERCENTAGE, BigDecimal.ROUND_CEILING);
 								}
 							}
 							if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {

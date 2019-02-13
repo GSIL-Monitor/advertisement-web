@@ -243,7 +243,8 @@ public class BankCardServiceImpl implements BankCardService {
 						LoggerUtil.info("[updateAgencyStatusAndTransfer : transfer SUCCESS : ]" + retCode
 								+ "inviteUserId: " + agen.getInviteUserId());
 						// 二级上级佣金
-						if (agen.getUserId() != null) {
+						if (agen.getUserId() != null && retCode.equals(ComRetCode.SUCCESS)) {
+							BigDecimal aa = agen.getBrokerage();
 							indirectUserBrokerageTransfer(user, agen, money, product, subsidyMoney);
 						}
 					}
@@ -278,7 +279,6 @@ public class BankCardServiceImpl implements BankCardService {
 				LoggerUtil.error("directUserBrokerageTransfer retCode={},transferId={},transferBrokerage={}", retCode,
 						agen.getInviteUserId(), agen.getBrokerage().setScale(2, RoundingMode.HALF_UP));
 				agen.setStatus(AgencyStatus.OFFCHECK);
-				agen.setBrokerage(brokerage);
 				agencyService.updateAgency(agen);
 
 				LoggerUtil.info("[updateAgencyStatus]" + ComRetCode.SUCCESS);
@@ -300,12 +300,14 @@ public class BankCardServiceImpl implements BankCardService {
 			if (user != null) {
 				// 是否有输入金额
 				if (StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money)) {
-					productBrokerage = product.getBrokerage().multiply(BigDecimal.valueOf(Double.valueOf(money)));
+					// 按当前产品原价*获得金额
+					productBrokerage = agency.getBrokerage().divide(DIRECTOR_PERCENTAGE, BigDecimal.ROUND_CEILING)
+							.multiply(BigDecimal.valueOf(Double.valueOf(money)));
 				} else {
-					productBrokerage = product.getBrokerage().divide(DIRECTOR_PERCENTAGE, BigDecimal.ROUND_CEILING);
+					productBrokerage = agency.getBrokerage().divide(DIRECTOR_PERCENTAGE, BigDecimal.ROUND_CEILING);
 				}
 				// 按时间算佣金
-				if (product != null && product.getBrokerage() != null) {
+				if (product != null && agency.getBrokerage() != null) {
 
 					String createTime = DateUtils.format(agency.getCreateTime(), DateUtils.DATE_FORMAT_YYYYMMDD);
 					if (DateUtils.compareTwoDates(createTime, NOW_DATE)) {

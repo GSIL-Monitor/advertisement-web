@@ -509,7 +509,9 @@ public class UserServiceImpl implements UserService {
 		BigDecimal brokerage = BigDecimal.ZERO;
 		BigDecimal original = BigDecimal.ZERO;
 		if (agency != null) {
-			original = agency.getBrokerage().divide(DIRECTOR_PERCENTAGE, BigDecimal.ROUND_CEILING);
+			// original = agency.getBrokerage().divide(DIRECTOR_PERCENTAGE,
+			// BigDecimal.ROUND_CEILING);
+			original = agency.getBrokerage();
 			if ((StringUtils.isNotBlank(money) && ValidateUtil.isMoney(money))
 					&& (StringUtils.isNotBlank(subsidyMoney) && ValidateUtil.isMoney(subsidyMoney))) {
 				brokerage = original.multiply(BigDecimal.valueOf(Double.valueOf(money))).add(
