@@ -49,6 +49,9 @@ public class User implements Serializable {
 	}
 
 	public String getNickName() {
+		if (StringUtils.isNotBlank(nickName) && nickName.length() > 5) {
+			return nickName.substring(0, 5);
+		}
 		return nickName;
 	}
 

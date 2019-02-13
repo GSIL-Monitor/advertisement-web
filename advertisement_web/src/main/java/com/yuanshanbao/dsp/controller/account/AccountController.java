@@ -230,7 +230,7 @@ public class AccountController extends BaseController {
 						String balance = String.valueOf((BigDecimal) jo.get("balance"));
 						Integer status = (Integer) jo.get("status");
 						billAccountInfo.setAccountId(accountId.substring(2, accountId.length()));
-						billAccountInfo.setAmount(amount);
+						billAccountInfo.setAmount(amount.replace("-", ""));
 						billAccountInfo.setBalance(balance);
 						billAccountInfo.setTypeContent(typeContent);
 						billAccountInfo.setType(type);
