@@ -19,6 +19,8 @@
 		<result property="inviteTime" column="invite_time" jdbcType="TIMESTAMP" />
 		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
 		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+		<result property="queryStartTime" column="queryStartTime" jdbcType="VARCHAR" />
+		<result property="queryEndTime" column="queryEndTime" jdbcType="VARCHAR" />
 
 	</resultMap>
 
@@ -153,9 +155,6 @@
 		where id=#{id} and user_id =#{userId} and product_id = #{productId}
 	</update>
 
-
-
-
 	<!-- 查询sql -->
 	<select id="selectAgencys" parameterType="Agency" resultMap="agencyMap">
 		select
@@ -197,7 +196,13 @@
 					status= #{status} and
 				</if>
 				<if test="type != null">
-					type= #{type}
+					type= #{type} and
+				</if>
+				<if test="queryStartTime != null">
+					create_time &gt;#{queryStartTime} and
+				</if>
+				<if test="queryEndTime != null">
+					create_time &lt;#{queryEndTime}
 				</if>
 			</trim>
 		</where>

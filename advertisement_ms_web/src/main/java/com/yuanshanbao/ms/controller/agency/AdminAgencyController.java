@@ -1,6 +1,10 @@
 package com.yuanshanbao.ms.controller.agency;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.conn.util.InetAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +79,7 @@ public class AdminAgencyController extends PaginationController {
 	@RequestMapping("/query.do")
 	public Object query(String range, Agency agency, HttpServletRequest request, HttpServletResponse response) {
 		String length = request.getParameter("length");
+		String addr = request.getLocalAddr();
 		List<Agency> agencyList = agencyService.selectAgencys(agency, getPageBounds(request));
 		for (Agency agen : agencyList) {
 			if (agen.getInviteUserId() != null) {
@@ -163,8 +169,26 @@ public class AdminAgencyController extends PaginationController {
 	}
 
 	public static void main(String[] args) {
-		getNumberString();
-		System.out.print(getNumberString());
+		// 获取ip地址
+		try {
+			String ipv4;
+			ArrayList<NetworkInterface> nilist = Collections.list(NetworkInterface.getNetworkInterfaces());
+			for (NetworkInterface ni : nilist) {
+				ArrayList<InetAddress> ialist = Collections.list(ni.getInetAddresses());
+				for (InetAddress address : ialist) {
+					if (!address.isLoopbackAddress() && InetAddressUtils.isIPv4Address(ipv4 = address.getHostAddress())) {
+
+						System.out.print(ipv4 + "IP地址");
+						return;
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			// Log.e(LOG_TAG, ex.toString());
+		}
+		System.out.print("sd ");
+		return;
+
 	}
 
 }

@@ -32,6 +32,14 @@ public class Agency implements Serializable {
 	private Timestamp inviteTime;
 	private Timestamp createTime;
 	private Timestamp updateTime;
+	/**
+	 * 查询指定日期的开始时间
+	 */
+	private String queryStartTime;
+	/**
+	 * 查询指定日期的结束时间
+	 */
+	private String queryEndTime;
 
 	public Long getIndirectUserId() {
 		return indirectUserId;
@@ -208,6 +216,22 @@ public class Agency implements Serializable {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getQueryStartTime() {
+		return queryStartTime;
+	}
+
+	public void setQueryStartTime(String queryStartTime) {
+		this.queryStartTime = queryStartTime;
+	}
+
+	public String getQueryEndTime() {
+		return queryEndTime;
+	}
+
+	public void setQueryEndTime(String queryEndTime) {
+		this.queryEndTime = queryEndTime;
 	}
 
 }

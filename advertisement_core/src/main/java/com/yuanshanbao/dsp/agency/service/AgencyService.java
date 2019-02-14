@@ -67,5 +67,4 @@ public interface AgencyService {
 	public BigDecimal queryVIPAgenctSumBrokerage(Long inviteUserId);
 
 	public String downAgency(List<Agency> list);
-
 }

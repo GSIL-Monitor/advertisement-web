@@ -39,5 +39,4 @@ public interface AgencyDao {
 	public BigDecimal settledTwoAgencyBrokerages(List<Long> twoInviteUserIds);
 
 	public BigDecimal settledBrokerageAndTimeCompare(List<Long> twoInviteUserIds);
-
 }

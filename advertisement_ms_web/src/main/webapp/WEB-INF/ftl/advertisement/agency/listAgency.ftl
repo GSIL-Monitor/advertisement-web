@@ -50,6 +50,12 @@
 
 			
 			var params ="";
+			if (isNotEmpty(queryStartTime)) {
+				params += "queryStartTime=" +encodeURI(encodeURI(queryStartTime)) + "&";
+			}
+			if (isNotEmpty(queryEndTime)) {
+				params += "queryEndTime=" +encodeURI(encodeURI(queryEndTime)) + "&";
+			}
 			if (isNotEmpty($('#userId').val())) {
 				params += "userId=" +encodeURI(encodeURI($('#userId').val())) + "&";
 			}
