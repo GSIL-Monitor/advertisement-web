@@ -50,7 +50,7 @@ public class InviteController extends BaseController {
 	private static final String H5_AGENT_URL = "https://wz.huhad.com/w/products";
 	private static final String H5_HOME_URL = "https://wz.huhad.com/w/home";
 	private static final String H5_DETAIL_URL = "https://wz.huhad.com/w/detail";
-	private static final String H5_DETAIL_GOOODS_URL = "https://wz.huhad.com/w/goods";
+	private static final String H5_DETAIL_GOOODS_URL = "https://wz.huhad.com/w/ngoods";
 
 	private static final String H5_BANK_INFO = "https://wz.huhad.com/w/applicants.html";
 	private static final String DETAILURL = "pages/index/detail/detail";
